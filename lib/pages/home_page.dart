@@ -46,7 +46,9 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (BuildContext context) => Post("Poster une annonce"),
+                    builder: (BuildContext context) => Post(
+                          pageTitle: "Poster une annonce",
+                        ),
                   ),
                 );
               },
@@ -70,7 +72,8 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (BuildContext context) => Configuration("Configurer une recherche"),
+                    builder: (BuildContext context) =>
+                        Configuration("Configurer une recherche"),
                   ),
                 );
               },

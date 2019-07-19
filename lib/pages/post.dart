@@ -15,17 +15,18 @@ class Post extends StatefulWidget {
 
 class _PostPageState extends State<Post> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  final TextEditingController _controller = new TextEditingController();
+
   List<String> _colors = <String>['', 'red', 'green', 'orange'];
   String _color = '';
-DateConverter dateConverter = new DateConverter();
-FormValidator formValidator = new FormValidator();
+  DateConverter dateConverter = new DateConverter();
+  FormValidator formValidator = new FormValidator();
   Contact newContact = new Contact();
-  
-  final TextEditingController _controller = new TextEditingController();
 
   Future _chooseDate(BuildContext context, String initialDateString) async {
     var now = new DateTime.now();
-    var initialDate = dateConverter.convertToDate(initialDateString) ?? now;
+    var initialDate = initialDateString.isNotEmpty ? dateConverter.convertToDate(initialDateString) : now;
     initialDate = (initialDate.year >= 1900 && initialDate.isBefore(now)
         ? initialDate
         : now);
@@ -41,9 +42,36 @@ FormValidator formValidator = new FormValidator();
     });
   }
 
+  void _submitForm() {
+    final FormState form = _formKey.currentState;
+
+    if (!form.validate()) {
+      showMessage('Form is not valide! Please review and correct.');
+    } else {
+      form.save();
+      print('Form save called, newContact is now up to date...');
+      print('Email: ${newContact.name}');
+      print('Dob: ${newContact.dob}');
+      print('Phone: ${newContact.phone}');
+      print('Email: ${newContact.email}');
+      print('Favorite Color: ${newContact.favoriteColor}');
+      print('========================================');
+      print('Submitting to back end...');
+      print('TODO - we will write the submission part next...');
+    }
+  }
+
+  void showMessage(String message, [MaterialColor color = Colors.red]) {
+    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+      content: Text(message),
+      backgroundColor: color,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(widget.pageTitle),
         backgroundColor: Colors.redAccent,
@@ -66,7 +94,9 @@ FormValidator formValidator = new FormValidator();
                 inputFormatters: [
                   LengthLimitingTextInputFormatter(30),
                 ],
-                validator: (val) => formValidator.isEmptyText(val) ? 'Enter a name' : null,
+                validator: (val) =>
+                    formValidator.isEmptyText(val) ? 'Enter a name' : null,
+                onSaved: (val) => newContact.name = val,
               ),
               Row(
                 children: <Widget>[
@@ -79,7 +109,11 @@ FormValidator formValidator = new FormValidator();
                       ),
                       controller: _controller,
                       keyboardType: TextInputType.datetime,
-                      validator: (val) => formValidator.isValidDob(val) ? null : 'Not a valid date',
+                      validator: (val) => formValidator.isValidDob(val)
+                          ? null
+                          : 'Not a valid date',
+                      onSaved: (val) =>
+                          newContact.dob = dateConverter.convertToDate(val),
                     ),
                   ),
                   IconButton(
@@ -99,9 +133,13 @@ FormValidator formValidator = new FormValidator();
                 ),
                 keyboardType: TextInputType.phone,
                 inputFormatters: [
-                  new WhitelistingTextInputFormatter(new RegExp(r'^[()\d -]{1,15}$')),
+                  new WhitelistingTextInputFormatter(
+                      new RegExp(r'^[()\d -]{1,15}$')),
                 ],
-                  validator: (value) => formValidator.isValidPhoneNumber(value) ? null : 'Phone number must be entered as (###)###-####',
+                validator: (value) => formValidator.isValidPhoneNumber(value)
+                    ? null
+                    : 'Phone number must be entered as (###)###-####',
+                onSaved: (val) => newContact.phone = val,
               ),
               TextFormField(
                 decoration: const InputDecoration(
@@ -110,10 +148,11 @@ FormValidator formValidator = new FormValidator();
                   labelText: 'Email',
                 ),
                 keyboardType: TextInputType.emailAddress,
-                inputFormatters: [
-                  LengthLimitingTextInputFormatter(50)
-                ],
-                validator: (value) => formValidator.isValidEmail(value) ? null : 'Please enter a valid email address',
+                inputFormatters: [LengthLimitingTextInputFormatter(50)],
+                validator: (value) => formValidator.isValidEmail(value)
+                    ? null
+                    : 'Please enter a valid email address',
+                onSaved: (val) => newContact.email = val,
               ),
               FormField(
                 builder: (FormFieldState state) {
@@ -145,13 +184,15 @@ FormValidator formValidator = new FormValidator();
                     ),
                   );
                 },
-                validator: (val) => formValidator.isEmptyText(val) ? 'Please select a color' : null,
+                validator: (val) => formValidator.isEmptyText(val)
+                    ? 'Please select a color'
+                    : null,
               ),
               new Container(
                 padding: const EdgeInsets.only(left: 40.0, top: 20.0),
                 child: RaisedButton(
                   child: Text('Submit'),
-                  onPressed: null,
+                  onPressed: _submitForm,
                 ),
               ),
             ],
