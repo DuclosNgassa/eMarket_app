@@ -20,15 +20,49 @@ class CustomMultiImagePickerState extends State<CustomMultiImagePicker> {
 
   Widget buildGridView() {
     return GridView.count(
-      crossAxisCount: 3,
+      shrinkWrap: true,
+      physics: ClampingScrollPhysics(),
+      crossAxisCount: 1,
+      scrollDirection: Axis.horizontal,
       children: List.generate(images.length, (index) {
         Asset asset = images[index];
         return AssetThumb(
           asset: asset,
-          width: 300,
-          height: 300,
+          width: 100,
+          height: 100,
         );
       }),
+    );
+  }
+
+  Widget buildGridView1() {
+    return GridView.count(
+      shrinkWrap: true,
+      physics: ClampingScrollPhysics(),
+      crossAxisCount: 1,
+      scrollDirection: Axis.horizontal,
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.all(16.0),
+          child: Text("Test1"),
+          color: Colors.grey[200],
+        ),
+        Container(
+          padding: EdgeInsets.all(16.0),
+          child: Text("Test1"),
+          color: Colors.deepPurple[200],
+        ),
+        Container(
+          padding: EdgeInsets.all(16.0),
+          child: Text("Test1"),
+          color: Colors.grey[200],
+        ),
+        Container(
+          padding: EdgeInsets.all(16.0),
+          child: Text("Test1"),
+          color: Colors.deepPurple[200],
+        ),
+      ],
     );
   }
 
@@ -42,6 +76,7 @@ class CustomMultiImagePickerState extends State<CustomMultiImagePicker> {
 
     try {
       resultList = await MultiImagePicker.pickImages(
+        enableCamera: true,
         maxImages: 3,
       );
     } on PlatformException catch (e) {
@@ -69,11 +104,26 @@ class CustomMultiImagePickerState extends State<CustomMultiImagePicker> {
           child: Text('Error: $_error'),
         ),
         RaisedButton(
-          child: Text("Pick images"),
+          child: Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(
+                  Icons.image,
+                  color: Colors.blue,
+                ),
+                SizedBox(
+                  width: 10.0,
+                ),
+                Text("Pick images"),
+              ],
+            ),
+          ),
           onPressed: loadAssets,
         ),
         Expanded(
-          child: buildGridView(),
+          child: buildGridView1(),
         ),
       ],
     );
