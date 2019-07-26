@@ -14,7 +14,7 @@ class Statistik extends StatelessWidget {
         backgroundColor: Colors.redAccent,
       ),
       body: Center(
-        child: CustomMultiImagePicker(),
+        child: Container(),
       ),
     );
   }
