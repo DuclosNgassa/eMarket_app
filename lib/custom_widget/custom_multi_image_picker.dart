@@ -20,7 +20,7 @@ class CustomMultiImagePickerState extends State<CustomMultiImagePicker> {
         Container(
           padding: EdgeInsets.all(16.0),
           child: Text("Image 1"),
-          color: Colors.grey[200],
+          color: Colors.redAccent[200],
         ),
         Container(
           padding: EdgeInsets.all(16.0),

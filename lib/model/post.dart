@@ -1,10 +1,12 @@
+import '../model/posttyp.dart';
+
 class Post {
   String title;
   DateTime createdAt;
   String phoneAuthor = '';
   String emailAuthor = '';
   String category = '';
-  String typ;
+  PostTyp typ;
   String description;
   int fee;
   String feeTyp; //Negotiable / fixed price / gift

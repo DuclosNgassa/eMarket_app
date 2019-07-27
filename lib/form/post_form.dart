@@ -4,7 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../converter/date_converter.dart';
 import '../validator/form_validator.dart';
-import '../model/contact.dart';
+import '../model/posttyp.dart';
+import '../model/post.dart';
+import '../pages/categorie_page.dart';
 
 class PostForm extends StatefulWidget {
   PostForm({Key key, this.scaffoldKey}) : super(key: key);
@@ -14,21 +16,30 @@ class PostForm extends StatefulWidget {
   CustomFormState createState() => new CustomFormState(Colors.lightBlueAccent);
 }
 
-enum PostTyp { offer, search }
-
 class CustomFormState extends State<PostForm> {
   final Color color;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final TextEditingController _controller = new TextEditingController();
   PostTyp _postTyp = PostTyp.offer;
+  String _categorie = '';
+
+/*
+  TextEditingController titleController = TextEditingController();
+  TextEditingController categorieController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+*/
 
   CustomFormState(this.color);
 
-  List<String> _colors = <String>['', 'red', 'green', 'orange'];
-  String _color = '';
-  DateConverter dateConverter = new DateConverter();
+  List<String> _priceTyps = <String>['Kdo', 'Negociable', 'Fixe'];
+  String _priceTyp = 'Kdo';
+
+  // DateConverter dateConverter = new DateConverter();
   FormValidator formValidator = new FormValidator();
-  Contact newContact = new Contact();
+
+  //Contact newContact = new Contact();
+  Post newPost = new Post();
 
   void showMessage(String message, [MaterialColor color = Colors.red]) {
     widget.scaffoldKey.currentState.showSnackBar(new SnackBar(
@@ -44,127 +55,114 @@ class CustomFormState extends State<PostForm> {
       alignment: Alignment.center,
       child: Form(
         key: _formKey,
-        autovalidate: true,
+        autovalidate: false,
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           children: <Widget>[
             Divider(),
-            Container(
-              child: Row(
-                children: <Widget>[
-                  Radio(
-                    value: PostTyp.offer,
-                    groupValue: _postTyp,
-                    onChanged: (PostTyp value) {
-                      setState(() {
-                        _postTyp = value;
-                      });
-                    },
-                  ),
-                  Text("J'offre"),
-                  Radio(
-                    value: PostTyp.search,
-                    groupValue: _postTyp,
-                    onChanged: (PostTyp value) {
-                      setState(() {
-                        _postTyp = value;
-                      });
-                    },
-                  ),
-                  Text("Je recherche"),
-                ],
-              ),
+            Row(
+              children: <Widget>[
+                Radio(
+                  value: PostTyp.offer,
+                  groupValue: _postTyp,
+                  onChanged: (PostTyp value) {
+                    setState(() {
+                      _postTyp = value;
+                    });
+                  },
+                ),
+                Text(
+                  "J'offre",
+                  style: new TextStyle(color: Colors.white),
+                ),
+                Radio(
+                  value: PostTyp.search,
+                  groupValue: _postTyp,
+                  onChanged: (PostTyp value) {
+                    setState(() {
+                      _postTyp = value;
+                    });
+                  },
+                ),
+                Text(
+                  "Je recherche",
+                  style: new TextStyle(color: Colors.white),
+                ),
+              ],
             ),
             TextFormField(
               decoration: const InputDecoration(
-                icon: const Icon(Icons.person),
-                hintText: 'Enter your first and last name',
-                labelText: 'Name',
+                hintText: 'Donnez le titre de votre post',
+                labelText: 'Titre',
+                labelStyle: TextStyle(color: Colors.white),
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(30),
               ],
               validator: (val) =>
-                  formValidator.isEmptyText(val) ? 'Enter a name' : null,
-              onSaved: (val) => newContact.name = val,
+                  formValidator.isEmptyText(val) ? 'Donnez un titre' : null,
+              onSaved: (val) => newPost.title = val,
             ),
-            Row(
-              children: <Widget>[
-                new Expanded(
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      icon: const Icon(Icons.calendar_today),
-                      hintText: 'Enter your date of birth',
-                      labelText: 'Dob',
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Text(
+                      "Categorie",
+                      style: TextStyle(color: Colors.white),
                     ),
-                    controller: _controller,
-                    keyboardType: TextInputType.datetime,
-                    validator: (val) => formValidator.isValidDob(val)
-                        ? null
-                        : 'Not a valid date',
-                    onSaved: (val) =>
-                        newContact.dob = dateConverter.convertToDate(val),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.more_horiz),
-                  tooltip: 'Choose date',
-                  onPressed: (() {
-                    _chooseDate(context, _controller.text);
-                  }),
-                )
-              ],
+                  Row(
+                    children: <Widget>[
+                      new Expanded(
+                        child: Text(_categorie),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.arrow_forward_ios),
+                        tooltip: 'Choisir la catégorie',
+                        onPressed: showCategoriePage,
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
             TextFormField(
               decoration: const InputDecoration(
-                icon: const Icon(Icons.phone),
-                hintText: 'Enter a phone number',
-                labelText: 'Phone',
+                hintText: 'Donnez le prix',
+                labelText: 'Prix (FCFA)',
+                labelStyle: TextStyle(color: Colors.white),
               ),
-              keyboardType: TextInputType.phone,
               inputFormatters: [
-                new WhitelistingTextInputFormatter(
-                    new RegExp(r'^[()\d -]{1,15}$')),
+                LengthLimitingTextInputFormatter(30),
               ],
-              validator: (value) => formValidator.isValidPhoneNumber(value)
-                  ? null
-                  : 'Phone number must be entered as (###)###-####',
-              onSaved: (val) => newContact.phone = val,
-            ),
-            TextFormField(
-              decoration: const InputDecoration(
-                icon: const Icon(Icons.email),
-                hintText: 'Enter a mail address',
-                labelText: 'Email',
-              ),
-              keyboardType: TextInputType.emailAddress,
-              inputFormatters: [LengthLimitingTextInputFormatter(50)],
-              validator: (value) => formValidator.isValidEmail(value)
-                  ? null
-                  : 'Please enter a valid email address',
-              onSaved: (val) => newContact.email = val,
+              validator: (val) =>
+                  formValidator.isEmptyText(val) ? 'Donnez un prix' : null,
+              onSaved: (val) => newPost.fee = int.parse(val),
             ),
             FormField(
               builder: (FormFieldState state) {
                 return InputDecorator(
                   decoration: InputDecoration(
-                    icon: Icon(Icons.color_lens),
-                    labelText: 'Color',
+                    labelText: 'Typ de prix',
+                    labelStyle: TextStyle(color: Colors.white),
                     errorText: state.hasError ? state.errorText : null,
                   ),
-                  isEmpty: _color == '',
+                  isEmpty: _priceTyp == '',
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton(
-                      value: _color,
+                      value: _priceTyp,
                       isDense: true,
                       onChanged: (String newValue) {
                         setState(() {
-                          newContact.favoriteColor = newValue;
-                          _color = newValue;
+                          newPost.feeTyp = newValue;
+                          _priceTyp = newValue;
                           state.didChange(newValue);
                         });
                       },
-                      items: _colors.map((String value) {
+                      items: _priceTyps.map((String value) {
                         return DropdownMenuItem(
                           value: value,
                           child: Text(value),
@@ -175,13 +173,28 @@ class CustomFormState extends State<PostForm> {
                 );
               },
               validator: (val) => formValidator.isEmptyText(val)
-                  ? 'Please select a color'
+                  ? 'Veuillez choisir le type de prix svp'
                   : null,
             ),
+            TextFormField(
+              maxLines: 2,
+              decoration: const InputDecoration(
+                hintText: 'Description de votre post',
+                labelText: 'Description',
+                labelStyle: TextStyle(color: Colors.white),
+              ),
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(500),
+              ],
+              validator: (val) =>
+                  formValidator.isEmptyText(val) ? 'Enter a name' : null,
+              onSaved: (val) => newPost.description = val,
+            ),
             new Container(
-              padding: const EdgeInsets.only(left: 40.0, top: 20.0),
+              padding: const EdgeInsets.only(top: 10.0),
               child: RaisedButton(
-                child: Text('Submit'),
+                color: Colors.deepPurple,
+                child: Text('Submit', style: TextStyle(color: Colors.white)),
                 onPressed: _submitForm,
               ),
             ),
@@ -191,39 +204,57 @@ class CustomFormState extends State<PostForm> {
     );
   }
 
-  Future _chooseDate(BuildContext context, String initialDateString) async {
-    var now = new DateTime.now();
-    var initialDate = initialDateString.isNotEmpty
-        ? dateConverter.convertToDate(initialDateString)
-        : now;
-    initialDate = (initialDate.year >= 1900 && initialDate.isBefore(now)
-        ? initialDate
-        : now);
-    var result = await showDatePicker(
-      context: context,
-      initialDate: initialDate,
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+  Future showCategoriePage() async {
+    String categorieChoosed = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return CategoriePage();
+        },
+      ),
     );
-    if (result == null) return;
     setState(() {
-      _controller.text = DateFormat.yMd().format(result);
+      _categorie = categorieChoosed;
+      print("Choosed categorie: " + categorieChoosed);
     });
   }
+
+/*
+  void submitPup(context) {
+    if (nameController.text.isEmpty) {
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Pups neeed names!'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    } else {
+      var newDog = Dog(nameController.text, locationController.text,
+          descriptionController.text);
+      Navigator.of(context).pop(newDog);
+    }
+  }
+*/
 
   void _submitForm() {
     final FormState form = _formKey.currentState;
 
     if (!form.validate()) {
       showMessage('Form is not valide! Please review and correct.');
+    } else if (_categorie.isEmpty) {
+      showMessage(
+          'Veuiillez choisir la categorie dans laquelle vous publiez votre post s´il vous pllait.');
     } else {
       form.save();
+      newPost.category = _categorie;
+      newPost.typ = _postTyp;
+
       print('Form save called, newContact is now up to date...');
-      print('Email: ${newContact.name}');
-      print('Dob: ${newContact.dob}');
-      print('Phone: ${newContact.phone}');
-      print('Email: ${newContact.email}');
-      print('Favorite Color: ${newContact.favoriteColor}');
+      print('Titre: ${newPost.typ}');
+      print('Typ: ${newPost.title}');
+      print('Categorie: ${newPost.category}');
+      print('Prix: ${newPost.fee}');
+      print('Typ de prix: ${newPost.feeTyp}');
+      print('Description: ${newPost.description}');
       print('========================================');
       print('Submitting to back end...');
       print('TODO - we will write the submission part next...');

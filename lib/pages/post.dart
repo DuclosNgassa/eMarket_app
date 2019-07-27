@@ -1,6 +1,8 @@
 import 'package:emarket_app/custom_widget/custom_multi_image_picker.dart';
 import 'package:flutter/material.dart';
 import '../form/post_form.dart';
+import '../component/custom_linear_gradient.dart';
+
 class Post extends StatefulWidget {
   Post({Key key, this.pageTitle}) : super(key: key);
   final String pageTitle;
@@ -18,34 +20,35 @@ class _PostPageState extends State<Post> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(widget.pageTitle),
-        backgroundColor: Colors.redAccent,
+        backgroundColor: Colors.deepPurple,
       ),
-      body: new SafeArea(
-        top: false,
-        bottom: false,
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.0),
-          child: CustomScrollView(
-            slivers: <Widget>[
-              SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    childAspectRatio: 3.0
+      body: CustomLinearGradient(
+        myChild: new SafeArea(
+          top: false,
+          bottom: false,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1, childAspectRatio: 3.0),
+                  delegate: SliverChildListDelegate([CustomMultiImagePicker()]),
                 ),
-                delegate: SliverChildListDelegate([CustomMultiImagePicker()]),
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    PostForm(scaffoldKey: _scaffoldKey,)
-                  ],
+                SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      PostForm(
+                        scaffoldKey: _scaffoldKey,
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-

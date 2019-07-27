@@ -4,4 +4,5 @@ class Contact {
   String phone = '';
   String email = '';
   String favoriteColor = '';
+  String categorie;
 }

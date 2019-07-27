@@ -1,0 +1,1 @@
+enum PostTyp { offer, search }

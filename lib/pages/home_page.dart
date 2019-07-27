@@ -4,6 +4,7 @@ import 'account.dart';
 import 'statistik.dart';
 import 'configuration.dart';
 import 'search.dart';
+import '../component/custom_linear_gradient.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -16,7 +17,7 @@ class _HomePageState extends State<HomePage> {
     return new Scaffold(
       appBar: AppBar(
         title: Text("My eMarket App"),
-        backgroundColor: Colors.redAccent,
+        backgroundColor: Colors.deepPurple,
       ),
       drawer: Drawer(
         child: ListView(
@@ -39,82 +40,91 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            ListTile(
-              title: Text("Inserer"),
-              trailing: Icon(Icons.edit),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => Post(
-                          pageTitle: "Poster une annonce",
+            Container(
+              color: Colors.transparent,
+              child: Column(
+                children: <Widget>[
+                  ListTile(
+                    title: Text("Inserer"),
+                    trailing: Icon(Icons.edit),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Post(
+                            pageTitle: "Poster une annonce",
+                          ),
                         ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-            ListTile(
-              title: Text("Recherche"),
-              trailing: Icon(Icons.search),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => Search("Recherche"),
+                  ListTile(
+                    title: Text("Recherche"),
+                    trailing: Icon(Icons.search),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Search("Recherche"),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-            ListTile(
-              title: Text("Configurer une recherche"),
-              trailing: Icon(Icons.build),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        Configuration("Configurer une recherche"),
+                  ListTile(
+                    title: Text("Configurer une recherche"),
+                    trailing: Icon(Icons.build),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              Configuration("Configurer une recherche"),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-            Divider(),
-            ListTile(
-              title: Text("Mon compte"),
-              trailing: Icon(Icons.account_circle),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => Account("Mon compte"),
+                  Divider(),
+                  ListTile(
+                    title: Text("Mon compte"),
+                    trailing: Icon(Icons.account_circle),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Account("Mon compte"),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-            ListTile(
-              title: Text("Statistik"),
-              trailing: Icon(Icons.insert_chart),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => Statistik("Statistik"),
+                  ListTile(
+                    title: Text("Statistik"),
+                    trailing: Icon(Icons.insert_chart),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Statistik("Statistik"),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-            ListTile(
-              title: Text("Abmelden"),
-              trailing: Icon(Icons.directions_run),
-              onTap: () => Navigator.of(context).pop(),
+                  ListTile(
+                    title: Text("Abmelden"),
+                    trailing: Icon(Icons.directions_run),
+                    onTap: () => Navigator.of(context).pop(),
+                  )
+                ],
+              ),
             )
           ],
         ),
       ),
-      body: new Center(
-        child: Text(
-          "HomePage",
-          style: TextStyle(fontSize: 35.0),
+      body: CustomLinearGradient(
+        myChild: Center(
+          child: Text(
+            "HomePage",
+            style: TextStyle(fontSize: 35.0),
+          ),
         ),
       ),
     );
