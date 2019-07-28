@@ -19,28 +19,15 @@ class PostForm extends StatefulWidget {
 class CustomFormState extends State<PostForm> {
   final Color color;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  final TextEditingController _controller = new TextEditingController();
   PostTyp _postTyp = PostTyp.offer;
   String _categorie = '';
-
-/*
-  TextEditingController titleController = TextEditingController();
-  TextEditingController categorieController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-*/
-
-  CustomFormState(this.color);
-
   List<String> _priceTyps = <String>['Kdo', 'Negociable', 'Fixe'];
   String _priceTyp = 'Kdo';
-
-  // DateConverter dateConverter = new DateConverter();
   FormValidator formValidator = new FormValidator();
-
-  //Contact newContact = new Contact();
   Post newPost = new Post();
 
+  CustomFormState(this.color);
+  
   void showMessage(String message, [MaterialColor color = Colors.red]) {
     widget.scaffoldKey.currentState.showSnackBar(new SnackBar(
       content: Text(message),

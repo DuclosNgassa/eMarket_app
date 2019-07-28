@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../form/kategorie_form.dart';
+import '../form/searchparameter_form.dart';
 
 class Configuration extends StatelessWidget {
   final String pageTitle;
@@ -16,7 +17,7 @@ class Configuration extends StatelessWidget {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25.0),
-          child: KategorieForm(),
+          child: SearchParameterForm(context),
         ),
       ),
     );

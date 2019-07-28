@@ -33,7 +33,7 @@ class _CategoriePageState extends State<CategoriePage> {
           enabled: true,
           isThreeLine: false,
           onLongPress: () => print("long press"),
-          onTap: () => submitCategorie(t, context),
+          onTap: () => submitCategorie(t),
           subtitle: new Text("Subtitle"),
           leading: new Text("Leading"),
           selected: true,
@@ -47,7 +47,7 @@ class _CategoriePageState extends State<CategoriePage> {
     );
   }
 
-  void submitCategorie(MyTile t, context) {
+  void submitCategorie(MyTile t) {
     Navigator.of(context).pop(t.title);
   }
 }

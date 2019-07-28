@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import '../custom_widget/custom_appbar.dart';
 import '../component/custom_button.dart';
 import '../pages/categorie_page.dart';
+import 'searchparameter.dart';
+import '../model/searchparameter.dart';
 
 class Search extends StatefulWidget {
   final String pageTitle;
 
   Search(this.pageTitle);
+
   @override
   SearchState createState() => new SearchState(Colors.lightBlueAccent);
-
 }
 
 class SearchState extends State<Search> {
   final Color color;
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  final TextEditingController _controller = new TextEditingController();
   String _categorie = '';
+  SearchParameter _searchParameter;
 
   SearchState(this.color);
 
@@ -27,6 +27,7 @@ class SearchState extends State<Search> {
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
+            //title: Text('Test'),
             backgroundColor: Colors.deepPurple[400],
             expandedHeight: divheight / 2 * 0.5,
             floating: true,
@@ -85,7 +86,7 @@ class SearchState extends State<Search> {
                             iconColor: Colors.white,
                             text: 'Filtre',
                             textStyle: TextStyle(color: Colors.white),
-                            onPressed: null,
+                            onPressed: showSearchParameterPage,
                           ),
                           CustomButton(
                             fillColor: Colors.deepPurple,
@@ -97,7 +98,7 @@ class SearchState extends State<Search> {
                             onPressed: showCategoriePage,
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(right:8.0),
+                            padding: const EdgeInsets.only(right: 8.0),
                             child: CustomButton(
                               fillColor: Colors.deepPurple,
                               icon: Icons.location_on,
@@ -105,7 +106,7 @@ class SearchState extends State<Search> {
                               iconColor: Colors.white,
                               text: 'Yaounde',
                               textStyle: TextStyle(color: Colors.white),
-                              onPressed: null,
+                              onPressed: showSearchParameterPage,
                             ),
                           ),
                         ],
@@ -143,4 +144,17 @@ class SearchState extends State<Search> {
     });
   }
 
+  Future showSearchParameterPage() async {
+    SearchParameter transmitedSearchParameter = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return SearchParameterPage(pageTitle: "Search",);
+        },
+      ),
+    );
+    setState(() {
+      //_searchParameter = transmitedSearchParameter;
+      print("Searchparameter City: " + transmitedSearchParameter.city);
+    });
+  }
 }
