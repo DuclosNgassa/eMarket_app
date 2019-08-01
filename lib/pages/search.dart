@@ -86,7 +86,7 @@ class SearchState extends State<Search> {
                             iconColor: Colors.white,
                             text: 'Filtre',
                             textStyle: TextStyle(color: Colors.white),
-                            onPressed: showSearchParameterPage,
+                            onPressed: () => showSearchParameterPage(context),
                           ),
                           CustomButton(
                             fillColor: Colors.deepPurple,
@@ -106,7 +106,7 @@ class SearchState extends State<Search> {
                               iconColor: Colors.white,
                               text: 'Yaounde',
                               textStyle: TextStyle(color: Colors.white),
-                              onPressed: showSearchParameterPage,
+                              onPressed: () => showSearchParameterPage(context),
                             ),
                           ),
                         ],
@@ -144,17 +144,22 @@ class SearchState extends State<Search> {
     });
   }
 
-  Future showSearchParameterPage() async {
-    SearchParameter transmitedSearchParameter = await Navigator.of(context).push(
+  Future showSearchParameterPage(BuildContext context) async {
+   // SearchParameter transmitedSearchParameter = await Navigator.push(context,
+    SearchParameter transmitedSearchParameter = new SearchParameter();
+    transmitedSearchParameter = await Navigator.push(context,
       MaterialPageRoute(
-        builder: (context) {
-          return SearchParameterPage(pageTitle: "Search",);
-        },
+        builder: (context) =>
+           SearchParameterPage(pageTitle: "Search",),
       ),
     );
+    if(transmitedSearchParameter.city != null) {
+      print('Ville: ${transmitedSearchParameter.city}');
+    }
+
     setState(() {
-      //_searchParameter = transmitedSearchParameter;
-      print("Searchparameter City: " + transmitedSearchParameter.city);
+      _searchParameter = transmitedSearchParameter;
+      print("Searchparameter Categorie: " + _searchParameter.category);
     });
   }
 }

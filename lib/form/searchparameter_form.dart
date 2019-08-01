@@ -70,9 +70,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                   decoration: InputDecoration(
                     labelText: 'Ville',
                     labelStyle: TextStyle(color: Colors.white),
-                    errorText: state.hasError ? state.errorText : null,
                   ),
-                  isEmpty: _city == '',
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton(
                       value: _city,
@@ -105,7 +103,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                   Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: Column(children: <Widget>[
-                      Text("Prix"),
+                      Text("Prix", style: TextStyle(color: Colors.white),),
                     ]),
                   ),
                   Expanded(
@@ -128,7 +126,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                   Expanded(
                     child: Column(
                       children: <Widget>[
-                        Text("jusqu´à"),
+                        Text("jusqu´à", style: TextStyle(color: Colors.white),),
                       ],
                     ),
                   ),
@@ -291,7 +289,9 @@ class SearchParameterFormState extends State<SearchParameterForm> {
       searchParameter.typ = _postTyp;
 
       print('Form save called, newContact is now up to date...');
-      print('Typ: ${searchParameter.typ}');
+      if(searchParameter.city != null) {
+        print('Ville: ${searchParameter.city}');
+      }
       print('Categorie: ${searchParameter.category}');
       print('PrixMin: ${searchParameter.feeMin}');
       print('PrixMax: ${searchParameter.feeMax}');
