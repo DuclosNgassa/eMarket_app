@@ -1,23 +1,15 @@
+import 'package:emarket_app/component/custom_categorie_button.dart';
 import 'package:flutter/material.dart';
-import '../custom_widget/custom_multi_image_picker.dart';
-import '../model/post.dart';
-import '../model/posttyp.dart';
-import '../model/feetyp.dart';
-import '../component/post_card.dart';
-import '../component/home_card.dart';
+import '../../model/post.dart';
+import '../../model/posttyp.dart';
+import '../../model/feetyp.dart';
+import '../../component/home_card.dart';
+import '../../component/custom_linear_gradient.dart';
 
 class HomePage extends StatelessWidget {
   final String pageTitle;
 
   HomePage(this.pageTitle);
-
-  final List<String> _listViewData = [
-    "A List View with many Text - Here's one!",
-    "A List View with many Text - Here's another!",
-    "A List View with many Text - Herdggdfgdfgdgfde's more!",
-    "A List View with many Text - Here's more!",
-    "A List View with many Text - Here's more!",
-  ];
 
   static List<Post> postList = []
     ..add(Post(
@@ -159,57 +151,128 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+
+    /*24 is for notification bar on Android*/
+    final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
+    final double itemWidth = size.width / 2;
+
     return Scaffold(
-      body: _buildGridView(),
+      //key: _scaffoldKey,
+      body: CustomLinearGradient(
+        myChild: new SafeArea(
+          top: false,
+          bottom: false,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    childAspectRatio: 5,
+                  ),
+                  delegate:
+                      SliverChildListDelegate([_buildCategorieGridView()]),
+                ),
+
+                SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    childAspectRatio: (itemWidth / itemHeight),
+                  ),
+                  delegate: SliverChildListDelegate(
+                    [_buildGridView()],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
   GridView _buildGridView() {
     return GridView.count(
       crossAxisCount: 2,
+      shrinkWrap: true,
+      physics: ClampingScrollPhysics(),
       padding: EdgeInsets.all(8.0),
       crossAxisSpacing: 8.0,
       mainAxisSpacing: 5.0,
       children: postList
           .map(
             (data) => HomeCard(data),
-      )
-          .toList(),
-    );
-  }
-
-/*
-  GridView _buildGridView() {
-    return GridView.count(
-      crossAxisCount: 2,
-      padding: EdgeInsets.all(8.0),
-      crossAxisSpacing: 8.0,
-      mainAxisSpacing: 5.0,
-      children: _listViewData
-          .map(
-            (data) => Card(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Text(data),
-                ),
-              ),
-            ),
           )
           .toList(),
     );
   }
-*/
 
-  Widget _buildList(BuildContext context) {
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
+  Widget _buildCategorieGridView() {
+    TextStyle _myTextStyle = TextStyle(color: Colors.white, fontSize: 10,);
+    return GridView.count(
       shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return PostCard(postList[index]);
-      },
-      itemCount: postList.length,
+      physics: ClampingScrollPhysics(),
+      crossAxisCount: 1,
+      scrollDirection: Axis.horizontal,
+      children: <Widget>[
+        CustomCategorieButton(
+          width: 50,
+          height: 33,
+          fillColor: Colors.deepPurple,
+          icon: Icons.phone_iphone,
+          splashColor: Colors.white,
+          iconColor: Colors.white,
+          text: 'Electromenager',
+          textStyle: _myTextStyle,
+          onPressed: null,
+        ),
+        CustomCategorieButton(
+          width: 50,
+          height: 33,
+          fillColor: Colors.deepPurple,
+          icon: Icons.weekend,
+          splashColor: Colors.white,
+          iconColor: Colors.white,
+          text: 'Haus & Garten',
+          textStyle: _myTextStyle,
+          onPressed: null,
+        ),
+        CustomCategorieButton(
+          width: 50,
+          height: 33,
+          fillColor: Colors.deepPurple,
+          icon: Icons.home,
+          splashColor: Colors.white,
+          iconColor: Colors.white,
+          text: 'Immobilier',
+          textStyle: _myTextStyle,
+          onPressed: null,
+        ),
+        CustomCategorieButton(
+          width: 50,
+          height: 33,
+          fillColor: Colors.deepPurple,
+          icon: Icons.local_play,
+          splashColor: Colors.white,
+          iconColor: Colors.white,
+          text: 'Mode & Beauté',
+          textStyle: _myTextStyle,
+          onPressed: null,
+        ),
+        CustomCategorieButton(
+          width: 50,
+          height: 33,
+          fillColor: Colors.deepPurple,
+          icon: Icons.list,
+          splashColor: Colors.white,
+          iconColor: Colors.white,
+          text: 'Autres Categories',
+          textStyle: _myTextStyle,
+          onPressed: null,
+        ),
+      ],
     );
   }
-
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './pages/navigation_page.dart';
+import 'package:emarket_app/pages/navigation/navigation_page.dart';
 
 void main() {
   runApp(

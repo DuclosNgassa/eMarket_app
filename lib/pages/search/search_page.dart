@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../component/custom_button.dart';
-import '../component/post_card.dart';
-import '../pages/categorie_page.dart';
-import 'searchparameter.dart';
-import '../model/searchparameter.dart';
-import '../model/post.dart';
+import '../../component/custom_button.dart';
+import '../../component/post_card.dart';
+import '../../pages/categorie_page.dart';
+import 'package:emarket_app/pages/search/searchparameter.dart';
+import '../../model/searchparameter.dart';
+import '../../model/post.dart';
 
 class SearchPage extends StatefulWidget {
   final String pageTitle;
@@ -120,15 +120,6 @@ class SearchPageState extends State<SearchPage> {
               ),
             ),
           ),
-/*          SliverFixedExtentList(
-            itemExtent: 20.0,
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => ListTile(
-                title: Text("List item $index"),
-              ),
-            ),
-          ),*/
-          //_buildList(context)
           SliverList(
             delegate: SliverChildListDelegate([
               _buildList(context),

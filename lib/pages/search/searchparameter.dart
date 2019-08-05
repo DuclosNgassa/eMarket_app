@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../component/custom_linear_gradient.dart';
-import '../form/searchparameter_form.dart';
+import '../../component/custom_linear_gradient.dart';
+import '../../form/searchparameter_form.dart';
 
 class SearchParameterPage extends StatefulWidget {
   SearchParameterPage({Key key, this.pageTitle}) : super(key: key);

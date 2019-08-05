@@ -33,9 +33,7 @@ class _HomeCardState extends State<HomeCard> {
           width: 200.0,
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
-            borderRadius: new BorderRadius.only(
-                topLeft: Radius.circular(20.0),
-                bottomRight: Radius.circular(20.0)),
+            borderRadius: BorderRadius.circular(15.0),
             image: DecorationImage(
               image: NetworkImage(renderUrl),
               fit: BoxFit.cover,
@@ -51,7 +49,7 @@ class _HomeCardState extends State<HomeCard> {
       width: 200.0,
       decoration: BoxDecoration(
           shape: BoxShape.rectangle,
-          borderRadius: new BorderRadius.circular(20.0),
+          borderRadius: BorderRadius.circular(15.0),
           gradient: LinearGradient(
             colors: [Colors.black54, Colors.black, Colors.blueGrey[600]],
             begin: Alignment.topLeft,
@@ -100,19 +98,12 @@ class _HomeCardState extends State<HomeCard> {
     // The height and width are arbitrary numbers for styling.
     return Container(
       decoration: new BoxDecoration(
-        color: new Color(0xFF333366),
-        shape: BoxShape.rectangle,
+        color: Colors.deepPurple,
+        //shape: BoxShape.rectangle,
         borderRadius: new BorderRadius.only(
-          //topLeft: Radius.circular(20.0),
-          bottomRight: Radius.circular(20.0),
+          bottomLeft: Radius.circular(15.0),
+          bottomRight: Radius.circular(15.0),
         ),
-        boxShadow: <BoxShadow>[
-          new BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10.0,
-            offset: new Offset(0.0, 10.0),
-          ),
-        ],
       ),
       width: width,
       height: 70.0,
@@ -144,14 +135,6 @@ class _HomeCardState extends State<HomeCard> {
                 ),
               ],
             ),
-/*              Text(
-              widget.post.city,
-              style: TextStyle(color: Colors.white),
-            ),
-            Text(
-              widget.post.fee.toString(),
-              style: TextStyle(color: Colors.white),
-            ),*/
             Row(
               children: <Widget>[
                 Icon(
@@ -164,10 +147,6 @@ class _HomeCardState extends State<HomeCard> {
                 )
               ],
             ),
-/*              Text(
-              widget.post.typ.toString(),
-              style: TextStyle(color: Colors.white),
-            ),*/
           ],
         ),
       ),
@@ -192,7 +171,7 @@ class _HomeCardState extends State<HomeCard> {
         ),
         child: Container(
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
+            shape: BoxShape.rectangle,
           ),
           height: 115.0,
           child: Stack(
@@ -202,8 +181,9 @@ class _HomeCardState extends State<HomeCard> {
                 child: dogImage,
               ),
               Positioned(
-                bottom: 1.0,
-                child: _buildHomeCard(context, 200),
+                bottom: 0.0,
+                left: 0.0,
+                child: _buildHomeCard(context, 163),
               ),
             ],
           ),

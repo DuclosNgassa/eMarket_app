@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:emarket_app/pages/post/post_page.dart';
-import 'account.dart';
-import 'statistik.dart';
-import 'configuration.dart';
-import 'search_page.dart';
-import 'home_page.dart';
-import '../component/custom_linear_gradient.dart';
-import '../model/post.dart';
-import '../model/posttyp.dart';
-import '../model/feetyp.dart';
+import '../account.dart';
+import '../statistik.dart';
+import '../configuration.dart';
+import 'package:emarket_app/pages/search/search_page.dart';
+import 'package:emarket_app/pages/home/home_page.dart';
+import '../../component/custom_linear_gradient.dart';
+import '../../model/post.dart';
+import '../../model/posttyp.dart';
+import '../../model/feetyp.dart';
 
 class NavigationPage extends StatefulWidget {
   @override
