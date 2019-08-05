@@ -1,17 +1,17 @@
 import 'package:emarket_app/custom_widget/custom_multi_image_picker.dart';
 import 'package:flutter/material.dart';
-import '../form/post_form.dart';
-import '../component/custom_linear_gradient.dart';
+import '../../form/post_form.dart';
+import '../../component/custom_linear_gradient.dart';
 
-class Post extends StatefulWidget {
-  Post({Key key, this.pageTitle}) : super(key: key);
+class PostPage extends StatefulWidget {
+  PostPage({Key key, this.pageTitle}) : super(key: key);
   final String pageTitle;
 
   @override
   _PostPageState createState() => new _PostPageState();
 }
 
-class _PostPageState extends State<Post> {
+class _PostPageState extends State<PostPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
   @override
@@ -40,7 +40,7 @@ class _PostPageState extends State<Post> {
                     [
                       PostForm(
                         scaffoldKey: _scaffoldKey,
-                      )
+                      ),
                     ],
                   ),
                 ),

@@ -229,7 +229,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
               padding: const EdgeInsets.only(top: 10.0),
               child: RaisedButton(
                 color: Colors.deepPurple,
-                child: Text('Submit', style: TextStyle(color: Colors.white)),
+                child: Text('Afficher le resultat', style: TextStyle(color: Colors.white)),
                 onPressed: _submitForm,
               ),
             ),

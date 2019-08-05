@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import '../component/custom_button.dart';
+import '../component/post_card.dart';
 import '../pages/categorie_page.dart';
 import 'searchparameter.dart';
 import '../model/searchparameter.dart';
+import '../model/post.dart';
 
-class Search extends StatefulWidget {
+class SearchPage extends StatefulWidget {
   final String pageTitle;
+  final List<Post> postList;
 
-  Search(this.pageTitle);
+  SearchPage(this.pageTitle, this.postList);
 
   @override
-  SearchState createState() => new SearchState(Colors.lightBlueAccent);
+  SearchPageState createState() => new SearchPageState(Colors.lightBlueAccent);
 }
 
-class SearchState extends State<Search> {
+class SearchPageState extends State<SearchPage> {
   final Color color;
   String _categorie = '';
   SearchParameter _searchParameter;
 
-  SearchState(this.color);
+  SearchPageState(this.color);
 
   @override
   Widget build(BuildContext context) {
@@ -117,16 +120,33 @@ class SearchState extends State<Search> {
               ),
             ),
           ),
-          SliverFixedExtentList(
+/*          SliverFixedExtentList(
             itemExtent: 20.0,
             delegate: SliverChildBuilderDelegate(
               (context, index) => ListTile(
                 title: Text("List item $index"),
               ),
             ),
-          ),
+          ),*/
+          //_buildList(context)
+          SliverList(
+            delegate: SliverChildListDelegate([
+              _buildList(context),
+            ]),
+          )
         ],
       ),
+    );
+  }
+
+  Widget _buildList(BuildContext context) {
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return PostCard(widget.postList[index]);
+      },
+      itemCount: widget.postList.length,
     );
   }
 
@@ -145,15 +165,17 @@ class SearchState extends State<Search> {
   }
 
   Future showSearchParameterPage(BuildContext context) async {
-   // SearchParameter transmitedSearchParameter = await Navigator.push(context,
+    // SearchParameter transmitedSearchParameter = await Navigator.push(context,
     SearchParameter transmitedSearchParameter = new SearchParameter();
-    transmitedSearchParameter = await Navigator.push(context,
+    transmitedSearchParameter = await Navigator.push(
+      context,
       MaterialPageRoute(
-        builder: (context) =>
-           SearchParameterPage(pageTitle: "Search",),
+        builder: (context) => SearchParameterPage(
+          pageTitle: "Search",
+        ),
       ),
     );
-    if(transmitedSearchParameter.city != null) {
+    if (transmitedSearchParameter.city != null) {
       print('Ville: ${transmitedSearchParameter.city}');
     }
 

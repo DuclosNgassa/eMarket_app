@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import './pages/home_page.dart';
+import './pages/navigation_page.dart';
 
 void main() {
   runApp(
     new MaterialApp(
-      home: HomePage(),
+      home: NavigationPage(),
     ),
   );
 }

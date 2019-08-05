@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../converter/date_converter.dart';
 import '../validator/form_validator.dart';
 import '../model/posttyp.dart';
+import '../model/feetyp.dart';
 import '../model/post.dart';
 import '../pages/categorie_page.dart';
 
@@ -24,7 +25,7 @@ class CustomFormState extends State<PostForm> {
   List<String> _priceTyps = <String>['Kdo', 'Negociable', 'Fixe'];
   String _priceTyp = 'Kdo';
   FormValidator formValidator = new FormValidator();
-  Post newPost = new Post();
+  Post newPost;
 
   CustomFormState(this.color);
   
@@ -144,8 +145,7 @@ class CustomFormState extends State<PostForm> {
                       isDense: true,
                       onChanged: (String newValue) {
                         setState(() {
-                          newPost.feeTyp = newValue;
-                          _priceTyp = newValue;
+                          setFeeTyp(newValue);
                           state.didChange(newValue);
                         });
                       },
@@ -189,6 +189,24 @@ class CustomFormState extends State<PostForm> {
         ),
       ),
     );
+  }
+
+  void setFeeTyp(String newValue) {
+    switch(newValue){
+      case 'Kdo':{
+        newPost.feeTyp = FeeTyp.gift;
+      }
+      break;
+      case 'Negociable':{
+        newPost.feeTyp = FeeTyp.negotiable;
+      }
+      break;
+      case 'Fixe':{
+        newPost.feeTyp = FeeTyp.fixed;
+      }
+      break;
+    }
+    _priceTyp = newValue;
   }
 
   Future showCategoriePage() async {
@@ -245,6 +263,8 @@ class CustomFormState extends State<PostForm> {
       print('========================================');
       print('Submitting to back end...');
       print('TODO - we will write the submission part next...');
+
+      Navigator.of(context).pop(newPost);
     }
   }
 }
