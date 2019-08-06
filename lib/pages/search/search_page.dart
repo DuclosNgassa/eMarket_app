@@ -76,7 +76,7 @@ class SearchPageState extends State<SearchPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Wrap(
                         direction: Axis.horizontal,
                         spacing: 4,
@@ -133,6 +133,7 @@ class SearchPageState extends State<SearchPage> {
   Widget _buildList(BuildContext context) {
     return ListView.builder(
       scrollDirection: Axis.vertical,
+      physics: ScrollPhysics(),
       shrinkWrap: true,
       itemBuilder: (context, index) {
         return PostCard(widget.postList[index]);
