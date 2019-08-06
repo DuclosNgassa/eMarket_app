@@ -140,8 +140,22 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  GridView _buildGridView() {
-    if(searchResult.length != 0 || _controller.text.isNotEmpty){
+  Widget _buildGridView() {
+    if (searchResult.length != 0 || _controller.text.isNotEmpty) {
+      if (searchResult.length == 0 && _controller.text.isNotEmpty) {
+        return Container(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Aucun resultat pour votre recherche",
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      }
       return GridView.count(
         crossAxisCount: 2,
         shrinkWrap: true,
@@ -152,7 +166,7 @@ class _HomePageState extends State<HomePage> {
         children: searchResult
             .map(
               (data) => HomeCard(data),
-        )
+            )
             .toList(),
       );
     }
@@ -402,5 +416,4 @@ class _HomePageState extends State<HomePage> {
     ..add(Post('Moto', new DateTime(2017, 9, 7, 17, 30), '002376767677', 'ndanjid@yahoo.fr', 'Electromenager', PostTyp.offer, 'description Moto', 40000, FeeTyp.negotiable, 'Mbouda', 'Mokolo', 8))
     ..add(Post('Trouce mecanique', new DateTime(2012, 9, 7, 17, 30), '002376767677', 'ndanjid@yahoo.fr', 'Electromenager', PostTyp.offer, 'description Trouce mecanique', 30000, FeeTyp.negotiable, 'Yaounde', 'Madagascar', 5))
     ..add(Post('Vélo', new DateTime(2013, 9, 7, 17, 30), '002376767677', 'ndanjid@yahoo.fr', 'Electromenager', PostTyp.offer, 'description Vélo', 250000, FeeTyp.negotiable, 'Ngaoundal', 'Gare', 6));
-
 }
