@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
                   flexibleSpace: FlexibleSpaceBar(
                     //title: Text("Search Page"),
                     background: Padding(
-                      padding: const EdgeInsets.all(15.0),
+                      padding: const EdgeInsets.only(top: 5.0),
                       child: Column(
                         children: <Widget>[
                           Padding(

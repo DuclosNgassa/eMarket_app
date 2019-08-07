@@ -19,14 +19,14 @@ class _CategoriePageState extends State<CategoriePage> {
       ),
       body: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
-          return _buildTiles(listOfTiles[index]);
+          return _buildTiles(categories[index]);
         },
-        itemCount: listOfTiles.length,
+        itemCount: categories.length,
       ),
     );
   }
 
-  Widget _buildTiles(MyTile t) {
+  Widget _buildTiles(Categorie t) {
     if (t.children.isEmpty)
       return new ListTile(
           dense: true,
@@ -41,13 +41,13 @@ class _CategoriePageState extends State<CategoriePage> {
           title: new Text(t.title));
 
     return new ExpansionTile(
-      key: new PageStorageKey<int>(3),
+
       title: new Text(t.title),
       children: t.children.map(_buildTiles).toList(),
     );
   }
 
-  void submitCategorie(MyTile t) {
+  void submitCategorie(Categorie t) {
     Navigator.of(context).pop(t.title);
   }
 }
@@ -86,56 +86,220 @@ class CategorieInTiles extends StatelessWidget{
 }
 */
 
-class MyTile {
+class Categorie {
   String title;
-  List<MyTile> children;
+  List<Categorie> children;
 
-  MyTile(this.title, [this.children = const <MyTile>[]]);
+  Categorie(this.title, [this.children = const <Categorie>[]]);
 }
 
-List<MyTile> listOfTiles = <MyTile>[
-  new MyTile(
+List<Categorie> categories = <Categorie>[
+  new Categorie(
     'Animals',
-    <MyTile>[
-      new MyTile(
+    <Categorie>[
+      new Categorie(
         'Dogs',
-        <MyTile>[
-          new MyTile('Coton de Tulear'),
-          new MyTile('German Shepherd'),
-          new MyTile('Poodle'),
+        <Categorie>[
+          new Categorie('Coton de Tulear'),
+          new Categorie('German Shepherd'),
+          new Categorie('Poodle'),
         ],
       ),
-      new MyTile('Cats'),
-      new MyTile('Birds'),
+      new Categorie('Cats'),
+      new Categorie('Birds'),
     ],
   ),
-  new MyTile(
-    'Cars',
-    <MyTile>[
-      new MyTile('Tesla'),
-      new MyTile('Toyota'),
+  new Categorie(
+    'Autos, Rad & Boot',
+    <Categorie>[
+      new Categorie('Autos', <Categorie>[
+        new Categorie('Toyota', <Categorie>[
+          new Categorie('Carina 2'),
+          new Categorie('Rav4'),
+          new Categorie('Prado')
+        ]),
+        new Categorie('Audi', <Categorie>[
+          new Categorie('A4'),
+          new Categorie('Desperate'),
+          new Categorie('A3')
+        ]),
+        new Categorie('BMW',
+            <Categorie>[new Categorie('X1'), new Categorie('X2'), new Categorie('X5')]),
+        new Categorie('Mercedes', <Categorie>[
+          new Categorie('C'),
+          new Categorie('Benz'),
+          new Categorie('Furios')
+        ]),
+        new Categorie('Ford', <Categorie>[
+          new Categorie('Focus'),
+          new Categorie('Murano'),
+          new Categorie('Fiesto')
+        ]),
+        new Categorie('Citroen', <Categorie>[
+          new Categorie('C4'),
+          new Categorie('Bis'),
+          new Categorie('Futur')
+        ]),
+        new Categorie('Fiat'),
+        new Categorie('Hyundai'),
+        new Categorie('Jaguar'),
+      ]),
+      new Categorie('Autoteile & Reifen', <Categorie>[
+        new Categorie('Auto Hifi & Navigation'),
+        new Categorie('Ersatz und Reparaturteile'),
+        new Categorie('Reifen & Felgen'),
+        new Categorie('Tuning & Styling'),
+        new Categorie('Werkzeug'),
+        new Categorie('Weitere Autoteile'),
+      ]),
+      new Categorie('Boote & Bootzubehör', <Categorie>[
+        new Categorie('Motorboote'),
+        new Categorie('Segelboote'),
+        new Categorie('Kleinboote'),
+        new Categorie('Schlauchboote'),
+        new Categorie('Jetski'),
+        new Categorie('Bootstrailer'),
+        new Categorie('Bootliegeplätze'),
+        new Categorie('Bootzubehör'),
+        new Categorie('Weitere Boote'),
+      ]),
+      new Categorie('Fahrräder & Zubehör', <Categorie>[
+        new Categorie('Damen'),
+        new Categorie('Herren'),
+        new Categorie('Kinder'),
+        new Categorie('Zubehör'),
+        new Categorie('Weitere Fahrräder & Zubehör'),
+      ]),
+      new Categorie('Motorräder & Motorroller', <Categorie>[
+        new Categorie('Mofas & Mopeds', <Categorie>[
+          new Categorie('Aprilia'),
+          new Categorie('BMW'),
+          new Categorie('Buell'),
+          new Categorie('Harley'),
+          new Categorie('Honda'),
+          new Categorie('Kymco'),
+          new Categorie('Peugeot'),
+          new Categorie('Piaggo'),
+          new Categorie('Kawasaki'),
+        ]),
+        new Categorie('Motorräder', <Categorie>[
+          new Categorie('Aprilia'),
+          new Categorie('BMW'),
+          new Categorie('Buell'),
+          new Categorie('Harley'),
+          new Categorie('Honda'),
+          new Categorie('Kymco'),
+          new Categorie('Peugeot'),
+          new Categorie('Piaggo'),
+          new Categorie('Kawasaki'),
+        ]),
+        new Categorie('Quads', <Categorie>[
+          new Categorie('Aprilia'),
+          new Categorie('BMW'),
+          new Categorie('Buell'),
+          new Categorie('Harley'),
+          new Categorie('Honda'),
+          new Categorie('Kymco'),
+          new Categorie('Peugeot'),
+          new Categorie('Piaggo'),
+          new Categorie('Kawasaki'),
+        ]),
+        new Categorie('Motorroller & Scooter', <Categorie>[
+          new Categorie('Aprilia'),
+          new Categorie('BMW'),
+          new Categorie('Buell'),
+          new Categorie('Harley'),
+          new Categorie('Honda'),
+          new Categorie('Kymco'),
+          new Categorie('Peugeot'),
+          new Categorie('Piaggo'),
+          new Categorie('Kawasaki'),
+        ]),
+      ]),
+      new Categorie('Motorradteile & Zubehör', <Categorie>[
+        new Categorie('Ersatz- & Reparaturteile'),
+        new Categorie('Reifen & Felgen'),
+        new Categorie('Motorradbekleidung'),
+      ]),
+      new Categorie('Nutzfahrzeuge & Anhänger', <Categorie>[
+        new Categorie('Agrarfahrzeuge'),
+        new Categorie('Anhänger'),
+        new Categorie('Baumaschinen'),
+        new Categorie('Busse'),
+        new Categorie('LKW'),
+        new Categorie('Sattelzugmaschinen & Auflieger'),
+        new Categorie('Spatler'),
+        new Categorie('Nutzfahrzeugteile & Zubehör'),
+        new Categorie('Weitere Nutzfahrzeugteile & Anhänger'),
+      ]),
+      new Categorie('Reparaturen & Dienstleistungen'),
+      new Categorie('Wohnwagen & -mobile', <Categorie>[
+        new Categorie('Alkoven', <Categorie>[
+          new Categorie('Adria'),
+          new Categorie('Fiat'),
+          new Categorie('Ford'),
+          new Categorie('Hobby'),
+          new Categorie('Carado')
+        ]),
+        new Categorie('Integrierter', <Categorie>[
+          new Categorie('Adria'),
+          new Categorie('Fiat'),
+          new Categorie('Ford'),
+          new Categorie('Hobby'),
+          new Categorie('Carado')
+        ]),
+        new Categorie('Kastenwagen', <Categorie>[
+          new Categorie('Adria'),
+          new Categorie('Fiat'),
+          new Categorie('Ford'),
+          new Categorie('Hobby'),
+          new Categorie('Carado')
+        ]),
+        new Categorie('Teilintegrierter', <Categorie>[
+          new Categorie('Adria'),
+          new Categorie('Fiat'),
+          new Categorie('Ford'),
+          new Categorie('Hobby'),
+          new Categorie('Carado')
+        ]),
+       new Categorie('Wohnwagen', <Categorie>[
+          new Categorie('Adria'),
+          new Categorie('Fiat'),
+          new Categorie('Ford'),
+          new Categorie('Hobby'),
+          new Categorie('Carado')
+        ]),
+       new Categorie('Weitere Wohnwagen & -mobile', <Categorie>[
+          new Categorie('Adria'),
+          new Categorie('Fiat'),
+          new Categorie('Ford'),
+          new Categorie('Hobby'),
+          new Categorie('Carado')
+        ]),
+      ]),
+      new Categorie('Weiteres Auto, Rad & Boot'),
     ],
   ),
-  new MyTile(
+  new Categorie(
     'Phones',
-    <MyTile>[
-      new MyTile('Google'),
-      new MyTile('Samsung'),
-      new MyTile(
+    <Categorie>[
+      new Categorie('Google'),
+      new Categorie('Samsung'),
+      new Categorie(
         'OnePlus',
-        <MyTile>[
-          new MyTile('1'),
-          new MyTile('2'),
-          new MyTile('3'),
-          new MyTile('4'),
-          new MyTile('5'),
-          new MyTile('6'),
-          new MyTile('7'),
-          new MyTile('8'),
-          new MyTile('9'),
-          new MyTile('10'),
-          new MyTile('11'),
-          new MyTile('12'),
+        <Categorie>[
+          new Categorie('1'),
+          new Categorie('2'),
+          new Categorie('3'),
+          new Categorie('4'),
+          new Categorie('5'),
+          new Categorie('6'),
+          new Categorie('7'),
+          new Categorie('8'),
+          new Categorie('9'),
+          new Categorie('10'),
+          new Categorie('11'),
+          new Categorie('12'),
         ],
       ),
     ],
