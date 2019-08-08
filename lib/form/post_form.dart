@@ -7,7 +7,7 @@ import '../validator/form_validator.dart';
 import '../model/posttyp.dart';
 import '../model/feetyp.dart';
 import '../model/post.dart';
-import '../pages/categorie_page.dart';
+import 'package:emarket_app/pages/categorie/categorie_page.dart';
 
 class PostForm extends StatefulWidget {
   PostForm({Key key, this.scaffoldKey}) : super(key: key);

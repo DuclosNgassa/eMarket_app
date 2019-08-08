@@ -143,16 +143,10 @@ class _HomePageState extends State<HomePage> {
   Widget _buildGridView() {
     if (searchResult.length != 0 || _controller.text.isNotEmpty) {
       if (searchResult.length == 0 && _controller.text.isNotEmpty) {
-        return Container(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Aucun resultat pour votre recherche",
-                textAlign: TextAlign.center,
-              ),
-            ],
+        return Center(
+          child: Text(
+            "Aucun resultat pour votre recherche",
+            textAlign: TextAlign.center,
           ),
         );
       }
