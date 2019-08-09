@@ -7,9 +7,6 @@ import '../../component/home_card.dart';
 import '../../component/custom_linear_gradient.dart';
 
 class HomePage extends StatefulWidget {
-  final String pageTitle;
-
-  HomePage(this.pageTitle);
 
   @override
   _HomePageState createState() => new _HomePageState();
@@ -41,7 +38,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-
     /*24 is for notification bar on Android*/
     final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
     final double itemWidth = size.width / 2;

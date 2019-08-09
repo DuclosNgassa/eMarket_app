@@ -4,9 +4,6 @@ import '../../form/post_form.dart';
 import '../../component/custom_linear_gradient.dart';
 
 class PostPage extends StatefulWidget {
-  PostPage({Key key, this.pageTitle}) : super(key: key);
-  final String pageTitle;
-
   @override
   _PostPageState createState() => new _PostPageState();
 }
@@ -18,10 +15,6 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(widget.pageTitle),
-        backgroundColor: Colors.deepPurple,
-      ),
       body: CustomLinearGradient(
         myChild: new SafeArea(
           top: false,

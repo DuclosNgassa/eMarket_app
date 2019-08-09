@@ -61,7 +61,7 @@ class _NavigationPageState extends State<NavigationPage> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              SearchPage("Recherche", postList),
+                              SearchPage(postList),
                         ),
                       );
                     },
@@ -88,7 +88,7 @@ class _NavigationPageState extends State<NavigationPage> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              Account("Mon compte"),
+                              Account(),
                         ),
                       );
                     },
@@ -101,7 +101,7 @@ class _NavigationPageState extends State<NavigationPage> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              Statistik("Statistik"),
+                              Statistik(),
                         ),
                       );
                     },
@@ -129,12 +129,12 @@ class _NavigationPageState extends State<NavigationPage> {
             title: Text('Home'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            title: Text('Inserer'),
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.search),
             title: Text('Rechercher'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            title: Text('Inserer'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
@@ -157,9 +157,7 @@ class _NavigationPageState extends State<NavigationPage> {
     Navigator.of(context).pop();
     Post post = await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (BuildContext context) => PostPage(
-          pageTitle: "Poster une annonce",
-        ),
+        builder: (BuildContext context) => PostPage(),
       ),
     );
     if (post != null) {
@@ -316,12 +314,10 @@ class _NavigationPageState extends State<NavigationPage> {
   int _selectedIndex = 0;
 
   List<Widget> _widgetOptions = <Widget>[
-    HomePage("Home"),
-    PostPage(
-      pageTitle: "Poster une annonce",
-    ),
-    SearchPage("Recherche", postList),
-    Account("Mon compte"),
-    Statistik("Mes messages"),
+    HomePage(),
+    SearchPage(postList),
+    PostPage(),
+    Account(),
+    Statistik(),
   ];
 }

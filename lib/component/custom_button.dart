@@ -26,7 +26,7 @@ class CustomButton extends StatelessWidget {
       splashColor: splashColor,
       shape: const StadiumBorder(),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
