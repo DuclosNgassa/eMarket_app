@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:emarket_app/pages/post/post_page.dart';
-import '../account.dart';
-import '../statistik.dart';
-import '../configuration.dart';
+import 'package:emarket_app/pages/account/account_page.dart';
+import '../message/message_page.dart';
 import 'package:emarket_app/pages/search/search_page.dart';
 import 'package:emarket_app/pages/home/home_page.dart';
 import '../../component/custom_linear_gradient.dart';
@@ -22,100 +21,6 @@ class _NavigationPageState extends State<NavigationPage> {
       appBar: AppBar(
         title: Text("My eMarket App"),
         backgroundColor: Colors.deepPurple,
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            new UserAccountsDrawerHeader(
-              accountName: new Text("Duclos Ngassa"),
-              accountEmail: Text("ndanjid@yahoo.fr"),
-              currentAccountPicture: GestureDetector(
-                child: CircleAvatar(
-                  backgroundImage: AssetImage('images/profil.JPG'),
-                ),
-                onTap: () {
-                  print("Current User profil");
-                },
-              ),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.fill,
-                  image: AssetImage('images/background.jpeg'),
-                ),
-              ),
-            ),
-            Container(
-              color: Colors.transparent,
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    title: Text("Inserer"),
-                    trailing: Icon(Icons.edit),
-                    onTap: _showPostForm,
-                  ),
-                  ListTile(
-                    title: Text("Recherche"),
-                    trailing: Icon(Icons.search),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              SearchPage(postList),
-                        ),
-                      );
-                    },
-                  ),
-                  ListTile(
-                    title: Text("Configurer une recherche"),
-                    trailing: Icon(Icons.build),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              Configuration("Configurer une recherche"),
-                        ),
-                      );
-                    },
-                  ),
-                  Divider(),
-                  ListTile(
-                    title: Text("Mon compte"),
-                    trailing: Icon(Icons.account_circle),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              Account(),
-                        ),
-                      );
-                    },
-                  ),
-                  ListTile(
-                    title: Text("Statistik"),
-                    trailing: Icon(Icons.insert_chart),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              Statistik(),
-                        ),
-                      );
-                    },
-                  ),
-                  ListTile(
-                    title: Text("Abmelden"),
-                    trailing: Icon(Icons.directions_run),
-                    onTap: () => Navigator.of(context).pop(),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
       ),
       body: CustomLinearGradient(
         myChild: Center(
@@ -317,7 +222,7 @@ class _NavigationPageState extends State<NavigationPage> {
     HomePage(),
     SearchPage(postList),
     PostPage(),
-    Account(),
-    Statistik(),
+    AccountPage(),
+    MessagePage(),
   ];
 }
