@@ -1,13 +1,21 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:io';
 
+import 'package:emarket_app/pages/categorie/categorie_page.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:image/image.dart' as img;
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' as path;
+
 import '../converter/date_converter.dart';
-import '../validator/form_validator.dart';
-import '../model/posttyp.dart';
 import '../model/feetyp.dart';
 import '../model/post.dart';
-import 'package:emarket_app/pages/categorie/categorie_page.dart';
+import '../model/posttyp.dart';
+import '../validator/form_validator.dart';
 
 class PostForm extends StatefulWidget {
   PostForm({Key key, this.scaffoldKey}) : super(key: key);
@@ -26,6 +34,9 @@ class CustomFormState extends State<PostForm> {
   String _priceTyp = 'Kdo';
   FormValidator formValidator = new FormValidator();
   Post newPost;
+  File imageFile;
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
+  static const baseUrl = 'http://192.168.2.120:3000/images';
 
   CustomFormState(this.color);
   
@@ -47,6 +58,17 @@ class CustomFormState extends State<PostForm> {
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           children: <Widget>[
+            Container(
+              height: 150.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _buildPreviewImage(),
+                  _buildButtons(),
+                ],
+              ),
+            ),
+
             Divider(),
             Row(
               children: <Widget>[
@@ -240,6 +262,130 @@ class CustomFormState extends State<PostForm> {
   }
 */
 
+  Widget _buildPreviewImage() {
+    return new Expanded(
+      child: new Card(
+        elevation: 3.0,
+        shape: new RoundedRectangleBorder(
+          borderRadius: new BorderRadius.all(
+            new Radius.circular(4.0),
+          ),
+        ),
+        child: new Stack(
+          children: <Widget>[
+            new Container(
+              constraints: new BoxConstraints.expand(),
+              child: imageFile == null
+                  ? new Image.asset('images/profil.JPG', colorBlendMode: BlendMode.darken, color: Colors.black26, fit: BoxFit.cover)
+                  : new Image.file(imageFile, fit: BoxFit.cover),
+            ),
+            new Align(
+              alignment: AlignmentDirectional.center,
+              child: imageFile == null
+                  ? new Text(
+                'No selected image',
+                style: Theme.of(context).textTheme.title,
+              )
+                  : new Container(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButtons() {
+    return new Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: new Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new IconButton(
+            icon: Icon(Icons.camera),
+            onPressed: _takePhoto,
+            tooltip: 'Take photo',
+          ),
+          new IconButton(
+            icon: Icon(Icons.file_upload),
+            onPressed: _uploadImage,
+            tooltip: 'Upload image',
+          ),
+          new IconButton(
+            icon: Icon(Icons.image),
+            onPressed: _selectGalleryImage,
+            tooltip: 'Select from gallery',
+          ),
+        ],
+      ),
+    );
+  }
+
+  _takePhoto() async {
+    imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+    setState(() {});
+  }
+
+  _showSnackbar(String text) => scaffoldKey.currentState?.showSnackBar(
+    new SnackBar(
+      content: new Text(text),
+    ),
+  );
+
+  _uploadImage() async {
+    if (imageFile == null) {
+      return _showSnackbar('Please select image');
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return new Center(
+          child: new CircularProgressIndicator(),
+        );
+      },
+      barrierDismissible: false,
+    );
+
+    try {
+      final url = Uri.parse('$baseUrl/upload');
+      final fileName = path.basename(imageFile.path);
+      final bytes = await compute(compress, imageFile.readAsBytesSync());
+
+      var request = http.MultipartRequest('POST', url)
+        ..files.add(
+          new http.MultipartFile.fromBytes(
+            'image',
+            bytes,
+            filename: fileName,
+          ),
+        );
+
+      var response = await request.send();
+      var decoded = await response.stream.bytesToString().then(json.decode);
+
+      Navigator.pop(context);
+      if (response.statusCode == HttpStatus.OK) {
+        _showSnackbar('Image uploaded, imageUrl = $baseUrl/${decoded['path']}');
+      } else {
+        _showSnackbar('Image failed: ${decoded['message']}');
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      _showSnackbar('Image failed: $e');
+    }
+  }
+
+  List<int> compress(List<int> bytes) {
+    var image = img.decodeImage(bytes);
+    var resize = img.copyResize(image, height: 480, width: 480);
+    return img.encodePng(resize, level: 1);
+  }
+  _selectGalleryImage() async {
+    imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {});
+  }
+
   void _submitForm() {
     final FormState form = _formKey.currentState;
 
@@ -250,8 +396,11 @@ class CustomFormState extends State<PostForm> {
           'Veuiillez choisir la categorie dans laquelle vous publiez votre post s´il vous pllait.');
     } else {
       form.save();
+
       newPost.category = _categorie;
       newPost.typ = _postTyp;
+
+
 
       print('Form save called, newContact is now up to date...');
       print('Titre: ${newPost.typ}');
