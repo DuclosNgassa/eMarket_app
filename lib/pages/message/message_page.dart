@@ -5,9 +5,11 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:image/image.dart' as img;
 import '../../services/global.dart';
+
 class MessagePage extends StatefulWidget {
   @override
   _MessagePageState createState() => new _MessagePageState();
@@ -15,7 +17,9 @@ class MessagePage extends StatefulWidget {
 
 class _MessagePageState extends State<MessagePage> {
   File imageFile;
+  List<File> images = List<File>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
+
   //static const baseUrl = 'http://192.168.2.120:3000/images';
   //static const downloadUrl = 'http://192.168.2.120:3000';
 
@@ -28,8 +32,12 @@ class _MessagePageState extends State<MessagePage> {
       ),
       body: new Column(
         children: <Widget>[
-          _buildPreviewImage(),
           _buildButtons(),
+          Expanded(
+            child: buildGridView(),
+          ),
+          // _buildPreviewImage(),
+          //buildGridView(),
         ],
       ),
     );
@@ -49,21 +57,39 @@ class _MessagePageState extends State<MessagePage> {
             new Container(
               constraints: new BoxConstraints.expand(),
               child: imageFile == null
-                  ? new Image.asset('images/profil.JPG', colorBlendMode: BlendMode.darken, color: Colors.black26, fit: BoxFit.cover)
+                  ? new Image.asset('images/profil.JPG',
+                      colorBlendMode: BlendMode.darken,
+                      color: Colors.black26,
+                      fit: BoxFit.cover)
                   : new Image.file(imageFile, fit: BoxFit.cover),
             ),
             new Align(
               alignment: AlignmentDirectional.center,
               child: imageFile == null
                   ? new Text(
-                'No selected image',
-                style: Theme.of(context).textTheme.title,
-              )
+                      'No selected image',
+                      style: Theme.of(context).textTheme.title,
+                    )
                   : new Container(),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildGridView() {
+    return GridView.count(
+      crossAxisCount: 3,
+      children: List.generate(images.length, (index) {
+        File asset = images[index];
+        return new Container(
+          constraints: new BoxConstraints.expand(),
+          child: new Image.file(asset, fit: BoxFit.cover),
+          width: 300,
+          height: 300,
+        );
+      }),
     );
   }
 
@@ -96,17 +122,23 @@ class _MessagePageState extends State<MessagePage> {
 
   _takePhoto() async {
     imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+    images.add(imageFile);
     setState(() {});
   }
 
   _showSnackbar(String text) => scaffoldKey.currentState?.showSnackBar(
-    new SnackBar(
-      content: new Text(text),
-    ),
-  );
+        new SnackBar(
+          content: new Text(text),
+        ),
+      );
 
   _uploadImage() async {
+/*
     if (imageFile == null) {
+      return _showSnackbar('Please select image');
+    }
+*/
+    if (images.isEmpty) {
       return _showSnackbar('Please select image');
     }
 
@@ -122,28 +154,34 @@ class _MessagePageState extends State<MessagePage> {
 
     try {
       final url = Uri.parse(URL_IMAGES_UPLOAD);
-      final fileName = path.basename(imageFile.path);
-      final bytes = await compute(compress, imageFile.readAsBytesSync());
+      //BEGIN LOOP
+      for (var file in images) {
+        var fileName = path.basename(file.path);
+        var bytes = await compute(compress, file.readAsBytesSync());
 
-      var request = http.MultipartRequest('POST', url)
-        ..files.add(
-          new http.MultipartFile.fromBytes(
-            'image',
-            bytes,
-            filename: fileName,
-          ),
-        );
+        var request = http.MultipartRequest('POST', url)
+          ..files.add(
+            new http.MultipartFile.fromBytes(
+              'image',
+              bytes,
+              filename: fileName,
+            ),
+          );
 
-      var response = await request.send();
-      var decoded = await response.stream.bytesToString().then(json.decode);
+        var response = await request.send();
+        var decoded = await response.stream.bytesToString().then(json.decode);
 
-      Navigator.pop(context);
-      if (response.statusCode == HttpStatus.OK) {
-        _showSnackbar('Image uploaded, imageUrl = $URL_IMAGES/${decoded['path']}');
-      } else {
-        _showSnackbar('Image failed: ${decoded['message']}');
+        if (response.statusCode == HttpStatus.OK) {
+          _showSnackbar(
+              'Image uploaded, imageUrl = $URL_IMAGES/${decoded['path']}');
+        } else {
+          _showSnackbar('Image failed: ${decoded['message']}');
+        }
       }
+      Navigator.pop(context); //TODO Check this
+      //END LOOP
     } catch (e) {
+      //Navigator.pop(context); TODO Check this
       Navigator.pop(context);
       _showSnackbar('Image failed: $e');
     }
@@ -151,6 +189,7 @@ class _MessagePageState extends State<MessagePage> {
 
   _selectGalleryImage() async {
     imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    images.add(imageFile);
     setState(() {});
   }
 }

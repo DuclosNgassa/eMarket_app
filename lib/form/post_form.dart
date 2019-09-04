@@ -41,9 +41,12 @@ class CustomFormState extends State<PostForm> {
   FormValidator formValidator = new FormValidator();
   Post newPost = new Post();
   File imageFile;
+  List<File> images = List<File>();
+
   final scaffoldKey = new GlobalKey<ScaffoldState>();
+
 //  static const baseUrl = 'http://192.168.2.120:3000/images';
-  String _imageUrl = "";
+  List<String> _imageUrls = List<String>();
 
   CustomFormState(this.color);
 
@@ -70,7 +73,10 @@ class CustomFormState extends State<PostForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  _buildPreviewImage(),
+                  //_buildPreviewImage(),
+                  Expanded(
+                    child: buildGridView(),
+                  ),
                   _buildButtons(),
                 ],
               ),
@@ -244,7 +250,7 @@ class CustomFormState extends State<PostForm> {
           break;
       }
 
-     // newPost.fee_typ = FeeTyp.negotiable;
+      // newPost.fee_typ = FeeTyp.negotiable;
       // _priceTyp = newValue;
     });
   }
@@ -280,6 +286,7 @@ class CustomFormState extends State<PostForm> {
   }
 */
 
+/*
   Widget _buildPreviewImage() {
     return new Expanded(
       child: new Card(
@@ -314,6 +321,22 @@ class CustomFormState extends State<PostForm> {
       ),
     );
   }
+*/
+
+  Widget buildGridView() {
+    return GridView.count(
+      crossAxisCount: 3,
+      children: List.generate(images.length, (index) {
+        File asset = images[index];
+        return new Container(
+          constraints: new BoxConstraints.expand(),
+          child: new Image.file(asset, fit: BoxFit.cover),
+          width: 300,
+          height: 300,
+        );
+      }),
+    );
+  }
 
   Widget _buildButtons() {
     return new Padding(
@@ -344,6 +367,7 @@ class CustomFormState extends State<PostForm> {
 
   _takePhoto() async {
     imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+    images.add(imageFile);
     setState(() {});
   }
 
@@ -354,7 +378,12 @@ class CustomFormState extends State<PostForm> {
       );
 
   _uploadImage() async {
+/*
     if (imageFile == null) {
+      return _showSnackbar('Please select image');
+    }
+*/
+    if (images.isEmpty) {
       return _showSnackbar('Please select image');
     }
 
@@ -370,29 +399,35 @@ class CustomFormState extends State<PostForm> {
 
     try {
       final url = Uri.parse(URL_IMAGES_UPLOAD);
-      final fileName = path.basename(imageFile.path);
-      final bytes = await compute(compress, imageFile.readAsBytesSync());
+      //BEGIN LOOP
+      for (var file in images) {
+        var fileName = path.basename(file.path);
+        var bytes = await compute(compress, file.readAsBytesSync());
 
-      var request = http.MultipartRequest('POST', url)
-        ..files.add(
-          new http.MultipartFile.fromBytes(
-            'image',
-            bytes,
-            filename: fileName,
-          ),
-        );
+        var request = http.MultipartRequest('POST', url)
+          ..files.add(
+            new http.MultipartFile.fromBytes(
+              'image',
+              bytes,
+              filename: fileName,
+            ),
+          );
 
-      var response = await request.send();
-      var decoded = await response.stream.bytesToString().then(json.decode);
+        var response = await request.send();
+        var decoded = await response.stream.bytesToString().then(json.decode);
 
-      Navigator.pop(context);
-      if (response.statusCode == HttpStatus.OK) {
-        _imageUrl = '$SERVER_URL/${decoded['path']}';
+        //Navigator.pop(context);
+        if (response.statusCode == HttpStatus.OK) {
+          _imageUrls.add('$SERVER_URL/${decoded['path']}');
 
-        _showSnackbar('Image uploaded, imageUrl = $SERVER_URL/${decoded['path']}');
-      } else {
-        _showSnackbar('Image failed: ${decoded['message']}');
+          _showSnackbar(
+              'Image uploaded, imageUrl = $SERVER_URL/${decoded['path']}');
+        } else {
+          _showSnackbar('Image failed: ${decoded['message']}');
+        }
       }
+      Navigator.pop(context); //TODO Check this
+      //END LOOP
     } catch (e) {
       Navigator.pop(context);
       _showSnackbar('Image failed: $e');
@@ -401,6 +436,7 @@ class CustomFormState extends State<PostForm> {
 
   _selectGalleryImage() async {
     imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    images.add(imageFile);
     setState(() {});
   }
 
@@ -419,19 +455,33 @@ class CustomFormState extends State<PostForm> {
       newPost.categorieid = 1;
       newPost.post_typ = _postTyp;
 
-      Post testPost = Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 2, categorieid: 1);
+      Post testPost = Post(
+          id: 2,
+          title: 'Vélo',
+          created_at: new DateTime(2013, 9, 7, 17, 30),
+          post_typ: PostTyp.offer,
+          description: 'description Vélo',
+          fee: 250000,
+          fee_typ: FeeTyp.negotiable,
+          city: 'Ngaoundal',
+          quarter: 'Gare',
+          status: Status.created,
+          rating: 6,
+          userid: 2,
+          categorieid: 1);
       Map<String, dynamic> postParams = testPost.toMap(testPost);
       Post savedPost = await _postService.savePost(postParams);
       await _uploadImage();
 
-      MyImage.Image newImage = new MyImage.Image();
-      newImage.postid = savedPost.id;
-      newImage.created_at = DateTime.now();
-      newImage.image_url = _imageUrl;
-      Map<String, dynamic> imageParams =
-          _imageService.toMap(newImage);
-      MyImage.Image savedImage =
-          await _imageService.saveImage(http.Client(), imageParams);
+      for(var item in _imageUrls){
+        MyImage.Image newImage = new MyImage.Image();
+        newImage.postid = savedPost.id;
+        newImage.created_at = DateTime.now();
+        newImage.image_url = item;
+        Map<String, dynamic> imageParams = _imageService.toMap(newImage);
+        MyImage.Image savedImage =
+        await _imageService.saveImage(http.Client(), imageParams);
+      }
 
       //Save ImageUrl and PostId in the DB
 
