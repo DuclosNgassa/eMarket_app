@@ -130,7 +130,7 @@ class _HomeCardState extends State<HomeCard> {
                   style: TextStyle(color: Colors.white),
                 ),
                 Text(
-                  widget.post.feeTyp.toString(),
+                  widget.post.fee_typ.toString(),
                   style: TextStyle(color: Colors.white),
                 ),
               ],

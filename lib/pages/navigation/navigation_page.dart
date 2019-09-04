@@ -1,13 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:emarket_app/pages/post/post_page.dart';
 import 'package:emarket_app/pages/account/account_page.dart';
-import '../message/message_page.dart';
-import 'package:emarket_app/pages/search/search_page.dart';
 import 'package:emarket_app/pages/home/home_page.dart';
+import 'package:emarket_app/pages/post/post_page.dart';
+import 'package:emarket_app/pages/search/search_page.dart';
+import 'package:flutter/material.dart';
+
 import '../../component/custom_linear_gradient.dart';
+import '../../model/feetyp.dart';
 import '../../model/post.dart';
 import '../../model/posttyp.dart';
-import '../../model/feetyp.dart';
+import '../../model/status.dart';
+import '../message/message_page.dart';
 
 class NavigationPage extends StatefulWidget {
   @override
@@ -73,142 +75,20 @@ class _NavigationPageState extends State<NavigationPage> {
   }
 
   static List<Post> postList = []
-    ..add(Post(
-        'Telephone',
-        new DateTime(2011, 9, 7, 17, 30),
-        '00237633333',
-        'ndanjid@yahoo.fr',
-        'Electromenager',
-        PostTyp.offer,
-        'description Telephone',
-        540000,
-        FeeTyp.negotiable,
-        'Douala',
-        'Deido',
-        5))
-    ..add(Post(
-        'Friteuse',
-        new DateTime(2012, 9, 7, 17, 30),
-        '002376444447',
-        'ndanjid@yahoo.fr',
-        'Electromenager',
-        PostTyp.offer,
-        'description Friteuse',
-        250000,
-        FeeTyp.negotiable,
-        'Mbouda',
-        'centre',
-        6))
-    ..add(Post(
-        'Bouteille de gaz',
-        new DateTime(2013, 9, 7, 17, 30),
-        '002375555577',
-        'ndanjid@yahoo.fr',
-        'Electromenager',
-        PostTyp.offer,
-        'description Bouteille de gaz',
-        120000,
-        FeeTyp.negotiable,
-        'Yaounde',
-        'Nvog Beti',
-        5))
-    ..add(Post(
-        'Telephone',
-        new DateTime(2014, 9, 7, 17, 30),
-        '002376766677',
-        'ndanjid@yahoo.fr',
-        'Electromenager',
-        PostTyp.offer,
-        'description Telephone',
-        80000,
-        FeeTyp.negotiable,
-        'Bafoussam',
-        'Sokada',
-        6))
-    ..add(Post(
-        'Sac à main',
-        new DateTime(2015, 9, 7, 17, 30),
-        '0023788888',
-        'ndanjid@yahoo.fr',
-        'Electromenager',
-        PostTyp.offer,
-        'description Sac à main',
-        670000,
-        FeeTyp.negotiable,
-        'Bandjoun',
-        'Tobeu',
-        5))
-    ..add(Post(
-        'Voiture',
-        new DateTime(2016, 9, 7, 17, 30),
-        '00237676999',
-        'ndanjid@yahoo.fr',
-        'Electromenager',
-        PostTyp.offer,
-        'description Voiture',
-        340000,
-        FeeTyp.negotiable,
-        'Bangangte',
-        'Lycee technique',
-        6))
-    ..add(Post(
-        'Televiseur',
-        new DateTime(2017, 9, 7, 17, 30),
-        '0023763333',
-        'ndanjid@yahoo.fr',
-        'Electromenager',
-        PostTyp.offer,
-        'description Televiseur',
-        230000,
-        FeeTyp.negotiable,
-        'Douala',
-        'Bonamoussadi',
-        7))
-    ..add(Post(
-        'Livre de math',
-        new DateTime(2018, 9, 7, 17, 30),
-        '002376767677',
-        'ndanjid@yahoo.fr',
-        'Electromenager',
-        PostTyp.offer,
-        'description Livre de math',
-        120000,
-        FeeTyp.negotiable,
-        'Yaounde',
-        'Mokolo',
-        8))
-    ..add(Post(
-        'Pantalon',
-        new DateTime(2019, 9, 7, 17, 30),
-        '002376767677',
-        'ndanjid@yahoo.fr',
-        'Electromenager',
-        PostTyp.offer,
-        'description Pantalon',
-        50000,
-        FeeTyp.negotiable,
-        'Bangangte',
-        'Centre',
-        5))
-    ..add(Post(
-        'Sac de classe',
-        new DateTime(2020, 9, 7, 17, 30),
-        '002376767677',
-        'ndanjid@yahoo.fr',
-        'Electromenager',
-        PostTyp.offer,
-        'description Sac de classe',
-        90000,
-        FeeTyp.negotiable,
-        'Bandjoun',
-        'Centre',
-        7))
-    ..add(
-        Post('Salle à manger', new DateTime(2021, 9, 7, 17, 30), '002376767677', 'ndanjid@yahoo.fr', 'Electromenager', PostTyp.offer, 'description Salle à manger', 80000, FeeTyp.negotiable, 'Yaounde', 'Mokolo', 5))
-    ..add(Post('Chargeur', new DateTime(2022, 9, 7, 17, 30), '002376767677', 'ndanjid@yahoo.fr', 'Electromenager', PostTyp.offer, 'description Chargeur', 60000, FeeTyp.negotiable, 'Ngaoundal', 'Ville', 8))
-    ..add(Post('Moto', new DateTime(2017, 9, 7, 17, 30), '002376767677', 'ndanjid@yahoo.fr', 'Electromenager', PostTyp.offer, 'description Moto', 40000, FeeTyp.negotiable, 'Mbouda', 'Mokolo', 8))
-    ..add(Post('Trouce mecanique', new DateTime(2012, 9, 7, 17, 30), '002376767677', 'ndanjid@yahoo.fr', 'Electromenager', PostTyp.offer, 'description Trouce mecanique', 30000, FeeTyp.negotiable, 'Yaounde', 'Madagascar', 5))
-    ..add(Post('Vélo', new DateTime(2013, 9, 7, 17, 30), '002376767677', 'ndanjid@yahoo.fr', 'Electromenager', PostTyp.offer, 'description Vélo', 250000, FeeTyp.negotiable, 'Ngaoundal', 'Gare', 6));
+    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
+    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
+    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
+    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
+    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
+    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
+    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
+    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
+    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
+    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
+    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
+    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
+    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
+    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2));
 
   void _onItemTapped(int index) {
     setState(() {

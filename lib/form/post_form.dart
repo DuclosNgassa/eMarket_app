@@ -8,14 +8,17 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 
-import '../converter/date_converter.dart';
 import '../model/feetyp.dart';
+import '../model/image.dart' as MyImage;
 import '../model/post.dart';
 import '../model/posttyp.dart';
+import '../model/status.dart';
+import '../services/image_service.dart';
+import '../services/post_service.dart';
 import '../validator/form_validator.dart';
+import '../services/global.dart';
 
 class PostForm extends StatefulWidget {
   PostForm({Key key, this.scaffoldKey}) : super(key: key);
@@ -26,6 +29,9 @@ class PostForm extends StatefulWidget {
 }
 
 class CustomFormState extends State<PostForm> {
+  PostService _postService = new PostService();
+  ImageService _imageService = new ImageService();
+
   final Color color;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   PostTyp _postTyp = PostTyp.offer;
@@ -33,13 +39,14 @@ class CustomFormState extends State<PostForm> {
   List<String> _priceTyps = <String>['Kdo', 'Negociable', 'Fixe'];
   String _priceTyp = 'Kdo';
   FormValidator formValidator = new FormValidator();
-  Post newPost;
+  Post newPost = new Post();
   File imageFile;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  static const baseUrl = 'http://192.168.2.120:3000/images';
+//  static const baseUrl = 'http://192.168.2.120:3000/images';
+  String _imageUrl = "";
 
   CustomFormState(this.color);
-  
+
   void showMessage(String message, [MaterialColor color = Colors.red]) {
     widget.scaffoldKey.currentState.showSnackBar(new SnackBar(
       content: Text(message),
@@ -68,7 +75,6 @@ class CustomFormState extends State<PostForm> {
                 ],
               ),
             ),
-
             Divider(),
             Row(
               children: <Widget>[
@@ -181,9 +187,11 @@ class CustomFormState extends State<PostForm> {
                   ),
                 );
               },
+/*
               validator: (val) => formValidator.isEmptyText(val)
                   ? 'Veuillez choisir le type de prix svp'
                   : null,
+*/
             ),
             TextFormField(
               maxLines: 2,
@@ -214,21 +222,31 @@ class CustomFormState extends State<PostForm> {
   }
 
   void setFeeTyp(String newValue) {
-    switch(newValue){
-      case 'Kdo':{
-        newPost.feeTyp = FeeTyp.gift;
+    setState(() {
+      switch (newValue) {
+        case 'Kdo':
+          {
+            _priceTyp = FeeTyp.gift.toString();
+            newPost.fee_typ = FeeTyp.gift;
+          }
+          break;
+        case 'Negociable':
+          {
+            _priceTyp = FeeTyp.negotiable.toString();
+            newPost.fee_typ = FeeTyp.negotiable;
+          }
+          break;
+        case 'Fixe':
+          {
+            _priceTyp = FeeTyp.fixed.toString();
+            newPost.fee_typ = FeeTyp.fixed;
+          }
+          break;
       }
-      break;
-      case 'Negociable':{
-        newPost.feeTyp = FeeTyp.negotiable;
-      }
-      break;
-      case 'Fixe':{
-        newPost.feeTyp = FeeTyp.fixed;
-      }
-      break;
-    }
-    _priceTyp = newValue;
+
+     // newPost.fee_typ = FeeTyp.negotiable;
+      // _priceTyp = newValue;
+    });
   }
 
   Future showCategoriePage() async {
@@ -276,16 +294,19 @@ class CustomFormState extends State<PostForm> {
             new Container(
               constraints: new BoxConstraints.expand(),
               child: imageFile == null
-                  ? new Image.asset('images/profil.JPG', colorBlendMode: BlendMode.darken, color: Colors.black26, fit: BoxFit.cover)
+                  ? new Image.asset('images/profil.JPG',
+                      colorBlendMode: BlendMode.darken,
+                      color: Colors.black26,
+                      fit: BoxFit.cover)
                   : new Image.file(imageFile, fit: BoxFit.cover),
             ),
             new Align(
               alignment: AlignmentDirectional.center,
               child: imageFile == null
                   ? new Text(
-                'No selected image',
-                style: Theme.of(context).textTheme.title,
-              )
+                      'No selected image',
+                      style: Theme.of(context).textTheme.title,
+                    )
                   : new Container(),
             ),
           ],
@@ -327,10 +348,10 @@ class CustomFormState extends State<PostForm> {
   }
 
   _showSnackbar(String text) => scaffoldKey.currentState?.showSnackBar(
-    new SnackBar(
-      content: new Text(text),
-    ),
-  );
+        new SnackBar(
+          content: new Text(text),
+        ),
+      );
 
   _uploadImage() async {
     if (imageFile == null) {
@@ -348,7 +369,7 @@ class CustomFormState extends State<PostForm> {
     );
 
     try {
-      final url = Uri.parse('$baseUrl/upload');
+      final url = Uri.parse(URL_IMAGES_UPLOAD);
       final fileName = path.basename(imageFile.path);
       final bytes = await compute(compress, imageFile.readAsBytesSync());
 
@@ -366,7 +387,9 @@ class CustomFormState extends State<PostForm> {
 
       Navigator.pop(context);
       if (response.statusCode == HttpStatus.OK) {
-        _showSnackbar('Image uploaded, imageUrl = $baseUrl/${decoded['path']}');
+        _imageUrl = '$SERVER_URL/${decoded['path']}';
+
+        _showSnackbar('Image uploaded, imageUrl = $SERVER_URL/${decoded['path']}');
       } else {
         _showSnackbar('Image failed: ${decoded['message']}');
       }
@@ -376,17 +399,12 @@ class CustomFormState extends State<PostForm> {
     }
   }
 
-  List<int> compress(List<int> bytes) {
-    var image = img.decodeImage(bytes);
-    var resize = img.copyResize(image, height: 480, width: 480);
-    return img.encodePng(resize, level: 1);
-  }
   _selectGalleryImage() async {
     imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {});
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     final FormState form = _formKey.currentState;
 
     if (!form.validate()) {
@@ -397,17 +415,32 @@ class CustomFormState extends State<PostForm> {
     } else {
       form.save();
 
-      newPost.category = _categorie;
-      newPost.typ = _postTyp;
+      //newPost.category = _categorie;
+      newPost.categorieid = 1;
+      newPost.post_typ = _postTyp;
 
+      Post testPost = Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 2, categorieid: 1);
+      Map<String, dynamic> postParams = testPost.toMap(testPost);
+      Post savedPost = await _postService.savePost(postParams);
+      await _uploadImage();
 
+      MyImage.Image newImage = new MyImage.Image();
+      newImage.postid = savedPost.id;
+      newImage.created_at = DateTime.now();
+      newImage.image_url = _imageUrl;
+      Map<String, dynamic> imageParams =
+          _imageService.toMap(newImage);
+      MyImage.Image savedImage =
+          await _imageService.saveImage(http.Client(), imageParams);
+
+      //Save ImageUrl and PostId in the DB
 
       print('Form save called, newContact is now up to date...');
-      print('Titre: ${newPost.typ}');
+      print('Titre: ${newPost.post_typ}');
       print('Typ: ${newPost.title}');
-      print('Categorie: ${newPost.category}');
+      print('Categorie: ${newPost.categorieid}');
       print('Prix: ${newPost.fee}');
-      print('Typ de prix: ${newPost.feeTyp}');
+      print('Typ de prix: ${newPost.fee_typ}');
       print('Description: ${newPost.description}');
       print('========================================');
       print('Submitting to back end...');
@@ -416,4 +449,10 @@ class CustomFormState extends State<PostForm> {
       Navigator.of(context).pop(newPost);
     }
   }
+}
+
+List<int> compress(List<int> bytes) {
+  var image = img.decodeImage(bytes);
+  var resize = img.copyResize(image, height: 480, width: 480);
+  return img.encodePng(resize, level: 1);
 }

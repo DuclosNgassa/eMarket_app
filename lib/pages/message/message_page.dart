@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:image/image.dart' as img;
-
+import '../../services/global.dart';
 class MessagePage extends StatefulWidget {
   @override
   _MessagePageState createState() => new _MessagePageState();
@@ -16,7 +16,8 @@ class MessagePage extends StatefulWidget {
 class _MessagePageState extends State<MessagePage> {
   File imageFile;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  static const baseUrl = 'http://192.168.2.120:3000/images';
+  //static const baseUrl = 'http://192.168.2.120:3000/images';
+  //static const downloadUrl = 'http://192.168.2.120:3000';
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +121,7 @@ class _MessagePageState extends State<MessagePage> {
     );
 
     try {
-      final url = Uri.parse('$baseUrl/upload');
+      final url = Uri.parse(URL_IMAGES_UPLOAD);
       final fileName = path.basename(imageFile.path);
       final bytes = await compute(compress, imageFile.readAsBytesSync());
 
@@ -138,7 +139,7 @@ class _MessagePageState extends State<MessagePage> {
 
       Navigator.pop(context);
       if (response.statusCode == HttpStatus.OK) {
-        _showSnackbar('Image uploaded, imageUrl = $baseUrl/${decoded['path']}');
+        _showSnackbar('Image uploaded, imageUrl = $URL_IMAGES/${decoded['path']}');
       } else {
         _showSnackbar('Image failed: ${decoded['message']}');
       }

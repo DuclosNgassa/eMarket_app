@@ -130,7 +130,7 @@ class _PostCardState extends State<PostCard> {
                     style: TextStyle(color: Colors.white),
                   ),
                   Text(
-                    widget.post.feeTyp.toString(),
+                    widget.post.fee_typ.toString(),
                     style: TextStyle(color: Colors.white),
                   ),
                 ],
@@ -156,7 +156,7 @@ class _PostCardState extends State<PostCard> {
                 ],
               ),
               Text(
-                widget.post.typ.toString(),
+                widget.post.post_typ.toString(),
                 style: TextStyle(color: Colors.white),
               ),
             ],

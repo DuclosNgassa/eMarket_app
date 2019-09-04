@@ -1,39 +1,94 @@
-import '../model/posttyp.dart';
-import '../model/feetyp.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'dart:io';
 
+import '../model/feetyp.dart';
+import '../model/posttyp.dart';
+import '../model/status.dart';
+
 class Post {
+  int id;
   String title;
-  DateTime createdAt;
-  String phoneAuthor = '';
-  String emailAuthor = '';
-  String category = '';
-  PostTyp typ;
+  DateTime created_at;
+  PostTyp post_typ; // 'offer', 'search', 'all'
   String description;
   int fee;
-  FeeTyp feeTyp; //Negotiable / fixed price / gift
-  List<String> images;
+  FeeTyp fee_typ; //Negotiable / fixed price / gift
   String city;
   String quarter; // where the article available is
+  Status status; // done, created
+  int rating = 5;
+  int userid;
+  int categorieid;
   String imageUrl;
-  int rating = 10;
 
   Post(
+      {this.id,
       this.title,
-      this.createdAt,
-      this.phoneAuthor,
-      this.emailAuthor,
-      this.category,
-      this.typ,
+      this.created_at,
+      this.post_typ,
       this.description,
       this.fee,
-      this.feeTyp,
+      this.fee_typ,
       this.city,
       this.quarter,
-      this.rating);
+      this.status,
+      this.rating,
+      this.userid,
+      this.categorieid});
+
+  factory Post.fromJson(Map<String, dynamic> json) {
+    return Post(
+      id: json["id"],
+      title: json["title"],
+      created_at: DateTime.parse(json["created_at"]),
+      post_typ: json["post_typ"], // TODO Convert to enum
+      description: json["description"],
+      fee: json["fee"],
+      fee_typ: json["fee_typ"], // TODO Convert to enum
+      city: json["city"],
+      quarter: json["quartier"],
+      status: json["status"], // TODO Convert to enum
+      rating: json["rating"],
+      userid: json["userid"],
+      categorieid: json["categorieid"],
+    );
+  }
+
+  Map<String, dynamic> toMap(Post post) {
+    Map<String, dynamic> params = Map<String, dynamic>();
+    params["title"] = post.title;
+    params["created_at"] = post.created_at.toString();
+    params["post_typ"] = "offer";
+    params["description"] = post.description;
+    params["fee"] = post.fee.toString();
+    params["fee_typ"] = "fixed";
+    params["city"] = post.city;
+    params["quartier"] = post.quarter;
+    params["status"] = "created";
+    params["rating"] = post.rating.toString();
+    params["userid"] = post.userid.toString();
+    params["categorieid"] = post.categorieid.toString();
+
+    return params;
+  }
+
+  Map<String, dynamic> toJson() =>
+      {
+  'title' : title,
+  'created_at' : created_at.toString(),
+  'post_typ' : "gift",
+  'description' : description,
+  'fee' : fee.toString(),
+  'fee_typ' : "fixed",
+  'city' : city,
+  'quarter' : quarter,
+  'status' : "created",
+  'rating' : rating.toString(),
+  'userid' : userid.toString(),
+  'categorieid' : categorieid.toString(),
+
+};
 
   Future getImageUrl() async {
     if (imageUrl != null) {
@@ -54,4 +109,5 @@ class Post {
       print(exception);
     }
   }
+
 }
