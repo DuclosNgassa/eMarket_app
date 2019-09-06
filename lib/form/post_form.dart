@@ -279,11 +279,25 @@ class CustomFormState extends State<PostForm> {
         images.length,
         (index) {
           File asset = images[index];
-          return new Container(
-            constraints: new BoxConstraints.expand(),
-            child: new Image.file(asset),
-            width: 50,
-            height: 50,
+          return Dismissible(
+            direction: DismissDirection.endToStart,
+            key: Key(images[index].path),
+            background: Container(
+              alignment: AlignmentDirectional.centerEnd,
+              color: Colors.red,
+              child: Icon(Icons.delete, color: Colors.white,),
+            ),
+            onDismissed: (direction) => {
+              setState(() {
+                images.removeAt(index);
+              })
+            },
+            child: Container(
+              constraints: new BoxConstraints.expand(),
+              child: new Image.file(asset),
+              width: 50,
+              height: 50,
+            ),
           );
         },
       ),
@@ -358,6 +372,11 @@ class CustomFormState extends State<PostForm> {
         ),
       ],
     );
+  }
+
+  _removePhoto(int index) {
+    images.removeAt(index);
+    setState(() {});
   }
 
   _takePhoto() async {
