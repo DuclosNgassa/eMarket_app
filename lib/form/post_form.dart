@@ -15,10 +15,10 @@ import '../model/image.dart' as MyImage;
 import '../model/post.dart';
 import '../model/posttyp.dart';
 import '../model/status.dart';
+import '../services/global.dart';
 import '../services/image_service.dart';
 import '../services/post_service.dart';
 import '../validator/form_validator.dart';
-import '../services/global.dart';
 
 class PostForm extends StatefulWidget {
   PostForm({Key key, this.scaffoldKey}) : super(key: key);
@@ -34,18 +34,18 @@ class CustomFormState extends State<PostForm> {
 
   final Color color;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  PostTyp _postTyp = PostTyp.offer;
-  String _categorie = '';
-  List<String> _priceTyps = <String>['Kdo', 'Negociable', 'Fixe'];
-  String _priceTyp = 'Kdo';
-  FormValidator formValidator = new FormValidator();
-  Post newPost = new Post();
-  File imageFile;
-  List<File> images = List<File>();
-
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
-//  static const baseUrl = 'http://192.168.2.120:3000/images';
+  FormValidator formValidator = new FormValidator();
+
+  PostTyp _postTyp = PostTyp.offer;
+  List<String> _feeTyps = <String>['Kdo', 'Negociable', 'Fixe'];
+  String _feeTyp = 'Kdo';
+  String _categorie = '';
+  Post newPost = new Post();
+  File imageFile;
+
+  List<File> images = List<File>();
   List<String> _imageUrls = List<String>();
 
   CustomFormState(this.color);
@@ -75,43 +75,14 @@ class CustomFormState extends State<PostForm> {
                 children: <Widget>[
                   //_buildPreviewImage(),
                   Expanded(
-                    child: buildGridView(),
+                    child: buildImageGridView(),
                   ),
                   _buildButtons(),
                 ],
               ),
             ),
             Divider(),
-            Row(
-              children: <Widget>[
-                Radio(
-                  value: PostTyp.offer,
-                  groupValue: _postTyp,
-                  onChanged: (PostTyp value) {
-                    setState(() {
-                      _postTyp = value;
-                    });
-                  },
-                ),
-                Text(
-                  "J'offre",
-                  style: new TextStyle(color: Colors.white),
-                ),
-                Radio(
-                  value: PostTyp.search,
-                  groupValue: _postTyp,
-                  onChanged: (PostTyp value) {
-                    setState(() {
-                      _postTyp = value;
-                    });
-                  },
-                ),
-                Text(
-                  "Je recherche",
-                  style: new TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
+            _buildRadioButtons(),
             TextFormField(
               decoration: const InputDecoration(
                 hintText: 'Donnez le titre de votre post',
@@ -136,69 +107,125 @@ class CustomFormState extends State<PostForm> {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
-                  Row(
-                    children: <Widget>[
-                      new Expanded(
-                        child: Text(_categorie),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.arrow_forward_ios),
-                        tooltip: 'Choisir la catégorie',
-                        onPressed: showCategoriePage,
-                      )
-                    ],
+                  GestureDetector(
+                    onTap: showCategoriePage,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(_categorie),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.arrow_forward_ios),
+                          tooltip: 'Choisir la catégorie',
+                        )
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            TextFormField(
-              decoration: const InputDecoration(
-                hintText: 'Donnez le prix',
-                labelText: 'Prix (FCFA)',
-                labelStyle: TextStyle(color: Colors.white),
-              ),
-              inputFormatters: [
-                LengthLimitingTextInputFormatter(30),
-              ],
-              validator: (val) =>
-                  formValidator.isEmptyText(val) ? 'Donnez un prix' : null,
-              onSaved: (val) => newPost.fee = int.parse(val),
-            ),
-            FormField(
-              builder: (FormFieldState state) {
-                return InputDecorator(
-                  decoration: InputDecoration(
-                    labelText: 'Typ de prix',
-                    labelStyle: TextStyle(color: Colors.white),
-                    errorText: state.hasError ? state.errorText : null,
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  flex: 2,
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      hintText: 'Donnez le prix',
+                      labelText: 'Prix (FCFA)',
+                      labelStyle: TextStyle(color: Colors.white),
+                    ),
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(30),
+                    ],
+                    validator: (val) => formValidator.isEmptyText(val)
+                        ? 'Donnez un prix'
+                        : null,
+                    onSaved: (val) => newPost.fee = int.parse(val),
                   ),
-                  isEmpty: _priceTyp == '',
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton(
-                      value: _priceTyp,
-                      isDense: true,
-                      onChanged: (String newValue) {
-                        setState(() {
-                          setFeeTyp(newValue);
-                          state.didChange(newValue);
-                        });
-                      },
-                      items: _priceTyps.map((String value) {
-                        return DropdownMenuItem(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
+                ),
+                Expanded(
+                  child: FormField(
+                    builder: (FormFieldState state) {
+                      return InputDecorator(
+                        decoration: InputDecoration(
+                          labelText: 'Typ de prix',
+                          labelStyle: TextStyle(color: Colors.white),
+                          errorText: state.hasError ? state.errorText : null,
+                        ),
+                        //isEmpty: _priceTyp == '',
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                            value: _feeTyp,
+                            isDense: true,
+                            onChanged: (String newValue) {
+                              setState(() {
+                                _feeTyp = newValue;
+                                //setFeeTyp(newValue);
+                                state.didChange(newValue);
+                              });
+                            },
+                            items: _feeTyps
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      );
+                    },
+                    validator: (val) => formValidator.isEmptyText(val)
+                        ? 'Veuillez choisir le type de prix svp'
+                        : null,
+                  ),
+                ),
+              ],
+            ),
+//_buildRadioButtons(),
+            Container(
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        hintText: 'Donnez la ville',
+                        labelText: 'Ville',
+                        labelStyle: TextStyle(color: Colors.white),
+                      ),
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(30),
+                      ],
+                      validator: (val) => formValidator.isEmptyText(val)
+                          ? 'Donnez la ville'
+                          : null,
+                      onSaved: (val) => newPost.city = val,
                     ),
                   ),
-                );
-              },
-/*
-              validator: (val) => formValidator.isEmptyText(val)
-                  ? 'Veuillez choisir le type de prix svp'
-                  : null,
-*/
+                  Expanded(
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        hintText: 'Donnez le quartier',
+                        labelText: 'Quartier',
+                        labelStyle: TextStyle(color: Colors.white),
+                      ),
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(30),
+                      ],
+                      validator: (val) => formValidator.isEmptyText(val)
+                          ? 'Donnez le quartier'
+                          : null,
+                      onSaved: (val) => newPost.quarter = val,
+                    ),
+                  ),
+                ],
+              ),
             ),
+
             TextFormField(
               maxLines: 2,
               decoration: const InputDecoration(
@@ -209,8 +236,9 @@ class CustomFormState extends State<PostForm> {
               inputFormatters: [
                 LengthLimitingTextInputFormatter(500),
               ],
-              validator: (val) =>
-                  formValidator.isEmptyText(val) ? 'Enter a name' : null,
+              validator: (val) => formValidator.isEmptyText(val)
+                  ? 'Donnez une description à votre post'
+                  : null,
               onSaved: (val) => newPost.description = val,
             ),
             new Container(
@@ -227,34 +255,6 @@ class CustomFormState extends State<PostForm> {
     );
   }
 
-  void setFeeTyp(String newValue) {
-    setState(() {
-      switch (newValue) {
-        case 'Kdo':
-          {
-            _priceTyp = FeeTyp.gift.toString();
-            newPost.fee_typ = FeeTyp.gift;
-          }
-          break;
-        case 'Negociable':
-          {
-            _priceTyp = FeeTyp.negotiable.toString();
-            newPost.fee_typ = FeeTyp.negotiable;
-          }
-          break;
-        case 'Fixe':
-          {
-            _priceTyp = FeeTyp.fixed.toString();
-            newPost.fee_typ = FeeTyp.fixed;
-          }
-          break;
-      }
-
-      // newPost.fee_typ = FeeTyp.negotiable;
-      // _priceTyp = newValue;
-    });
-  }
-
   Future showCategoriePage() async {
     String categorieChoosed = await Navigator.of(context).push(
       MaterialPageRoute(
@@ -269,91 +269,38 @@ class CustomFormState extends State<PostForm> {
     });
   }
 
-/*
-  void submitPup(context) {
-    if (nameController.text.isEmpty) {
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Pups neeed names!'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-    } else {
-      var newDog = Dog(nameController.text, locationController.text,
-          descriptionController.text);
-      Navigator.of(context).pop(newDog);
-    }
-  }
-*/
-
-/*
-  Widget _buildPreviewImage() {
-    return new Expanded(
-      child: new Card(
-        elevation: 3.0,
-        shape: new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.all(
-            new Radius.circular(4.0),
-          ),
-        ),
-        child: new Stack(
-          children: <Widget>[
-            new Container(
-              constraints: new BoxConstraints.expand(),
-              child: imageFile == null
-                  ? new Image.asset('images/profil.JPG',
-                      colorBlendMode: BlendMode.darken,
-                      color: Colors.black26,
-                      fit: BoxFit.cover)
-                  : new Image.file(imageFile, fit: BoxFit.cover),
-            ),
-            new Align(
-              alignment: AlignmentDirectional.center,
-              child: imageFile == null
-                  ? new Text(
-                      'No selected image',
-                      style: Theme.of(context).textTheme.title,
-                    )
-                  : new Container(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-*/
-
-  Widget buildGridView() {
+  Widget buildImageGridView() {
     return GridView.count(
-      crossAxisCount: 3,
-      children: List.generate(images.length, (index) {
-        File asset = images[index];
-        return new Container(
-          constraints: new BoxConstraints.expand(),
-          child: new Image.file(asset, fit: BoxFit.cover),
-          width: 300,
-          height: 300,
-        );
-      }),
+      shrinkWrap: true,
+      physics: ClampingScrollPhysics(),
+      crossAxisCount: 1,
+      scrollDirection: Axis.horizontal,
+      children: List.generate(
+        images.length,
+        (index) {
+          File asset = images[index];
+          return new Container(
+            constraints: new BoxConstraints.expand(),
+            child: new Image.file(asset),
+            width: 50,
+            height: 50,
+          );
+        },
+      ),
     );
   }
 
   Widget _buildButtons() {
     return new Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(1.0),
       child: new Row(
         mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           new IconButton(
             icon: Icon(Icons.camera),
             onPressed: _takePhoto,
             tooltip: 'Take photo',
-          ),
-          new IconButton(
-            icon: Icon(Icons.file_upload),
-            onPressed: _uploadImage,
-            tooltip: 'Upload image',
           ),
           new IconButton(
             icon: Icon(Icons.image),
@@ -365,10 +312,72 @@ class CustomFormState extends State<PostForm> {
     );
   }
 
+  Widget _buildRadioButtons() {
+    return new Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Radio(
+          value: PostTyp.offer,
+          groupValue: _postTyp,
+          onChanged: (PostTyp value) {
+            setState(() {
+              _postTyp = value;
+            });
+          },
+        ),
+        Text(
+          "J'offre",
+          style: new TextStyle(color: Colors.white),
+        ),
+        Radio(
+          value: PostTyp.search,
+          groupValue: _postTyp,
+          onChanged: (PostTyp value) {
+            setState(() {
+              _postTyp = value;
+            });
+          },
+        ),
+        Text(
+          "Je recherche",
+          style: new TextStyle(color: Colors.white),
+        ),
+        Radio(
+          value: PostTyp.all,
+          groupValue: _postTyp,
+          onChanged: (PostTyp value) {
+            setState(() {
+              _postTyp = value;
+            });
+          },
+        ),
+        Text(
+          "Tous",
+          style: new TextStyle(color: Colors.white),
+        ),
+      ],
+    );
+  }
+
   _takePhoto() async {
-    imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-    images.add(imageFile);
-    setState(() {});
+    if (images.length < 4) {
+      imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+      images.add(imageFile);
+      setState(() {});
+    } else {
+      _showSnackbar('Vous ne pouvez que telecharger 4 photos');
+    }
+  }
+
+  _selectGalleryImage() async {
+    if (images.length < 4) {
+      imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+      images.add(imageFile);
+      setState(() {});
+    } else {
+      _showSnackbar('Vous ne pouvez que telecharger 4 photos');
+    }
   }
 
   _showSnackbar(String text) => scaffoldKey.currentState?.showSnackBar(
@@ -434,12 +443,6 @@ class CustomFormState extends State<PostForm> {
     }
   }
 
-  _selectGalleryImage() async {
-    imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-    images.add(imageFile);
-    setState(() {});
-  }
-
   void _submitForm() async {
     final FormState form = _formKey.currentState;
 
@@ -452,6 +455,7 @@ class CustomFormState extends State<PostForm> {
       form.save();
 
       //newPost.category = _categorie;
+      setFeeTyp(_feeTyp);
       newPost.categorieid = 1;
       newPost.post_typ = _postTyp;
 
@@ -473,14 +477,14 @@ class CustomFormState extends State<PostForm> {
       Post savedPost = await _postService.savePost(postParams);
       await _uploadImage();
 
-      for(var item in _imageUrls){
+      for (var item in _imageUrls) {
         MyImage.Image newImage = new MyImage.Image();
         newImage.postid = savedPost.id;
         newImage.created_at = DateTime.now();
         newImage.image_url = item;
         Map<String, dynamic> imageParams = _imageService.toMap(newImage);
         MyImage.Image savedImage =
-        await _imageService.saveImage(http.Client(), imageParams);
+            await _imageService.saveImage(http.Client(), imageParams);
       }
 
       //Save ImageUrl and PostId in the DB
@@ -498,6 +502,34 @@ class CustomFormState extends State<PostForm> {
 
       Navigator.of(context).pop(newPost);
     }
+  }
+
+  void setFeeTyp(String newValue) {
+    setState(() {
+      switch (newValue) {
+        case 'Kdo':
+          {
+            //_feeTyp = FeeTyp.gift.toString();
+            newPost.fee_typ = FeeTyp.gift;
+          }
+          break;
+        case 'Negociable':
+          {
+            // _feeTyp = FeeTyp.negotiable.toString();
+            newPost.fee_typ = FeeTyp.negotiable;
+          }
+          break;
+        case 'Fixe':
+          {
+            //_feeTyp = FeeTyp.fixed.toString();
+            newPost.fee_typ = FeeTyp.fixed;
+          }
+          break;
+      }
+
+      // newPost.fee_typ = FeeTyp.negotiable;
+      // _priceTyp = newValue;
+    });
   }
 }
 
