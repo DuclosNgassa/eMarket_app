@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:emarket_app/pages/account/account_page.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
+import 'package:emarket_app/pages/post/images_detail.dart';
+import 'package:emarket_app/pages/search/search_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,11 +72,10 @@ class CustomFormState extends State<PostForm> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           children: <Widget>[
             Container(
-              height: 150.0,
+              height: 125.0,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  //_buildPreviewImage(),
                   Expanded(
                     child: buildImageGridView(),
                   ),
@@ -154,7 +156,6 @@ class CustomFormState extends State<PostForm> {
                           labelStyle: TextStyle(color: Colors.white),
                           errorText: state.hasError ? state.errorText : null,
                         ),
-                        //isEmpty: _priceTyp == '',
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton(
                             value: _feeTyp,
@@ -162,7 +163,6 @@ class CustomFormState extends State<PostForm> {
                             onChanged: (String newValue) {
                               setState(() {
                                 _feeTyp = newValue;
-                                //setFeeTyp(newValue);
                                 state.didChange(newValue);
                               });
                             },
@@ -184,7 +184,6 @@ class CustomFormState extends State<PostForm> {
                 ),
               ],
             ),
-//_buildRadioButtons(),
             Container(
               child: Row(
                 mainAxisSize: MainAxisSize.max,
@@ -282,21 +281,69 @@ class CustomFormState extends State<PostForm> {
           return Dismissible(
             direction: DismissDirection.endToStart,
             key: Key(images[index].path),
-            background: Container(
-              alignment: AlignmentDirectional.centerEnd,
-              color: Colors.red,
-              child: Icon(Icons.delete, color: Colors.white,),
+            background: ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: AspectRatio(
+                aspectRatio: 0.3,
+                child: Container(
+                  color: Colors.red,
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
             onDismissed: (direction) => {
               setState(() {
                 images.removeAt(index);
               })
             },
-            child: Container(
-              constraints: new BoxConstraints.expand(),
-              child: new Image.file(asset),
-              width: 50,
-              height: 50,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<Null>(
+                    builder: (BuildContext context) {
+                      return ImageDetailPage(images);
+                    },
+                    fullscreenDialog: true,
+                  ),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left:8.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: Container(
+                    width: 75,
+                    height: 75,
+                    decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                      BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(3.0, 6.0),
+                          blurRadius: 10.0)
+                    ]),
+                    child: AspectRatio(
+                      aspectRatio: 0.5,
+                      child: Image.file(asset, fit: BoxFit.cover),
+                    ),
+                  ),
+                ),
+              ),
+
+/*
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: Container(
+                  constraints: new BoxConstraints.expand(),
+                  child: new Image.file(asset),
+                  width: 50,
+                  height: 50,
+                ),
+              ),
+*/
             ),
           );
         },
