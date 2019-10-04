@@ -1,7 +1,7 @@
-import 'package:emarket_app/custom_widget/custom_multi_image_picker.dart';
 import 'package:flutter/material.dart';
+
+import '../../custom_component/custom_linear_gradient.dart';
 import '../../form/post_form.dart';
-import '../../component/custom_linear_gradient.dart';
 
 class PostPage extends StatefulWidget {
   @override

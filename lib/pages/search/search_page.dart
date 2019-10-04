@@ -1,12 +1,12 @@
-import 'package:emarket_app/component/custom_linear_gradient.dart';
-import 'package:emarket_app/component/home_card.dart';
-import 'package:flutter/material.dart';
-import '../../component/custom_button.dart';
-import '../../component/post_card.dart';
+import 'package:emarket_app/custom_component/custom_linear_gradient.dart';
+import 'package:emarket_app/custom_component/home_card.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/search/searchparameter.dart';
-import '../../model/searchparameter.dart';
+import 'package:flutter/material.dart';
+
+import '../../custom_component/custom_button.dart';
 import '../../model/post.dart';
+import '../../model/searchparameter.dart';
 
 class SearchPage extends StatefulWidget {
   final List<Post> postList;

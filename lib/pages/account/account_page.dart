@@ -1,10 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
-//import 'customIcons.dart';
 import '../../data.dart';
-import 'dart:math';
 
 class AccountPage extends StatefulWidget {
   @override
@@ -188,7 +186,7 @@ class _AccountState extends State<AccountPage> {
                     padding: EdgeInsets.only(left: 18.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20.0),
-                      child: Image.asset("images/profil.jpg",
+                      child: Image.asset("images/profil.JPG",
                           width: 296.0, height: 222.0),
                     ),
                   )

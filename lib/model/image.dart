@@ -1,11 +1,4 @@
-import '../model/posttyp.dart';
-import '../model/feetyp.dart';
-import '../model/status.dart';
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'dart:io';
-import '../services/global.dart';
+
 
 class Image {
   int id;

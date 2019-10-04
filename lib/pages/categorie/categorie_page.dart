@@ -277,7 +277,6 @@ List<Categorie> categories = <Categorie>[
       new Categorie('Techno'),
       new Categorie('Sony'),
       new Categorie('Siemens'),
-      new Categorie('Sony'),
       new Categorie('Faxgerät'),
       new Categorie('Telefone'),
       new Categorie('Weitere Handys & Telefone')
@@ -304,7 +303,7 @@ List<Categorie> categories = <Categorie>[
     new Categorie('PCs'),
     new Categorie('PC-Zubehör & Software', <Categorie>[
       new Categorie('Drucker & Scanner'),
-      new Categorie('festplatten & Laufwerke'),
+      new Categorie('Festplatten & Laufwerke'),
       new Categorie('Gehäuser'),
       new Categorie('Grafikkarten'),
       new Categorie('Kabel & Adapter'),
@@ -753,7 +752,7 @@ List<Categorie> categories = <Categorie>[
     ]),
     new Categorie('Büro & Schreibwaren'),
     new Categorie('Comics'),
-    new Categorie('Fachbücher, Schuhe & Studium'),
+    new Categorie('Fachbücher, Schule & Studium'),
     new Categorie('Film & DVD'),
     new Categorie('Musik & CDs'),
     new Categorie('Musikinstrumente'),

@@ -1,8 +1,8 @@
-import 'package:emarket_app/component/custom_categorie_button.dart';
+import 'package:emarket_app/custom_component/custom_categorie_button.dart';
 import 'package:flutter/material.dart';
 
-import '../../component/custom_linear_gradient.dart';
-import '../../component/home_card.dart';
+import '../../custom_component/custom_linear_gradient.dart';
+import '../../custom_component/home_card.dart';
 import '../../model/feetyp.dart';
 import '../../model/post.dart';
 import '../../model/posttyp.dart';

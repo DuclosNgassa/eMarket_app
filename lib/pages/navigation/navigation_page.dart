@@ -4,7 +4,7 @@ import 'package:emarket_app/pages/post/post_page.dart';
 import 'package:emarket_app/pages/search/search_page.dart';
 import 'package:flutter/material.dart';
 
-import '../../component/custom_linear_gradient.dart';
+import '../../custom_component/custom_linear_gradient.dart';
 import '../../model/feetyp.dart';
 import '../../model/post.dart';
 import '../../model/posttyp.dart';

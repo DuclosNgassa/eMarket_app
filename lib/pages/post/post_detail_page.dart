@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../custom_component/custom_linear_gradient.dart';
 import '../../model/post.dart';
-import '../../component/custom_linear_gradient.dart';
 
 class PostDetailPage extends StatefulWidget {
   final Post post;

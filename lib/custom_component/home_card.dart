@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+
 import '../model/post.dart';
-import 'package:http/http.dart' as http;
 import '../pages/post/post_detail_page.dart';
 
 class HomeCard extends StatefulWidget {

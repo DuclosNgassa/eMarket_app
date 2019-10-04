@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+
 import '../converter/date_converter.dart';
-import '../validator/form_validator.dart';
 import '../model/contact.dart';
+import '../validator/form_validator.dart';
 
 
 class PostForm extends StatefulWidget {
