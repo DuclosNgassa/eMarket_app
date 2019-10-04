@@ -23,11 +23,6 @@ class _PostPageState extends State<PostPage> {
             padding: EdgeInsets.symmetric(vertical: 10.0),
             child: CustomScrollView(
               slivers: <Widget>[
-/*                SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1, childAspectRatio: 3.0),
-                  delegate: SliverChildListDelegate([CustomMultiImagePicker()]),
-                ),*/
                 SliverList(
                   delegate: SliverChildListDelegate(
                     [

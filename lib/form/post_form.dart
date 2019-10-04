@@ -15,7 +15,6 @@ import '../model/feetyp.dart';
 import '../model/image.dart' as MyImage;
 import '../model/post.dart';
 import '../model/posttyp.dart';
-import '../model/status.dart';
 import '../services/global.dart';
 import '../services/image_service.dart';
 import '../services/post_service.dart';
@@ -26,10 +25,10 @@ class PostForm extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
-  CustomFormState createState() => new CustomFormState(Colors.lightBlueAccent);
+  PostFormState createState() => new PostFormState(Colors.lightBlueAccent);
 }
 
-class CustomFormState extends State<PostForm> {
+class PostFormState extends State<PostForm> {
   PostService _postService = new PostService();
   ImageService _imageService = new ImageService();
 
@@ -49,7 +48,7 @@ class CustomFormState extends State<PostForm> {
   List<File> images = List<File>();
   List<String> _imageUrls = List<String>();
 
-  CustomFormState(this.color);
+  PostFormState(this.color);
 
   void showMessage(String message, [MaterialColor color = Colors.red]) {
     widget.scaffoldKey.currentState.showSnackBar(new SnackBar(
@@ -330,18 +329,6 @@ class CustomFormState extends State<PostForm> {
                   ),
                 ),
               ),
-
-/*
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: Container(
-                  constraints: new BoxConstraints.expand(),
-                  child: new Image.file(asset),
-                  width: 50,
-                  height: 50,
-                ),
-              ),
-*/
             ),
           );
         },
@@ -419,11 +406,6 @@ class CustomFormState extends State<PostForm> {
     );
   }
 
-  _removePhoto(int index) {
-    images.removeAt(index);
-    setState(() {});
-  }
-
   _takePhoto() async {
     if (images.length < 4) {
       imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
@@ -450,12 +432,61 @@ class CustomFormState extends State<PostForm> {
         ),
       );
 
-  _uploadImage() async {
-/*
-    if (imageFile == null) {
-      return _showSnackbar('Please select image');
+  void _submitForm() async {
+    final FormState form = _formKey.currentState;
+
+    if (!form.validate()) {
+      showMessage('Form is not valide! Please review and correct.');
+    } else if (_categorie.isEmpty) {
+      showMessage(
+          'Veuillez choisir la categorie dans laquelle vous publiez votre post s´il vous pllait.');
+    } else {
+      form.save();
+
+      Post savedPost = await _savePost();
+      await _uploadImage();
+
+      for (var item in _imageUrls) {
+        MyImage.Image newImage = new MyImage.Image();
+        newImage.postid = savedPost.id;
+        newImage.created_at = DateTime.now();
+        newImage.image_url = item;
+        Map<String, dynamic> imageParams = _imageService.toMap(newImage);
+        MyImage.Image savedImage =
+            await _imageService.saveImage(http.Client(), imageParams);
+      }
+
+      //Save ImageUrl and PostId in the DB
+      print('Form save called, newContact is now up to date...');
+      print('Titre: ${newPost.post_typ}');
+      print('Typ: ${newPost.title}');
+      print('Categorie: ${newPost.categorieid}');
+      print('Prix: ${newPost.fee}');
+      print('Typ de prix: ${newPost.fee_typ}');
+      print('Description: ${newPost.description}');
+      print('========================================');
+      print('Submitting to back end...');
+      print('TODO - we will write the submission part next...');
+
+      Navigator.of(context).pop(newPost);
     }
-*/
+  }
+
+  Future<Post> _savePost() async{
+    setFeeTyp(_feeTyp);
+    newPost.categorieid = 1;
+    newPost.post_typ = _postTyp;
+    newPost.userid = 2;
+    newPost.rating = 6;
+    newPost.created_at = DateTime.now();
+    Map<String, dynamic> postParams = newPost.toMap(newPost);
+    Post savedPost = await _postService.savePost(postParams);
+
+    return savedPost;
+  }
+
+  _uploadImage() async {
+
     if (images.isEmpty) {
       return _showSnackbar('Please select image');
     }
@@ -489,7 +520,6 @@ class CustomFormState extends State<PostForm> {
         var response = await request.send();
         var decoded = await response.stream.bytesToString().then(json.decode);
 
-        //Navigator.pop(context);
         if (response.statusCode == HttpStatus.OK) {
           _imageUrls.add('$SERVER_URL/${decoded['path']}');
 
@@ -507,92 +537,26 @@ class CustomFormState extends State<PostForm> {
     }
   }
 
-  void _submitForm() async {
-    final FormState form = _formKey.currentState;
-
-    if (!form.validate()) {
-      showMessage('Form is not valide! Please review and correct.');
-    } else if (_categorie.isEmpty) {
-      showMessage(
-          'Veuiillez choisir la categorie dans laquelle vous publiez votre post s´il vous pllait.');
-    } else {
-      form.save();
-
-      //newPost.category = _categorie;
-      setFeeTyp(_feeTyp);
-      newPost.categorieid = 1;
-      newPost.post_typ = _postTyp;
-
-      Post testPost = Post(
-          id: 2,
-          title: 'Vélo',
-          created_at: new DateTime(2013, 9, 7, 17, 30),
-          post_typ: PostTyp.offer,
-          description: 'description Vélo',
-          fee: 250000,
-          fee_typ: FeeTyp.negotiable,
-          city: 'Ngaoundal',
-          quarter: 'Gare',
-          status: Status.created,
-          rating: 6,
-          userid: 2,
-          categorieid: 1);
-      Map<String, dynamic> postParams = testPost.toMap(testPost);
-      Post savedPost = await _postService.savePost(postParams);
-      await _uploadImage();
-
-      for (var item in _imageUrls) {
-        MyImage.Image newImage = new MyImage.Image();
-        newImage.postid = savedPost.id;
-        newImage.created_at = DateTime.now();
-        newImage.image_url = item;
-        Map<String, dynamic> imageParams = _imageService.toMap(newImage);
-        MyImage.Image savedImage =
-            await _imageService.saveImage(http.Client(), imageParams);
-      }
-
-      //Save ImageUrl and PostId in the DB
-
-      print('Form save called, newContact is now up to date...');
-      print('Titre: ${newPost.post_typ}');
-      print('Typ: ${newPost.title}');
-      print('Categorie: ${newPost.categorieid}');
-      print('Prix: ${newPost.fee}');
-      print('Typ de prix: ${newPost.fee_typ}');
-      print('Description: ${newPost.description}');
-      print('========================================');
-      print('Submitting to back end...');
-      print('TODO - we will write the submission part next...');
-
-      Navigator.of(context).pop(newPost);
-    }
-  }
-
   void setFeeTyp(String newValue) {
     setState(() {
       switch (newValue) {
         case 'Kdo':
           {
-            //_feeTyp = FeeTyp.gift.toString();
             newPost.fee_typ = FeeTyp.gift;
           }
           break;
         case 'Negociable':
           {
-            // _feeTyp = FeeTyp.negotiable.toString();
             newPost.fee_typ = FeeTyp.negotiable;
           }
           break;
         case 'Fixe':
           {
-            //_feeTyp = FeeTyp.fixed.toString();
             newPost.fee_typ = FeeTyp.fixed;
           }
           break;
       }
 
-      // newPost.fee_typ = FeeTyp.negotiable;
-      // _priceTyp = newValue;
     });
   }
 }

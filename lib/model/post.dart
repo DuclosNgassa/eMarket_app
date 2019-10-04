@@ -42,13 +42,13 @@ class Post {
       id: json["id"],
       title: json["title"],
       created_at: DateTime.parse(json["created_at"]),
-      post_typ: json["post_typ"], // TODO Convert to enum
+      post_typ: Post.convertToPostTyp(json["post_typ"]),
       description: json["description"],
-      fee: json["fee"],
-      fee_typ: json["fee_typ"], // TODO Convert to enum
+      fee: int.parse(json["fee"]),
+      fee_typ: Post.convertToFeeTyp(json["fee_typ"]),
       city: json["city"],
       quarter: json["quartier"],
-      status: json["status"], // TODO Convert to enum
+      status: Post.convertToStatus(json["status"]),
       rating: json["rating"],
       userid: json["userid"],
       categorieid: json["categorieid"],
@@ -107,6 +107,62 @@ class Post {
       imageUrl = json.decode(responseBody)['message'];
     } catch (exception) {
       print(exception);
+    }
+  }
+
+
+  static PostTyp convertToPostTyp(String value) {
+    switch (value) {
+      case 'offer':
+        {
+          return PostTyp.offer;
+        }
+        break;
+      case 'search':
+        {
+          return PostTyp.search;
+        }
+        break;
+      case 'all':
+        {
+          return PostTyp.all;
+        }
+        break;
+    }
+  }
+
+  static Status convertToStatus(String value) {
+    switch (value) {
+      case 'done':
+        {
+          return Status.done;
+        }
+        break;
+      case 'created':
+        {
+          return Status.created;
+        }
+        break;
+    }
+  }
+
+  static FeeTyp convertToFeeTyp(String value) {
+    switch (value) {
+      case 'negotiable':
+        {
+          return FeeTyp.negotiable;
+        }
+        break;
+      case 'fixed':
+        {
+          return FeeTyp.fixed;
+        }
+        break;
+      case 'gift':
+        {
+          return FeeTyp.gift;
+        }
+        break;
     }
   }
 
