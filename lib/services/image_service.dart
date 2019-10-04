@@ -48,7 +48,7 @@ class ImageService{
     final response = await client.post(URL_IMAGES, body: params);
     if (response.statusCode == 200) {
       final responseBody = await json.decode(response.body);
-      return Image.fromJson(responseBody);
+      return convertResponseToImage(responseBody);
     } else {
       throw Exception('Failed to save a Image. Error: ${response.toString()}');
     }
@@ -62,4 +62,14 @@ class ImageService{
 
     return params;
   }
+
+  Image convertResponseToImage(Map<String, dynamic> json) {
+    return Image(
+      id: json["data"]["id"],
+      image_url: json["data"]["image_url"],
+      created_at: DateTime.parse(json["data"]["created_at"]),
+      postid: json["data"]["postid"],
+    );
+  }
+
 }

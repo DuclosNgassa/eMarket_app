@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:emarket_app/model/status.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/post/images_detail.dart';
 import 'package:flutter/foundation.dart';
@@ -221,7 +222,6 @@ class PostFormState extends State<PostForm> {
                 ],
               ),
             ),
-
             TextFormField(
               maxLines: 2,
               decoration: const InputDecoration(
@@ -310,7 +310,7 @@ class PostFormState extends State<PostForm> {
                 );
               },
               child: Padding(
-                padding: const EdgeInsets.only(left:8.0),
+                padding: const EdgeInsets.only(left: 8.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16.0),
                   child: Container(
@@ -440,21 +440,14 @@ class PostFormState extends State<PostForm> {
     } else if (_categorie.isEmpty) {
       showMessage(
           'Veuillez choisir la categorie dans laquelle vous publiez votre post s´il vous pllait.');
+    } else if (images.isEmpty) {
+      return showMessage('Veuillez choisir une image s´il vous plait.');
     } else {
       form.save();
 
       Post savedPost = await _savePost();
-      await _uploadImage();
-
-      for (var item in _imageUrls) {
-        MyImage.Image newImage = new MyImage.Image();
-        newImage.postid = savedPost.id;
-        newImage.created_at = DateTime.now();
-        newImage.image_url = item;
-        Map<String, dynamic> imageParams = _imageService.toMap(newImage);
-        MyImage.Image savedImage =
-            await _imageService.saveImage(http.Client(), imageParams);
-      }
+      await _uploadImageToServer();
+      await _saveImages(savedPost);
 
       //Save ImageUrl and PostId in the DB
       print('Form save called, newContact is now up to date...');
@@ -472,12 +465,13 @@ class PostFormState extends State<PostForm> {
     }
   }
 
-  Future<Post> _savePost() async{
+  Future<Post> _savePost() async {
     setFeeTyp(_feeTyp);
     newPost.categorieid = 1;
     newPost.post_typ = _postTyp;
     newPost.userid = 2;
     newPost.rating = 6;
+    newPost.status = Status.created;
     newPost.created_at = DateTime.now();
     Map<String, dynamic> postParams = newPost.toMap(newPost);
     Post savedPost = await _postService.savePost(postParams);
@@ -485,12 +479,7 @@ class PostFormState extends State<PostForm> {
     return savedPost;
   }
 
-  _uploadImage() async {
-
-    if (images.isEmpty) {
-      return _showSnackbar('Please select image');
-    }
-
+  Future _uploadImageToServer() async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -520,7 +509,7 @@ class PostFormState extends State<PostForm> {
         var response = await request.send();
         var decoded = await response.stream.bytesToString().then(json.decode);
 
-        if (response.statusCode == HttpStatus.OK) {
+        if (response.statusCode == HttpStatus.ok) {
           _imageUrls.add('$SERVER_URL/${decoded['path']}');
 
           _showSnackbar(
@@ -534,6 +523,19 @@ class PostFormState extends State<PostForm> {
     } catch (e) {
       Navigator.pop(context);
       _showSnackbar('Image failed: $e');
+    }
+  }
+
+  Future _saveImages(Post savedPost) async {
+    MyImage.Image newImage = new MyImage.Image();
+    newImage.postid = savedPost.id;
+    newImage.created_at = DateTime.now();
+
+    for (var item in _imageUrls) {
+      newImage.image_url = item;
+      Map<String, dynamic> imageParams = _imageService.toMap(newImage);
+      MyImage.Image savedImage =
+      await _imageService.saveImage(http.Client(), imageParams);
     }
   }
 
@@ -556,7 +558,6 @@ class PostFormState extends State<PostForm> {
           }
           break;
       }
-
     });
   }
 }
