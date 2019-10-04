@@ -1,10 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
+
+import 'package:emarket_app/model/image.dart';
+import 'package:http/http.dart' as http;
 
 import '../model/feetyp.dart';
 import '../model/posttyp.dart';
 import '../model/status.dart';
+import '../services/post_service.dart';
 
 class Post {
   int id;
@@ -95,21 +97,15 @@ class Post {
       return;
     }
 
-    HttpClient http = HttpClient();
+    PostService postService = new PostService();
+
     try {
-      // Use darts Uri builder
-      var uri = Uri.http('dog.ceo', '/api/breeds/image/random');
-      var request = await http.getUrl(uri);
-      var response = await request.close();
-      var responseBody = await response.transform(utf8.decoder).join();
-      // The dog.ceo API returns a JSON object with a property
-      // called 'message', which actually is the URL.
-      imageUrl = json.decode(responseBody)['message'];
+      List<Image> imageList = await postService.fetchImages(http.Client(), this.id);
+      imageUrl = imageList.elementAt(0).image_url;
     } catch (exception) {
       print(exception);
     }
   }
-
 
   static PostTyp convertToPostTyp(String value) {
     switch (value) {

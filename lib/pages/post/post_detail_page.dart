@@ -209,7 +209,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
         backgroundColor: Colors.black87,
         appBar: AppBar(
           backgroundColor: Colors.black87,
-          title: Text('Meet ${widget.post.title}'),
+          title: Text('${widget.post.title}'),
         ),
         body: ListView(
           children: <Widget>[

@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:emarket_app/model/image.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/post.dart';
 import '../services/global.dart';
+import '../services/image_service.dart';
 
 class PostService {
+
+  ImageService _imageService = new ImageService();
 
   Future<List<Post>> fetchPosts(http.Client client) async {
     final response = await client.get(URL_POSTS);
@@ -53,5 +57,9 @@ class PostService {
       userid: json["data"]["userid"],
       categorieid: json["data"]["categorieid"],
     );
+  }
+
+  Future<List<Image>> fetchImages(http.Client client, int postId) async {
+    return _imageService.fetchImagesByPostID(client, postId);
   }
 }

@@ -16,7 +16,7 @@ class Image {
     return Image(
       id: json["id"],
       image_url: json["image_url"],
-      created_at: json["created_at"],
+      created_at: DateTime.parse(json["created_at"]),
       postid: json["postid"],
     );
   }

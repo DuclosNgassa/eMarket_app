@@ -18,7 +18,7 @@ class _HomeCardState extends State<HomeCard> {
 
   _HomeCardState(this.post);
 
-  Widget get dogImage {
+  Widget get postImage {
     var dogAvatar;
     if (renderUrl == null) {
       dogAvatar = Hero(
@@ -178,7 +178,7 @@ class _HomeCardState extends State<HomeCard> {
             children: <Widget>[
               Positioned(
                 //top: 7.5,
-                child: dogImage,
+                child: postImage,
               ),
               Positioned(
                 bottom: 0.0,
