@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:emarket_app/model/status.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/post/images_detail.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,13 +51,6 @@ class PostFormState extends State<PostForm> {
   List<String> _imageUrls = List<String>();
 
   PostFormState(this.color);
-
-  void showMessage(String message, [MaterialColor color = Colors.red]) {
-    widget.scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: Text(message),
-      backgroundColor: color,
-    ));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -412,7 +406,7 @@ class PostFormState extends State<PostForm> {
       images.add(imageFile);
       setState(() {});
     } else {
-      _showSnackbar('Vous ne pouvez que telecharger 4 photos');
+      _showMessage('Vous ne pouvez que telecharger 4 photos');
     }
   }
 
@@ -422,26 +416,29 @@ class PostFormState extends State<PostForm> {
       images.add(imageFile);
       setState(() {});
     } else {
-      _showSnackbar('Vous ne pouvez que telecharger 4 photos');
+      _showMessage('Vous ne pouvez que telecharger 4 photos');
     }
   }
 
-  _showSnackbar(String text) => scaffoldKey.currentState?.showSnackBar(
+/*
+  _showSnackbar(String text) => scaffoldKey.currentState.showSnackBar(
         new SnackBar(
           content: new Text(text),
         ),
       );
+*/
 
   void _submitForm() async {
     final FormState form = _formKey.currentState;
 
     if (!form.validate()) {
-      showMessage('Form is not valide! Please review and correct.');
+      _showMessage(
+          'Le formulaire contient des érreurs! Corrigez le s´il vous plait');
     } else if (_categorie.isEmpty) {
-      showMessage(
+      _showMessage(
           'Veuillez choisir la categorie dans laquelle vous publiez votre post s´il vous pllait.');
     } else if (images.isEmpty) {
-      return showMessage('Veuillez choisir une image s´il vous plait.');
+      return _showMessage('Veuillez choisir une image s´il vous plait.');
     } else {
       form.save();
 
@@ -449,19 +446,10 @@ class PostFormState extends State<PostForm> {
       await _uploadImageToServer();
       await _saveImages(savedPost);
 
-      //Save ImageUrl and PostId in the DB
-      print('Form save called, newContact is now up to date...');
-      print('Titre: ${newPost.post_typ}');
-      print('Typ: ${newPost.title}');
-      print('Categorie: ${newPost.categorieid}');
-      print('Prix: ${newPost.fee}');
-      print('Typ de prix: ${newPost.fee_typ}');
-      print('Description: ${newPost.description}');
-      print('========================================');
-      print('Submitting to back end...');
-      print('TODO - we will write the submission part next...');
+      _showInfoFlushbar(context,
+          'Votre Post a été enregistré. Il sera controlé avant d´etre publié.');
 
-      Navigator.of(context).pop(newPost);
+      clearForm();
     }
   }
 
@@ -512,17 +500,15 @@ class PostFormState extends State<PostForm> {
         if (response.statusCode == HttpStatus.ok) {
           _imageUrls.add('$SERVER_URL/${decoded['path']}');
 
-          _showSnackbar(
-              'Image uploaded, imageUrl = $SERVER_URL/${decoded['path']}');
         } else {
-          _showSnackbar('Image failed: ${decoded['message']}');
+          _showMessage('Image failed: ${decoded['message']}');
         }
       }
       Navigator.pop(context); //TODO Check this
       //END LOOP
     } catch (e) {
       Navigator.pop(context);
-      _showSnackbar('Image failed: $e');
+      _showMessage('Image failed: $e');
     }
   }
 
@@ -535,7 +521,7 @@ class PostFormState extends State<PostForm> {
       newImage.image_url = item;
       Map<String, dynamic> imageParams = _imageService.toMap(newImage);
       MyImage.Image savedImage =
-      await _imageService.saveImage(http.Client(), imageParams);
+          await _imageService.saveImage(http.Client(), imageParams);
     }
   }
 
@@ -559,6 +545,35 @@ class PostFormState extends State<PostForm> {
           break;
       }
     });
+  }
+
+  clearForm() {
+    _formKey.currentState?.reset();
+    images.clear();
+    _imageUrls.clear();
+    setState(() {
+    });
+  }
+
+  void _showMessage(String message, [MaterialColor color = Colors.red]) {
+    widget.scaffoldKey.currentState.showSnackBar(new SnackBar(
+      content: Text(message),
+      backgroundColor: color,
+    ));
+  }
+
+  void _showInfoFlushbar(BuildContext context, String message) {
+    Flushbar(
+      title: 'Info',
+      message: message,
+      icon: Icon(
+        Icons.info_outline,
+        size: 28,
+        color: Colors.blue.shade300,
+      ),
+      leftBarIndicatorColor: Colors.blue.shade300,
+      duration: Duration(seconds: 5),
+    )..show(context);
   }
 }
 

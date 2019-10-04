@@ -3,21 +3,22 @@ import 'package:emarket_app/custom_component/home_card.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/search/searchparameter.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import '../../custom_component/custom_button.dart';
 import '../../model/post.dart';
 import '../../model/searchparameter.dart';
+import '../../services/post_service.dart';
 
 class SearchPage extends StatefulWidget {
-  final List<Post> postList;
-
-  SearchPage(this.postList);
-
   @override
   _SearchPageState createState() => new _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
+  List<Post> postList = new List();
+  PostService _postService = new PostService();
+
   String _categorie = '';
   SearchParameter _searchParameter;
   final TextEditingController _controller = new TextEditingController();
@@ -180,7 +181,7 @@ class _SearchPageState extends State<SearchPage> {
       padding: EdgeInsets.all(8.0),
       crossAxisSpacing: 8.0,
       mainAxisSpacing: 5.0,
-      children: widget.postList
+      children: postList
           .map(
             (data) => HomeCard(data),
           )
@@ -236,14 +237,15 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+    _loadPost();
     _isSearching = false;
   }
 
   void searchOperation(String searchText) {
     searchResult.clear();
     if (_isSearching != null) {
-      for (int i = 0; i < widget.postList.length; i++) {
-        Post data = widget.postList[i];
+      for (int i = 0; i < postList.length; i++) {
+        Post data = postList[i];
         if (data.title.toLowerCase().contains(searchText.toLowerCase())) {
           searchResult.add(data);
         }
@@ -285,4 +287,10 @@ class _SearchPageState extends State<SearchPage> {
       print("Searchparameter Categorie: " + _searchParameter.category);
     });
   }
+
+  void _loadPost() async {
+    postList = await _postService.fetchPosts(http.Client());
+    setState(() {});
+  }
+
 }

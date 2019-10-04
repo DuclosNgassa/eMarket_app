@@ -4,10 +4,7 @@ import 'package:http/http.dart' as http;
 
 import '../../custom_component/custom_linear_gradient.dart';
 import '../../custom_component/home_card.dart';
-import '../../model/feetyp.dart';
 import '../../model/post.dart';
-import '../../model/posttyp.dart';
-import '../../model/status.dart';
 import '../../services/post_service.dart';
 
 class HomePage extends StatefulWidget {

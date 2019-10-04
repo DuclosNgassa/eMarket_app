@@ -5,10 +5,6 @@ import 'package:emarket_app/pages/search/search_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../custom_component/custom_linear_gradient.dart';
-import '../../model/feetyp.dart';
-import '../../model/post.dart';
-import '../../model/posttyp.dart';
-import '../../model/status.dart';
 import '../message/message_page.dart';
 
 class NavigationPage extends StatefulWidget {
@@ -17,6 +13,9 @@ class NavigationPage extends StatefulWidget {
 }
 
 class _NavigationPageState extends State<NavigationPage> {
+
+  int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -60,47 +59,15 @@ class _NavigationPageState extends State<NavigationPage> {
     );
   }
 
-  Future _showPostForm() async {
-    Navigator.of(context).pop();
-    Post post = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => PostPage(),
-      ),
-    );
-    if (post != null) {
-      //insert new Post in the postList
-      //send new Post to backend
-
-    }
-  }
-
-  static List<Post> postList = []
-    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
-    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
-    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
-    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
-    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
-    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
-    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
-    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
-    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
-    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
-    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
-    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
-    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2))
-    ..add(Post(id: 2,title: 'Vélo', created_at: new DateTime(2013, 9, 7, 17, 30), post_typ: PostTyp.offer, description: 'description Vélo', fee: 250000, fee_typ: FeeTyp.negotiable, city: 'Ngaoundal', quarter: 'Gare', status: Status.created, rating: 6, userid: 1, categorieid: 2));
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
-  int _selectedIndex = 0;
-
   List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    SearchPage(postList),
+    SearchPage(),
     PostPage(),
     AccountPage(),
     MessagePage(),
