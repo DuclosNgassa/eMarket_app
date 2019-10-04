@@ -10,19 +10,26 @@ class _CategoriePageState extends State<CategoriePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text("Choisissez une categorie"),
+    return WillPopScope(
+      onWillPop: _backPressed,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Center(
+            child: Text("Choisissez une categorie"),
+          ),
+        ),
+        body: ListView.builder(
+          itemBuilder: (BuildContext context, int index) {
+            return _buildCategories(categories[index]);
+          },
+          itemCount: categories.length,
         ),
       ),
-      body: ListView.builder(
-        itemBuilder: (BuildContext context, int index) {
-          return _buildCategories(categories[index]);
-        },
-        itemCount: categories.length,
-      ),
     );
+  }
+
+  Future<bool> _backPressed(){
+     Navigator.of(context).pop('');
   }
 
   Widget _buildCategories(Categorie categorie) {
