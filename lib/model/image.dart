@@ -1,5 +1,3 @@
-
-
 class Image {
   int id;
   String image_url;

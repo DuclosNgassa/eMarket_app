@@ -1,4 +1,7 @@
+import 'package:emarket_app/model/categorie.dart';
 import 'package:flutter/material.dart';
+import '../../services/categorie_service.dart';
+import 'package:http/http.dart' as http;
 
 class CategoriePage extends StatefulWidget {
   @override
@@ -6,7 +9,9 @@ class CategoriePage extends StatefulWidget {
 }
 
 class _CategoriePageState extends State<CategoriePage> {
-  String _categorieChoosed;
+  //String _categorieChoosed;
+  CategorieService _categorieService = new CategorieService();
+  List<Categorie> categories = new List();
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +33,40 @@ class _CategoriePageState extends State<CategoriePage> {
     );
   }
 
-  Future<bool> _backPressed(){
-     Navigator.of(context).pop('');
+  @override
+  void initState() {
+    super.initState();
+    _loadCategorie();
+  }
+
+  Future<bool> _backPressed() {
+    Navigator.of(context).pop('');
   }
 
   Widget _buildCategories(Categorie categorie) {
+    return new ListTile(
+      dense: true,
+      enabled: true,
+      isThreeLine: false,
+      onLongPress: () => print("long press"),
+      onTap: () => submitCategorie(categorie),
+      //subtitle: new Text("Subtitle"),
+      //leading: new Text("Leading"),
+      leading: Icon(IconData(int.parse(categorie.icon), fontFamily: 'MaterialIcons')),
+      selected: true,
+      //trailing: new Text("trailing"),
+      title: new Text(
+        categorie.title,
+        style: TextStyle(
+          //fontWeight: FontWeight.w500,
+          fontSize: 20,
+        ),
+      ),
+    );
+  }
+
+/*
+  Widget _buildCategories(CategorieTile categorie) {
     if (categorie.children.isEmpty)
       return new ListTile(
           dense: true,
@@ -47,740 +81,770 @@ class _CategoriePageState extends State<CategoriePage> {
           title: new Text(categorie.title));
 
     return new ExpansionTile(
-      key: PageStorageKey<Categorie>(categorie),
+      key: PageStorageKey<CategorieTile>(categorie),
       title: new Text(categorie.title),
       children: categorie.children.map(_buildCategories).toList(),
     );
+  }
+*/
+
+/*
+  Future<List<CategorieTile>> _buildCategoriesTileFromService(List<Categorie> categories) async {
+    List<CategorieTile> categorieTiles = new List();
+
+    for(var parent in categories){
+      if(parent.parentid == null){//Take only categorie without parent
+        CategorieTile categorieTileParent = new CategorieTile(parent.title);
+        categorieTileParent.id = parent.id;
+      }
+    }
+  }
+*/
+
+  Future<void> _loadCategorie() async {
+    categories = await _categorieService.fetchCategories(http.Client());
+    setState(() {});
   }
 
   void submitCategorie(Categorie t) {
     Navigator.of(context).pop(t.title);
   }
+
+/*
+  void submitCategorie(CategorieTile t) {
+    Navigator.of(context).pop(t.title);
+  }
+*/
 }
 
-class Categorie {
+/*
+class CategorieTile {
+  int id;
   String title;
-  List<Categorie> children;
+  List<CategorieTile> children;
 
-  Categorie(this.title, [this.children = const <Categorie>[]]);
+  CategorieTile(this.title, [this.children = const <CategorieTile>[]]);
 }
+*/
 
-List<Categorie> categories = <Categorie>[
-  new Categorie(
+/*
+List<CategorieTile> categories = <CategorieTile>[
+  new CategorieTile(
     'Autos, Rad & Boot',
-    <Categorie>[
-      new Categorie('Autos', <Categorie>[
-        new Categorie('Toyota', <Categorie>[
-          new Categorie('Carina 2'),
-          new Categorie('Rav4'),
-          new Categorie('Prado')
+    <CategorieTile>[
+      new CategorieTile('Autos', <CategorieTile>[
+        new CategorieTile('Toyota', <CategorieTile>[
+          new CategorieTile('Carina 2'),
+          new CategorieTile('Rav4'),
+          new CategorieTile('Prado')
         ]),
-        new Categorie('Audi', <Categorie>[
-          new Categorie('A4'),
-          new Categorie('Desperate'),
-          new Categorie('A3')
+        new CategorieTile('Audi', <CategorieTile>[
+          new CategorieTile('A4'),
+          new CategorieTile('Desperate'),
+          new CategorieTile('A3')
         ]),
-        new Categorie('BMW', <Categorie>[
-          new Categorie('X1'),
-          new Categorie('X2'),
-          new Categorie('X5')
+        new CategorieTile('BMW', <CategorieTile>[
+          new CategorieTile('X1'),
+          new CategorieTile('X2'),
+          new CategorieTile('X5')
         ]),
-        new Categorie('Mercedes', <Categorie>[
-          new Categorie('C'),
-          new Categorie('Benz'),
-          new Categorie('Furios')
+        new CategorieTile('Mercedes', <CategorieTile>[
+          new CategorieTile('C'),
+          new CategorieTile('Benz'),
+          new CategorieTile('Furios')
         ]),
-        new Categorie('Ford', <Categorie>[
-          new Categorie('Focus'),
-          new Categorie('Murano'),
-          new Categorie('Fiesto')
+        new CategorieTile('Ford', <CategorieTile>[
+          new CategorieTile('Focus'),
+          new CategorieTile('Murano'),
+          new CategorieTile('Fiesto')
         ]),
-        new Categorie('Citroen', <Categorie>[
-          new Categorie('C4'),
-          new Categorie('Bis'),
-          new Categorie('Futur')
+        new CategorieTile('Citroen', <CategorieTile>[
+          new CategorieTile('C4'),
+          new CategorieTile('Bis'),
+          new CategorieTile('Futur')
         ]),
-        new Categorie('Fiat'),
-        new Categorie('Hyundai'),
-        new Categorie('Jaguar'),
+        new CategorieTile('Fiat'),
+        new CategorieTile('Hyundai'),
+        new CategorieTile('Jaguar'),
       ]),
-      new Categorie('Autoteile & Reifen', <Categorie>[
-        new Categorie('Auto Hifi & Navigation'),
-        new Categorie('Ersatz und Reparaturteile'),
-        new Categorie('Reifen & Felgen'),
-        new Categorie('Tuning & Styling'),
-        new Categorie('Werkzeug'),
-        new Categorie('Weitere Autoteile'),
+      new CategorieTile('Autoteile & Reifen', <CategorieTile>[
+        new CategorieTile('Auto Hifi & Navigation'),
+        new CategorieTile('Ersatz und Reparaturteile'),
+        new CategorieTile('Reifen & Felgen'),
+        new CategorieTile('Tuning & Styling'),
+        new CategorieTile('Werkzeug'),
+        new CategorieTile('Weitere Autoteile'),
       ]),
-      new Categorie('Boote & Bootzubehör', <Categorie>[
-        new Categorie('Motorboote'),
-        new Categorie('Segelboote'),
-        new Categorie('Kleinboote'),
-        new Categorie('Schlauchboote'),
-        new Categorie('Jetski'),
-        new Categorie('Bootstrailer'),
-        new Categorie('Bootliegeplätze'),
-        new Categorie('Bootzubehör'),
-        new Categorie('Weitere Boote'),
+      new CategorieTile('Boote & Bootzubehör', <CategorieTile>[
+        new CategorieTile('Motorboote'),
+        new CategorieTile('Segelboote'),
+        new CategorieTile('Kleinboote'),
+        new CategorieTile('Schlauchboote'),
+        new CategorieTile('Jetski'),
+        new CategorieTile('Bootstrailer'),
+        new CategorieTile('Bootliegeplätze'),
+        new CategorieTile('Bootzubehör'),
+        new CategorieTile('Weitere Boote'),
       ]),
-      new Categorie('Fahrräder & Zubehör', <Categorie>[
-        new Categorie('Damen'),
-        new Categorie('Herren'),
-        new Categorie('Kinder'),
-        new Categorie('Zubehör'),
-        new Categorie('Weitere Fahrräder & Zubehör'),
+      new CategorieTile('Fahrräder & Zubehör', <CategorieTile>[
+        new CategorieTile('Damen'),
+        new CategorieTile('Herren'),
+        new CategorieTile('Kinder'),
+        new CategorieTile('Zubehör'),
+        new CategorieTile('Weitere Fahrräder & Zubehör'),
       ]),
-      new Categorie('Motorräder & Motorroller', <Categorie>[
-        new Categorie('Mofas & Mopeds', <Categorie>[
-          new Categorie('Aprilia'),
-          new Categorie('BMW'),
-          new Categorie('Buell'),
-          new Categorie('Harley'),
-          new Categorie('Honda'),
-          new Categorie('Kymco'),
-          new Categorie('Peugeot'),
-          new Categorie('Piaggo'),
-          new Categorie('Kawasaki'),
+      new CategorieTile('Motorräder & Motorroller', <CategorieTile>[
+        new CategorieTile('Mofas & Mopeds', <CategorieTile>[
+          new CategorieTile('Aprilia'),
+          new CategorieTile('BMW'),
+          new CategorieTile('Buell'),
+          new CategorieTile('Harley'),
+          new CategorieTile('Honda'),
+          new CategorieTile('Kymco'),
+          new CategorieTile('Peugeot'),
+          new CategorieTile('Piaggo'),
+          new CategorieTile('Kawasaki'),
         ]),
-        new Categorie('Motorräder', <Categorie>[
-          new Categorie('Aprilia'),
-          new Categorie('BMW'),
-          new Categorie('Buell'),
-          new Categorie('Harley'),
-          new Categorie('Honda'),
-          new Categorie('Kymco'),
-          new Categorie('Peugeot'),
-          new Categorie('Piaggo'),
-          new Categorie('Kawasaki'),
+        new CategorieTile('Motorräder', <CategorieTile>[
+          new CategorieTile('Aprilia'),
+          new CategorieTile('BMW'),
+          new CategorieTile('Buell'),
+          new CategorieTile('Harley'),
+          new CategorieTile('Honda'),
+          new CategorieTile('Kymco'),
+          new CategorieTile('Peugeot'),
+          new CategorieTile('Piaggo'),
+          new CategorieTile('Kawasaki'),
         ]),
-        new Categorie('Quads', <Categorie>[
-          new Categorie('Aprilia'),
-          new Categorie('BMW'),
-          new Categorie('Buell'),
-          new Categorie('Harley'),
-          new Categorie('Honda'),
-          new Categorie('Kymco'),
-          new Categorie('Peugeot'),
-          new Categorie('Piaggo'),
-          new Categorie('Kawasaki'),
+        new CategorieTile('Quads', <CategorieTile>[
+          new CategorieTile('Aprilia'),
+          new CategorieTile('BMW'),
+          new CategorieTile('Buell'),
+          new CategorieTile('Harley'),
+          new CategorieTile('Honda'),
+          new CategorieTile('Kymco'),
+          new CategorieTile('Peugeot'),
+          new CategorieTile('Piaggo'),
+          new CategorieTile('Kawasaki'),
         ]),
-        new Categorie('Motorroller & Scooter', <Categorie>[
-          new Categorie('Aprilia'),
-          new Categorie('BMW'),
-          new Categorie('Buell'),
-          new Categorie('Harley'),
-          new Categorie('Honda'),
-          new Categorie('Kymco'),
-          new Categorie('Peugeot'),
-          new Categorie('Piaggo'),
-          new Categorie('Kawasaki'),
-        ]),
-      ]),
-      new Categorie('Motorradteile & Zubehör', <Categorie>[
-        new Categorie('Ersatz- & Reparaturteile'),
-        new Categorie('Reifen & Felgen'),
-        new Categorie('Motorradbekleidung'),
-      ]),
-      new Categorie('Nutzfahrzeuge & Anhänger', <Categorie>[
-        new Categorie('Agrarfahrzeuge'),
-        new Categorie('Anhänger'),
-        new Categorie('Baumaschinen'),
-        new Categorie('Busse'),
-        new Categorie('LKW'),
-        new Categorie('Sattelzugmaschinen & Auflieger'),
-        new Categorie('Spatler'),
-        new Categorie('Nutzfahrzeugteile & Zubehör'),
-        new Categorie('Weitere Nutzfahrzeugteile & Anhänger'),
-      ]),
-      new Categorie('Reparaturen & Dienstleistungen'),
-      new Categorie('Wohnwagen & -mobile', <Categorie>[
-        new Categorie('Alkoven', <Categorie>[
-          new Categorie('Adria'),
-          new Categorie('Fiat'),
-          new Categorie('Ford'),
-          new Categorie('Hobby'),
-          new Categorie('Carado')
-        ]),
-        new Categorie('Integrierter', <Categorie>[
-          new Categorie('Adria'),
-          new Categorie('Fiat'),
-          new Categorie('Ford'),
-          new Categorie('Hobby'),
-          new Categorie('Carado')
-        ]),
-        new Categorie('Kastenwagen', <Categorie>[
-          new Categorie('Adria'),
-          new Categorie('Fiat'),
-          new Categorie('Ford'),
-          new Categorie('Hobby'),
-          new Categorie('Carado')
-        ]),
-        new Categorie('Teilintegrierter', <Categorie>[
-          new Categorie('Adria'),
-          new Categorie('Fiat'),
-          new Categorie('Ford'),
-          new Categorie('Hobby'),
-          new Categorie('Carado')
-        ]),
-        new Categorie('Wohnwagen', <Categorie>[
-          new Categorie('Adria'),
-          new Categorie('Fiat'),
-          new Categorie('Ford'),
-          new Categorie('Hobby'),
-          new Categorie('Carado')
-        ]),
-        new Categorie('Weitere Wohnwagen & -mobile', <Categorie>[
-          new Categorie('Adria'),
-          new Categorie('Fiat'),
-          new Categorie('Ford'),
-          new Categorie('Hobby'),
-          new Categorie('Carado')
+        new CategorieTile('Motorroller & Scooter', <CategorieTile>[
+          new CategorieTile('Aprilia'),
+          new CategorieTile('BMW'),
+          new CategorieTile('Buell'),
+          new CategorieTile('Harley'),
+          new CategorieTile('Honda'),
+          new CategorieTile('Kymco'),
+          new CategorieTile('Peugeot'),
+          new CategorieTile('Piaggo'),
+          new CategorieTile('Kawasaki'),
         ]),
       ]),
-      new Categorie('Weiteres Auto, Rad & Boot'),
+      new CategorieTile('Motorradteile & Zubehör', <CategorieTile>[
+        new CategorieTile('Ersatz- & Reparaturteile'),
+        new CategorieTile('Reifen & Felgen'),
+        new CategorieTile('Motorradbekleidung'),
+      ]),
+      new CategorieTile('Nutzfahrzeuge & Anhänger', <CategorieTile>[
+        new CategorieTile('Agrarfahrzeuge'),
+        new CategorieTile('Anhänger'),
+        new CategorieTile('Baumaschinen'),
+        new CategorieTile('Busse'),
+        new CategorieTile('LKW'),
+        new CategorieTile('Sattelzugmaschinen & Auflieger'),
+        new CategorieTile('Spatler'),
+        new CategorieTile('Nutzfahrzeugteile & Zubehör'),
+        new CategorieTile('Weitere Nutzfahrzeugteile & Anhänger'),
+      ]),
+      new CategorieTile('Reparaturen & Dienstleistungen'),
+      new CategorieTile('Wohnwagen & -mobile', <CategorieTile>[
+        new CategorieTile('Alkoven', <CategorieTile>[
+          new CategorieTile('Adria'),
+          new CategorieTile('Fiat'),
+          new CategorieTile('Ford'),
+          new CategorieTile('Hobby'),
+          new CategorieTile('Carado')
+        ]),
+        new CategorieTile('Integrierter', <CategorieTile>[
+          new CategorieTile('Adria'),
+          new CategorieTile('Fiat'),
+          new CategorieTile('Ford'),
+          new CategorieTile('Hobby'),
+          new CategorieTile('Carado')
+        ]),
+        new CategorieTile('Kastenwagen', <CategorieTile>[
+          new CategorieTile('Adria'),
+          new CategorieTile('Fiat'),
+          new CategorieTile('Ford'),
+          new CategorieTile('Hobby'),
+          new CategorieTile('Carado')
+        ]),
+        new CategorieTile('Teilintegrierter', <CategorieTile>[
+          new CategorieTile('Adria'),
+          new CategorieTile('Fiat'),
+          new CategorieTile('Ford'),
+          new CategorieTile('Hobby'),
+          new CategorieTile('Carado')
+        ]),
+        new CategorieTile('Wohnwagen', <CategorieTile>[
+          new CategorieTile('Adria'),
+          new CategorieTile('Fiat'),
+          new CategorieTile('Ford'),
+          new CategorieTile('Hobby'),
+          new CategorieTile('Carado')
+        ]),
+        new CategorieTile('Weitere Wohnwagen & -mobile', <CategorieTile>[
+          new CategorieTile('Adria'),
+          new CategorieTile('Fiat'),
+          new CategorieTile('Ford'),
+          new CategorieTile('Hobby'),
+          new CategorieTile('Carado')
+        ]),
+      ]),
+      new CategorieTile('Weiteres Auto, Rad & Boot'),
     ],
   ),
-  new Categorie('Dienstleistungen', <Categorie>[
-    new Categorie('Altenpflege'),
-    new Categorie('Auto, Rad, Boot'),
-    new Categorie('Babysitter & Kinderbetreuung'),
-    new Categorie('Elektronik'),
-    new Categorie('Haus & Garten'),
-    new Categorie('Künstler & Musiker'),
-    new Categorie('Reise & Event'),
-    new Categorie('Tierbetreuung & Training'),
-    new Categorie('Umzug & Transport'),
-    new Categorie('Weitere Dienstleistungen')
+  new CategorieTile('Dienstleistungen', <CategorieTile>[
+    new CategorieTile('Altenpflege'),
+    new CategorieTile('Auto, Rad, Boot'),
+    new CategorieTile('Babysitter & Kinderbetreuung'),
+    new CategorieTile('Elektronik'),
+    new CategorieTile('Haus & Garten'),
+    new CategorieTile('Künstler & Musiker'),
+    new CategorieTile('Reise & Event'),
+    new CategorieTile('Tierbetreuung & Training'),
+    new CategorieTile('Umzug & Transport'),
+    new CategorieTile('Weitere Dienstleistungen')
   ]),
-  new Categorie('Eintrittskarten & Tickets', <Categorie>[
-    new Categorie('Bahn & ÖPVN'),
-    new Categorie('Comedy & Kabarett'),
-    new Categorie('Gutscheine'),
-    new Categorie('Kinder'),
-    new Categorie('Konzerte'),
-    new Categorie('Sport'),
-    new Categorie('Theater & Musical'),
-    new Categorie('Weitere Eintrittskarten & Tickets')
+  new CategorieTile('Eintrittskarten & Tickets', <CategorieTile>[
+    new CategorieTile('Bahn & ÖPVN'),
+    new CategorieTile('Comedy & Kabarett'),
+    new CategorieTile('Gutscheine'),
+    new CategorieTile('Kinder'),
+    new CategorieTile('Konzerte'),
+    new CategorieTile('Sport'),
+    new CategorieTile('Theater & Musical'),
+    new CategorieTile('Weitere Eintrittskarten & Tickets')
   ]),
-  new Categorie('Elektronik', <Categorie>[
-    new Categorie('Audio & Hifi', <Categorie>[
-      new Categorie('CD Player'),
-      new Categorie('Lautsprächer & Kopfhörer'),
-      new Categorie('MP3 Player'),
-      new Categorie('Radio & Receiver'),
-      new Categorie('Stereoanlagen'),
-      new Categorie('Weiteres Audio & Hifi'),
+  new CategorieTile('Elektronik', <CategorieTile>[
+    new CategorieTile('Audio & Hifi', <CategorieTile>[
+      new CategorieTile('CD Player'),
+      new CategorieTile('Lautsprächer & Kopfhörer'),
+      new CategorieTile('MP3 Player'),
+      new CategorieTile('Radio & Receiver'),
+      new CategorieTile('Stereoanlagen'),
+      new CategorieTile('Weiteres Audio & Hifi'),
     ]),
-    new Categorie('Dienstleistungen Elektronik'),
-    new Categorie('Foto'),
-    new Categorie('Handy & Telefon', <Categorie>[
-      new Categorie('Apple'),
-      new Categorie('HTC'),
-      new Categorie('LG'),
-      new Categorie('Motorola'),
-      new Categorie('Nokia'),
-      new Categorie('Huawai'),
-      new Categorie('Samsung'),
-      new Categorie('Techno'),
-      new Categorie('Sony'),
-      new Categorie('Siemens'),
-      new Categorie('Faxgerät'),
-      new Categorie('Telefone'),
-      new Categorie('Weitere Handys & Telefone')
+    new CategorieTile('Dienstleistungen Elektronik'),
+    new CategorieTile('Foto'),
+    new CategorieTile('Handy & Telefon', <CategorieTile>[
+      new CategorieTile('Apple'),
+      new CategorieTile('HTC'),
+      new CategorieTile('LG'),
+      new CategorieTile('Motorola'),
+      new CategorieTile('Nokia'),
+      new CategorieTile('Huawai'),
+      new CategorieTile('Samsung'),
+      new CategorieTile('Techno'),
+      new CategorieTile('Sony'),
+      new CategorieTile('Siemens'),
+      new CategorieTile('Faxgerät'),
+      new CategorieTile('Telefone'),
+      new CategorieTile('Weitere Handys & Telefone')
     ]),
-    new Categorie('Haushaltsgeräte', <Categorie>[
-      new Categorie('Haushaltskleingeräte'),
-      new Categorie('Herde & Backöfen'),
-      new Categorie('Kaffe & Espressomaschinen'),
-      new Categorie('Kühlschränke & Gefriergeräte'),
-      new Categorie('Spühlmaschinen'),
-      new Categorie('Staubsauger'),
-      new Categorie('Waschmaschinen & Trockner'),
-      new Categorie('Weitere Haushaltsgeräte')
+    new CategorieTile('Haushaltsgeräte', <CategorieTile>[
+      new CategorieTile('Haushaltskleingeräte'),
+      new CategorieTile('Herde & Backöfen'),
+      new CategorieTile('Kaffe & Espressomaschinen'),
+      new CategorieTile('Kühlschränke & Gefriergeräte'),
+      new CategorieTile('Spühlmaschinen'),
+      new CategorieTile('Staubsauger'),
+      new CategorieTile('Waschmaschinen & Trockner'),
+      new CategorieTile('Weitere Haushaltsgeräte')
     ]),
-    new Categorie('Konsole', <Categorie>[
-      new Categorie('Pocket Konsolen'),
-      new Categorie('PlayStation'),
-      new Categorie('Xbox'),
-      new Categorie('Wii'),
-      new Categorie('Gameboy'),
-      new Categorie('Weitere Konsolen')
+    new CategorieTile('Konsole', <CategorieTile>[
+      new CategorieTile('Pocket Konsolen'),
+      new CategorieTile('PlayStation'),
+      new CategorieTile('Xbox'),
+      new CategorieTile('Wii'),
+      new CategorieTile('Gameboy'),
+      new CategorieTile('Weitere Konsolen')
     ]),
-    new Categorie('Notebooks'),
-    new Categorie('PCs'),
-    new Categorie('PC-Zubehör & Software', <Categorie>[
-      new Categorie('Drucker & Scanner'),
-      new Categorie('Festplatten & Laufwerke'),
-      new Categorie('Gehäuser'),
-      new Categorie('Grafikkarten'),
-      new Categorie('Kabel & Adapter'),
-      new Categorie('Mainboards'),
-      new Categorie('Monitore'),
-      new Categorie('Multimedia'),
-      new Categorie('Netzwerk & Modem'),
-      new Categorie('Prozessoren / CPUs'),
-      new Categorie('Speicher'),
-      new Categorie('Software'),
-      new Categorie('Tastatur & Maus'),
-      new Categorie('Weitere PC-Zubehör'),
+    new CategorieTile('Notebooks'),
+    new CategorieTile('PCs'),
+    new CategorieTile('PC-Zubehör & Software', <CategorieTile>[
+      new CategorieTile('Drucker & Scanner'),
+      new CategorieTile('Festplatten & Laufwerke'),
+      new CategorieTile('Gehäuser'),
+      new CategorieTile('Grafikkarten'),
+      new CategorieTile('Kabel & Adapter'),
+      new CategorieTile('Mainboards'),
+      new CategorieTile('Monitore'),
+      new CategorieTile('Multimedia'),
+      new CategorieTile('Netzwerk & Modem'),
+      new CategorieTile('Prozessoren / CPUs'),
+      new CategorieTile('Speicher'),
+      new CategorieTile('Software'),
+      new CategorieTile('Tastatur & Maus'),
+      new CategorieTile('Weitere PC-Zubehör'),
     ]),
-    new Categorie('Tablets & Reader', <Categorie>[
-      new Categorie('iPad'),
-      new Categorie('Kindle'),
-      new Categorie('Samsung Tablets'),
-      new Categorie('Huawai Tablets'),
-      new Categorie('Weitere Tablets & Reader')
+    new CategorieTile('Tablets & Reader', <CategorieTile>[
+      new CategorieTile('iPad'),
+      new CategorieTile('Kindle'),
+      new CategorieTile('Samsung Tablets'),
+      new CategorieTile('Huawai Tablets'),
+      new CategorieTile('Weitere Tablets & Reader')
     ]),
-    new Categorie('TV & Video', <Categorie>[
-      new Categorie('DVD-Player & Recorder'),
-      new Categorie('Fernseher'),
-      new Categorie('TV-Receiver'),
-      new Categorie('Weitere TV & Video')
+    new CategorieTile('TV & Video', <CategorieTile>[
+      new CategorieTile('DVD-Player & Recorder'),
+      new CategorieTile('Fernseher'),
+      new CategorieTile('TV-Receiver'),
+      new CategorieTile('Weitere TV & Video')
     ]),
-    new Categorie('Videospiele', <Categorie>[
-      new Categorie('DS(i)- & PSP Spiele'),
-      new Categorie('Nintendo Spiele'),
-      new Categorie('PlayStation Spiele'),
-      new Categorie('Xbox Spiele'),
-      new Categorie('Wii Spiele'),
-      new Categorie('PC Spiele'),
-      new Categorie('Weitere Videospiele')
+    new CategorieTile('Videospiele', <CategorieTile>[
+      new CategorieTile('DS(i)- & PSP Spiele'),
+      new CategorieTile('Nintendo Spiele'),
+      new CategorieTile('PlayStation Spiele'),
+      new CategorieTile('Xbox Spiele'),
+      new CategorieTile('Wii Spiele'),
+      new CategorieTile('PC Spiele'),
+      new CategorieTile('Weitere Videospiele')
     ]),
-    new Categorie('Weitere Elektronik')
+    new CategorieTile('Weitere Elektronik')
   ]),
-  new Categorie('Familie, Kind & Baby', <Categorie>[
-    new Categorie('Altenpflege'),
-    new Categorie('Baby- & Kinderkleidung', [
-      new Categorie('< 56'),
-      new Categorie('56'),
-      new Categorie('68'),
-      new Categorie('74'),
-      new Categorie('80'),
-      new Categorie('86'),
-      new Categorie('Autres tailles'),
+  new CategorieTile('Familie, Kind & Baby', <CategorieTile>[
+    new CategorieTile('Altenpflege'),
+    new CategorieTile('Baby- & Kinderkleidung', [
+      new CategorieTile('< 56'),
+      new CategorieTile('56'),
+      new CategorieTile('68'),
+      new CategorieTile('74'),
+      new CategorieTile('80'),
+      new CategorieTile('86'),
+      new CategorieTile('Autres tailles'),
     ]),
-    new Categorie('Baby- & Kinderschuhe', <Categorie>[
-      new Categorie('< 20'),
-      new Categorie('20'),
-      new Categorie('21'),
-      new Categorie('22'),
-      new Categorie('23'),
-      new Categorie('24'),
-      new Categorie('Autres tailles'),
+    new CategorieTile('Baby- & Kinderschuhe', <CategorieTile>[
+      new CategorieTile('< 20'),
+      new CategorieTile('20'),
+      new CategorieTile('21'),
+      new CategorieTile('22'),
+      new CategorieTile('23'),
+      new CategorieTile('24'),
+      new CategorieTile('Autres tailles'),
     ]),
-    new Categorie('Baby-Ausstatung'),
-    new Categorie('Babyschalen & Kindersitze'),
-    new Categorie('Babysitter & Kinderbetreuung'),
-    new Categorie('Kinderwagen & Buggys'),
-    new Categorie('Kinderzimmermöbel', <Categorie>[
-      new Categorie('Betten & Wiegen'),
-      new Categorie('Hochstühle & Laufställe'),
-      new Categorie('Schränke & Kommoden'),
-      new Categorie('Wickeltische & Zubehör'),
-      new Categorie('Wippen & Schaukeln'),
-      new Categorie('Autres meubles pour chambre d´enfants'),
+    new CategorieTile('Baby-Ausstatung'),
+    new CategorieTile('Babyschalen & Kindersitze'),
+    new CategorieTile('Babysitter & Kinderbetreuung'),
+    new CategorieTile('Kinderwagen & Buggys'),
+    new CategorieTile('Kinderzimmermöbel', <CategorieTile>[
+      new CategorieTile('Betten & Wiegen'),
+      new CategorieTile('Hochstühle & Laufställe'),
+      new CategorieTile('Schränke & Kommoden'),
+      new CategorieTile('Wickeltische & Zubehör'),
+      new CategorieTile('Wippen & Schaukeln'),
+      new CategorieTile('Autres meubles pour chambre d´enfants'),
     ]),
-    new Categorie('Spielzeug', <Categorie>[
-      new Categorie('Action- & Spielfiguren'),
-      new Categorie('Babyspielzeug'),
-      new Categorie('Barbie & Co'),
-      new Categorie('Dreirad & Co'),
-      new Categorie('Gesellschaftspiele'),
-      new Categorie('Holzspielzeug'),
-      new Categorie('LEGO & Duplo'),
-      new Categorie('Lernspielzeug'),
-      new Categorie('Playmobil'),
-      new Categorie('Puppen'),
-      new Categorie('Spielzeugautos'),
-      new Categorie('Spielzeug für draußen'),
-      new Categorie('Stofftiere'),
-      new Categorie('Weitere Spielzeug'),
+    new CategorieTile('Spielzeug', <CategorieTile>[
+      new CategorieTile('Action- & Spielfiguren'),
+      new CategorieTile('Babyspielzeug'),
+      new CategorieTile('Barbie & Co'),
+      new CategorieTile('Dreirad & Co'),
+      new CategorieTile('Gesellschaftspiele'),
+      new CategorieTile('Holzspielzeug'),
+      new CategorieTile('LEGO & Duplo'),
+      new CategorieTile('Lernspielzeug'),
+      new CategorieTile('Playmobil'),
+      new CategorieTile('Puppen'),
+      new CategorieTile('Spielzeugautos'),
+      new CategorieTile('Spielzeug für draußen'),
+      new CategorieTile('Stofftiere'),
+      new CategorieTile('Weitere Spielzeug'),
     ]),
-    new Categorie('Weitere Familie, Kind & Baby')
+    new CategorieTile('Weitere Familie, Kind & Baby')
   ]),
-  new Categorie('Freizeit, Hoby & Nachbarschaft', <Categorie>[
-    new Categorie('Essen & Trinken'),
-    new Categorie('Freizeitaktivitäten'),
-    new Categorie('Handarbeit, Basteln & Kunsthandwerk'),
-    new Categorie('Kunst & Antiquitäten'),
-    new Categorie('Künstler & Musiker'),
-    new Categorie('Modellbau'),
-    new Categorie('Reise & Eventservices'),
-    new Categorie('Sammeln', <Categorie>[
-      new Categorie('Ansichts- & Postkarte'),
-      new Categorie('Autogramme'),
-      new Categorie('Brierkrüge & -gläser'),
-      new Categorie('Briefmarken'),
-      new Categorie('Comics'),
-      new Categorie('Flaggen'),
-      new Categorie('Münzen'),
-      new Categorie('Porzellan'),
-      new Categorie('Puppen & Puppenzubehör'),
-      new Categorie('Sammelbilder & Sticker'),
-      new Categorie('Sammelkartenspiele'),
-      new Categorie('Weitere Sammel'),
+  new CategorieTile('Freizeit, Hoby & Nachbarschaft', <CategorieTile>[
+    new CategorieTile('Essen & Trinken'),
+    new CategorieTile('Freizeitaktivitäten'),
+    new CategorieTile('Handarbeit, Basteln & Kunsthandwerk'),
+    new CategorieTile('Kunst & Antiquitäten'),
+    new CategorieTile('Künstler & Musiker'),
+    new CategorieTile('Modellbau'),
+    new CategorieTile('Reise & Eventservices'),
+    new CategorieTile('Sammeln', <CategorieTile>[
+      new CategorieTile('Ansichts- & Postkarte'),
+      new CategorieTile('Autogramme'),
+      new CategorieTile('Brierkrüge & -gläser'),
+      new CategorieTile('Briefmarken'),
+      new CategorieTile('Comics'),
+      new CategorieTile('Flaggen'),
+      new CategorieTile('Münzen'),
+      new CategorieTile('Porzellan'),
+      new CategorieTile('Puppen & Puppenzubehör'),
+      new CategorieTile('Sammelbilder & Sticker'),
+      new CategorieTile('Sammelkartenspiele'),
+      new CategorieTile('Weitere Sammel'),
     ]),
-    new Categorie('Sport & Camping', <Categorie>[
-      new Categorie('Ballsport'),
-      new Categorie('Camping & Outdoor'),
-      new Categorie('Fitness'),
-      new Categorie('Radsport'),
-      new Categorie('Tanzen & Laufen'),
-      new Categorie('Wassersport'),
-      new Categorie('Weitere Sport & Camping'),
+    new CategorieTile('Sport & Camping', <CategorieTile>[
+      new CategorieTile('Ballsport'),
+      new CategorieTile('Camping & Outdoor'),
+      new CategorieTile('Fitness'),
+      new CategorieTile('Radsport'),
+      new CategorieTile('Tanzen & Laufen'),
+      new CategorieTile('Wassersport'),
+      new CategorieTile('Weitere Sport & Camping'),
     ]),
-    new Categorie('Trödel'),
-    new Categorie('Verloren & Gefunden'),
-    new Categorie('Weitere Freizeit, Hoby & Nachbarschaft'),
+    new CategorieTile('Trödel'),
+    new CategorieTile('Verloren & Gefunden'),
+    new CategorieTile('Weitere Freizeit, Hoby & Nachbarschaft'),
   ]),
-  new Categorie('Haus & Garten', <Categorie>[
-    new Categorie('Badezimmer'),
-    new Categorie('Büro'),
-    new Categorie('Dekoration'),
-    new Categorie('Dienstleistungen Haus & Garten', <Categorie>[
-      new Categorie('Bau & Handwerk'),
-      new Categorie('Garten- & Landschaftsbau'),
-      new Categorie('Haushaltshilfe'),
-      new Categorie('Reinigungsservice'),
-      new Categorie('Reparaturen'),
-      new Categorie('Weitere Dienstleistungen Haus & Garten'),
+  new CategorieTile('Haus & Garten', <CategorieTile>[
+    new CategorieTile('Badezimmer'),
+    new CategorieTile('Büro'),
+    new CategorieTile('Dekoration'),
+    new CategorieTile('Dienstleistungen Haus & Garten', <CategorieTile>[
+      new CategorieTile('Bau & Handwerk'),
+      new CategorieTile('Garten- & Landschaftsbau'),
+      new CategorieTile('Haushaltshilfe'),
+      new CategorieTile('Reinigungsservice'),
+      new CategorieTile('Reparaturen'),
+      new CategorieTile('Weitere Dienstleistungen Haus & Garten'),
     ]),
-    new Categorie('Gartenzubehör & Pflanzen', <Categorie>[
-      new Categorie('Blumentöpfe'),
-      new Categorie('Dekoration'),
-      new Categorie('Gartengeräte'),
-      new Categorie('Gartenmöbel'),
-      new Categorie('Pflanzen'),
-      new Categorie('Weitere Gartenzubehör & Pflanzen'),
+    new CategorieTile('Gartenzubehör & Pflanzen', <CategorieTile>[
+      new CategorieTile('Blumentöpfe'),
+      new CategorieTile('Dekoration'),
+      new CategorieTile('Gartengeräte'),
+      new CategorieTile('Gartenmöbel'),
+      new CategorieTile('Pflanzen'),
+      new CategorieTile('Weitere Gartenzubehör & Pflanzen'),
     ]),
-    new Categorie('Heimtextilien'),
-    new Categorie('Heimwerken'),
-    new Categorie('Küche & Zimmer', <Categorie>[
-      new Categorie('Besteck'),
-      new Categorie('Geschirr'),
-      new Categorie('Gläser'),
-      new Categorie('Kleingeräte'),
-      new Categorie('Küchenschränke'),
-      new Categorie('Stühle'),
-      new Categorie('Tisch'),
-      new Categorie('Weiteres Küche & Zimmer'),
+    new CategorieTile('Heimtextilien'),
+    new CategorieTile('Heimwerken'),
+    new CategorieTile('Küche & Zimmer', <CategorieTile>[
+      new CategorieTile('Besteck'),
+      new CategorieTile('Geschirr'),
+      new CategorieTile('Gläser'),
+      new CategorieTile('Kleingeräte'),
+      new CategorieTile('Küchenschränke'),
+      new CategorieTile('Stühle'),
+      new CategorieTile('Tisch'),
+      new CategorieTile('Weiteres Küche & Zimmer'),
     ]),
-    new Categorie('Lampen & Licht'),
-    new Categorie('Schlafzimmer', <Categorie>[
-      new Categorie('Betten'),
-      new Categorie('Lattenroste'),
-      new Categorie('Matratzen'),
-      new Categorie('Nachttische'),
-      new Categorie('Küchenschränke'),
-      new Categorie('Schränke'),
-      new Categorie('Weiteres Schlafzimmer'),
+    new CategorieTile('Lampen & Licht'),
+    new CategorieTile('Schlafzimmer', <CategorieTile>[
+      new CategorieTile('Betten'),
+      new CategorieTile('Lattenroste'),
+      new CategorieTile('Matratzen'),
+      new CategorieTile('Nachttische'),
+      new CategorieTile('Küchenschränke'),
+      new CategorieTile('Schränke'),
+      new CategorieTile('Weiteres Schlafzimmer'),
     ]),
-    new Categorie('Wohnzimmer', <Categorie>[
-      new Categorie('Regale'),
-      new Categorie('Schränke & Schrankwände'),
-      new Categorie('Sitzmöbel'),
-      new Categorie('Sofas & Sitzgarnituren'),
-      new Categorie('Tische'),
-      new Categorie('TV & Phonomöbel'),
-      new Categorie('Weiteres Wohnzimmer'),
+    new CategorieTile('Wohnzimmer', <CategorieTile>[
+      new CategorieTile('Regale'),
+      new CategorieTile('Schränke & Schrankwände'),
+      new CategorieTile('Sitzmöbel'),
+      new CategorieTile('Sofas & Sitzgarnituren'),
+      new CategorieTile('Tische'),
+      new CategorieTile('TV & Phonomöbel'),
+      new CategorieTile('Weiteres Wohnzimmer'),
     ]),
-    new Categorie('Weitere Haus & Garten'),
+    new CategorieTile('Weitere Haus & Garten'),
   ]),
-  new Categorie('Haustiere', <Categorie>[
-    new Categorie('Fische'),
-    new Categorie('Hunde'),
-    new Categorie('Katzen'),
-    new Categorie('Kleintiere'),
-    new Categorie('Pferde'),
-    new Categorie('Reptilien'),
-    new Categorie('Tierbetreuung & Training'),
-    new Categorie('Vermisste Tiere'),
-    new Categorie('Vögel'),
-    new Categorie('Zubehör'),
-    new Categorie('Weiteres Haustiere'),
+  new CategorieTile('Haustiere', <CategorieTile>[
+    new CategorieTile('Fische'),
+    new CategorieTile('Hunde'),
+    new CategorieTile('Katzen'),
+    new CategorieTile('Kleintiere'),
+    new CategorieTile('Pferde'),
+    new CategorieTile('Reptilien'),
+    new CategorieTile('Tierbetreuung & Training'),
+    new CategorieTile('Vermisste Tiere'),
+    new CategorieTile('Vögel'),
+    new CategorieTile('Zubehör'),
+    new CategorieTile('Weiteres Haustiere'),
   ]),
-  new Categorie('Immobilien', <Categorie>[
-    new Categorie('Auf Zeit & WG', <Categorie>[
-      new Categorie('befristet'),
-      new Categorie('unbefristet'),
+  new CategorieTile('Immobilien', <CategorieTile>[
+    new CategorieTile('Auf Zeit & WG', <CategorieTile>[
+      new CategorieTile('befristet'),
+      new CategorieTile('unbefristet'),
     ]),
-    new Categorie('Eigentumswohnungen'),
-    new Categorie('Ferien- & Auslandsimmobilien', <Categorie>[
-      new Categorie('Kaufen'),
-      new Categorie('Mieten'),
+    new CategorieTile('Eigentumswohnungen'),
+    new CategorieTile('Ferien- & Auslandsimmobilien', <CategorieTile>[
+      new CategorieTile('Kaufen'),
+      new CategorieTile('Mieten'),
     ]),
-    new Categorie('Garagen & Stellplätze', <Categorie>[
-      new Categorie('Kaufen'),
-      new Categorie('Mieten'),
+    new CategorieTile('Garagen & Stellplätze', <CategorieTile>[
+      new CategorieTile('Kaufen'),
+      new CategorieTile('Mieten'),
     ]),
-    new Categorie('Gewerbeimmobilien', <Categorie>[
-      new Categorie('Kaufen'),
-      new Categorie('Mieten'),
+    new CategorieTile('Gewerbeimmobilien', <CategorieTile>[
+      new CategorieTile('Kaufen'),
+      new CategorieTile('Mieten'),
     ]),
-    new Categorie('Grundstücke & Gärten', <Categorie>[
-      new Categorie('Baugrunstück', <Categorie>[
-        new Categorie('Kaufen'),
-        new Categorie('Mieten'),
+    new CategorieTile('Grundstücke & Gärten', <CategorieTile>[
+      new CategorieTile('Baugrunstück', <CategorieTile>[
+        new CategorieTile('Kaufen'),
+        new CategorieTile('Mieten'),
       ]),
-      new Categorie('Garten', <Categorie>[
-        new Categorie('Kaufen'),
-        new Categorie('Mieten'),
+      new CategorieTile('Garten', <CategorieTile>[
+        new CategorieTile('Kaufen'),
+        new CategorieTile('Mieten'),
       ]),
-      new Categorie('Land-/Forstwirtschaft', <Categorie>[
-        new Categorie('Kaufen'),
-        new Categorie('Mieten'),
+      new CategorieTile('Land-/Forstwirtschaft', <CategorieTile>[
+        new CategorieTile('Kaufen'),
+        new CategorieTile('Mieten'),
       ]),
-      new Categorie('Weitere Grundstücke & Gärten', <Categorie>[
-        new Categorie('Kaufen'),
-        new Categorie('Mieten'),
+      new CategorieTile('Weitere Grundstücke & Gärten', <CategorieTile>[
+        new CategorieTile('Kaufen'),
+        new CategorieTile('Mieten'),
       ]),
     ]),
-    new Categorie('Häuser zum Kauf'),
-    new Categorie('Häuser zr Miete'),
-    new Categorie('Mietwohnungen'),
-    new Categorie('Umzug & Transport'),
-    new Categorie('Weiteres Immobilien'),
+    new CategorieTile('Häuser zum Kauf'),
+    new CategorieTile('Häuser zr Miete'),
+    new CategorieTile('Mietwohnungen'),
+    new CategorieTile('Umzug & Transport'),
+    new CategorieTile('Weiteres Immobilien'),
   ]),
-  new Categorie('Jobs', <Categorie>[
-    new Categorie('Ausbildung'),
-    new Categorie('Bau, Handwerk & Produktion', <Categorie>[
-      new Categorie('Bauhelfer'),
-      new Categorie('Dachdecker'),
-      new Categorie('Elektriker'),
-      new Categorie('Fliesenleger'),
-      new Categorie('Maler'),
-      new Categorie('Maurer'),
-      new Categorie('Produktionshelfer'),
-      new Categorie('Schlosser'),
-      new Categorie('Tischler'),
-      new Categorie('Weitere Berufe'),
+  new CategorieTile('Jobs', <CategorieTile>[
+    new CategorieTile('Ausbildung'),
+    new CategorieTile('Bau, Handwerk & Produktion', <CategorieTile>[
+      new CategorieTile('Bauhelfer'),
+      new CategorieTile('Dachdecker'),
+      new CategorieTile('Elektriker'),
+      new CategorieTile('Fliesenleger'),
+      new CategorieTile('Maler'),
+      new CategorieTile('Maurer'),
+      new CategorieTile('Produktionshelfer'),
+      new CategorieTile('Schlosser'),
+      new CategorieTile('Tischler'),
+      new CategorieTile('Weitere Berufe'),
     ]),
-    new Categorie('Büroarbeit & Verwaltung', <Categorie>[
-      new Categorie('Buchhalter'),
-      new Categorie('Bürokauffrau/-mann'),
-      new Categorie('Sachbearbeiter/in'),
-      new Categorie('Sekretärin'),
-      new Categorie('Weitere Berufe'),
+    new CategorieTile('Büroarbeit & Verwaltung', <CategorieTile>[
+      new CategorieTile('Buchhalter'),
+      new CategorieTile('Bürokauffrau/-mann'),
+      new CategorieTile('Sachbearbeiter/in'),
+      new CategorieTile('Sekretärin'),
+      new CategorieTile('Weitere Berufe'),
     ]),
-    new Categorie('Gastronomie & Tourismus', <Categorie>[
-      new Categorie('Barkeeper'),
-      new Categorie('Hotelfachfrau/mann'),
-      new Categorie('Kellner/-in'),
-      new Categorie('Koch/Köchin'),
-      new Categorie('Küchenhilfe'),
-      new Categorie('Servicekraft'),
-      new Categorie('Zimmermädchen'),
-      new Categorie('Weitere Berufe'),
+    new CategorieTile('Gastronomie & Tourismus', <CategorieTile>[
+      new CategorieTile('Barkeeper'),
+      new CategorieTile('Hotelfachfrau/mann'),
+      new CategorieTile('Kellner/-in'),
+      new CategorieTile('Koch/Köchin'),
+      new CategorieTile('Küchenhilfe'),
+      new CategorieTile('Servicekraft'),
+      new CategorieTile('Zimmermädchen'),
+      new CategorieTile('Weitere Berufe'),
     ]),
-    new Categorie('Kundenservice & Call Center'),
-    new Categorie('Mini- & Nebenjobs'),
-    new Categorie('Praktika'),
-    new Categorie('Sozialer Sektor & Pflege', <Categorie>[
-      new Categorie('Altenpfleger/-in'),
-      new Categorie('Arzthelfer/-in'),
-      new Categorie('Erzieher/-in'),
-      new Categorie('Krankenschwester / Krankenpfleger'),
-      new Categorie('Physiotherapeut/-in'),
-      new Categorie('Weitere Berufe'),
+    new CategorieTile('Kundenservice & Call Center'),
+    new CategorieTile('Mini- & Nebenjobs'),
+    new CategorieTile('Praktika'),
+    new CategorieTile('Sozialer Sektor & Pflege', <CategorieTile>[
+      new CategorieTile('Altenpfleger/-in'),
+      new CategorieTile('Arzthelfer/-in'),
+      new CategorieTile('Erzieher/-in'),
+      new CategorieTile('Krankenschwester / Krankenpfleger'),
+      new CategorieTile('Physiotherapeut/-in'),
+      new CategorieTile('Weitere Berufe'),
     ]),
-    new Categorie('Transport, Logistik & Verkehr', <Categorie>[
-      new Categorie('Kraftfahrer'),
-      new Categorie('Kurierfahrer'),
-      new Categorie('Lagerhelfer'),
-      new Categorie('Stapelfahrer'),
-      new Categorie('Weitere Berufe'),
+    new CategorieTile('Transport, Logistik & Verkehr', <CategorieTile>[
+      new CategorieTile('Kraftfahrer'),
+      new CategorieTile('Kurierfahrer'),
+      new CategorieTile('Lagerhelfer'),
+      new CategorieTile('Stapelfahrer'),
+      new CategorieTile('Weitere Berufe'),
     ]),
-    new Categorie('Vertrieb, Einkauf & Verkauf', <Categorie>[
-      new Categorie('Buchhalter/-in'),
-      new Categorie('Immobilienmakler'),
-      new Categorie('Kaufmann/frau'),
-      new Categorie('Verkäufer/-in'),
-      new Categorie('Weitere Berufe'),
+    new CategorieTile('Vertrieb, Einkauf & Verkauf', <CategorieTile>[
+      new CategorieTile('Buchhalter/-in'),
+      new CategorieTile('Immobilienmakler'),
+      new CategorieTile('Kaufmann/frau'),
+      new CategorieTile('Verkäufer/-in'),
+      new CategorieTile('Weitere Berufe'),
     ]),
-    new Categorie('Weitere Jobs', <Categorie>[
-      new Categorie('Designer/grafiker'),
-      new Categorie('Friseur/-in'),
-      new Categorie('Haushaltshilfe'),
-      new Categorie('Hausmeister'),
-      new Categorie('Reinigungskraft'),
-      new Categorie('Weitere Berufe'),
+    new CategorieTile('Weitere Jobs', <CategorieTile>[
+      new CategorieTile('Designer/grafiker'),
+      new CategorieTile('Friseur/-in'),
+      new CategorieTile('Haushaltshilfe'),
+      new CategorieTile('Hausmeister'),
+      new CategorieTile('Reinigungskraft'),
+      new CategorieTile('Weitere Berufe'),
     ]),
   ]),
-  new Categorie('Mode & Beauty', <Categorie>[
-    new Categorie('Accessoires & Schmuck'),
-    new Categorie('Beauty & Gesundheit', <Categorie>[
-      new Categorie('Make-Up & Gesichtspflege'),
-      new Categorie('Haarpflege'),
-      new Categorie('Körperpflege'),
-      new Categorie('Hand- & Nagelpflege'),
-      new Categorie('Gesundheit'),
-      new Categorie('Weiteres Beauty & Gesundheit'),
+  new CategorieTile('Mode & Beauty', <CategorieTile>[
+    new CategorieTile('Accessoires & Schmuck'),
+    new CategorieTile('Beauty & Gesundheit', <CategorieTile>[
+      new CategorieTile('Make-Up & Gesichtspflege'),
+      new CategorieTile('Haarpflege'),
+      new CategorieTile('Körperpflege'),
+      new CategorieTile('Hand- & Nagelpflege'),
+      new CategorieTile('Gesundheit'),
+      new CategorieTile('Weiteres Beauty & Gesundheit'),
     ]),
-    new Categorie('Damenbekleidung', <Categorie>[
-      new Categorie('Hemden & Blusen', <Categorie>[
-        new Categorie('XS'),
-        new Categorie('S'),
-        new Categorie('M'),
-        new Categorie('L'),
-        new Categorie('XL'),
-        new Categorie('XXL'),
+    new CategorieTile('Damenbekleidung', <CategorieTile>[
+      new CategorieTile('Hemden & Blusen', <CategorieTile>[
+        new CategorieTile('XS'),
+        new CategorieTile('S'),
+        new CategorieTile('M'),
+        new CategorieTile('L'),
+        new CategorieTile('XL'),
+        new CategorieTile('XXL'),
       ]),
-      new Categorie('Hosen', <Categorie>[
-        new Categorie('XS'),
-        new Categorie('S'),
-        new Categorie('M'),
-        new Categorie('L'),
-        new Categorie('XL'),
-        new Categorie('XXL'),
+      new CategorieTile('Hosen', <CategorieTile>[
+        new CategorieTile('XS'),
+        new CategorieTile('S'),
+        new CategorieTile('M'),
+        new CategorieTile('L'),
+        new CategorieTile('XL'),
+        new CategorieTile('XXL'),
       ]),
-      new Categorie('Jacken & Mäntel', <Categorie>[
-        new Categorie('XS'),
-        new Categorie('S'),
-        new Categorie('M'),
-        new Categorie('L'),
-        new Categorie('XL'),
-        new Categorie('XXL'),
+      new CategorieTile('Jacken & Mäntel', <CategorieTile>[
+        new CategorieTile('XS'),
+        new CategorieTile('S'),
+        new CategorieTile('M'),
+        new CategorieTile('L'),
+        new CategorieTile('XL'),
+        new CategorieTile('XXL'),
       ]),
-      new Categorie('Pullover', <Categorie>[
-        new Categorie('XS'),
-        new Categorie('S'),
-        new Categorie('M'),
-        new Categorie('L'),
-        new Categorie('XL'),
-        new Categorie('XXL'),
+      new CategorieTile('Pullover', <CategorieTile>[
+        new CategorieTile('XS'),
+        new CategorieTile('S'),
+        new CategorieTile('M'),
+        new CategorieTile('L'),
+        new CategorieTile('XL'),
+        new CategorieTile('XXL'),
       ]),
-      new Categorie('Röcke & Kleider', <Categorie>[
-        new Categorie('XS'),
-        new Categorie('S'),
-        new Categorie('M'),
-        new Categorie('L'),
-        new Categorie('XL'),
-        new Categorie('XXL'),
+      new CategorieTile('Röcke & Kleider', <CategorieTile>[
+        new CategorieTile('XS'),
+        new CategorieTile('S'),
+        new CategorieTile('M'),
+        new CategorieTile('L'),
+        new CategorieTile('XL'),
+        new CategorieTile('XXL'),
       ]),
-      new Categorie('Shirts & Tops', <Categorie>[
-        new Categorie('XS'),
-        new Categorie('S'),
-        new Categorie('M'),
-        new Categorie('L'),
-        new Categorie('XL'),
-        new Categorie('XXL'),
+      new CategorieTile('Shirts & Tops', <CategorieTile>[
+        new CategorieTile('XS'),
+        new CategorieTile('S'),
+        new CategorieTile('M'),
+        new CategorieTile('L'),
+        new CategorieTile('XL'),
+        new CategorieTile('XXL'),
       ]),
-      new Categorie('Umstandsmode', <Categorie>[
-        new Categorie('XS'),
-        new Categorie('S'),
-        new Categorie('M'),
-        new Categorie('L'),
-        new Categorie('XL'),
-        new Categorie('XXL'),
+      new CategorieTile('Umstandsmode', <CategorieTile>[
+        new CategorieTile('XS'),
+        new CategorieTile('S'),
+        new CategorieTile('M'),
+        new CategorieTile('L'),
+        new CategorieTile('XL'),
+        new CategorieTile('XXL'),
       ]),
-      new Categorie('Weitere Damenbekleidung', <Categorie>[
-        new Categorie('XS'),
-        new Categorie('S'),
-        new Categorie('M'),
-        new Categorie('L'),
-        new Categorie('XL'),
-        new Categorie('XXL'),
-      ]),
-    ]),
-    new Categorie('Damenschuhe', <Categorie>[
-      new Categorie('< 36'),
-      new Categorie('36'),
-      new Categorie('37'),
-      new Categorie('38'),
-      new Categorie('39'),
-      new Categorie('40'),
-      new Categorie('41'),
-      new Categorie('> 41'),
-    ]),
-    new Categorie('Herrenbekleidung', <Categorie>[
-      new Categorie('Hemden', <Categorie>[
-        new Categorie('S'),
-        new Categorie('M'),
-        new Categorie('L'),
-        new Categorie('XL'),
-        new Categorie('XXL'),
-      ]),
-      new Categorie('Hosen', <Categorie>[
-        new Categorie('S'),
-        new Categorie('M'),
-        new Categorie('L'),
-        new Categorie('XL'),
-        new Categorie('XXL'),
-      ]),
-      new Categorie('Jacken & Mäntel', <Categorie>[
-        new Categorie('S'),
-        new Categorie('M'),
-        new Categorie('L'),
-        new Categorie('XL'),
-        new Categorie('XXL'),
-      ]),
-      new Categorie('Pullover', <Categorie>[
-        new Categorie('S'),
-        new Categorie('M'),
-        new Categorie('L'),
-        new Categorie('XL'),
-        new Categorie('XXL'),
-      ]),
-      new Categorie('Shirts', <Categorie>[
-        new Categorie('S'),
-        new Categorie('M'),
-        new Categorie('L'),
-        new Categorie('XL'),
-        new Categorie('XXL'),
-      ]),
-      new Categorie('Weitere Herrenbekleidung', <Categorie>[
-        new Categorie('S'),
-        new Categorie('M'),
-        new Categorie('L'),
-        new Categorie('XL'),
-        new Categorie('XXL'),
+      new CategorieTile('Weitere Damenbekleidung', <CategorieTile>[
+        new CategorieTile('XS'),
+        new CategorieTile('S'),
+        new CategorieTile('M'),
+        new CategorieTile('L'),
+        new CategorieTile('XL'),
+        new CategorieTile('XXL'),
       ]),
     ]),
-    new Categorie('Herrenschuhe', <Categorie>[
-      new Categorie('< 40'),
-      new Categorie('40'),
-      new Categorie('41'),
-      new Categorie('42'),
-      new Categorie('43'),
-      new Categorie('44'),
-      new Categorie('45'),
-      new Categorie('> 45'),
+    new CategorieTile('Damenschuhe', <CategorieTile>[
+      new CategorieTile('< 36'),
+      new CategorieTile('36'),
+      new CategorieTile('37'),
+      new CategorieTile('38'),
+      new CategorieTile('39'),
+      new CategorieTile('40'),
+      new CategorieTile('41'),
+      new CategorieTile('> 41'),
     ]),
-    new Categorie('Weitere Mode & Beauty'),
+    new CategorieTile('Herrenbekleidung', <CategorieTile>[
+      new CategorieTile('Hemden', <CategorieTile>[
+        new CategorieTile('S'),
+        new CategorieTile('M'),
+        new CategorieTile('L'),
+        new CategorieTile('XL'),
+        new CategorieTile('XXL'),
+      ]),
+      new CategorieTile('Hosen', <CategorieTile>[
+        new CategorieTile('S'),
+        new CategorieTile('M'),
+        new CategorieTile('L'),
+        new CategorieTile('XL'),
+        new CategorieTile('XXL'),
+      ]),
+      new CategorieTile('Jacken & Mäntel', <CategorieTile>[
+        new CategorieTile('S'),
+        new CategorieTile('M'),
+        new CategorieTile('L'),
+        new CategorieTile('XL'),
+        new CategorieTile('XXL'),
+      ]),
+      new CategorieTile('Pullover', <CategorieTile>[
+        new CategorieTile('S'),
+        new CategorieTile('M'),
+        new CategorieTile('L'),
+        new CategorieTile('XL'),
+        new CategorieTile('XXL'),
+      ]),
+      new CategorieTile('Shirts', <CategorieTile>[
+        new CategorieTile('S'),
+        new CategorieTile('M'),
+        new CategorieTile('L'),
+        new CategorieTile('XL'),
+        new CategorieTile('XXL'),
+      ]),
+      new CategorieTile('Weitere Herrenbekleidung', <CategorieTile>[
+        new CategorieTile('S'),
+        new CategorieTile('M'),
+        new CategorieTile('L'),
+        new CategorieTile('XL'),
+        new CategorieTile('XXL'),
+      ]),
+    ]),
+    new CategorieTile('Herrenschuhe', <CategorieTile>[
+      new CategorieTile('< 40'),
+      new CategorieTile('40'),
+      new CategorieTile('41'),
+      new CategorieTile('42'),
+      new CategorieTile('43'),
+      new CategorieTile('44'),
+      new CategorieTile('45'),
+      new CategorieTile('> 45'),
+    ]),
+    new CategorieTile('Weitere Mode & Beauty'),
   ]),
-  new Categorie('Musik, Filme & Bücher', <Categorie>[
-    new Categorie('Bücher & Zeitschriften', <Categorie>[
-      new Categorie('Kinderbücher'),
-      new Categorie('Krimis & Thriller'),
-      new Categorie('Kunst & Kultur'),
-      new Categorie('Sachbücher'),
-      new Categorie('Science Fiction'),
-      new Categorie('Zeitschriften'),
+  new CategorieTile('Musik, Filme & Bücher', <CategorieTile>[
+    new CategorieTile('Bücher & Zeitschriften', <CategorieTile>[
+      new CategorieTile('Kinderbücher'),
+      new CategorieTile('Krimis & Thriller'),
+      new CategorieTile('Kunst & Kultur'),
+      new CategorieTile('Sachbücher'),
+      new CategorieTile('Science Fiction'),
+      new CategorieTile('Zeitschriften'),
     ]),
-    new Categorie('Büro & Schreibwaren'),
-    new Categorie('Comics'),
-    new Categorie('Fachbücher, Schule & Studium'),
-    new Categorie('Film & DVD'),
-    new Categorie('Musik & CDs'),
-    new Categorie('Musikinstrumente'),
-    new Categorie('Weitere Musik, Filme & Bücher'),
+    new CategorieTile('Büro & Schreibwaren'),
+    new CategorieTile('Comics'),
+    new CategorieTile('Fachbücher, Schule & Studium'),
+    new CategorieTile('Film & DVD'),
+    new CategorieTile('Musik & CDs'),
+    new CategorieTile('Musikinstrumente'),
+    new CategorieTile('Weitere Musik, Filme & Bücher'),
   ]),
-  new Categorie('Unterricht & Kurse', <Categorie>[
-    new Categorie('Beauty & Gesundheit'),
-    new Categorie('Computerkurse'),
-    new Categorie('Kochen & Backen'),
-    new Categorie('Kunst & Gestaltung'),
-    new Categorie('Musik & Gesang'),
-    new Categorie('Nachhilfe'),
-    new Categorie('Sportkurse'),
-    new Categorie('Sprachkurse'),
-    new Categorie('Tanzkurse'),
-    new Categorie('Weiterbildung'),
-    new Categorie('Weitere Unterricht & Kurse'),
+  new CategorieTile('Unterricht & Kurse', <CategorieTile>[
+    new CategorieTile('Beauty & Gesundheit'),
+    new CategorieTile('Computerkurse'),
+    new CategorieTile('Kochen & Backen'),
+    new CategorieTile('Kunst & Gestaltung'),
+    new CategorieTile('Musik & Gesang'),
+    new CategorieTile('Nachhilfe'),
+    new CategorieTile('Sportkurse'),
+    new CategorieTile('Sprachkurse'),
+    new CategorieTile('Tanzkurse'),
+    new CategorieTile('Weiterbildung'),
+    new CategorieTile('Weitere Unterricht & Kurse'),
   ]),
-  new Categorie('Verschenken & Tauschen', <Categorie>[
-    new Categorie('Tauschen'),
-    new Categorie('Verleihen'),
-    new Categorie('Verschenken'),
+  new CategorieTile('Verschenken & Tauschen', <CategorieTile>[
+    new CategorieTile('Tauschen'),
+    new CategorieTile('Verleihen'),
+    new CategorieTile('Verschenken'),
   ])
 ];
+*/
