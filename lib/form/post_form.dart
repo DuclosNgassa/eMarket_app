@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:emarket_app/model/contact.dart';
 import 'package:emarket_app/model/status.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/post/images_detail.dart';
@@ -271,7 +272,7 @@ class PostFormState extends State<PostForm> {
           File asset = images[index];
           return Dismissible(
             direction: DismissDirection.endToStart,
-            key: Key(images[index].path),
+            key: Key('default'),
             background: ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
               child: AspectRatio(
@@ -318,7 +319,9 @@ class PostFormState extends State<PostForm> {
                     ]),
                     child: AspectRatio(
                       aspectRatio: 0.5,
-                      child: Image.file(asset, fit: BoxFit.cover),
+                      child: asset != null
+                          ? Image.file(asset, fit: BoxFit.cover)
+                          : null,
                     ),
                   ),
                 ),
@@ -403,7 +406,9 @@ class PostFormState extends State<PostForm> {
   _takePhoto() async {
     if (images.length < 4) {
       imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-      images.add(imageFile);
+      if (imageFile != null) {
+        images.add(imageFile);
+      }
       setState(() {});
     } else {
       _showMessage('Vous ne pouvez que telecharger 4 photos');
@@ -413,20 +418,14 @@ class PostFormState extends State<PostForm> {
   _selectGalleryImage() async {
     if (images.length < 4) {
       imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-      images.add(imageFile);
+      if (imageFile != null) {
+        images.add(imageFile);
+      }
       setState(() {});
     } else {
       _showMessage('Vous ne pouvez que telecharger 4 photos');
     }
   }
-
-/*
-  _showSnackbar(String text) => scaffoldKey.currentState.showSnackBar(
-        new SnackBar(
-          content: new Text(text),
-        ),
-      );
-*/
 
   void _submitForm() async {
     final FormState form = _formKey.currentState;
@@ -499,7 +498,6 @@ class PostFormState extends State<PostForm> {
 
         if (response.statusCode == HttpStatus.ok) {
           _imageUrls.add('$SERVER_URL/${decoded['path']}');
-
         } else {
           _showMessage('Image failed: ${decoded['message']}');
         }
@@ -551,8 +549,7 @@ class PostFormState extends State<PostForm> {
     _formKey.currentState?.reset();
     images.clear();
     _imageUrls.clear();
-    setState(() {
-    });
+    setState(() {});
   }
 
   void _showMessage(String message, [MaterialColor color = Colors.red]) {
