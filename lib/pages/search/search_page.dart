@@ -1,5 +1,6 @@
 import 'package:emarket_app/custom_component/custom_linear_gradient.dart';
 import 'package:emarket_app/custom_component/home_card.dart';
+import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/search/searchparameter.dart';
 import 'package:flutter/material.dart';
@@ -19,12 +20,12 @@ class _SearchPageState extends State<SearchPage> {
   List<Post> postList = new List();
   PostService _postService = new PostService();
 
-  String _categorie = '';
   SearchParameter _searchParameter;
   final TextEditingController _controller = new TextEditingController();
   bool _isSearching;
   String _searchText = "";
   List<Post> searchResult = new List();
+  CategorieTile _categorieTile = new CategorieTile('', 0);
 
   _SearchPageState() {
     _controller.addListener(() {
@@ -254,7 +255,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future showCategoriePage() async {
-    String categorieChoosed = await Navigator.of(context).push(
+    _categorieTile = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
           return CategoriePage();
@@ -262,8 +263,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
     setState(() {
-      _categorie = categorieChoosed;
-      print("Categorie choisie: " + categorieChoosed);
+      print("Categorie choisie: " + _categorieTile.title);
     });
   }
 

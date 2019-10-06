@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/model/contact.dart';
 import 'package:emarket_app/model/status.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
@@ -44,7 +45,7 @@ class PostFormState extends State<PostForm> {
   PostTyp _postTyp = PostTyp.offer;
   List<String> _feeTyps = <String>['Kdo', 'Negociable', 'Fixe'];
   String _feeTyp = 'Kdo';
-  String _categorie = '';
+  CategorieTile _categorieTile = new CategorieTile('', 0);
   Post newPost = new Post();
   File imageFile;
 
@@ -107,7 +108,7 @@ class PostFormState extends State<PostForm> {
                     child: Row(
                       children: <Widget>[
                         Expanded(
-                          child: Text(_categorie),
+                          child: Text(_categorieTile.title),
                         ),
                         IconButton(
                           icon: Icon(Icons.arrow_forward_ios),
@@ -247,7 +248,7 @@ class PostFormState extends State<PostForm> {
   }
 
   Future showCategoriePage() async {
-    String categorieChoosed = await Navigator.of(context).push(
+    _categorieTile = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
           return CategoriePage();
@@ -255,8 +256,7 @@ class PostFormState extends State<PostForm> {
       ),
     );
     setState(() {
-      _categorie = categorieChoosed;
-      print("Choosed categorie: " + categorieChoosed);
+      print("Choosed categorie: " + _categorieTile.title);
     });
   }
 
@@ -433,7 +433,7 @@ class PostFormState extends State<PostForm> {
     if (!form.validate()) {
       _showMessage(
           'Le formulaire contient des érreurs! Corrigez le s´il vous plait');
-    } else if (_categorie.isEmpty) {
+    } else if (_categorieTile.title.isEmpty) {
       _showMessage(
           'Veuillez choisir la categorie dans laquelle vous publiez votre post s´il vous pllait.');
     } else if (images.isEmpty) {
@@ -454,7 +454,7 @@ class PostFormState extends State<PostForm> {
 
   Future<Post> _savePost() async {
     setFeeTyp(_feeTyp);
-    newPost.categorieid = 1;
+    newPost.categorieid = _categorieTile.id;
     newPost.post_typ = _postTyp;
     newPost.userid = 2;
     newPost.rating = 6;
@@ -549,6 +549,7 @@ class PostFormState extends State<PostForm> {
     _formKey.currentState?.reset();
     images.clear();
     _imageUrls.clear();
+    _categorieTile = new CategorieTile('', 0);
     setState(() {});
   }
 
