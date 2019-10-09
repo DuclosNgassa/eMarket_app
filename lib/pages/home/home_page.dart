@@ -1,4 +1,5 @@
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
+import 'package:emarket_app/services/global.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -8,7 +9,6 @@ import '../../model/post.dart';
 import '../../services/post_service.dart';
 
 class HomePage extends StatefulWidget {
-
   @override
   _HomePageState createState() => new _HomePageState();
 }
@@ -46,93 +46,92 @@ class _HomePageState extends State<HomePage> {
     final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
     final double itemWidth = size.width / 2;
 
-    return Scaffold(
-      //key: _scaffoldKey,
-      body: CustomLinearGradient(
-        myChild: new SafeArea(
-          top: false,
-          bottom: false,
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: CustomScrollView(
-              slivers: <Widget>[
-                SliverAppBar(
-                  //title: Text('Test'),
-                  backgroundColor: Colors.deepPurple[400],
-                  expandedHeight: size.height / 2 * 0.2,
-                  floating: true,
-                  snap: false,
-                  pinned: true,
-                  flexibleSpace: FlexibleSpaceBar(
-                    //title: Text("Search Page"),
-                    background: Padding(
-                      padding: const EdgeInsets.only(top: 5.0),
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(left: 30.0),
-                            child: Row(
-                              children: <Widget>[
-                                new Expanded(
-                                  child: TextField(
-                                    decoration: const InputDecoration(
-                                      fillColor: Colors.white,
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10.0)),
-                                      ),
-                                      hintText: 'Entrer votre recherche',
-                                      labelText: 'Recherche',
-                                      labelStyle:
-                                          TextStyle(color: Colors.white),
+    return Container(
+      child: new SafeArea(
+        top: false,
+        bottom: false,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.0),
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                //title: Text('Test'),
+                //backgroundColor: Colors.deepPurple[400],
+                backgroundColor: Colors.transparent,
+                expandedHeight: size.height / 2 * 0.2,
+                floating: true,
+                snap: false,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  //title: Text("Search Page"),
+                  background: Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 30.0),
+                          child: Row(
+                            children: <Widget>[
+                              new Expanded(
+                                child: TextField(
+                                  decoration: const InputDecoration(
+                                    fillColor: Colors.white,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0)),
                                     ),
-                                    onChanged: searchOperation,
-                                    controller: _controller,
+                                    hintText: 'Entrer votre recherche',
+                                    labelText: 'Recherche',
+                                    labelStyle: TextStyle(color: Colors.white),
                                   ),
+                                  onChanged: searchOperation,
+                                  controller: _controller,
                                 ),
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.search,
-                                    color: Colors.white,
-                                  ),
-                                  tooltip: 'rechercher',
-                                  onPressed: (() {
-                                    setState(() {
-                                      _handleSearchStart();
-                                    });
-                                    print('Recherche en cours...');
-                                    //_chooseDate(context, _controller.text);
-                                  }),
-                                )
-                              ],
-                            ),
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                ),
+                                tooltip: 'rechercher',
+                                onPressed: (() {
+                                  setState(() {
+                                    _handleSearchStart();
+                                  });
+                                  print('Recherche en cours...');
+                                  //_chooseDate(context, _controller.text);
+                                }),
+                              )
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    childAspectRatio: 5,
-                  ),
-                  delegate:
-                      SliverChildListDelegate([_buildCategorieGridView()]),
+              ),
+              SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  childAspectRatio: 5,
                 ),
-                SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    childAspectRatio: (itemWidth / itemHeight),
-                  ),
-                  delegate: SliverChildListDelegate(
-                    [
-                      _buildGridView(),
-                    ],
-                  ),
+                delegate: SliverChildListDelegate([_buildCategorieGridView()]),
+              ),
+              SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  childAspectRatio: (itemWidth / itemHeight),
                 ),
-              ],
-            ),
+                delegate: SliverChildListDelegate(
+                  [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: _buildGridView(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -180,7 +179,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildCategorieGridView() {
     TextStyle _myTextStyle = TextStyle(
-      color: Colors.white,
+      color: Colors.black87,
       fontSize: 10,
     );
     return GridView.count(
@@ -192,7 +191,7 @@ class _HomePageState extends State<HomePage> {
         CustomCategorieButton(
           width: 50,
           height: 33,
-          fillColor: Colors.deepPurple,
+          fillColor: lightBlueIsh,
           icon: Icons.phone_iphone,
           splashColor: Colors.white,
           iconColor: Colors.white,
@@ -203,7 +202,7 @@ class _HomePageState extends State<HomePage> {
         CustomCategorieButton(
           width: 50,
           height: 33,
-          fillColor: Colors.deepPurple,
+          fillColor: lightBlueIsh,
           icon: Icons.weekend,
           splashColor: Colors.white,
           iconColor: Colors.white,
@@ -214,7 +213,7 @@ class _HomePageState extends State<HomePage> {
         CustomCategorieButton(
           width: 50,
           height: 33,
-          fillColor: Colors.deepPurple,
+          fillColor: lightBlueIsh,
           icon: Icons.home,
           splashColor: Colors.white,
           iconColor: Colors.white,
@@ -225,7 +224,7 @@ class _HomePageState extends State<HomePage> {
         CustomCategorieButton(
           width: 50,
           height: 33,
-          fillColor: Colors.deepPurple,
+          fillColor: lightBlueIsh,
           icon: Icons.local_play,
           splashColor: Colors.white,
           iconColor: Colors.white,
@@ -236,7 +235,7 @@ class _HomePageState extends State<HomePage> {
         CustomCategorieButton(
           width: 50,
           height: 33,
-          fillColor: Colors.deepPurple,
+          fillColor: lightBlueIsh,
           icon: Icons.list,
           splashColor: Colors.white,
           iconColor: Colors.white,
@@ -275,7 +274,9 @@ class _HomePageState extends State<HomePage> {
 
   void _loadPost() async {
     postList = await _postService.fetchPosts(http.Client());
-    setState(() {
-    });
+    for (var post in postList) {
+      await post.getImageUrl();
+    }
+    setState(() {});
   }
 }

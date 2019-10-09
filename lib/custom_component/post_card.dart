@@ -1,3 +1,4 @@
+import 'package:emarket_app/services/global.dart';
 import 'package:flutter/material.dart';
 
 import '../model/post.dart';
@@ -98,8 +99,34 @@ class _PostCardState extends State<PostCard> {
     return Container(
       width: width,
       height: 150.0,
+      padding: EdgeInsets.all(10.0),
+      margin: EdgeInsets.only(right: 20, bottom: 30, top: 30),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          new BoxShadow(
+            color: Colors.grey,
+            blurRadius: 20.0,
+          ),
+        ],
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              CircleAvatar(
+                backgroundImage: NetworkImage(widget.post.imageUrl),
+              )
+            ],
+          )
+        ],
+      ),
+/*
       child: Card(
-        color: Colors.black87,
+        color: lightBlueIsh,
         //Wrap children in a Padding widget in order to give padding.
         child: Padding(
           // The class that controls padding is called 'EdgeInsets'
@@ -163,6 +190,7 @@ class _PostCardState extends State<PostCard> {
           ),
         ),
       ),
+*/
     );
   }
 
@@ -190,10 +218,12 @@ class _PostCardState extends State<PostCard> {
                 left: 50.0,
                 child: _buildPostCard(context, divWidth),
               ),
+/*
               Positioned(
                 top: 7.5,
                 child: dogImage,
               )
+*/
             ],
           ),
         ),

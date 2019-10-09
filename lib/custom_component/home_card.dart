@@ -1,3 +1,4 @@
+import 'package:emarket_app/services/global.dart';
 import 'package:flutter/material.dart';
 
 import '../model/post.dart';
@@ -96,9 +97,10 @@ class _HomeCardState extends State<HomeCard> {
   Widget _buildHomeCard(BuildContext context, double width) {
     // A new container
     // The height and width are arbitrary numbers for styling.
+/*
     return Container(
       decoration: new BoxDecoration(
-        color: Colors.deepPurple,
+        color: lightBlueIsh,
         //shape: BoxShape.rectangle,
         borderRadius: new BorderRadius.only(
           bottomLeft: Radius.circular(15.0),
@@ -151,6 +153,69 @@ class _HomeCardState extends State<HomeCard> {
         ),
       ),
     );
+*/
+
+    return Container(
+      width: width,
+      height: 150.0,
+      padding: EdgeInsets.all(10.0),
+      margin: EdgeInsets.only(right: 20, bottom: 10, top: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          new BoxShadow(
+            color: Colors.grey,
+            blurRadius: 20.0,
+          ),
+        ],
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              CircleAvatar(
+                backgroundImage: NetworkImage(widget.post.imageUrl),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(widget.post.title, style: jobCardTitileStyleBlue),
+              ),
+            ],
+          ),
+          Text(
+            widget.post.fee_typ.toString(),
+            style: jobCardTitileStyleBlack,
+          ),
+          Text(
+            widget.post.city,
+            style: salaryStyle,
+          ),
+          Text(
+            widget.post.fee.toString(),
+            style: salaryStyle,
+          ),
+          Row(
+            children: <Widget>[
+              Icon(
+                Icons.star,
+                color: Colors.black,
+              ),
+              Text(
+                ': ${widget.post.rating} / 10',
+                style: salaryStyle,
+              )
+            ],
+          ),
+          Text(
+            widget.post.post_typ.toString(),
+            style: salaryStyle,
+          ),
+        ],
+      ),
+    );
   }
 
   void initState() {
@@ -164,31 +229,7 @@ class _HomeCardState extends State<HomeCard> {
 
     return InkWell(
       onTap: showDogDetailPage,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 8.0,
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-          ),
-          height: 115.0,
-          child: Stack(
-            children: <Widget>[
-              Positioned(
-                //top: 7.5,
-                child: postImage,
-              ),
-              Positioned(
-                bottom: 0.0,
-                left: 0.0,
-                child: _buildHomeCard(context, 163),
-              ),
-            ],
-          ),
-        ),
-      ),
+      child: _buildHomeCard(context, 163),
     );
   }
 

@@ -29,14 +29,14 @@ class PostForm extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
-  PostFormState createState() => new PostFormState(Colors.lightBlueAccent);
+  PostFormState createState() => new PostFormState();
 }
 
 class PostFormState extends State<PostForm> {
   PostService _postService = new PostService();
   ImageService _imageService = new ImageService();
 
-  final Color color;
+  //final Color color;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -52,7 +52,7 @@ class PostFormState extends State<PostForm> {
   List<File> images = List<File>();
   List<String> _imageUrls = List<String>();
 
-  PostFormState(this.color);
+  //PostFormState(this.color);
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,11 @@ class PostFormState extends State<PostForm> {
               decoration: const InputDecoration(
                 hintText: 'Donnez le titre de votre post',
                 labelText: 'Titre',
-                labelStyle: TextStyle(color: Colors.white),
+                labelStyle: TextStyle(
+                  //fontFamily: 'Helvetica',
+                    color: Colors.black,
+                    fontSize: 15
+                ),
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(30),
@@ -100,7 +104,7 @@ class PostFormState extends State<PostForm> {
                     padding: const EdgeInsets.only(top: 16.0),
                     child: Text(
                       "Categorie",
-                      style: TextStyle(color: Colors.white),
+                      style: formStyle,
                     ),
                   ),
                   GestureDetector(
@@ -130,7 +134,11 @@ class PostFormState extends State<PostForm> {
                     decoration: const InputDecoration(
                       hintText: 'Donnez le prix',
                       labelText: 'Prix (FCFA)',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(
+                        //fontFamily: 'Helvetica',
+                          color: Colors.black,
+                          fontSize: 15
+                      ),
                     ),
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(30),
@@ -147,7 +155,7 @@ class PostFormState extends State<PostForm> {
                       return InputDecorator(
                         decoration: InputDecoration(
                           labelText: 'Typ de prix',
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: formStyle,
                           errorText: state.hasError ? state.errorText : null,
                         ),
                         child: DropdownButtonHideUnderline(
@@ -188,7 +196,11 @@ class PostFormState extends State<PostForm> {
                       decoration: const InputDecoration(
                         hintText: 'Donnez la ville',
                         labelText: 'Ville',
-                        labelStyle: TextStyle(color: Colors.white),
+                        labelStyle: TextStyle(
+                          //fontFamily: 'Helvetica',
+                            color: Colors.black,
+                            fontSize: 15
+                        ),
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
@@ -204,7 +216,11 @@ class PostFormState extends State<PostForm> {
                       decoration: const InputDecoration(
                         hintText: 'Donnez le quartier',
                         labelText: 'Quartier',
-                        labelStyle: TextStyle(color: Colors.white),
+                        labelStyle: TextStyle(
+                          //fontFamily: 'Helvetica',
+                            color: Colors.black,
+                            fontSize: 15
+                        ),
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
@@ -223,7 +239,11 @@ class PostFormState extends State<PostForm> {
               decoration: const InputDecoration(
                 hintText: 'Description de votre post',
                 labelText: 'Description',
-                labelStyle: TextStyle(color: Colors.white),
+                labelStyle: TextStyle(
+                  //fontFamily: 'Helvetica',
+                    color: Colors.black,
+                    fontSize: 15
+                ),
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(500),
@@ -236,8 +256,8 @@ class PostFormState extends State<PostForm> {
             new Container(
               padding: const EdgeInsets.only(top: 10.0),
               child: RaisedButton(
-                color: Colors.deepPurple,
-                child: Text('Submit', style: TextStyle(color: Colors.white)),
+                color: lightBlueIsh,
+                child: Text('Submit', style: formStyle),
                 onPressed: _submitForm,
               ),
             ),
@@ -371,7 +391,7 @@ class PostFormState extends State<PostForm> {
         ),
         Text(
           "J'offre",
-          style: new TextStyle(color: Colors.white),
+          style: formStyle,
         ),
         Radio(
           value: PostTyp.search,
@@ -384,7 +404,7 @@ class PostFormState extends State<PostForm> {
         ),
         Text(
           "Je recherche",
-          style: new TextStyle(color: Colors.white),
+          style: formStyle,
         ),
         Radio(
           value: PostTyp.all,
@@ -397,7 +417,7 @@ class PostFormState extends State<PostForm> {
         ),
         Text(
           "Tous",
-          style: new TextStyle(color: Colors.white),
+          style: formStyle,
         ),
       ],
     );

@@ -3,6 +3,7 @@ import 'package:emarket_app/custom_component/home_card.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/search/searchparameter.dart';
+import 'package:emarket_app/services/global.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -50,95 +51,96 @@ class _SearchPageState extends State<SearchPage> {
     final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
     final double itemWidth = size.width / 2;
 
-    return Scaffold(
-      body: CustomLinearGradient(
-        myChild: new SafeArea(
-          top: false,
-          bottom: false,
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: CustomScrollView(
-              slivers: <Widget>[
-                SliverAppBar(
-                  //title: Text('Test'),
-                  backgroundColor: Colors.deepPurple[400],
-                  expandedHeight: size.height / 2 * 0.2,
-                  floating: true,
-                  snap: false,
-                  pinned: true,
-                  flexibleSpace: FlexibleSpaceBar(
-                    //title: Text("Search Page"),
-                    background: Padding(
-                      padding: const EdgeInsets.only(top: 5.0),
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(left: 30.0),
-                            child: Row(
-                              children: <Widget>[
-                                new Expanded(
-                                  child: TextField(
-                                    decoration: const InputDecoration(
-                                      fillColor: Colors.white,
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10.0)),
-                                      ),
-                                      hintText: 'Entrer votre recherche',
-                                      labelText: 'Recherche',
-                                      labelStyle:
-                                          TextStyle(color: Colors.white),
+    return Container(
+      child: SafeArea(
+        top: false,
+        bottom: false,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 5.0),
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                //title: Text('Test'),
+                backgroundColor: Colors.transparent,
+                expandedHeight: size.height / 2 * 0.2,
+                floating: true,
+                snap: false,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  //title: Text("Search Page"),
+                  background: Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 30.0),
+                          child: Row(
+                            children: <Widget>[
+                              new Expanded(
+                                child: TextField(
+                                  decoration: const InputDecoration(
+                                    fillColor: Colors.white,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0)),
                                     ),
-                                    onChanged: searchOperation,
-                                    controller: _controller,
-                                    //controller: _controller,
+                                    hintText: 'Entrer votre recherche',
+                                    labelText: 'Recherche',
+                                    labelStyle: TextStyle(color: Colors.white),
                                   ),
+                                  onChanged: searchOperation,
+                                  controller: _controller,
+                                  //controller: _controller,
                                 ),
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.search,
-                                    color: Colors.white,
-                                  ),
-                                  tooltip: 'rechercher',
-                                  onPressed: (() {
-                                    setState(() {
-                                      _handleSearchStart();
-                                    });
-                                    print('Recherche en cours...');
-                                    //_chooseDate(context, _controller.text);
-                                  }),
-                                )
-                              ],
-                            ),
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                ),
+                                tooltip: 'rechercher',
+                                onPressed: (() {
+                                  setState(() {
+                                    _handleSearchStart();
+                                  });
+                                  print('Recherche en cours...');
+                                  //_chooseDate(context, _controller.text);
+                                }),
+                              )
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    childAspectRatio: 5,
-                  ),
-                  delegate: SliverChildListDelegate([_buildButtonLeiste()]),
+              ),
+              SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  childAspectRatio: 5,
                 ),
-                SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    childAspectRatio: (itemWidth / itemHeight),
-                  ),
-                  delegate: SliverChildListDelegate(
-                    [
-                      _buildGridView(),
-                    ],
-                  ),
+                delegate: SliverChildListDelegate([_buildButtonLeiste()]),
+              ),
+              SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  childAspectRatio: (itemWidth / itemHeight),
                 ),
-              ],
-            ),
+                delegate: SliverChildListDelegate(
+                  [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: _buildGridView(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
+/*
       floatingActionButton: CustomButton(
         fillColor: Colors.deepPurple,
         icon: Icons.build,
@@ -148,6 +150,7 @@ class _SearchPageState extends State<SearchPage> {
         textStyle: TextStyle(color: Colors.white),
         onPressed: () => showSearchParameterPage(context),
       ),
+*/
     );
   }
 
@@ -198,7 +201,7 @@ class _SearchPageState extends State<SearchPage> {
         //mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           CustomButton(
-            fillColor: Colors.deepPurple,
+            fillColor: lightBlueIsh,
             icon: Icons.build,
             splashColor: Colors.white,
             iconColor: Colors.white,
@@ -207,7 +210,7 @@ class _SearchPageState extends State<SearchPage> {
             onPressed: () => showSearchParameterPage(context),
           ),
           CustomButton(
-            fillColor: Colors.deepPurple,
+            fillColor: lightBlueIsh,
             icon: Icons.apps,
             splashColor: Colors.white,
             iconColor: Colors.white,
@@ -216,7 +219,7 @@ class _SearchPageState extends State<SearchPage> {
             onPressed: showCategoriePage,
           ),
           CustomButton(
-            fillColor: Colors.deepPurple,
+            fillColor: lightBlueIsh,
             icon: Icons.location_on,
             splashColor: Colors.white,
             iconColor: Colors.white,
@@ -290,7 +293,9 @@ class _SearchPageState extends State<SearchPage> {
 
   void _loadPost() async {
     postList = await _postService.fetchPosts(http.Client());
+    for (var post in postList) {
+      await post.getImageUrl();
+    }
     setState(() {});
   }
-
 }

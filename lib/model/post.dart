@@ -40,7 +40,7 @@ class Post {
       this.categorieid});
 
   factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(
+    Post post = Post(
       id: json["id"],
       title: json["title"],
       created_at: DateTime.parse(json["created_at"]),
@@ -55,6 +55,8 @@ class Post {
       userid: json["userid"],
       categorieid: json["categorieid"],
     );
+
+    return post;
   }
 
   Map<String, dynamic> toMap(Post post) {

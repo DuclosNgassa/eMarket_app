@@ -13,27 +13,25 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new Container(
       key: _scaffoldKey,
-      body: CustomLinearGradient(
-        myChild: new SafeArea(
-          top: false,
-          bottom: false,
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: CustomScrollView(
-              slivers: <Widget>[
-                SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      PostForm(
-                        scaffoldKey: _scaffoldKey,
-                      ),
-                    ],
-                  ),
+      child: new SafeArea(
+        top: false,
+        bottom: false,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.0),
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    PostForm(
+                      scaffoldKey: _scaffoldKey,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
