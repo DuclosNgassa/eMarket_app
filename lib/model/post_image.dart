@@ -1,17 +1,17 @@
-class Image {
+class PostImage {
   int id;
   String image_url;
   DateTime created_at;
   int postid;
 
-  Image(
+  PostImage(
       {this.id,
       this.image_url,
       this.created_at,
       this.postid});
 
-  factory Image.fromJson(Map<String, dynamic> json) {
-    return Image(
+  factory PostImage.fromJson(Map<String, dynamic> json) {
+    return PostImage(
       id: json["id"],
       image_url: json["image_url"],
       created_at: DateTime.parse(json["created_at"]),

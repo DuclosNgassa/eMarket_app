@@ -15,7 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
 import '../model/feetyp.dart';
-import '../model/image.dart' as MyImage;
+import '../model/post_image.dart' as MyImage;
 import '../model/post.dart';
 import '../model/posttyp.dart';
 import '../services/global.dart';
@@ -126,7 +126,6 @@ class PostFormState extends State<PostForm> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Expanded(
-                  flex: 2,
                   child: TextFormField(
                     decoration: const InputDecoration(
                       hintText: 'Donnez le prix',
@@ -147,7 +146,7 @@ class PostFormState extends State<PostForm> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0),
+                    padding: const EdgeInsets.only(bottom: 3.0),
                     child: FormField(
                       builder: (FormFieldState state) {
                         return InputDecorator(
@@ -314,7 +313,7 @@ class PostFormState extends State<PostForm> {
                   context,
                   MaterialPageRoute<Null>(
                     builder: (BuildContext context) {
-                      return ImageDetailPage(images);
+                      return ImageDetailPage(images, null);
                     },
                     fullscreenDialog: true,
                   ),
@@ -335,7 +334,7 @@ class PostFormState extends State<PostForm> {
                     ]),
                     child: AspectRatio(
                       aspectRatio: 0.5,
-                      child: asset != null ? Image.file(asset) : null,
+                      child: asset != null ? Image.file(asset, fit: BoxFit.cover) : null,
                     ),
                   ),
                 ),
@@ -376,8 +375,8 @@ class PostFormState extends State<PostForm> {
   }
 
   Widget _buildRadioButtons() {
-    return new Row(
-      mainAxisSize: MainAxisSize.max,
+    return Row(
+      //mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Radio(
@@ -391,7 +390,7 @@ class PostFormState extends State<PostForm> {
         ),
         Text(
           "J'offre",
-          style: formStyle,
+          style: radioButtonStyle,
         ),
         Radio(
           value: PostTyp.search,
@@ -402,9 +401,11 @@ class PostFormState extends State<PostForm> {
             });
           },
         ),
-        Text(
-          "Je recherche",
-          style: formStyle,
+        Expanded(
+          child: Text(
+            "Je recherche",
+            style: radioButtonStyle,
+          ),
         ),
         Radio(
           value: PostTyp.all,
@@ -415,9 +416,11 @@ class PostFormState extends State<PostForm> {
             });
           },
         ),
-        Text(
-          "Tous",
-          style: formStyle,
+        Expanded(
+          child: Text(
+            "Tous",
+            style: radioButtonStyle,
+          ),
         ),
       ],
     );
@@ -531,14 +534,14 @@ class PostFormState extends State<PostForm> {
   }
 
   Future _saveImages(Post savedPost) async {
-    MyImage.Image newImage = new MyImage.Image();
+    MyImage.PostImage newImage = new MyImage.PostImage();
     newImage.postid = savedPost.id;
     newImage.created_at = DateTime.now();
 
     for (var item in _imageUrls) {
       newImage.image_url = item;
       Map<String, dynamic> imageParams = _imageService.toMap(newImage);
-      MyImage.Image savedImage =
+      MyImage.PostImage savedImage =
           await _imageService.saveImage(http.Client(), imageParams);
     }
   }

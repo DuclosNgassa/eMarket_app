@@ -118,19 +118,22 @@ class _HomeCardState extends State<HomeCard> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              CircleAvatar(
-                backgroundImage: getImage(),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
+              Expanded(
                 child: Text(
                   widget.post.fee.toString() + ' FCFA',
                   style: priceStyle,
                 ),
               ),
+              CircleAvatar(
+                backgroundImage: getImage(),
+              ),
             ],
           ),
-          Text(widget.post.title, style: titleStyle),
+          Row(
+            children: <Widget>[
+              Expanded(child: Text(widget.post.title, style: titleStyle)),
+            ],
+          ),
           Row(
             children: _buildRating(widget.post.rating),
           ),
@@ -143,27 +146,38 @@ class _HomeCardState extends State<HomeCard> {
     );
   }
 
-  List<Widget> _buildRating(int rating){
+  List<Widget> _buildRating(int rating) {
     List<Widget> widgetList = new List();
-    widgetList.add(Text(widget.post.city, style: cityStyle,));
-    for(var i = 0; i < rating; i++){
+    Widget city = Expanded(
+      child: Text(
+        widget.post.city,
+        style: cityStyle,
+      ),
+    );
+
+    widgetList.add(city);
+
+    for (var i = 0; i < rating; i++) {
       Icon icon = Icon(
         Icons.star,
         color: deepPurple300,
         size: 10,
       );
 
-    widgetList.add(icon);
+      widgetList.add(icon);
     }
     return widgetList;
   }
 
   ImageProvider getImage() {
+    return NetworkImage(widget.post.imageUrl);
+/*
     if (widget.post.imageUrl != null) {
       return NetworkImage(widget.post.imageUrl);
     } else
       return NetworkImage(
           "http://192.168.2.120:3000/images/scaled_image_picker7760936399678163578-1567804687023.jpg");
+*/
   }
 
   void initState() {

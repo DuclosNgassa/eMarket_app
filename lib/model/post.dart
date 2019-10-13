@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:emarket_app/model/image.dart';
+import 'package:emarket_app/model/post_image.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/feetyp.dart';
@@ -100,9 +100,14 @@ class Post {
     PostService postService = new PostService();
 
     try {
-      List<Image> imageList =
-          await postService.fetchImages(http.Client(), this.id);
-      imageUrl = imageList.elementAt(0).image_url;
+      List<PostImage> imageList =
+          await postService.fetchPostImages(this.id);
+      if (imageList.length > 0) {
+        imageUrl = imageList.elementAt(0).image_url;
+      } else {
+        imageUrl =
+            "http://192.168.2.120:3000/images/scaled_image_picker7760936399678163578-1567804687023.jpg";
+      }
     } catch (exception) {
       print(exception);
     }

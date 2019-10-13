@@ -61,7 +61,13 @@ TextStyle salaryStyle = new TextStyle(
 TextStyle formStyle = new TextStyle(
     //fontFamily: 'Helvetica',
     color: Colors.black,
-    fontSize: 15
+    fontSize: 12
+);
+
+TextStyle radioButtonStyle = new TextStyle(
+    //fontFamily: 'Helvetica',
+    color: Colors.black,
+    fontSize: 10
 );
 
 TextStyle priceStyle = new TextStyle(
@@ -88,4 +94,27 @@ TextStyle cityStyle = new TextStyle(
 TextStyle normalStyle = new TextStyle(
     color: Colors.black,
     fontSize: 12
+);
+
+TextStyle priceDetailStyle = new TextStyle(
+    color: deepPurple500,
+    fontWeight: FontWeight.bold,
+    fontSize: 20
+);
+
+TextStyle titleDetailStyle = new TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+    fontStyle: FontStyle.italic,
+    fontSize: 20
+);
+
+TextStyle cityDetailStyle = new TextStyle(
+    color: Colors.black45,
+    fontSize: 20
+);
+
+TextStyle normalDetailStyle = new TextStyle(
+    color: Colors.black,
+    fontSize: 20
 );

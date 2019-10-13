@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
             SliverGrid(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 1.3,
+                childAspectRatio: 1,
               ),
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
@@ -253,7 +253,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _loadPost() async {
-    postList = await _postService.fetchPosts(http.Client());
+    postList = await _postService.fetchPosts();
     for (var post in postList) {
       await post.getImageUrl();
     }

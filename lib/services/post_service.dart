@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:emarket_app/model/image.dart';
+import 'package:emarket_app/model/post_image.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/post.dart';
@@ -12,8 +13,9 @@ class PostService {
 
   ImageService _imageService = new ImageService();
 
-  Future<List<Post>> fetchPosts(http.Client client) async {
-    final response = await client.get(URL_POSTS);
+  Future<List<Post>> fetchPosts() async {
+
+    final response = await http.Client().get(URL_POSTS);
     if (response.statusCode == 200) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -59,7 +61,17 @@ class PostService {
     );
   }
 
-  Future<List<Image>> fetchImages(http.Client client, int postId) async {
-    return _imageService.fetchImagesByPostID(client, postId);
+  Future<List<PostImage>> fetchPostImages(int postId) async {
+    return _imageService.fetchImagesByPostID(http.Client(), postId);
+  }
+
+  Future<List<Image>> fetchImages(int postId) async {
+    List<Image> imageLists = new List();
+    List<PostImage> postImages = await fetchPostImages(postId);
+
+    await postImages.forEach((postImage) =>
+        imageLists.add(Image.network(postImage.image_url)));
+
+    return imageLists;
   }
 }
