@@ -14,9 +14,9 @@ const URL_IMAGES_BY_POSTID = URL_IMAGES + "/post/";
 
 const URL_CATEGORIES       = SERVER_URL + "/categories";
 
-Color lightGreen = Color(0xFF95E08E);
-Color lightBlueIsh = Color(0xFF33BBB5);
-Color darkGreen = Color(0xFF00AA12);
+Color deepPurple300 = Colors.deepPurple[300];//Color(0xFF95E08E);
+Color deepPurple400 = Colors.deepPurple[400]; //Color(0xFF33BBB5);
+Color deepPurple500 = Colors.deepPurple[500];//Color(0xFF00AA12);
 Color backgroundColor = Color(0xFFEFEEF5);
 
 
@@ -28,7 +28,7 @@ TextStyle titleStyleWhite = new TextStyle(
 );
 TextStyle jobCardTitileStyleBlue = new TextStyle(
     fontFamily: 'Avenir',
-    color: lightBlueIsh,
+    color: deepPurple400,
     fontWeight: FontWeight.bold,
     fontSize: 12
 );
@@ -53,7 +53,7 @@ TextStyle titileStyleBlack = new TextStyle(
 );
 TextStyle salaryStyle = new TextStyle(
     fontFamily: 'Avenir',
-    color: darkGreen,
+    color: deepPurple500,
     fontWeight: FontWeight.bold,
     fontSize: 12
 );
@@ -62,4 +62,30 @@ TextStyle formStyle = new TextStyle(
     //fontFamily: 'Helvetica',
     color: Colors.black,
     fontSize: 15
+);
+
+TextStyle priceStyle = new TextStyle(
+    fontFamily: 'Avenir',
+    color: deepPurple500,
+    fontWeight: FontWeight.bold,
+    fontSize: 12
+);
+
+TextStyle titleStyle = new TextStyle(
+    fontFamily: 'Avenir',
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+    fontStyle: FontStyle.italic,
+    fontSize: 12
+);
+
+TextStyle cityStyle = new TextStyle(
+    fontFamily: 'Avenir',
+    color: Colors.black45,
+    fontSize: 12
+);
+
+TextStyle normalStyle = new TextStyle(
+    color: Colors.black,
+    fontSize: 12
 );

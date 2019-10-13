@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:emarket_app/model/categorie_tile.dart';
-import 'package:emarket_app/model/contact.dart';
 import 'package:emarket_app/model/status.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/post/images_detail.dart';
@@ -56,14 +55,13 @@ class PostFormState extends State<PostForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 500.0,
-      alignment: Alignment.center,
-      child: Form(
-        key: _formKey,
-        autovalidate: false,
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    return Form(
+      key: _formKey,
+      autovalidate: false,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          //padding: const EdgeInsets.symmetric(horizontal: 16.0),
           children: <Widget>[
             Container(
               height: 125.0,
@@ -84,10 +82,9 @@ class PostFormState extends State<PostForm> {
                 hintText: 'Donnez le titre de votre post',
                 labelText: 'Titre',
                 labelStyle: TextStyle(
-                  //fontFamily: 'Helvetica',
+                    //fontFamily: 'Helvetica',
                     color: Colors.black,
-                    fontSize: 15
-                ),
+                    fontSize: 15),
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(30),
@@ -135,10 +132,9 @@ class PostFormState extends State<PostForm> {
                       hintText: 'Donnez le prix',
                       labelText: 'Prix (FCFA)',
                       labelStyle: TextStyle(
-                        //fontFamily: 'Helvetica',
+                          //fontFamily: 'Helvetica',
                           color: Colors.black,
-                          fontSize: 15
-                      ),
+                          fontSize: 15),
                     ),
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(30),
@@ -150,38 +146,41 @@ class PostFormState extends State<PostForm> {
                   ),
                 ),
                 Expanded(
-                  child: FormField(
-                    builder: (FormFieldState state) {
-                      return InputDecorator(
-                        decoration: InputDecoration(
-                          labelText: 'Typ de prix',
-                          labelStyle: formStyle,
-                          errorText: state.hasError ? state.errorText : null,
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton(
-                            value: _feeTyp,
-                            isDense: true,
-                            onChanged: (String newValue) {
-                              setState(() {
-                                _feeTyp = newValue;
-                                state.didChange(newValue);
-                              });
-                            },
-                            items: _feeTyps
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: FormField(
+                      builder: (FormFieldState state) {
+                        return InputDecorator(
+                          decoration: InputDecoration(
+                            labelText: 'Typ de prix',
+                            labelStyle: formStyle,
+                            errorText: state.hasError ? state.errorText : null,
                           ),
-                        ),
-                      );
-                    },
-                    validator: (val) => formValidator.isEmptyText(val)
-                        ? 'Veuillez choisir le type de prix svp'
-                        : null,
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              value: _feeTyp,
+                              isDense: true,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  _feeTyp = newValue;
+                                  state.didChange(newValue);
+                                });
+                              },
+                              items: _feeTyps.map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                return DropdownMenuItem(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        );
+                      },
+                      validator: (val) => formValidator.isEmptyText(val)
+                          ? 'Veuillez choisir le type de prix svp'
+                          : null,
+                    ),
                   ),
                 ),
               ],
@@ -197,10 +196,9 @@ class PostFormState extends State<PostForm> {
                         hintText: 'Donnez la ville',
                         labelText: 'Ville',
                         labelStyle: TextStyle(
-                          //fontFamily: 'Helvetica',
+                            //fontFamily: 'Helvetica',
                             color: Colors.black,
-                            fontSize: 15
-                        ),
+                            fontSize: 15),
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
@@ -217,10 +215,9 @@ class PostFormState extends State<PostForm> {
                         hintText: 'Donnez le quartier',
                         labelText: 'Quartier',
                         labelStyle: TextStyle(
-                          //fontFamily: 'Helvetica',
+                            //fontFamily: 'Helvetica',
                             color: Colors.black,
-                            fontSize: 15
-                        ),
+                            fontSize: 15),
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
@@ -240,10 +237,9 @@ class PostFormState extends State<PostForm> {
                 hintText: 'Description de votre post',
                 labelText: 'Description',
                 labelStyle: TextStyle(
-                  //fontFamily: 'Helvetica',
+                    //fontFamily: 'Helvetica',
                     color: Colors.black,
-                    fontSize: 15
-                ),
+                    fontSize: 15),
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(500),
@@ -253,11 +249,11 @@ class PostFormState extends State<PostForm> {
                   : null,
               onSaved: (val) => newPost.description = val,
             ),
-            new Container(
+            Container(
               padding: const EdgeInsets.only(top: 10.0),
               child: RaisedButton(
-                color: lightBlueIsh,
-                child: Text('Submit', style: formStyle),
+                color: deepPurple400,
+                child: Text('Transmettre', style: formStyle),
                 onPressed: _submitForm,
               ),
             ),
@@ -339,9 +335,7 @@ class PostFormState extends State<PostForm> {
                     ]),
                     child: AspectRatio(
                       aspectRatio: 0.5,
-                      child: asset != null
-                          ? Image.file(asset, fit: BoxFit.cover)
-                          : null,
+                      child: asset != null ? Image.file(asset) : null,
                     ),
                   ),
                 ),
@@ -361,12 +355,18 @@ class PostFormState extends State<PostForm> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           new IconButton(
-            icon: Icon(Icons.camera),
+            icon: Icon(
+              Icons.add_a_photo,
+              color: Colors.deepPurple,
+            ),
             onPressed: _takePhoto,
             tooltip: 'Take photo',
           ),
           new IconButton(
-            icon: Icon(Icons.image),
+            icon: Icon(
+              Icons.image,
+              color: Colors.deepPurple,
+            ),
             onPressed: _selectGalleryImage,
             tooltip: 'Select from gallery',
           ),

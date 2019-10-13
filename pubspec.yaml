@@ -26,7 +26,6 @@ dependencies:
   http: ^0.12.0+2
   image_picker: ^0.6.1+4
   image: ^2.1.4
-  multi_image_picker: ^4.5.3
   flushbar: ^1.9.0
 
 dev_dependencies:

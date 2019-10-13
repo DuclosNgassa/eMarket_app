@@ -97,67 +97,9 @@ class _HomeCardState extends State<HomeCard> {
   Widget _buildHomeCard(BuildContext context, double width) {
     // A new container
     // The height and width are arbitrary numbers for styling.
-/*
-    return Container(
-      decoration: new BoxDecoration(
-        color: lightBlueIsh,
-        //shape: BoxShape.rectangle,
-        borderRadius: new BorderRadius.only(
-          bottomLeft: Radius.circular(15.0),
-          bottomRight: Radius.circular(15.0),
-        ),
-      ),
-      width: width,
-      height: 70.0,
-      child: Card(
-        color: Colors.transparent,
-        //Wrap children in a Padding widget in order to give padding.
-        child: Column(
-          // These alignment properties function exactly like
-          // CSS flexbox properties.
-          // The main axis of a column is the vertical axis,
-          // `MainAxisAlignment.spaceAround` is equivalent of
-          // CSS's 'justify-content: space-around' in a vertically
-          // laid out flexbox.
-          crossAxisAlignment: CrossAxisAlignment.start,
-          //mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              direction: Axis.vertical,
-              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Text(
-                  widget.post.title,
-                  style: TextStyle(color: Colors.white),
-                ),
-                Text(
-                  widget.post.fee_typ.toString(),
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Icon(
-                  Icons.star,
-                  color: Colors.white,
-                ),
-                Text(
-                  ': ${widget.post.rating} / 10',
-                  style: TextStyle(color: Colors.white),
-                )
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-*/
-
     return Container(
       width: width,
-      height: 150.0,
+      height: 155.0,
       padding: EdgeInsets.all(10.0),
       margin: EdgeInsets.only(right: 20, bottom: 10, top: 10),
       decoration: BoxDecoration(
@@ -177,45 +119,51 @@ class _HomeCardState extends State<HomeCard> {
           Row(
             children: <Widget>[
               CircleAvatar(
-                backgroundImage: NetworkImage(widget.post.imageUrl),
+                backgroundImage: getImage(),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
-                child: Text(widget.post.title, style: jobCardTitileStyleBlue),
+                child: Text(
+                  widget.post.fee.toString() + ' FCFA',
+                  style: priceStyle,
+                ),
               ),
             ],
           ),
-          Text(
-            widget.post.fee_typ.toString(),
-            style: jobCardTitileStyleBlack,
-          ),
-          Text(
-            widget.post.city,
-            style: salaryStyle,
-          ),
-          Text(
-            widget.post.fee.toString(),
-            style: salaryStyle,
-          ),
+          Text(widget.post.title, style: titleStyle),
           Row(
-            children: <Widget>[
-              Icon(
-                Icons.star,
-                color: Colors.black,
-              ),
-              Text(
-                ': ${widget.post.rating} / 10',
-                style: salaryStyle,
-              )
-            ],
+            children: _buildRating(widget.post.rating),
           ),
           Text(
-            widget.post.post_typ.toString(),
-            style: salaryStyle,
+            Post.convertPostTypToString(widget.post.post_typ),
+            style: titleStyle,
           ),
         ],
       ),
     );
+  }
+
+  List<Widget> _buildRating(int rating){
+    List<Widget> widgetList = new List();
+    widgetList.add(Text(widget.post.city, style: cityStyle,));
+    for(var i = 0; i < rating; i++){
+      Icon icon = Icon(
+        Icons.star,
+        color: deepPurple300,
+        size: 10,
+      );
+
+    widgetList.add(icon);
+    }
+    return widgetList;
+  }
+
+  ImageProvider getImage() {
+    if (widget.post.imageUrl != null) {
+      return NetworkImage(widget.post.imageUrl);
+    } else
+      return NetworkImage(
+          "http://192.168.2.120:3000/images/scaled_image_picker7760936399678163578-1567804687023.jpg");
   }
 
   void initState() {
@@ -229,7 +177,7 @@ class _HomeCardState extends State<HomeCard> {
 
     return InkWell(
       onTap: showDogDetailPage,
-      child: _buildHomeCard(context, 163),
+      child: _buildHomeCard(context, 200),
     );
   }
 

@@ -52,109 +52,104 @@ class _SearchPageState extends State<SearchPage> {
     final double itemWidth = size.width / 2;
 
     return Container(
-      child: SafeArea(
-        top: false,
-        bottom: false,
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 5.0),
-          child: CustomScrollView(
-            slivers: <Widget>[
-              SliverAppBar(
-                //title: Text('Test'),
-                backgroundColor: Colors.transparent,
-                expandedHeight: size.height / 2 * 0.2,
-                floating: true,
-                snap: false,
-                pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  //title: Text("Search Page"),
-                  background: Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 30.0),
-                          child: Row(
-                            children: <Widget>[
-                              new Expanded(
-                                child: TextField(
-                                  decoration: const InputDecoration(
-                                    fillColor: Colors.white,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10.0)),
-                                    ),
-                                    hintText: 'Entrer votre recherche',
-                                    labelText: 'Recherche',
-                                    labelStyle: TextStyle(color: Colors.white),
+      child: Center(
+        //padding: EdgeInsets.symmetric(vertical: 5.0),
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              backgroundColor: Colors.transparent,
+              expandedHeight: size.height / 2 * 0.2,
+              floating: true,
+              snap: false,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Padding(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 30.0),
+                        child: Row(
+                          children: <Widget>[
+                            new Expanded(
+                              child: TextField(
+                                decoration: const InputDecoration(
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
                                   ),
-                                  onChanged: searchOperation,
-                                  controller: _controller,
-                                  //controller: _controller,
+                                  hintText: 'Entrer votre recherche',
+                                  labelText: 'Recherche',
+                                  labelStyle: TextStyle(color: Colors.white),
                                 ),
+                                onChanged: searchOperation,
+                                controller: _controller,
+                                //controller: _controller,
                               ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.search,
-                                  color: Colors.white,
-                                ),
-                                tooltip: 'rechercher',
-                                onPressed: (() {
-                                  setState(() {
-                                    _handleSearchStart();
-                                  });
-                                  print('Recherche en cours...');
-                                  //_chooseDate(context, _controller.text);
-                                }),
-                              )
-                            ],
-                          ),
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.search,
+                                color: Colors.white,
+                              ),
+                              tooltip: 'rechercher',
+                              onPressed: (() {
+                                setState(() {
+                                  _handleSearchStart();
+                                });
+                                print('Recherche en cours...');
+                                //_chooseDate(context, _controller.text);
+                              }),
+                            )
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  childAspectRatio: 5,
-                ),
-                delegate: SliverChildListDelegate([_buildButtonLeiste()]),
+            ),
+            SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1,
+                childAspectRatio: 5,
               ),
-              SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  childAspectRatio: (itemWidth / itemHeight),
-                ),
-                delegate: SliverChildListDelegate(
-                  [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
-                      child: _buildGridView(),
-                    ),
-                  ],
-                ),
+              delegate: SliverChildListDelegate([_buildButtonLeiste()]),
+            ),
+            SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.3,
               ),
-            ],
-          ),
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  return Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: _takeCard(index),
+                  );
+                },
+                childCount: getLength(),
+              ),
+            ),
+          ],
         ),
       ),
-/*
-      floatingActionButton: CustomButton(
-        fillColor: Colors.deepPurple,
-        icon: Icons.build,
-        splashColor: Colors.white,
-        iconColor: Colors.white,
-        text: 'Filtre',
-        textStyle: TextStyle(color: Colors.white),
-        onPressed: () => showSearchParameterPage(context),
-      ),
-*/
     );
   }
 
-  Widget _buildGridView() {
+  int getLength() {
+    if (searchResult.length != 0 || _controller.text.isNotEmpty) {
+      if (searchResult.length == 0 && _controller.text.isNotEmpty) {
+        return 1;
+      }
+      return searchResult.length;
+    }
+    return postList.length;
+  }
+
+  Widget _takeCard(int index) {
     if (searchResult.length != 0 || _controller.text.isNotEmpty) {
       if (searchResult.length == 0 && _controller.text.isNotEmpty) {
         return Center(
@@ -164,33 +159,9 @@ class _SearchPageState extends State<SearchPage> {
           ),
         );
       }
-      return GridView.count(
-        crossAxisCount: 2,
-        shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
-        padding: EdgeInsets.all(8.0),
-        crossAxisSpacing: 8.0,
-        mainAxisSpacing: 5.0,
-        children: searchResult
-            .map(
-              (data) => HomeCard(data),
-            )
-            .toList(),
-      );
+      return HomeCard(searchResult.elementAt(index));
     }
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      padding: EdgeInsets.all(8.0),
-      crossAxisSpacing: 8.0,
-      mainAxisSpacing: 5.0,
-      children: postList
-          .map(
-            (data) => HomeCard(data),
-          )
-          .toList(),
-    );
+    return HomeCard(postList.elementAt(index));
   }
 
   Widget _buildButtonLeiste() {
@@ -201,30 +172,30 @@ class _SearchPageState extends State<SearchPage> {
         //mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           CustomButton(
-            fillColor: lightBlueIsh,
+            fillColor: deepPurple400,
             icon: Icons.build,
             splashColor: Colors.white,
             iconColor: Colors.white,
             text: 'Filtre',
-            textStyle: TextStyle(color: Colors.white),
+            textStyle: TextStyle(color: Colors.white, fontSize: 10),
             onPressed: () => showSearchParameterPage(context),
           ),
           CustomButton(
-            fillColor: lightBlueIsh,
+            fillColor: deepPurple400,
             icon: Icons.apps,
             splashColor: Colors.white,
             iconColor: Colors.white,
             text: 'Categorie',
-            textStyle: TextStyle(color: Colors.white),
+            textStyle: TextStyle(color: Colors.white, fontSize: 10),
             onPressed: showCategoriePage,
           ),
           CustomButton(
-            fillColor: lightBlueIsh,
+            fillColor: deepPurple400,
             icon: Icons.location_on,
             splashColor: Colors.white,
             iconColor: Colors.white,
             text: 'Cameroun',
-            textStyle: TextStyle(color: Colors.white),
+            textStyle: TextStyle(color: Colors.white, fontSize: 10),
             onPressed: () => showSearchParameterPage(context),
           ),
         ],
