@@ -138,7 +138,7 @@ class _HomeCardState extends State<HomeCard> {
             children: _buildRating(widget.post.rating),
           ),
           Text(
-            Post.convertPostTypToString(widget.post.post_typ),
+            Post.convertPostTypToStringForDisplay(widget.post.post_typ),
             style: titleStyle,
           ),
         ],

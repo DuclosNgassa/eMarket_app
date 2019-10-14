@@ -1,12 +1,14 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ImageDetailPage extends StatefulWidget {
-  final List<File> images;
+  final List<File> files;
+  final List<CachedNetworkImage> images;
 
-  ImageDetailPage(this.images);
+  ImageDetailPage(this.files, this.images);
 
   @override
   _ImageDetailState createState() => new _ImageDetailState();
@@ -18,11 +20,10 @@ final int IMAGESLENGTH = 4;
 
 class _ImageDetailState extends State<ImageDetailPage> {
   var currentPage = IMAGESLENGTH - 1.0;
-
   @override
   Widget build(BuildContext context) {
-    PageController controller =
-        PageController(initialPage: widget.images.length - 1);
+    PageController controller = widget.files != null ?
+        PageController(initialPage: widget.files.length - 1) :  PageController(initialPage: widget.images.length - 1);
     controller.addListener(() {
       setState(() {
         currentPage = controller.page;
@@ -69,10 +70,11 @@ class _ImageDetailState extends State<ImageDetailPage> {
               ),
               Stack(
                 children: <Widget>[
-                  CardScrollWidget(currentPage, widget.images),
+                  widget.files != null ?
+                  CardScrollWidget(currentPage, widget.files, null) : CardScrollWidget(currentPage, null, widget.images),
                   Positioned.fill(
                     child: PageView.builder(
-                      itemCount: widget.images.length,
+                      itemCount: widget.files != null ? widget.files.length : widget.images.length,
                       controller: controller,
                       reverse: true,
                       itemBuilder: (context, index) {
@@ -91,12 +93,13 @@ class _ImageDetailState extends State<ImageDetailPage> {
 }
 
 class CardScrollWidget extends StatelessWidget {
-  final List<File> images;
+  final List<File> files;
+  final List<CachedNetworkImage> images;
   var currentPage;
   var padding = 20.0;
   var verticalInset = 20.0;
 
-  CardScrollWidget(this.currentPage, this.images);
+  CardScrollWidget(this.currentPage, this.files, this.images);
 
   @override
   Widget build(BuildContext context) {
@@ -114,10 +117,11 @@ class CardScrollWidget extends StatelessWidget {
 
         var primaryCardLeft = safeWidth - widthOfPrimaryCard;
         var horizontalInset = primaryCardLeft / 2;
+        int imagesLength = files != null ? files.length : images.length;
 
         List<Widget> cardList = new List();
 
-        for (var i = 0; i < images.length; i++) {
+        for (var i = 0; i < imagesLength; i++) {
           var delta = i - currentPage;
           bool isOnRight = delta > 0;
 
@@ -146,8 +150,8 @@ class CardScrollWidget extends StatelessWidget {
                   aspectRatio: cardAspectRatio,
                   child: Stack(
                     fit: StackFit.expand,
-                    children: <Widget>[
-                      Image.file(images[i], fit: BoxFit.cover),
+                    children: <Widget>[ files != null ?
+                      Image.file(files[i], fit: BoxFit.cover) : images[i],
                     ],
                   ),
                 ),

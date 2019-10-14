@@ -153,6 +153,26 @@ class Post {
     }
   }
 
+  static String convertPostTypToStringForDisplay(PostTyp value) {
+    switch (value) {
+      case PostTyp.offer:
+        {
+          return 'Offre';
+        }
+        break;
+      case PostTyp.search:
+        {
+          return 'Recherche';
+        }
+        break;
+      case PostTyp.all:
+        {
+          return 'Tout';
+        }
+        break;
+    }
+  }
+
   static Status convertStringToStatus(String value) {
     switch (value) {
       case 'done':
@@ -218,6 +238,26 @@ class Post {
       case FeeTyp.gift:
         {
           return 'gift';
+        }
+        break;
+    }
+  }
+
+  static String convertFeeTypToDisplay(FeeTyp value) {
+    switch (value) {
+      case FeeTyp.negotiable:
+        {
+          return 'Prix négociable';
+        }
+        break;
+      case FeeTyp.fixed:
+        {
+          return 'Prix fixe';
+        }
+        break;
+      case FeeTyp.gift:
+        {
+          return 'Offert gratuitemen';
         }
         break;
     }

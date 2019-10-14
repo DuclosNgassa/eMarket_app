@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/model/post_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -10,11 +11,9 @@ import '../services/global.dart';
 import '../services/image_service.dart';
 
 class PostService {
-
   ImageService _imageService = new ImageService();
 
   Future<List<Post>> fetchPosts() async {
-
     final response = await http.Client().get(URL_POSTS);
     if (response.statusCode == 200) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
@@ -33,8 +32,7 @@ class PostService {
   }
 
   Future<Post> savePost(Map<String, dynamic> params) async {
-    final response = await http.post(Uri.encodeFull(URL_POSTS),
-        body: params);
+    final response = await http.post(Uri.encodeFull(URL_POSTS), body: params);
     if (response.statusCode == 200) {
       final responseBody = await json.decode(response.body);
       return convertResponseToPost(responseBody);
@@ -65,12 +63,25 @@ class PostService {
     return _imageService.fetchImagesByPostID(http.Client(), postId);
   }
 
-  Future<List<Image>> fetchImages(int postId) async {
-    List<Image> imageLists = new List();
+  Future<List<CachedNetworkImage>> fetchImages(int postId) async {
+    List<CachedNetworkImage> imageLists = new List();
     List<PostImage> postImages = await fetchPostImages(postId);
 
-    await postImages.forEach((postImage) =>
-        imageLists.add(Image.network(postImage.image_url)));
+    await postImages.forEach(
+      (postImage) => imageLists.add(
+        CachedNetworkImage(
+          imageUrl: postImage.image_url,
+          imageBuilder: (context, imageProvider) => Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
 
     return imageLists;
   }
