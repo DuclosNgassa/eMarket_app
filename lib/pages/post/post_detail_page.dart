@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
+import 'package:emarket_app/custom_component/post_owner.dart';
 import 'package:emarket_app/data.dart';
 import 'package:emarket_app/model/posttyp.dart';
 import 'package:emarket_app/pages/post/images_detail.dart';
@@ -49,7 +51,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   constraints: BoxConstraints.expand(height: itemHeight / 4),
                   decoration: BoxDecoration(
                       gradient: new LinearGradient(
-                          colors: [deepPurple400, deepPurple300],
+                          colors: [colorDeepPurple400, colorDeepPurple300],
                           begin: const FractionalOffset(1.0, 1.0),
                           end: const FractionalOffset(0.2, 0.2),
                           stops: [0.0, 1.0],
@@ -72,7 +74,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 55),
-                  constraints: BoxConstraints.expand(height: itemHeight * 0.90),
+                  constraints: BoxConstraints.expand(height: itemHeight * 0.84),
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -80,7 +82,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Container(
-                           height: 125.0,
+                            height: 125.0,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
@@ -139,6 +141,55 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               ),
                             ],
                           ),
+                          Divider(height: 20),
+                          Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(right: 20),
+                                child: Column(
+                                  children: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 8.0),
+                                          child: Icon(Icons.calendar_today,
+                                              color: colorDeepPurple300),
+                                        ),
+                                        Text(DateConverter.convertToString(
+                                            widget.post.created_at)),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
+                                        child: Icon(Icons.remove_red_eye,
+                                            color: colorDeepPurple300),
+                                      ),
+                                      Text('55'),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                          Divider(
+                            height: 20,
+                          ),
+                          PostOwner(
+                            onPressed: null,
+                            fillColor: Colors.transparent,
+                            post: widget.post,
+                            splashColor: colorDeepPurple300,
+                            textStyle: titleDetailStyle,
+                          )
                         ],
                       ),
                     ),
@@ -154,11 +205,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   List<Widget> _buildRating(int rating) {
     List<Widget> widgetList = new List();
-    Widget location = Icon(Icons.location_on, color: deepPurple300);
+    Widget location = Icon(Icons.location_on, color: colorDeepPurple300);
     Widget city = Expanded(
       child: Text(
         widget.post.city + ', ' + widget.post.quarter,
-        style: cityDetailStyle,
+        style: greyDetailStyle,
       ),
     );
 
@@ -168,7 +219,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     for (var i = 0; i < rating; i++) {
       Icon icon = Icon(
         Icons.star,
-        color: deepPurple300,
+        color: colorDeepPurple300,
         size: 10,
       );
 
@@ -182,7 +233,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       return Container(
         height: 15.0,
         child: CustomButton(
-          fillColor: deepPurple400,
+          fillColor: colorDeepPurple400,
           icon: Icons.file_download,
           splashColor: Colors.white,
           iconColor: Colors.white,

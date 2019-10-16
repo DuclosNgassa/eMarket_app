@@ -160,7 +160,7 @@ class _HomeCardState extends State<HomeCard> {
     for (var i = 0; i < rating; i++) {
       Icon icon = Icon(
         Icons.star,
-        color: deepPurple300,
+        color: colorDeepPurple300,
         size: 10,
       );
 

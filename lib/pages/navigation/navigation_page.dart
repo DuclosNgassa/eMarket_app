@@ -34,7 +34,7 @@ class _NavigationPageState extends State<NavigationPage> {
                     constraints: BoxConstraints.expand(height: itemHeight / 4),
                     decoration: BoxDecoration(
                         gradient: new LinearGradient(
-                            colors: [deepPurple400, deepPurple300],
+                            colors: [colorDeepPurple400, colorDeepPurple300],
                             begin: const FractionalOffset(1.0, 1.0),
                             end: const FractionalOffset(0.2, 0.2),
                             stops: [0.0, 1.0],
@@ -90,7 +90,7 @@ class _NavigationPageState extends State<NavigationPage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: deepPurple400,
+        selectedItemColor: colorDeepPurple400,
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
       ),

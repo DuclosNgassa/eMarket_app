@@ -172,7 +172,7 @@ class _SearchPageState extends State<SearchPage> {
         //mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           CustomButton(
-            fillColor: deepPurple400,
+            fillColor: colorDeepPurple400,
             icon: Icons.build,
             splashColor: Colors.white,
             iconColor: Colors.white,
@@ -181,7 +181,7 @@ class _SearchPageState extends State<SearchPage> {
             onPressed: () => showSearchParameterPage(context),
           ),
           CustomButton(
-            fillColor: deepPurple400,
+            fillColor: colorDeepPurple400,
             icon: Icons.apps,
             splashColor: Colors.white,
             iconColor: Colors.white,
@@ -190,7 +190,7 @@ class _SearchPageState extends State<SearchPage> {
             onPressed: showCategoriePage,
           ),
           CustomButton(
-            fillColor: deepPurple400,
+            fillColor: colorDeepPurple400,
             icon: Icons.location_on,
             splashColor: Colors.white,
             iconColor: Colors.white,

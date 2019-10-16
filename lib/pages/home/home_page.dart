@@ -171,7 +171,7 @@ class _HomePageState extends State<HomePage> {
         CustomCategorieButton(
           width: 50,
           height: 33,
-          fillColor: deepPurple400,
+          fillColor: colorDeepPurple400,
           icon: Icons.phone_iphone,
           splashColor: Colors.white,
           iconColor: Colors.white,
@@ -182,7 +182,7 @@ class _HomePageState extends State<HomePage> {
         CustomCategorieButton(
           width: 50,
           height: 33,
-          fillColor: deepPurple400,
+          fillColor: colorDeepPurple400,
           icon: Icons.weekend,
           splashColor: Colors.white,
           iconColor: Colors.white,
@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
         CustomCategorieButton(
           width: 50,
           height: 33,
-          fillColor: deepPurple400,
+          fillColor: colorDeepPurple400,
           icon: Icons.home,
           splashColor: Colors.white,
           iconColor: Colors.white,
@@ -204,7 +204,7 @@ class _HomePageState extends State<HomePage> {
         CustomCategorieButton(
           width: 50,
           height: 33,
-          fillColor: deepPurple400,
+          fillColor: colorDeepPurple400,
           icon: Icons.local_play,
           splashColor: Colors.white,
           iconColor: Colors.white,
@@ -215,7 +215,7 @@ class _HomePageState extends State<HomePage> {
         CustomCategorieButton(
           width: 50,
           height: 33,
-          fillColor: deepPurple400,
+          fillColor: colorDeepPurple400,
           icon: Icons.list,
           splashColor: Colors.white,
           iconColor: Colors.white,

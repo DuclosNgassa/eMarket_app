@@ -14,9 +14,9 @@ const URL_IMAGES_BY_POSTID = URL_IMAGES + "/post/";
 
 const URL_CATEGORIES       = SERVER_URL + "/categories";
 
-Color deepPurple300 = Colors.deepPurple[300];//Color(0xFF95E08E);
-Color deepPurple400 = Colors.deepPurple[400]; //Color(0xFF33BBB5);
-Color deepPurple500 = Colors.deepPurple[500];//Color(0xFF00AA12);
+Color colorDeepPurple300 = Colors.deepPurple[300];//Color(0xFF95E08E);
+Color colorDeepPurple400 = Colors.deepPurple[400]; //Color(0xFF33BBB5);
+Color colorDeepPurple500 = Colors.deepPurple[500];//Color(0xFF00AA12);
 Color backgroundColor = Color(0xFFEFEEF5);
 
 
@@ -28,7 +28,7 @@ TextStyle titleStyleWhite = new TextStyle(
 );
 TextStyle jobCardTitileStyleBlue = new TextStyle(
     fontFamily: 'Avenir',
-    color: deepPurple400,
+    color: colorDeepPurple400,
     fontWeight: FontWeight.bold,
     fontSize: 12
 );
@@ -53,7 +53,7 @@ TextStyle titileStyleBlack = new TextStyle(
 );
 TextStyle salaryStyle = new TextStyle(
     fontFamily: 'Avenir',
-    color: deepPurple500,
+    color: colorDeepPurple500,
     fontWeight: FontWeight.bold,
     fontSize: 12
 );
@@ -72,7 +72,7 @@ TextStyle radioButtonStyle = new TextStyle(
 
 TextStyle priceStyle = new TextStyle(
     fontFamily: 'Avenir',
-    color: deepPurple500,
+    color: colorDeepPurple500,
     fontWeight: FontWeight.bold,
     fontSize: 12
 );
@@ -97,7 +97,7 @@ TextStyle normalStyle = new TextStyle(
 );
 
 TextStyle priceDetailStyle = new TextStyle(
-    color: deepPurple500,
+    color: colorDeepPurple500,
     fontWeight: FontWeight.bold,
     fontSize: 20
 );
@@ -109,7 +109,7 @@ TextStyle titleDetailStyle = new TextStyle(
     fontSize: 20
 );
 
-TextStyle cityDetailStyle = new TextStyle(
+TextStyle greyDetailStyle = new TextStyle(
     color: Colors.black45,
     fontSize: 20
 );

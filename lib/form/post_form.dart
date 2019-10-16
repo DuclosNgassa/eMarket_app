@@ -251,7 +251,7 @@ class PostFormState extends State<PostForm> {
             Container(
               padding: const EdgeInsets.only(top: 10.0),
               child: RaisedButton(
-                color: deepPurple400,
+                color: colorDeepPurple400,
                 child: Text('Transmettre', style: formStyle),
                 onPressed: _submitForm,
               ),

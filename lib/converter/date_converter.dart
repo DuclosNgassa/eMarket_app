@@ -1,7 +1,6 @@
 import 'package:intl/intl.dart';
 
-class DateConverter{
-
+class DateConverter {
   DateTime convertToDate(String input) {
     try {
       return DateFormat.yMd().parseStrict(input);
@@ -11,4 +10,23 @@ class DateConverter{
     }
   }
 
+  static String convertToString(DateTime dateTime) {
+    if (dateTime.day == DateTime.now().day &&
+        dateTime.year == DateTime.now().year) {
+      return "Aujourd'hui, " + convertToHour(dateTime);
+    } else if (dateTime.day + 1 == DateTime.now().day &&
+        dateTime.year == DateTime.now().year) {
+      return "Hier, " + convertToHour(dateTime);
+    }
+
+    return dateTime.day.toString() +
+        "." +
+        dateTime.month.toString() +
+        "." +
+        dateTime.year.toString();
+  }
+
+  static String convertToHour(DateTime dateTime) {
+    return dateTime.hour.toString() + ":" + dateTime.minute.toString();
+  }
 }
