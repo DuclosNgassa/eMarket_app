@@ -18,7 +18,7 @@ Color colorDeepPurple300 = Colors.deepPurple[300];//Color(0xFF95E08E);
 Color colorDeepPurple400 = Colors.deepPurple[400]; //Color(0xFF33BBB5);
 Color colorDeepPurple500 = Colors.deepPurple[500];//Color(0xFF00AA12);
 Color backgroundColor = Color(0xFFEFEEF5);
-
+const double BUTTON_FONT_SIZE = 10;
 
 TextStyle titleStyleWhite = new TextStyle(
     fontFamily: 'Helvetica',
@@ -111,7 +111,7 @@ TextStyle titleDetailStyle = new TextStyle(
 
 TextStyle greyDetailStyle = new TextStyle(
     color: Colors.black45,
-    fontSize: 20
+    fontSize: 12
 );
 
 TextStyle normalDetailStyle = new TextStyle(
