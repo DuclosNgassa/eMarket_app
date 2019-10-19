@@ -96,6 +96,11 @@ TextStyle normalStyle = new TextStyle(
     fontSize: 12
 );
 
+TextStyle styleButtonWhite = new TextStyle(
+    color: Colors.white,
+    fontSize: 12
+);
+
 TextStyle priceDetailStyle = new TextStyle(
     color: colorDeepPurple500,
     fontWeight: FontWeight.bold,

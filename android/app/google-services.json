@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "949478649704",
+    "firebase_url": "https://emarket-c9213.firebaseio.com",
+    "project_id": "emarket-c9213",
+    "storage_bucket": "emarket-c9213.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:949478649704:android:69dda2c0d88182b2cdf0dd",
+        "android_client_info": {
+          "package_name": "com.softsolution.emarket_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "949478649704-vfb9mpf86nkh0o43ht06c1ncem6neo1g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softsolution.emarket_app",
+            "certificate_hash": "69da95fcc11443819438e2e026c4955bae364c27"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHbqb7TPUjYMjkuWnTnMzn1vKZ1fpVIPA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
