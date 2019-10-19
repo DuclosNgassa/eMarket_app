@@ -125,7 +125,8 @@ class _HomeCardState extends State<HomeCard> {
                 ),
               ),
               CircleAvatar(
-                backgroundImage: getImage(),
+                child: Container(),
+                //backgroundImage: getImage(),
               ),
             ],
           ),

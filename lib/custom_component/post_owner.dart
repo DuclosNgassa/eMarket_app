@@ -1,10 +1,14 @@
+import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/post.dart';
+import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:flutter/material.dart';
 
 import 'custom_button.dart';
 
 class PostOwner extends StatelessWidget {
+  bool logedIn = false; //TODO save login as sharedPreferencies
+
   PostOwner(
       {@required this.onPressed,
       @required this.fillColor,
@@ -123,7 +127,7 @@ class PostOwner extends StatelessWidget {
                       text: 'Fais moi un SMS',
                       textStyle: TextStyle(
                           color: Colors.white, fontSize: BUTTON_FONT_SIZE),
-                      onPressed: null,
+                      onPressed: () => _showNumber(context),
                     ),
                   ),
                   SizedBox(
@@ -155,5 +159,18 @@ class PostOwner extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _showNumber(BuildContext context){
+    if(logedIn){
+      //TODO display number
+    }else {
+      Navigator.push(
+        context,
+        new MaterialPageRoute(
+          builder: (context) => new Login(LoginSource.ownerPage, post),
+        ),
+      );
+    }
   }
 }

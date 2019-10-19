@@ -1,5 +1,7 @@
+import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/pages/account/account_page.dart';
 import 'package:emarket_app/pages/home/home_page.dart';
+import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/pages/post/post_page.dart';
 import 'package:emarket_app/pages/search/search_page.dart';
 import 'package:emarket_app/services/global.dart';
@@ -8,14 +10,28 @@ import 'package:flutter/material.dart';
 import '../message/message_page.dart';
 
 class NavigationPage extends StatefulWidget {
+  int _selectedIndex = 0;
+
+  NavigationPage(this._selectedIndex);
+
   @override
   _NavigationPageState createState() => new _NavigationPageState();
 }
 
 class _NavigationPageState extends State<NavigationPage> {
-  int _selectedIndex = 0;
+  int _localSelectedIndex = 0;
+ static bool isLogedIn = false;
 
-  @override
+ @override
+ void initState() {
+   _localSelectedIndex = widget._selectedIndex;
+   if(_localSelectedIndex > 0){
+     isLogedIn = true;
+   }
+   super.initState();
+ }
+
+ @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     /*24 is for notification bar on Android*/
@@ -58,7 +74,7 @@ class _NavigationPageState extends State<NavigationPage> {
                   Container(
                     margin: EdgeInsets.only(top: 55),
                     constraints: BoxConstraints.expand(height: itemHeight * 0.80),
-                    child: _widgetOptions.elementAt(_selectedIndex),
+                    child: _widgetOptions.elementAt(_localSelectedIndex),
                   ),
                 ],
               )
@@ -89,7 +105,7 @@ class _NavigationPageState extends State<NavigationPage> {
             title: Text('Message'),
           ),
         ],
-        currentIndex: _selectedIndex,
+        currentIndex: _localSelectedIndex,
         selectedItemColor: colorDeepPurple400,
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
@@ -99,15 +115,15 @@ class _NavigationPageState extends State<NavigationPage> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      _localSelectedIndex = index;
     });
   }
 
   List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     SearchPage(),
-    PostPage(),
-    AccountPage(),
-    MessagePage(),
+    isLogedIn ? PostPage() : Login(LoginSource.postPage, null),
+    isLogedIn ? AccountPage() : Login(LoginSource.accountPage, null),
+    isLogedIn ? MessagePage() : Login(LoginSource.messagePage, null),
   ];
 }

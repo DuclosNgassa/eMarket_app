@@ -118,7 +118,8 @@ class _PostCardState extends State<PostCard> {
           Row(
             children: <Widget>[
               CircleAvatar(
-                backgroundImage: NetworkImage(widget.post.imageUrl),
+                child: Container(),
+                //backgroundImage: NetworkImage(widget.post.imageUrl),
               )
             ],
           )
