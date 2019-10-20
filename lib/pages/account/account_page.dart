@@ -1,6 +1,14 @@
 import 'dart:math';
 
+import 'package:emarket_app/custom_component/custom_button.dart';
+import 'package:emarket_app/model/login_source.dart';
+import 'package:emarket_app/pages/login/login.dart';
+import 'package:emarket_app/pages/navigation/navigation_page.dart';
+import 'package:emarket_app/services/global.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../data.dart';
 
@@ -14,6 +22,7 @@ var widgetAspectRatio = cardAspectRatio * 1.2;
 
 class _AccountState extends State<AccountPage> {
   var currentPage = images.length - 1.0;
+  final GoogleSignIn _gSignIn = GoogleSignIn();
 
   @override
   Widget build(BuildContext context) {
@@ -24,177 +33,43 @@ class _AccountState extends State<AccountPage> {
       });
     });
 
-    return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [
-            Color(0xFF1b1e44),
-            Color(0xFF2d3447),
-          ],
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-              tileMode: TileMode.clamp)),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 12.0, right: 12.0, top: 30.0, bottom: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(
-                        Icons.line_weight,
-                        color: Colors.white,
-                        size: 30.0,
-                      ),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.search,
-                        color: Colors.white,
-                        size: 30.0,
-                      ),
-                      onPressed: () {},
-                    )
-                  ],
+    return FutureBuilder<FirebaseUser>(
+        future: FirebaseAuth.instance.currentUser(),
+        builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
+          if (snapshot.hasData) {
+            FirebaseUser user = snapshot.data; // this is your user instance
+            /// is because there is user already logged
+            return new Container(
+              child: Center(
+                child: CustomButton(
+                  fillColor: colorRed,
+                  icon: FontAwesomeIcons.signOutAlt,
+                  //icon: Icons.directions_run,
+                  splashColor: Colors.white,
+                  iconColor: Colors.white,
+                  text: 'Se deconnecter',
+                  textStyle: TextStyle(
+                      color: Colors.white, fontSize: BUTTON_FONT_SIZE),
+                  onPressed: () => _logOut(),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text("Trending",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 46.0,
-                          fontFamily: "Calibre-Semibold",
-                          letterSpacing: 1.0,
-                        )),
-                    IconButton(
-                      icon: Icon(
-                        Icons.line_weight,
-                        size: 12.0,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {},
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFFff6e6e),
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 22.0, vertical: 6.0),
-                          child: Text("Animated",
-                              style: TextStyle(color: Colors.white)),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15.0,
-                    ),
-                    Text("25+ Stories",
-                        style: TextStyle(color: Colors.blueAccent))
-                  ],
-                ),
-              ),
-              Stack(
-                children: <Widget>[
-                  CardScrollWidget(currentPage),
-                  Positioned.fill(
-                    child: PageView.builder(
-                      itemCount: images.length,
-                      controller: controller,
-                      reverse: true,
-                      itemBuilder: (context, index) {
-                        return Container();
-                      },
-                    ),
-                  )
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text("Favourite",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 46.0,
-                          fontFamily: "Calibre-Semibold",
-                          letterSpacing: 1.0,
-                        )),
-                    IconButton(
-                      icon: Icon(
-                        Icons.line_weight,
-                        size: 12.0,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {},
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent,
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 22.0, vertical: 6.0),
-                          child: Text("Latest",
-                              style: TextStyle(color: Colors.white)),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15.0,
-                    ),
-                    Text("9+ Stories",
-                        style: TextStyle(color: Colors.blueAccent))
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(left: 18.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20.0),
-                      child: Image.asset("images/profil.JPG",
-                          width: 296.0, height: 222.0),
-                    ),
-                  )
-                ],
-              )
-            ],
-          ),
-        ),
+            );
+          }
+
+          /// other way there is no user logged.
+          return Login(LoginSource.accountPage, null);
+        });
+  }
+
+  _logOut() async {
+    await FirebaseAuth.instance.signOut();
+    _gSignIn.signOut();
+    print('Signed out');
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      new MaterialPageRoute(
+        builder: (context) => new NavigationPage(0),
       ),
     );
   }

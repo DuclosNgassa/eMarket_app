@@ -26,6 +26,8 @@ Color colorDeepPurple300 = Colors.deepPurple[300]; //Color(0xFF95E08E);
 Color colorDeepPurple400 = Colors.deepPurple[400]; //Color(0xFF33BBB5);
 Color colorDeepPurple500 = Colors.deepPurple[500]; //Color(0xFF00AA12);
 Color backgroundColor = Color(0xFFEFEEF5);
+Color colorRed = Colors.redAccent;
+
 const double BUTTON_FONT_SIZE = 10;
 
 TextStyle titleStyleWhite = new TextStyle(

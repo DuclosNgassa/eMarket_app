@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:emarket_app/model/login_source.dart';
+import 'package:emarket_app/pages/login/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -20,26 +23,35 @@ class _MessagePageState extends State<MessagePage> {
   List<File> images = List<File>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  //static const baseUrl = 'http://192.168.2.120:3000/images';
-  //static const downloadUrl = 'http://192.168.2.120:3000';
-
   @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      key: scaffoldKey,
-      appBar: new AppBar(
-        title: new Text('Upload image'),
-      ),
-      body: new Column(
-        children: <Widget>[
-          _buildButtons(),
-          Expanded(
-            child: buildGridView(),
-          ),
-          // _buildPreviewImage(),
-          //buildGridView(),
-        ],
-      ),
+  Widget build(BuildContext context){
+    return FutureBuilder<FirebaseUser>(
+        future: FirebaseAuth.instance.currentUser(),
+        builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot){
+          if (snapshot.hasData){
+            FirebaseUser user = snapshot.data;
+            // this is your user instance
+            /// is because there is user already logged
+            return new Scaffold(
+              key: scaffoldKey,
+              appBar: new AppBar(
+                title: new Text('Upload image'),
+              ),
+              body: new Column(
+                children: <Widget>[
+                  _buildButtons(),
+                  Expanded(
+                    child: buildGridView(),
+                  ),
+                  // _buildPreviewImage(),
+                  //buildGridView(),
+                ],
+              ),
+            );
+          }
+          /// other way there is no user logged.
+          return Login(LoginSource.messagePage, null);
+        }
     );
   }
 

@@ -122,8 +122,8 @@ class _NavigationPageState extends State<NavigationPage> {
   List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     SearchPage(),
-    isLogedIn ? PostPage() : Login(LoginSource.postPage, null),
-    isLogedIn ? AccountPage() : Login(LoginSource.accountPage, null),
-    isLogedIn ? MessagePage() : Login(LoginSource.messagePage, null),
+    PostPage(),
+    AccountPage(),
+    MessagePage(),
   ];
 }
