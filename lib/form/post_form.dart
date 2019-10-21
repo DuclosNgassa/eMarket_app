@@ -15,8 +15,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
 import '../model/feetyp.dart';
-import '../model/post_image.dart' as MyImage;
 import '../model/post.dart';
+import '../model/post_image.dart' as MyImage;
 import '../model/posttyp.dart';
 import '../services/global.dart';
 import '../services/image_service.dart';
@@ -35,7 +35,6 @@ class PostFormState extends State<PostForm> {
   PostService _postService = new PostService();
   ImageService _imageService = new ImageService();
 
-  //final Color color;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -231,6 +230,20 @@ class PostFormState extends State<PostForm> {
               ),
             ),
             TextFormField(
+              decoration: const InputDecoration(
+                hintText: 'Donnez un numero de téléphone',
+                labelText: 'Numero de téléphone',
+                labelStyle: TextStyle(
+                    //fontFamily: 'Helvetica',
+                    color: Colors.black,
+                    fontSize: 15),
+              ),
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(30),
+              ],
+              onSaved: (val) => newPost.phoneNumber = val,
+            ),
+            TextFormField(
               maxLines: 2,
               decoration: const InputDecoration(
                 hintText: 'Description de votre post',
@@ -335,7 +348,9 @@ class PostFormState extends State<PostForm> {
                     ]),
                     child: AspectRatio(
                       aspectRatio: 0.5,
-                      child: asset != null ? Image.file(asset, fit: BoxFit.cover) : null,
+                      child: asset != null
+                          ? Image.file(asset, fit: BoxFit.cover)
+                          : null,
                     ),
                   ),
                 ),

@@ -1,10 +1,7 @@
 import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/post.dart';
-import 'package:emarket_app/pages/account/account_page.dart';
-import 'package:emarket_app/pages/message/message_page.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
-import 'package:emarket_app/pages/post/post_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';

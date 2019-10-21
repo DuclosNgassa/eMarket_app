@@ -1,4 +1,3 @@
-import 'package:emarket_app/services/global.dart';
 import 'package:flutter/material.dart';
 
 import '../model/post.dart';

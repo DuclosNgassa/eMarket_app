@@ -4,6 +4,7 @@ import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'custom_button.dart';
 
@@ -160,18 +161,18 @@ class PostOwner extends StatelessWidget {
         SizedBox(
           width: 4.0,
         ),
-        Expanded(
+        post.phoneNumber != null ? Expanded(
           child: CustomButton(
             fillColor: colorDeepPurple400,
             icon: Icons.phone_iphone,
             splashColor: Colors.white,
             iconColor: Colors.white,
-            text: 'Appele moi',
+            text: isLogedIn ? post.phoneNumber : 'Appele moi',
             textStyle:
                 TextStyle(color: Colors.white, fontSize: BUTTON_FONT_SIZE),
             onPressed: () => _callSaler(context),
           ),
-        ),
+        ) : Container() ,
         SizedBox(
           width: 10.0,
         ),
@@ -185,7 +186,7 @@ class PostOwner extends StatelessWidget {
 
   _callSaler(BuildContext context) {
     if (isLogedIn) {
-      //TODO make the call
+      launch("tel:" + post.phoneNumber);
       print("Calling the saler......");
     } else {
       Navigator.push(

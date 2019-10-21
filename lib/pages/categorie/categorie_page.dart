@@ -1,8 +1,9 @@
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:flutter/material.dart';
-import '../../services/categorie_service.dart';
 import 'package:http/http.dart' as http;
+
+import '../../services/categorie_service.dart';
 
 class CategoriePage extends StatefulWidget {
   @override

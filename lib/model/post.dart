@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:emarket_app/model/post_image.dart';
-import 'package:http/http.dart' as http;
 
 import '../model/feetyp.dart';
 import '../model/posttyp.dart';
@@ -23,6 +22,7 @@ class Post {
   int userid;
   int categorieid;
   String imageUrl;
+  String phoneNumber;
 
   Post(
       {this.id,
@@ -37,7 +37,8 @@ class Post {
       this.status,
       this.rating,
       this.userid,
-      this.categorieid});
+      this.categorieid,
+      this.phoneNumber});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     Post post = Post(
@@ -54,6 +55,7 @@ class Post {
       rating: json["rating"],
       userid: json["userid"],
       categorieid: json["categorieid"],
+      phoneNumber: json["phone_number"],
     );
 
     return post;
@@ -73,6 +75,7 @@ class Post {
     params["rating"] = post.rating.toString();
     params["userid"] = post.userid.toString();
     params["categorieid"] = post.categorieid.toString();
+    params["phone_number"] = post.phoneNumber;
 
     return params;
   }
@@ -90,6 +93,7 @@ class Post {
         'rating': rating.toString(),
         'userid': userid.toString(),
         'categorieid': categorieid.toString(),
+        'phone_number': phoneNumber,
       };
 
   Future getImageUrl() async {
@@ -100,8 +104,7 @@ class Post {
     PostService postService = new PostService();
 
     try {
-      List<PostImage> imageList =
-          await postService.fetchPostImages(this.id);
+      List<PostImage> imageList = await postService.fetchPostImages(this.id);
       if (imageList.length > 0) {
         imageUrl = imageList.elementAt(0).image_url;
       } else {

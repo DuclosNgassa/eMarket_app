@@ -1,11 +1,9 @@
-import 'package:emarket_app/custom_component/custom_linear_gradient.dart';
 import 'package:emarket_app/custom_component/home_card.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/search/searchparameter.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import '../../custom_component/custom_button.dart';
 import '../../model/post.dart';

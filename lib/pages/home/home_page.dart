@@ -1,7 +1,6 @@
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import '../../custom_component/home_card.dart';
 import '../../model/post.dart';
