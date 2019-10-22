@@ -5,6 +5,7 @@ import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/model/status.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/post/images_detail.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +82,7 @@ class PostFormState extends State<PostForm> {
                 hintText: 'Donnez le titre de votre post',
                 labelText: 'Titre',
                 labelStyle: TextStyle(
-                    //fontFamily: 'Helvetica',
+                  //fontFamily: 'Helvetica',
                     color: Colors.black,
                     fontSize: 15),
               ),
@@ -89,7 +90,7 @@ class PostFormState extends State<PostForm> {
                 LengthLimitingTextInputFormatter(30),
               ],
               validator: (val) =>
-                  formValidator.isEmptyText(val) ? 'Donnez un titre' : null,
+              formValidator.isEmptyText(val) ? 'Donnez un titre' : null,
               onSaved: (val) => newPost.title = val,
             ),
             Container(
@@ -130,14 +131,15 @@ class PostFormState extends State<PostForm> {
                       hintText: 'Donnez le prix',
                       labelText: 'Prix (FCFA)',
                       labelStyle: TextStyle(
-                          //fontFamily: 'Helvetica',
+                        //fontFamily: 'Helvetica',
                           color: Colors.black,
                           fontSize: 15),
                     ),
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(30),
                     ],
-                    validator: (val) => formValidator.isEmptyText(val)
+                    validator: (val) =>
+                    formValidator.isEmptyText(val)
                         ? 'Donnez un prix'
                         : null,
                     onSaved: (val) => newPost.fee = int.parse(val),
@@ -165,17 +167,18 @@ class PostFormState extends State<PostForm> {
                                 });
                               },
                               items: _feeTyps.map<DropdownMenuItem<String>>(
-                                  (String value) {
-                                return DropdownMenuItem(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
+                                      (String value) {
+                                    return DropdownMenuItem(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
                             ),
                           ),
                         );
                       },
-                      validator: (val) => formValidator.isEmptyText(val)
+                      validator: (val) =>
+                      formValidator.isEmptyText(val)
                           ? 'Veuillez choisir le type de prix svp'
                           : null,
                     ),
@@ -194,14 +197,15 @@ class PostFormState extends State<PostForm> {
                         hintText: 'Donnez la ville',
                         labelText: 'Ville',
                         labelStyle: TextStyle(
-                            //fontFamily: 'Helvetica',
+                          //fontFamily: 'Helvetica',
                             color: Colors.black,
                             fontSize: 15),
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
                       ],
-                      validator: (val) => formValidator.isEmptyText(val)
+                      validator: (val) =>
+                      formValidator.isEmptyText(val)
                           ? 'Donnez la ville'
                           : null,
                       onSaved: (val) => newPost.city = val,
@@ -213,14 +217,15 @@ class PostFormState extends State<PostForm> {
                         hintText: 'Donnez le quartier',
                         labelText: 'Quartier',
                         labelStyle: TextStyle(
-                            //fontFamily: 'Helvetica',
+                          //fontFamily: 'Helvetica',
                             color: Colors.black,
                             fontSize: 15),
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
                       ],
-                      validator: (val) => formValidator.isEmptyText(val)
+                      validator: (val) =>
+                      formValidator.isEmptyText(val)
                           ? 'Donnez le quartier'
                           : null,
                       onSaved: (val) => newPost.quarter = val,
@@ -234,7 +239,7 @@ class PostFormState extends State<PostForm> {
                 hintText: 'Donnez un numero de téléphone',
                 labelText: 'Numero de téléphone',
                 labelStyle: TextStyle(
-                    //fontFamily: 'Helvetica',
+                  //fontFamily: 'Helvetica',
                     color: Colors.black,
                     fontSize: 15),
               ),
@@ -249,14 +254,15 @@ class PostFormState extends State<PostForm> {
                 hintText: 'Description de votre post',
                 labelText: 'Description',
                 labelStyle: TextStyle(
-                    //fontFamily: 'Helvetica',
+                  //fontFamily: 'Helvetica',
                     color: Colors.black,
                     fontSize: 15),
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(500),
               ],
-              validator: (val) => formValidator.isEmptyText(val)
+              validator: (val) =>
+              formValidator.isEmptyText(val)
                   ? 'Donnez une description à votre post'
                   : null,
               onSaved: (val) => newPost.description = val,
@@ -297,7 +303,7 @@ class PostFormState extends State<PostForm> {
       scrollDirection: Axis.horizontal,
       children: List.generate(
         images.length,
-        (index) {
+            (index) {
           File asset = images[index];
           return Dismissible(
             direction: DismissDirection.endToStart,
@@ -316,7 +322,8 @@ class PostFormState extends State<PostForm> {
                 ),
               ),
             ),
-            onDismissed: (direction) => {
+            onDismissed: (direction) =>
+            {
               setState(() {
                 images.removeAt(index);
               })
@@ -492,11 +499,14 @@ class PostFormState extends State<PostForm> {
   }
 
   Future<Post> _savePost() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    print("User: " + user.email);
+
     setFeeTyp(_feeTyp);
     newPost.categorieid = _categorieTile.id;
     newPost.post_typ = _postTyp;
-    newPost.userid = 2;
-    newPost.rating = 6;
+    newPost.useremail = user.email;
+    newPost.rating = 5;
     newPost.status = Status.created;
     newPost.created_at = DateTime.now();
     Map<String, dynamic> postParams = newPost.toMap(newPost);
@@ -558,7 +568,7 @@ class PostFormState extends State<PostForm> {
       newImage.image_url = item;
       Map<String, dynamic> imageParams = _imageService.toMap(newImage);
       MyImage.PostImage savedImage =
-          await _imageService.saveImage(http.Client(), imageParams);
+      await _imageService.saveImage(imageParams);
     }
   }
 
@@ -610,7 +620,8 @@ class PostFormState extends State<PostForm> {
       ),
       leftBarIndicatorColor: Colors.blue.shade300,
       duration: Duration(seconds: 5),
-    )..show(context);
+    )
+      ..show(context);
   }
 }
 

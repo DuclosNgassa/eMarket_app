@@ -19,7 +19,7 @@ class Post {
   String quarter; // where the article available is
   Status status; // done, created
   int rating = 5;
-  int userid;
+  String useremail;
   int categorieid;
   String imageUrl;
   String phoneNumber;
@@ -36,7 +36,7 @@ class Post {
       this.quarter,
       this.status,
       this.rating,
-      this.userid,
+      this.useremail,
       this.categorieid,
       this.phoneNumber});
 
@@ -53,7 +53,7 @@ class Post {
       quarter: json["quartier"],
       status: Post.convertStringToStatus(json["status"]),
       rating: json["rating"],
-      userid: json["userid"],
+      useremail: json["useremail"],
       categorieid: json["categorieid"],
       phoneNumber: json["phone_number"],
     );
@@ -73,7 +73,7 @@ class Post {
     params["quartier"] = post.quarter;
     params["status"] = convertStatusToString(post.status);
     params["rating"] = post.rating.toString();
-    params["userid"] = post.userid.toString();
+    params["useremail"] = post.useremail;
     params["categorieid"] = post.categorieid.toString();
     params["phone_number"] = post.phoneNumber;
 
@@ -91,7 +91,7 @@ class Post {
         'quarter': quarter,
         'status': convertStatusToString(status),
         'rating': rating.toString(),
-        'userid': userid.toString(),
+        'useremail': useremail,
         'categorieid': categorieid.toString(),
         'phone_number': phoneNumber,
       };

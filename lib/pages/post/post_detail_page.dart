@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/custom_component/post_owner.dart';
+import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/post/images_detail.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class PostDetailPage extends StatefulWidget {
 class _PostDetailPageState extends State<PostDetailPage> {
   List<CachedNetworkImage> postImages = new List();
   PostService _postService = new PostService();
+  User user = new User();
 
   @override
   void initState() {
@@ -286,8 +288,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
   }
 
-  void _loadImages() async {
+  Future<void> _loadImages() async {
     postImages = await _postService.fetchImages(widget.post.id);
     setState(() {});
   }
+
 }

@@ -1,28 +1,44 @@
 import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/post.dart';
+import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/services/user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'custom_button.dart';
 
-class PostOwner extends StatelessWidget {
-  bool isLogedIn = false; //TODO save login as sharedPreferencies
-
-  PostOwner(
-      {@required this.onPressed,
-      @required this.fillColor,
-      @required this.splashColor,
-      @required this.textStyle,
-      @required this.post});
+class PostOwner extends StatefulWidget {
+  PostOwner({@required this.onPressed,
+    @required this.fillColor,
+    @required this.splashColor,
+    @required this.textStyle,
+    @required this.post,
+    @required this.user});
 
   final GestureTapCallback onPressed;
   final Color fillColor;
   final Color splashColor;
   final TextStyle textStyle;
   final Post post;
+  final User user;
+
+  @override
+  PostOwnerState createState() => PostOwnerState();
+}
+
+class PostOwnerState extends State<PostOwner> {
+  final UserService _userService = new UserService();
+  bool isLogedIn = false; //TODO save login as sharedPreferencies
+  User _user = new User();
+
+@override
+  void initState() {
+    super.initState();
+    _getUserByEmail();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +79,7 @@ class PostOwner extends StatelessWidget {
                         color: colorDeepPurple400,
                         child: Center(
                           child: Text(
-                            'D',
+                            _user != null && _user.name != null? _user.name[0].toUpperCase() : 'P',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
@@ -83,7 +99,7 @@ class PostOwner extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Row(
                         children: <Widget>[
-                          Text('Duclos', style: titleDetailStyle),
+                          Text(_user != null && _user.name!= null ? _user.name : 'Name', style: titleDetailStyle),
                         ],
                       ),
                     ),
@@ -154,25 +170,25 @@ class PostOwner extends StatelessWidget {
             iconColor: Colors.white,
             text: 'Fais moi un SMS',
             textStyle:
-                TextStyle(color: Colors.white, fontSize: BUTTON_FONT_SIZE),
+            TextStyle(color: Colors.white, fontSize: BUTTON_FONT_SIZE),
             onPressed: () => _sendSMS(context),
           ),
         ),
         SizedBox(
           width: 4.0,
         ),
-        post.phoneNumber != null ? Expanded(
+        widget.post.phoneNumber != null ? Expanded(
           child: CustomButton(
             fillColor: colorDeepPurple400,
             icon: Icons.phone_iphone,
             splashColor: Colors.white,
             iconColor: Colors.white,
-            text: isLogedIn ? post.phoneNumber : 'Appele moi',
+            text: isLogedIn ? widget.post.phoneNumber : 'Appele moi',
             textStyle:
-                TextStyle(color: Colors.white, fontSize: BUTTON_FONT_SIZE),
+            TextStyle(color: Colors.white, fontSize: BUTTON_FONT_SIZE),
             onPressed: () => _callSaler(context),
           ),
-        ) : Container() ,
+        ) : Container(),
         SizedBox(
           width: 10.0,
         ),
@@ -186,13 +202,13 @@ class PostOwner extends StatelessWidget {
 
   _callSaler(BuildContext context) {
     if (isLogedIn) {
-      launch("tel:" + post.phoneNumber);
+      launch("tel:" + widget.post.phoneNumber);
       print("Calling the saler......");
     } else {
       Navigator.push(
         context,
         new MaterialPageRoute(
-          builder: (context) => new Login(LoginSource.ownerPage, post),
+          builder: (context) => new Login(LoginSource.ownerPage, widget.post),
         ),
       );
     }
@@ -206,9 +222,16 @@ class PostOwner extends StatelessWidget {
       Navigator.push(
         context,
         new MaterialPageRoute(
-          builder: (context) => new Login(LoginSource.ownerPage, post),
+          builder: (context) => new Login(LoginSource.ownerPage, widget.post),
         ),
       );
     }
   }
+
+
+  Future<void> _getUserByEmail() async {
+    _user = await _userService.fetchUserByEmail(widget.post.useremail);
+    setState(() {});
+  }
+
 }

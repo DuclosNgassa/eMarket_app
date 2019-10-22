@@ -8,6 +8,7 @@ const SERVER_URL = "http://172.20.10.5:3000";
 const URL_POSTS = SERVER_URL + "/posts";
 
 const URL_USERS = SERVER_URL + "/users";
+const URL_USERS_BY_EMAIL = URL_USERS + "/email/";
 
 const URL_IMAGES = SERVER_URL + "/images";
 const URL_IMAGES_UPLOAD = URL_IMAGES + "/upload";

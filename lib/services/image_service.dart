@@ -8,8 +8,8 @@ import '../services/global.dart';
 
 class ImageService{
 
-  Future<List<PostImage>> fetchImages(http.Client client) async {
-    final response = await client.get(URL_IMAGES);
+  Future<List<PostImage>> fetchImages() async {
+    final response = await http.Client().get(URL_IMAGES);
     if (response.statusCode == 200) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -26,8 +26,8 @@ class ImageService{
     }
   }
   
-  Future<List<PostImage>> fetchImagesByPostID(http.Client client, int postId) async {
-    final response = await client.get('$URL_IMAGES_BY_POSTID$postId');
+  Future<List<PostImage>> fetchImagesByPostID(int postId) async {
+    final response = await http.Client().get('$URL_IMAGES_BY_POSTID$postId');
     if (response.statusCode == 200) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -44,8 +44,8 @@ class ImageService{
     }
   }
 
-  Future<PostImage> saveImage(http.Client client,  Map<String, dynamic> params) async {
-    final response = await client.post(URL_IMAGES, body: params);
+  Future<PostImage> saveImage(Map<String, dynamic> params) async {
+    final response = await http.post(URL_IMAGES, body: params);
     if (response.statusCode == 200) {
       final responseBody = await json.decode(response.body);
       return convertResponseToImage(responseBody);

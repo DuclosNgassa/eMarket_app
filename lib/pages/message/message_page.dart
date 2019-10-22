@@ -183,7 +183,7 @@ class _MessagePageState extends State<MessagePage> {
         var response = await request.send();
         var decoded = await response.stream.bytesToString().then(json.decode);
 
-        if (response.statusCode == HttpStatus.OK) {
+        if (response.statusCode == HttpStatus.ok) {
           _showSnackbar(
               'Image uploaded, imageUrl = $URL_IMAGES/${decoded['path']}');
         } else {

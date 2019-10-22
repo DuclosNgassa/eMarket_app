@@ -54,13 +54,13 @@ class PostService {
       quarter: json["data"]["quartier"],
       status: Post.convertStringToStatus(json["data"]["status"]),
       rating: json["data"]["rating"],
-      userid: json["data"]["userid"],
+      useremail: json["data"]["useremail"],
       categorieid: json["data"]["categorieid"],
     );
   }
 
   Future<List<PostImage>> fetchPostImages(int postId) async {
-    return _imageService.fetchImagesByPostID(http.Client(), postId);
+    return _imageService.fetchImagesByPostID(postId);
   }
 
   Future<List<CachedNetworkImage>> fetchImages(int postId) async {
