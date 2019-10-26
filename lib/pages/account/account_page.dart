@@ -1,69 +1,166 @@
-import 'dart:math';
-
 import 'package:emarket_app/custom_component/custom_button.dart';
+import 'package:emarket_app/custom_component/post_card_edit.dart';
 import 'package:emarket_app/model/login_source.dart';
+import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/services/global.dart' as prefix0;
+import 'package:emarket_app/services/post_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
-import '../../data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountPage extends StatefulWidget {
   @override
   _AccountState createState() => new _AccountState();
 }
 
-var cardAspectRatio = 12.0 / 16.0;
-var widgetAspectRatio = cardAspectRatio * 1.2;
-
-class _AccountState extends State<AccountPage> {
-  var currentPage = images.length - 1.0;
+class _AccountState extends State<AccountPage>
+    with SingleTickerProviderStateMixin {
+  final PostService _postService = new PostService();
   final GoogleSignIn _gSignIn = GoogleSignIn();
+  TabController controller;
+
+  String userName = 'eMarket';
+  String userEmail = 'eMarket@softsolutions.de';
+  List<Post> myPosts = new List();
+  List<Post> myFavorits = new List();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMyPosts();
+    controller = TabController(length: 3, vsync: this);
+  }
 
   @override
   Widget build(BuildContext context) {
-    PageController controller = PageController(initialPage: images.length - 1);
-    controller.addListener(() {
-      setState(() {
-        currentPage = controller.page;
-      });
-    });
+    return FutureBuilder<FirebaseUser>(
+        future: FirebaseAuth.instance.currentUser(),
+        builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
+          if (snapshot.hasData) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Container(
+                child: NestedScrollView(
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) {
+                    return [
+                      SliverAppBar(
+                        pinned: false,
+                        backgroundColor: prefix0.colorDeepPurple300,
+                        flexibleSpace: FlexibleSpaceBar(
+                          collapseMode: CollapseMode.pin,
+                          background: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: Text(
+                                        userName,
+                                        style: titleStyleWhite,
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                    showLogout(),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  userEmail,
+                                  style: normalStyleWhite,
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        expandedHeight: 105.0,
+                        bottom: TabBar(
+                          isScrollable: true,
+                          indicatorColor: Colors.black,
+                          labelColor: Colors.black,
+                          tabs: [
+                            Tab(text: 'POSTS'),
+                            Tab(text: 'FAVORITS'),
+                            Tab(text: 'CONFIGURATION'),
+                          ],
+                          controller: controller,
+                        ),
+                      )
+                    ];
+                  },
+                  body: TabBarView(
+                    controller: controller,
+                    children: [
+                      buildListView(),
+                      Icon(Icons.star),
+                      Icon(Icons.build),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+          return Login(LoginSource.accountPage, null);
+        });
+  }
 
+  Widget buildListView() {
+    return ListView.separated(
+        itemBuilder: (context, index) => Padding(
+              padding: EdgeInsets.only(left: 20.0),
+              child: PostCardEdit(myPosts.elementAt(index)),
+            ),
+        separatorBuilder: (context, index) => Divider(),
+        itemCount: myPosts.length);
+  }
+
+  Future<void> _loadMyPosts() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userEmail = prefs.getString(USER_EMAIL);
+    userName = prefs.getString(USER_NAME);
+    myPosts = await _postService.fetchPostByUserEmail(userEmail);
+    setState(() {});
+  }
+
+  Widget showLogout() {
     return FutureBuilder<FirebaseUser>(
         future: FirebaseAuth.instance.currentUser(),
         builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
           if (snapshot.hasData) {
             FirebaseUser user = snapshot.data; // this is your user instance
             /// is because there is user already logged
-            return new Container(
-              child: Center(
-                child: CustomButton(
-                  fillColor: colorRed,
-                  icon: FontAwesomeIcons.signOutAlt,
-                  //icon: Icons.directions_run,
-                  splashColor: Colors.white,
-                  iconColor: Colors.white,
-                  text: 'Se deconnecter',
-                  textStyle: TextStyle(
-                      color: Colors.white, fontSize: BUTTON_FONT_SIZE),
-                  onPressed: () => _logOut(),
-                ),
-              ),
+            return CustomButton(
+              fillColor: colorRed,
+              icon: FontAwesomeIcons.signOutAlt,
+              //icon: Icons.directions_run,
+              splashColor: Colors.white,
+              iconColor: Colors.white,
+              text: 'Se deconnecter',
+              textStyle:
+                  TextStyle(color: Colors.white, fontSize: BUTTON_FONT_SIZE),
+              onPressed: () => _logOut(),
             );
           }
 
           /// other way there is no user logged.
-          return Login(LoginSource.accountPage, null);
+          return new Container();
         });
   }
 
   _logOut() async {
     await FirebaseAuth.instance.signOut();
     _gSignIn.signOut();
+    clearSharedPreferences();
     print('Signed out');
     Navigator.pop(context);
     Navigator.push(
@@ -73,110 +170,9 @@ class _AccountState extends State<AccountPage> {
       ),
     );
   }
-}
 
-class CardScrollWidget extends StatelessWidget {
-  var currentPage;
-  var padding = 20.0;
-  var verticalInset = 20.0;
-
-  CardScrollWidget(this.currentPage);
-
-  @override
-  Widget build(BuildContext context) {
-    return new AspectRatio(
-      aspectRatio: widgetAspectRatio,
-      child: LayoutBuilder(builder: (context, contraints) {
-        var width = contraints.maxWidth;
-        var height = contraints.maxHeight;
-
-        var safeWidth = width - 2 * padding;
-        var safeHeight = height - 2 * padding;
-
-        var heightOfPrimaryCard = safeHeight;
-        var widthOfPrimaryCard = heightOfPrimaryCard * cardAspectRatio;
-
-        var primaryCardLeft = safeWidth - widthOfPrimaryCard;
-        var horizontalInset = primaryCardLeft / 2;
-
-        List<Widget> cardList = new List();
-
-        for (var i = 0; i < images.length; i++) {
-          var delta = i - currentPage;
-          bool isOnRight = delta > 0;
-
-          var start = padding +
-              max(
-                  primaryCardLeft -
-                      horizontalInset * -delta * (isOnRight ? 15 : 1),
-                  0.0);
-
-          var cardItem = Positioned.directional(
-            top: padding + verticalInset * max(-delta, 0.0),
-            bottom: padding + verticalInset * max(-delta, 0.0),
-            start: start,
-            textDirection: TextDirection.rtl,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16.0),
-              child: Container(
-                decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                  BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(3.0, 6.0),
-                      blurRadius: 10.0)
-                ]),
-                child: AspectRatio(
-                  aspectRatio: cardAspectRatio,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: <Widget>[
-                      Image.asset(images[i], fit: BoxFit.cover),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 8.0),
-                              child: Text(title[i],
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25.0,
-                                      fontFamily: "SF-Pro-Text-Regular")),
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 12.0, bottom: 12.0),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 22.0, vertical: 6.0),
-                                decoration: BoxDecoration(
-                                    color: Colors.blueAccent,
-                                    borderRadius: BorderRadius.circular(20.0)),
-                                child: Text("Read Later",
-                                    style: TextStyle(color: Colors.white)),
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-          cardList.add(cardItem);
-        }
-        return Stack(
-          children: cardList,
-        );
-      }),
-    );
+  void clearSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
   }
 }

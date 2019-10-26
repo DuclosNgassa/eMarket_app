@@ -79,7 +79,7 @@ class PostOwnerState extends State<PostOwner> {
                         color: colorDeepPurple400,
                         child: Center(
                           child: Text(
-                            _user != null && _user.name != null? _user.name[0].toUpperCase() : 'P',
+                            _user != null && _user.name != null? _user.name[0].toUpperCase() : 'e',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
@@ -99,7 +99,7 @@ class PostOwnerState extends State<PostOwner> {
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Row(
                         children: <Widget>[
-                          Text(_user != null && _user.name!= null ? _user.name : 'Name', style: titleDetailStyle),
+                          Text(_user != null && _user.name!= null ? _user.name : 'eMarket', style: titleDetailStyle),
                         ],
                       ),
                     ),

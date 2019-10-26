@@ -17,19 +17,20 @@ class NavigationPage extends StatefulWidget {
 }
 
 class _NavigationPageState extends State<NavigationPage> {
+
   int _localSelectedIndex = 0;
- static bool isLogedIn = false;
+  static bool isLogedIn = false;
 
- @override
- void initState() {
-   _localSelectedIndex = widget._selectedIndex;
-   if(_localSelectedIndex > 0){
-     isLogedIn = true;
-   }
-   super.initState();
- }
+  @override
+  void initState() {
+    _localSelectedIndex = widget._selectedIndex;
+    if (_localSelectedIndex > 0) {
+      isLogedIn = true;
+    }
+    super.initState();
+  }
 
- @override
+  @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     /*24 is for notification bar on Android*/
@@ -47,31 +48,36 @@ class _NavigationPageState extends State<NavigationPage> {
                     padding: EdgeInsets.only(left: 10, top: 25),
                     constraints: BoxConstraints.expand(height: itemHeight / 4),
                     decoration: BoxDecoration(
-                        gradient: new LinearGradient(
-                            colors: [colorDeepPurple400, colorDeepPurple300],
-                            begin: const FractionalOffset(1.0, 1.0),
-                            end: const FractionalOffset(0.2, 0.2),
-                            stops: [0.0, 1.0],
-                            tileMode: TileMode.clamp),
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30))),
+                      gradient: new LinearGradient(
+                          colors: [colorDeepPurple400, colorDeepPurple300],
+                          begin: const FractionalOffset(1.0, 1.0),
+                          end: const FractionalOffset(0.2, 0.2),
+                          stops: [0.0, 1.0],
+                          tileMode: TileMode.clamp),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
+                      ),
+                    ),
                     child: Container(
                       //padding: EdgeInsets.only(top: 0),
-                      child: Column(
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(
-                            'eMarket',
-                            style: titleStyleWhite,
-                          )
+                          Expanded(
+                            child: Text(
+                              'eMarket',
+                              style: titleStyleWhite,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 55),
-                    constraints: BoxConstraints.expand(height: itemHeight * 0.80),
+                    constraints:
+                        BoxConstraints.expand(height: itemHeight * 0.80),
                     child: _widgetOptions.elementAt(_localSelectedIndex),
                   ),
                 ],
@@ -124,4 +130,5 @@ class _NavigationPageState extends State<NavigationPage> {
     AccountPage(),
     MessagePage(),
   ];
+
 }

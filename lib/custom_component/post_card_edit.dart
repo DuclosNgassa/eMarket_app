@@ -1,23 +1,25 @@
+import 'package:emarket_app/form/post_edit_form.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:flutter/material.dart';
 
 import '../model/post.dart';
 import '../pages/post/post_detail_page.dart';
 
-class HomeCard extends StatefulWidget {
+class PostCardEdit extends StatefulWidget {
   final Post post;
 
-  HomeCard(this.post);
+  PostCardEdit(this.post);
 
   @override
-  _HomeCardState createState() => _HomeCardState(post);
+  _PostCardEditState createState() => _PostCardEditState(post);
 }
 
-class _HomeCardState extends State<HomeCard> {
+class _PostCardEditState extends State<PostCardEdit> {
   Post post;
   String renderUrl;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
-  _HomeCardState(this.post);
+  _PostCardEditState(this.post);
 
   Widget get postImage {
     var dogAvatar;
@@ -201,7 +203,7 @@ class _HomeCardState extends State<HomeCard> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return PostDetailPage(post);
+          return PostEditForm(post, _scaffoldKey);
         },
       ),
     );

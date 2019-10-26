@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/model/post_image.dart';
@@ -26,6 +27,26 @@ class PostService {
       } else {
         return [];
       }
+    } else {
+      throw Exception('Failed to load Posts from the internet');
+    }
+  }
+
+  Future<List<Post>> fetchPostByUserEmail(String email) async {
+    final response = await http.Client().get('$URL_POST_BY_USEREMAIL$email');
+    if (response.statusCode == HttpStatus.ok) {
+      Map<String, dynamic> mapResponse = json.decode(response.body);
+      if (mapResponse["result"] == "ok") {
+        final posts = mapResponse["data"].cast<Map<String, dynamic>>();
+        final postList = await posts.map<Post>((json) {
+          return Post.fromJson(json);
+        }).toList();
+        return postList;
+      } else {
+        throw Exception('Failed to load Posts from the internet');
+      }
+    } else if (response.statusCode == HttpStatus.notFound) {
+      return null;
     } else {
       throw Exception('Failed to load Posts from the internet');
     }

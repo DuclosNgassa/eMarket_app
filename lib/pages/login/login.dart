@@ -1,6 +1,6 @@
-import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/post.dart';
+import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/model/user_status.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   final LoginSource page;
@@ -152,6 +153,10 @@ class _LoginState extends State<Login> {
 
   Future<User> _saveUser(FirebaseUser firebaseUser) async {
     User existsUser = await _userService.fetchUserByEmail(firebaseUser.email);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(USER_EMAIL, firebaseUser.email);
+    prefs.setString(USER_NAME, firebaseUser.displayName);
 
     if(existsUser != null){
       return existsUser;

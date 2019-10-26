@@ -2,10 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-//const SERVER_URL           = "http://192.168.2.120:3000";
-const SERVER_URL = "http://172.20.10.5:3000";
+const SERVER_URL           = "http://192.168.2.120:3000";
+//const SERVER_URL = "http://172.20.10.5:3000";
+//const SERVER_URL = "http://10.0.2.2:3000";
 
 const URL_POSTS = SERVER_URL + "/posts";
+const URL_POST_BY_USEREMAIL = URL_POSTS + "/user/";
 
 const URL_USERS = SERVER_URL + "/users";
 const URL_USERS_BY_EMAIL = URL_USERS + "/email/";
@@ -21,6 +23,9 @@ const SEARCHPAGE = 1;
 const POSTPAGE = 2;
 const ACCOUNTPAGE = 3;
 const MESSAGEPAGE = 4;
+
+const String USER_EMAIL = "userEmail";
+const String USER_NAME = "userName";
 
 Color colorDeepPurple300 = Colors.deepPurple[300]; //Color(0xFF95E08E);
 Color colorDeepPurple400 = Colors.deepPurple[400]; //Color(0xFF33BBB5);
@@ -89,6 +94,7 @@ TextStyle cityStyle =
     new TextStyle(fontFamily: 'Avenir', color: Colors.black45, fontSize: 12);
 
 TextStyle normalStyle = new TextStyle(color: Colors.black, fontSize: 12);
+TextStyle normalStyleWhite = new TextStyle(color: Colors.white, fontSize: 15);
 
 TextStyle styleButtonWhite = new TextStyle(color: Colors.white, fontSize: 12);
 
