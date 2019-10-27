@@ -80,6 +80,26 @@ class Post {
     return params;
   }
 
+  Map<String, dynamic> toMapUpdate(Post post) {
+    Map<String, dynamic> params = Map<String, dynamic>();
+    params["id"] = post.id.toString();
+    params["title"] = post.title;
+    params["created_at"] = post.created_at.toString();
+    params["post_typ"] = convertPostTypToString(post.post_typ);
+    params["description"] = post.description;
+    params["fee"] = post.fee.toString();
+    params["fee_typ"] = convertFeeTypToString(post.fee_typ);
+    params["city"] = post.city;
+    params["quartier"] = post.quarter;
+    params["status"] = convertStatusToString(post.status);
+    params["rating"] = post.rating.toString();
+    params["useremail"] = post.useremail;
+    params["categorieid"] = post.categorieid.toString();
+    params["phone_number"] = post.phoneNumber;
+
+    return params;
+  }
+
   Map<String, dynamic> toJson() => {
         'title': title,
         'created_at': created_at.toString(),

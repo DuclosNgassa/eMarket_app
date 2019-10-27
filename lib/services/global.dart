@@ -15,8 +15,10 @@ const URL_USERS_BY_EMAIL = URL_USERS + "/email/";
 const URL_IMAGES = SERVER_URL + "/images";
 const URL_IMAGES_UPLOAD = URL_IMAGES + "/upload";
 const URL_IMAGES_BY_POSTID = URL_IMAGES + "/post/";
+const URL_IMAGES_BY_PATH = URL_IMAGES + "/server/";
 
 const URL_CATEGORIES = SERVER_URL + "/categories";
+const URL_CATEGORIES_BY_ID = URL_CATEGORIES + "/";
 
 const HOMEPAGE = 0;
 const SEARCHPAGE = 1;
@@ -32,6 +34,8 @@ Color colorDeepPurple400 = Colors.deepPurple[400]; //Color(0xFF33BBB5);
 Color colorDeepPurple500 = Colors.deepPurple[500]; //Color(0xFF00AA12);
 Color backgroundColor = Color(0xFFEFEEF5);
 Color colorRed = Colors.redAccent;
+Color colorWhite = Colors.white;
+Color colorBlue = Colors.blue;
 
 const double BUTTON_FONT_SIZE = 10;
 

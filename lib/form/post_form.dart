@@ -510,7 +510,7 @@ class PostFormState extends State<PostForm> {
     newPost.status = Status.created;
     newPost.created_at = DateTime.now();
     Map<String, dynamic> postParams = newPost.toMap(newPost);
-    Post savedPost = await _postService.savePost(postParams);
+    Post savedPost = await _postService.save(postParams);
 
     return savedPost;
   }

@@ -16,7 +16,7 @@ class PostService {
 
   Future<List<Post>> fetchPosts() async {
     final response = await http.Client().get(URL_POSTS);
-    if (response.statusCode == 200) {
+    if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
         final posts = mapResponse["data"].cast<Map<String, dynamic>>();
@@ -52,13 +52,35 @@ class PostService {
     }
   }
 
-  Future<Post> savePost(Map<String, dynamic> params) async {
+  Future<Post> save(Map<String, dynamic> params) async {
     final response = await http.post(Uri.encodeFull(URL_POSTS), body: params);
-    if (response.statusCode == 200) {
+    if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToPost(responseBody);
     } else {
       throw Exception('Failed to save a Post. Error: ${response.toString()}');
+    }
+  }
+
+  Future<Post> update(Map<String, dynamic> params) async {
+    final response = await http.Client().put('$URL_POSTS/${params["id"]}', body: params);
+    if (response.statusCode == HttpStatus.ok) {
+      final responseBody = await json.decode(response.body);
+      return convertResponseToPost(responseBody);
+    } else {
+      throw Exception('Failed to update a Post. Error: ${response.toString()}');
+    }
+  }
+
+  Future<bool> delete(int id) async {
+    final response = await http.Client().delete('$URL_POSTS/$id');
+    if (response.statusCode == HttpStatus.ok) {
+      final responseBody = await json.decode(response.body);
+      if(responseBody["result"] == "ok"){
+        return true;
+      }
+    } else {
+      throw Exception('Failed to delete a Post. Error: ${response.toString()}');
     }
   }
 

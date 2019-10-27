@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
-import 'package:emarket_app/model/status.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/post/images_detail.dart';
+import 'package:emarket_app/services/categorie_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
@@ -39,6 +40,8 @@ class _PostEditFormState extends State<PostEditForm> {
   Post _post;
   PostService _postService = new PostService();
   ImageService _imageService = new ImageService();
+  CategorieService _categorieService = new CategorieService();
+
   List<CachedNetworkImage> postImages = new List();
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
@@ -50,7 +53,7 @@ class _PostEditFormState extends State<PostEditForm> {
   List<String> _feeTyps = <String>['Kdo', 'Negociable', 'Fixe'];
   String _feeTyp = 'Kdo';
   CategorieTile _categorieTile = new CategorieTile('', 0);
-  Post newPost = new Post();
+  //Post newPost = new Post();
   File imageFile;
 
   List<File> images = List<File>();
@@ -179,7 +182,7 @@ class _PostEditFormState extends State<PostEditForm> {
                               validator: (val) => formValidator.isEmptyText(val)
                                   ? 'Donnez un titre'
                                   : null,
-                              onSaved: (val) => newPost.title = val,
+                              onSaved: (val) => _post.title = val,
                             ),
                             Container(
                               child: Column(
@@ -232,7 +235,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                             ? 'Donnez un prix'
                                             : null,
                                     onSaved: (val) =>
-                                        newPost.fee = int.parse(val),
+                                    _post.fee = int.parse(val),
                                   ),
                                 ),
                                 Expanded(
@@ -303,7 +306,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                           formValidator.isEmptyText(val)
                                               ? 'Donnez la ville'
                                               : null,
-                                      onSaved: (val) => newPost.city = val,
+                                      onSaved: (val) => _post.city = val,
                                     ),
                                   ),
                                   Expanded(
@@ -324,7 +327,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                           formValidator.isEmptyText(val)
                                               ? 'Donnez le quartier'
                                               : null,
-                                      onSaved: (val) => newPost.quarter = val,
+                                      onSaved: (val) => _post.quarter = val,
                                     ),
                                   ),
                                 ],
@@ -343,7 +346,7 @@ class _PostEditFormState extends State<PostEditForm> {
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(30),
                               ],
-                              onSaved: (val) => newPost.phoneNumber = val,
+                              onSaved: (val) => _post.phoneNumber = val,
                             ),
                             TextFormField(
                               maxLines: 2,
@@ -362,7 +365,7 @@ class _PostEditFormState extends State<PostEditForm> {
                               validator: (val) => formValidator.isEmptyText(val)
                                   ? 'Donnez une description à votre post'
                                   : null,
-                              onSaved: (val) => newPost.description = val,
+                              onSaved: (val) => _post.description = val,
                             ),
                             Container(
                               padding: const EdgeInsets.only(top: 10.0),
@@ -579,7 +582,7 @@ class _PostEditFormState extends State<PostEditForm> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Radio(
-          value: _post.post_typ,
+          value: PostTyp.offer,
           groupValue: _postTyp,
           onChanged: (PostTyp value) {
             setState(() {
@@ -663,30 +666,26 @@ class _PostEditFormState extends State<PostEditForm> {
     } else {
       form.save();
 
-      Post savedPost = await _savePost();
-      await _uploadImageToServer();
-      await _saveImages(savedPost);
+      Post updatedPost = await _updatePost();
+//      await _uploadImageToServer();
+//      await _saveImages(updatedPost);
 
       _showInfoFlushbar(context,
-          'Votre Post a été enregistré. Il sera controlé avant d´etre publié.');
+          'Votre Post a été modifié. Il sera controlé avant d´etre publié.');
 
       clearForm();
     }
   }
 
-  Future<Post> _savePost() async {
+  Future<Post> _updatePost() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     print("User: " + user.email);
 
     setFeeTyp(_feeTyp);
-    newPost.categorieid = _categorieTile.id;
-    newPost.post_typ = _postTyp;
-    newPost.useremail = user.email;
-    newPost.rating = 5;
-    newPost.status = Status.created;
-    newPost.created_at = DateTime.now();
-    Map<String, dynamic> postParams = newPost.toMap(newPost);
-    Post savedPost = await _postService.savePost(postParams);
+    _post.categorieid = _categorieTile.id;
+    _post.post_typ = _postTyp;
+    Map<String, dynamic> postParams = _post.toMapUpdate(_post);
+    Post savedPost = await _postService.update(postParams);
 
     return savedPost;
   }
@@ -752,17 +751,17 @@ class _PostEditFormState extends State<PostEditForm> {
       switch (newValue) {
         case 'Kdo':
           {
-            newPost.fee_typ = FeeTyp.gift;
+            _post.fee_typ = FeeTyp.gift;
           }
           break;
         case 'Negociable':
           {
-            newPost.fee_typ = FeeTyp.negotiable;
+            _post.fee_typ = FeeTyp.negotiable;
           }
           break;
         case 'Fixe':
           {
-            newPost.fee_typ = FeeTyp.fixed;
+            _post.fee_typ = FeeTyp.fixed;
           }
           break;
       }
@@ -770,23 +769,23 @@ class _PostEditFormState extends State<PostEditForm> {
   }
 
   String getFeeTyp(FeeTyp feeTyp) {
-      switch (feeTyp) {
-        case FeeTyp.gift:
-          {
-            return 'Kdo';
-          }
-          break;
-        case FeeTyp.negotiable:
-          {
-            return 'Negociable';
-          }
-          break;
-        case FeeTyp.fixed:
-          {
-            return 'Fixe';
-          }
-          break;
-      }
+    switch (feeTyp) {
+      case FeeTyp.gift:
+        {
+          return 'Kdo';
+        }
+        break;
+      case FeeTyp.negotiable:
+        {
+          return 'Negociable';
+        }
+        break;
+      case FeeTyp.fixed:
+        {
+          return 'Fixe';
+        }
+        break;
+    }
   }
 
   clearForm() {
@@ -818,12 +817,14 @@ class _PostEditFormState extends State<PostEditForm> {
     )..show(context);
   }
 
-
   Future<void> _loadImages() async {
+    _postTyp = widget.post.post_typ;
     postImages = await _postService.fetchImages(widget.post.id);
+    Categorie _categorie =
+        await _categorieService.fetchCategorieByID(widget.post.categorieid);
+    _categorieTile = new CategorieTile(_categorie.title, _categorie.id);
     setState(() {});
   }
-
 }
 
 List<int> compress(List<int> bytes) {

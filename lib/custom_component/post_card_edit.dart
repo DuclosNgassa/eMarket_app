@@ -3,7 +3,6 @@ import 'package:emarket_app/services/global.dart';
 import 'package:flutter/material.dart';
 
 import '../model/post.dart';
-import '../pages/post/post_detail_page.dart';
 
 class PostCardEdit extends StatefulWidget {
   final Post post;
@@ -193,13 +192,13 @@ class _PostCardEditState extends State<PostCardEdit> {
     //var divWidth = MediaQuery.of(context).size.width;
 
     return InkWell(
-      onTap: showDogDetailPage,
+      onTap: showPostEditForm,
       child: _buildHomeCard(context, 200),
     );
   }
 
   // This is the builder method that creates a new page
-  showDogDetailPage() {
+  showPostEditForm() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {

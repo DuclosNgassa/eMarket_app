@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -8,9 +9,10 @@ import '../model/categorie_tile.dart';
 import '../services/global.dart';
 
 class CategorieService {
-  Future<List<Categorie>> fetchCategories(http.Client client) async {
-    final response = await client.get(URL_CATEGORIES);
-    if (response.statusCode == 200) {
+
+  Future<List<Categorie>> fetchCategories() async {
+    final response = await http.Client().get(URL_CATEGORIES);
+    if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
         final categories = mapResponse["data"].cast<Map<String, dynamic>>();
@@ -53,4 +55,26 @@ class CategorieService {
     }
     return categorieTiles;
   }
+
+  Future<Categorie> fetchCategorieByID(int id) async {
+    final response = await http.Client().get('$URL_CATEGORIES_BY_ID$id');
+    if (response.statusCode == HttpStatus.ok) {
+      final responseBody = await json.decode(response.body);
+      return convertResponseToCategorie(responseBody);
+    } else {
+      throw Exception('Failed to save a Categorie. Error: ${response.toString()}');
+    }
+  }
+
+
+
+  Categorie convertResponseToCategorie(Map<String, dynamic> json) {
+    return Categorie(
+      id: json["data"]["id"],
+      title: json["data"]["title"],
+      parentid: json["data"]["parentid"],
+      icon: json["data"]["icon"],
+    );
+  }
+
 }

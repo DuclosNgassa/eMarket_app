@@ -10,7 +10,7 @@ import '../services/global.dart';
 class UserService {
   Future<List<User>> fetchUsers() async {
     final response = await http.Client().get(URL_USERS);
-    if (response.statusCode == 200) {
+    if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
         final users = mapResponse["data"].cast<Map<String, dynamic>>();
@@ -44,7 +44,7 @@ class UserService {
 
   Future<User> saveUser(Map<String, dynamic> params) async {
     final response = await http.post(Uri.encodeFull(URL_USERS), body: params);
-    if (response.statusCode == 200) {
+    if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToUser(responseBody);
     } else {

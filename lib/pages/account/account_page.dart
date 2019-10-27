@@ -1,14 +1,18 @@
+import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
-import 'package:emarket_app/custom_component/post_card_edit.dart';
+import 'package:emarket_app/form/post_edit_form.dart';
 import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
+import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/global.dart' as prefix0;
+import 'package:emarket_app/services/image_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,8 +25,10 @@ class AccountPage extends StatefulWidget {
 class _AccountState extends State<AccountPage>
     with SingleTickerProviderStateMixin {
   final PostService _postService = new PostService();
+  final ImageService _imageService = new ImageService();
   final GoogleSignIn _gSignIn = GoogleSignIn();
   TabController controller;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
   String userName = 'eMarket';
   String userEmail = 'eMarket@softsolutions.de';
@@ -116,18 +122,87 @@ class _AccountState extends State<AccountPage>
 
   Widget buildListView() {
     return ListView.separated(
-        itemBuilder: (context, index) => Padding(
-              padding: EdgeInsets.only(left: 20.0),
-              child: PostCardEdit(myPosts.elementAt(index)),
+        itemBuilder: (context, index) => Slidable(
+              actionPane: SlidableBehindActionPane(),
+              actionExtentRatio: 0.25,
+              child: Container(
+                color: colorWhite,
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: colorDeepPurple300,
+                    child: Text((index + 1).toString()),
+                    foregroundColor: colorWhite,
+                  ),
+                  title: Text(myPosts.elementAt(index).title),
+                  subtitle: Text(DateConverter.convertToString(
+                      myPosts.elementAt(index).created_at)),
+                  trailing:
+                      Text(myPosts.elementAt(index).fee.toString() + " FCFA"),
+                ),
+              ),
+              actions: <Widget>[
+                IconSlideAction(
+                  caption: 'Ouvrir',
+                  color: prefix0.colorDeepPurple300,
+                  icon: Icons.description,
+                  onTap: () => showPostDetailPage(myPosts.elementAt(index)),
+                ),
+                IconSlideAction(
+                  caption: 'Modifier',
+                  color: colorBlue,
+                  icon: Icons.edit,
+                  onTap: () => showPostEditForm(myPosts.elementAt(index)),
+                ),
+                IconSlideAction(
+                  caption: 'Supprimer',
+                  color: colorRed,
+                  icon: Icons.delete,
+                  onTap: () => deletePost(myPosts.elementAt(index).id, index),
+                ),
+              ],
             ),
         separatorBuilder: (context, index) => Divider(),
         itemCount: myPosts.length);
   }
 
+  // This is the builder method that creates a new page
+  showPostDetailPage(Post post) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return PostDetailPage(post);
+        },
+      ),
+    );
+  }
+
+  Future<void> deletePost(int id, int index) async {
+    bool isImageDeleted = await _imageService.deleteByPostID(id);
+    if (isImageDeleted) {
+      bool isPostDeleted = await _postService.delete(id);
+      if (isPostDeleted) {
+        myPosts.removeAt(index);
+      }
+      setState(() {});
+    }
+  }
+
+  showPostEditForm(Post post) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return PostEditForm(post, _scaffoldKey);
+        },
+      ),
+    );
+  }
+
   Future<void> _loadMyPosts() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userEmail = prefs.getString(USER_EMAIL);
-    userName = prefs.getString(USER_NAME);
+    String _userEmail = prefs.getString(USER_EMAIL);
+    String _userName = prefs.getString(USER_NAME);
+    userEmail = _userEmail == null ? userEmail : _userEmail;
+    userName = _userName == null ? userName : _userName;
     myPosts = await _postService.fetchPostByUserEmail(userEmail);
     setState(() {});
   }

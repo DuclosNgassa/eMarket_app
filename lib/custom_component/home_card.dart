@@ -191,13 +191,13 @@ class _HomeCardState extends State<HomeCard> {
     //var divWidth = MediaQuery.of(context).size.width;
 
     return InkWell(
-      onTap: showDogDetailPage,
+      onTap: showPostDetailPage,
       child: _buildHomeCard(context, 200),
     );
   }
 
   // This is the builder method that creates a new page
-  showDogDetailPage() {
+  showPostDetailPage() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {

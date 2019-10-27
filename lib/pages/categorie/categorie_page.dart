@@ -1,7 +1,6 @@
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import '../../services/categorie_service.dart';
 
@@ -73,7 +72,7 @@ class _CategoriePageState extends State<CategoriePage> {
   }
 
   Future<void> _loadCategorie() async {
-    categories = await _categorieService.fetchCategories(http.Client());
+    categories = await _categorieService.fetchCategories();
     categoriesTiles =
         await _categorieService.mapCategorieToCategorieTile(categories);
     setState(() {});

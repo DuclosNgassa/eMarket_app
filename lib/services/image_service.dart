@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -10,7 +11,7 @@ class ImageService{
 
   Future<List<PostImage>> fetchImages() async {
     final response = await http.Client().get(URL_IMAGES);
-    if (response.statusCode == 200) {
+    if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
         final images = mapResponse["data"].cast<Map<String, dynamic>>();
@@ -28,7 +29,7 @@ class ImageService{
   
   Future<List<PostImage>> fetchImagesByPostID(int postId) async {
     final response = await http.Client().get('$URL_IMAGES_BY_POSTID$postId');
-    if (response.statusCode == 200) {
+    if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
         final images = mapResponse["data"].cast<Map<String, dynamic>>();
@@ -46,11 +47,23 @@ class ImageService{
 
   Future<PostImage> saveImage(Map<String, dynamic> params) async {
     final response = await http.post(URL_IMAGES, body: params);
-    if (response.statusCode == 200) {
+    if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToImage(responseBody);
     } else {
-      throw Exception('Failed to save a Image. Error: ${response.toString()}');
+      throw Exception('Failed to save a image. Error: ${response.toString()}');
+    }
+  }
+
+  Future<bool> deleteByPostID(int postId) async {
+    final response = await http.Client().delete('$URL_IMAGES_BY_POSTID$postId');
+    if (response.statusCode == HttpStatus.ok) {
+      final responseBody = await json.decode(response.body);
+      if (responseBody["result"] == "ok") {
+        return true;
+      }
+    } else {
+      throw Exception('Failed to delete image. Error: ${response.toString()}');
     }
   }
 
