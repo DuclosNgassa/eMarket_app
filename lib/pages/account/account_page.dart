@@ -3,6 +3,7 @@ import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/form/post_edit_form.dart';
 import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/post.dart';
+import 'package:emarket_app/model/status.dart';
 import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
@@ -91,8 +92,8 @@ class _AccountState extends State<AccountPage>
                         expandedHeight: 105.0,
                         bottom: TabBar(
                           isScrollable: true,
-                          indicatorColor: Colors.black,
-                          labelColor: Colors.black,
+                          indicatorColor: colorDeepPurple500,
+                          labelColor: colorWhite,
                           tabs: [
                             Tab(text: 'POSTS'),
                             Tab(text: 'FAVORITS'),
@@ -141,10 +142,10 @@ class _AccountState extends State<AccountPage>
               ),
               actions: <Widget>[
                 IconSlideAction(
-                  caption: 'Ouvrir',
-                  color: colorDeepPurple300,
-                  icon: Icons.description,
-                  onTap: () => showPostDetailPage(myPosts.elementAt(index)),
+                  caption: 'Vendu',
+                  color: Colors.green,
+                  icon: Icons.done,
+                  onTap: () => archivatePost(myPosts.elementAt(index), index),
                 ),
                 IconSlideAction(
                   caption: 'Modifier',
@@ -152,6 +153,14 @@ class _AccountState extends State<AccountPage>
                   icon: Icons.edit,
                   onTap: () => showPostEditForm(myPosts.elementAt(index)),
                 ),
+                IconSlideAction(
+                  caption: 'Ouvrir',
+                  color: colorDeepPurple300,
+                  icon: Icons.visibility,
+                  onTap: () => showPostDetailPage(myPosts.elementAt(index)),
+                ),
+              ],
+              secondaryActions: <Widget>[
                 IconSlideAction(
                   caption: 'Supprimer',
                   color: colorRed,
@@ -164,7 +173,15 @@ class _AccountState extends State<AccountPage>
         itemCount: myPosts.length);
   }
 
-  // This is the builder method that creates a new page
+  Future<void> archivatePost(Post post, int index) async {
+    post.status = Status.done;
+    Map<String, dynamic> postParams = post.toMapUpdate(post);
+    Post updatedPost = await _postService.update(postParams);
+    myPosts.removeAt(index);
+    myPosts.add(updatedPost);
+    setState(() {});
+  }
+
   showPostDetailPage(Post post) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -225,7 +242,6 @@ class _AccountState extends State<AccountPage>
               onPressed: () => _logOut(),
             );
           }
-
           /// other way there is no user logged.
           return new Container();
         });

@@ -685,9 +685,9 @@ class _PostEditFormState extends State<PostEditForm> {
     _post.categorieid = _categorieTile.id;
     _post.post_typ = _postTyp;
     Map<String, dynamic> postParams = _post.toMapUpdate(_post);
-    Post savedPost = await _postService.update(postParams);
+    Post updatedPost = await _postService.update(postParams);
 
-    return savedPost;
+    return updatedPost;
   }
 
   Future _uploadImageToServer() async {
