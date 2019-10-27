@@ -7,7 +7,6 @@ import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/global.dart';
-import 'package:emarket_app/services/global.dart' as prefix0;
 import 'package:emarket_app/services/image_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -57,7 +56,7 @@ class _AccountState extends State<AccountPage>
                     return [
                       SliverAppBar(
                         pinned: false,
-                        backgroundColor: prefix0.colorDeepPurple300,
+                        backgroundColor: colorDeepPurple300,
                         flexibleSpace: FlexibleSpaceBar(
                           collapseMode: CollapseMode.pin,
                           background: Column(
@@ -143,7 +142,7 @@ class _AccountState extends State<AccountPage>
               actions: <Widget>[
                 IconSlideAction(
                   caption: 'Ouvrir',
-                  color: prefix0.colorDeepPurple300,
+                  color: colorDeepPurple300,
                   icon: Icons.description,
                   onTap: () => showPostDetailPage(myPosts.elementAt(index)),
                 ),
