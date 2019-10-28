@@ -11,12 +11,13 @@ import 'package:url_launcher/url_launcher.dart';
 import 'custom_button.dart';
 
 class PostOwner extends StatefulWidget {
-  PostOwner({@required this.onPressed,
-    @required this.fillColor,
-    @required this.splashColor,
-    @required this.textStyle,
-    @required this.post,
-    @required this.user});
+  PostOwner(
+      {@required this.onPressed,
+      @required this.fillColor,
+      @required this.splashColor,
+      @required this.textStyle,
+      @required this.post,
+      @required this.user});
 
   final GestureTapCallback onPressed;
   final Color fillColor;
@@ -34,7 +35,7 @@ class PostOwnerState extends State<PostOwner> {
   bool isLogedIn = false; //TODO save login as sharedPreferencies
   User _user = new User();
 
-@override
+  @override
   void initState() {
     super.initState();
     _getUserByEmail();
@@ -79,7 +80,9 @@ class PostOwnerState extends State<PostOwner> {
                         color: colorDeepPurple400,
                         child: Center(
                           child: Text(
-                            _user != null && _user.name != null? _user.name[0].toUpperCase() : 'e',
+                            _user != null && _user.name != null
+                                ? _user.name[0].toUpperCase()
+                                : 'e',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
@@ -99,7 +102,11 @@ class PostOwnerState extends State<PostOwner> {
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Row(
                         children: <Widget>[
-                          Text(_user != null && _user.name!= null ? _user.name : 'eMarket', style: titleDetailStyle),
+                          Text(
+                              _user != null && _user.name != null
+                                  ? _user.name
+                                  : 'eMarket',
+                              style: titleDetailStyle),
                         ],
                       ),
                     ),
@@ -170,25 +177,27 @@ class PostOwnerState extends State<PostOwner> {
             iconColor: Colors.white,
             text: 'Fais moi un SMS',
             textStyle:
-            TextStyle(color: Colors.white, fontSize: BUTTON_FONT_SIZE),
+                TextStyle(color: Colors.white, fontSize: BUTTON_FONT_SIZE),
             onPressed: () => _sendSMS(context),
           ),
         ),
         SizedBox(
           width: 4.0,
         ),
-        widget.post.phoneNumber != null ? Expanded(
-          child: CustomButton(
-            fillColor: colorDeepPurple400,
-            icon: Icons.phone_iphone,
-            splashColor: Colors.white,
-            iconColor: Colors.white,
-            text: isLogedIn ? widget.post.phoneNumber : 'Appele moi',
-            textStyle:
-            TextStyle(color: Colors.white, fontSize: BUTTON_FONT_SIZE),
-            onPressed: () => _callSaler(context),
-          ),
-        ) : Container(),
+        widget.post.phoneNumber != null
+            ? Expanded(
+                child: CustomButton(
+                  fillColor: colorDeepPurple400,
+                  icon: Icons.phone_iphone,
+                  splashColor: Colors.white,
+                  iconColor: Colors.white,
+                  text: isLogedIn ? widget.post.phoneNumber : 'Appele moi',
+                  textStyle: TextStyle(
+                      color: Colors.white, fontSize: BUTTON_FONT_SIZE),
+                  onPressed: () => _callSaler(context),
+                ),
+              )
+            : Container(),
         SizedBox(
           width: 10.0,
         ),
@@ -205,10 +214,10 @@ class PostOwnerState extends State<PostOwner> {
       launch("tel:" + widget.post.phoneNumber);
       print("Calling the saler......");
     } else {
-      Navigator.push(
-        context,
+      Navigator.of(context).pushReplacement(
         new MaterialPageRoute(
-          builder: (context) => new Login(LoginSource.ownerPage, widget.post),
+          builder: (context) => new Login(LoginSource.ownerPage,
+              widget.post), //new ProfileScreen(detailsUser: details),
         ),
       );
     }
@@ -219,19 +228,17 @@ class PostOwnerState extends State<PostOwner> {
       //TODO send sms
       print("Sending a sms to the saler......");
     } else {
-      Navigator.push(
-        context,
+      Navigator.of(context).pushReplacement(
         new MaterialPageRoute(
-          builder: (context) => new Login(LoginSource.ownerPage, widget.post),
+          builder: (context) => new Login(LoginSource.ownerPage,
+              widget.post), //new ProfileScreen(detailsUser: details),
         ),
       );
     }
   }
 
-
   Future<void> _getUserByEmail() async {
     _user = await _userService.fetchUserByEmail(widget.post.useremail);
     setState(() {});
   }
-
 }

@@ -14,11 +14,11 @@ class _PostPageState extends State<PostPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return FutureBuilder<FirebaseUser>(
         future: FirebaseAuth.instance.currentUser(),
-        builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot){
-          if (snapshot.hasData){
+        builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
+          if (snapshot.hasData) {
             FirebaseUser user = snapshot.data; // this is your user instance
             /// is because there is user already logged
             return new Container(
@@ -45,9 +45,9 @@ class _PostPageState extends State<PostPage> {
               ),
             );
           }
-          /// other way there is no user logged.
-          return Login(LoginSource.postPage, null);
-        }
-    );
+
+          return new Login(LoginSource.postPage, null);
+
+        });
   }
 }

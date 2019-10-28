@@ -116,7 +116,7 @@ class _AccountState extends State<AccountPage>
               ),
             );
           }
-          return Login(LoginSource.accountPage, null);
+          return new Login(LoginSource.accountPage, null);
         });
   }
 
@@ -242,6 +242,7 @@ class _AccountState extends State<AccountPage>
               onPressed: () => _logOut(),
             );
           }
+
           /// other way there is no user logged.
           return new Container();
         });
@@ -252,11 +253,11 @@ class _AccountState extends State<AccountPage>
     _gSignIn.signOut();
     clearSharedPreferences();
     print('Signed out');
-    Navigator.pop(context);
-    Navigator.push(
-      context,
+
+    Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
-        builder: (context) => new NavigationPage(0),
+        builder: (context) =>
+        new NavigationPage(0), //new ProfileScreen(detailsUser: details),
       ),
     );
   }

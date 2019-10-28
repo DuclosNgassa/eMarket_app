@@ -96,9 +96,9 @@ class PostService {
       city: json["data"]["city"],
       quarter: json["data"]["quartier"],
       status: Post.convertStringToStatus(json["data"]["status"]),
-      rating: json["data"]["rating"],
+      rating: int.parse(json["data"]["rating"]),
       useremail: json["data"]["useremail"],
-      categorieid: json["data"]["categorieid"],
+      categorieid: int.parse(json["data"]["categorieid"]),
     );
   }
 

@@ -57,10 +57,7 @@ class _LoginState extends State<Login> {
       providerData,
     );
 
-    Navigator.pop(context);
-
-    Navigator.push(
-      context,
+    Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
         builder: (context) =>
             navigate(), //new ProfileScreen(detailsUser: details),

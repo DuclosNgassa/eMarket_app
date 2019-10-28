@@ -24,11 +24,11 @@ class _MessagePageState extends State<MessagePage> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return FutureBuilder<FirebaseUser>(
         future: FirebaseAuth.instance.currentUser(),
-        builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot){
-          if (snapshot.hasData){
+        builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
+          if (snapshot.hasData) {
             FirebaseUser user = snapshot.data;
             // this is your user instance
             /// is because there is user already logged
@@ -49,10 +49,10 @@ class _MessagePageState extends State<MessagePage> {
               ),
             );
           }
-          /// other way there is no user logged.
-          return Login(LoginSource.messagePage, null);
-        }
-    );
+          // other way there is no user logged.
+          return new Login(LoginSource.messagePage, null);
+
+        });
   }
 
   Widget _buildPreviewImage() {

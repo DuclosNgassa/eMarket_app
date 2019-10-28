@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
+import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/pages/post/images_detail.dart';
 import 'package:emarket_app/services/categorie_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -673,7 +674,8 @@ class _PostEditFormState extends State<PostEditForm> {
       _showInfoFlushbar(context,
           'Votre Post a été modifié. Il sera controlé avant d´etre publié.');
 
-      clearForm();
+      //Navigator.pop(context);
+
     }
   }
 
@@ -788,14 +790,6 @@ class _PostEditFormState extends State<PostEditForm> {
     }
   }
 
-  clearForm() {
-    _formKey.currentState?.reset();
-    images.clear();
-    _imageUrls.clear();
-    _categorieTile = new CategorieTile('', 0);
-    setState(() {});
-  }
-
   void _showMessage(String message, [MaterialColor color = Colors.red]) {
     widget.scaffoldKey.currentState.showSnackBar(new SnackBar(
       content: Text(message),
@@ -803,7 +797,7 @@ class _PostEditFormState extends State<PostEditForm> {
     ));
   }
 
-  void _showInfoFlushbar(BuildContext context, String message) {
+  void _showInfoFlushbar(BuildContext context, String message) async {
     Flushbar(
       title: 'Info',
       message: message,
@@ -815,6 +809,7 @@ class _PostEditFormState extends State<PostEditForm> {
       leftBarIndicatorColor: Colors.blue.shade300,
       duration: Duration(seconds: 5),
     )..show(context);
+
   }
 
   Future<void> _loadImages() async {
