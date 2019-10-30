@@ -20,6 +20,14 @@ const URL_IMAGES_BY_PATH = URL_IMAGES + "/server/";
 const URL_CATEGORIES = SERVER_URL + "/categories";
 const URL_CATEGORIES_BY_ID = URL_CATEGORIES + "/";
 
+const URL_FAVORITS = SERVER_URL + "/favorits";
+const URL_FAVORITS_BY_EMAIL = URL_FAVORITS + "/user/";
+
+const URL_MESSAGES = SERVER_URL + "/messages";
+const URL_MESSAGES_BY_SENDER = URL_MESSAGES + "/sender/";
+const URL_MESSAGES_BY_RECEIVER = URL_MESSAGES + "/receiver/";
+
+
 const HOMEPAGE = 0;
 const SEARCHPAGE = 1;
 const POSTPAGE = 2;

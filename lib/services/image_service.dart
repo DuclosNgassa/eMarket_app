@@ -2,12 +2,24 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/post_image.dart';
 import '../services/global.dart';
 
 class ImageService{
+
+  Future<PostImage> saveImage(Map<String, dynamic> params) async {
+    final response = await http.post(URL_IMAGES, body: params);
+    if (response.statusCode == HttpStatus.ok) {
+      final responseBody = await json.decode(response.body);
+      return convertResponseToImage(responseBody);
+    } else {
+      throw Exception('Failed to save a image. Error: ${response.toString()}');
+    }
+  }
 
   Future<List<PostImage>> fetchImages() async {
     final response = await http.Client().get(URL_IMAGES);
@@ -45,14 +57,27 @@ class ImageService{
     }
   }
 
-  Future<PostImage> saveImage(Map<String, dynamic> params) async {
-    final response = await http.post(URL_IMAGES, body: params);
-    if (response.statusCode == HttpStatus.ok) {
-      final responseBody = await json.decode(response.body);
-      return convertResponseToImage(responseBody);
-    } else {
-      throw Exception('Failed to save a image. Error: ${response.toString()}');
-    }
+  Future<List<CachedNetworkImage>> fetchCachedNetworkImageByPostId(int postId) async {
+    List<CachedNetworkImage> imageLists = new List();
+    List<PostImage> postImages = await fetchImagesByPostID(postId);
+
+    await postImages.forEach(
+          (postImage) => imageLists.add(
+        CachedNetworkImage(
+          imageUrl: postImage.image_url,
+          imageBuilder: (context, imageProvider) => Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    return imageLists;
   }
 
   Future<bool> deleteByPostID(int postId) async {

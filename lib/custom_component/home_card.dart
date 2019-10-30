@@ -224,7 +224,7 @@ class _HomeCardState extends State<HomeCard> {
     } else {
       favorit = Icon(
         Icons.star,
-        color: Colors.yellow,
+        color: Colors.yellow[600],
         size: 30,
       );
     }

@@ -14,6 +14,16 @@ import '../services/image_service.dart';
 class PostService {
   ImageService _imageService = new ImageService();
 
+  Future<Post> save(Map<String, dynamic> params) async {
+    final response = await http.post(Uri.encodeFull(URL_POSTS), body: params);
+    if (response.statusCode == HttpStatus.ok) {
+      final responseBody = await json.decode(response.body);
+      return convertResponseToPost(responseBody);
+    } else {
+      throw Exception('Failed to save a Post. Error: ${response.toString()}');
+    }
+  }
+
   Future<List<Post>> fetchPosts() async {
     final response = await http.Client().get(URL_POSTS);
     if (response.statusCode == HttpStatus.ok) {
@@ -49,16 +59,6 @@ class PostService {
       return null;
     } else {
       throw Exception('Failed to load Posts from the internet');
-    }
-  }
-
-  Future<Post> save(Map<String, dynamic> params) async {
-    final response = await http.post(Uri.encodeFull(URL_POSTS), body: params);
-    if (response.statusCode == HttpStatus.ok) {
-      final responseBody = await json.decode(response.body);
-      return convertResponseToPost(responseBody);
-    } else {
-      throw Exception('Failed to save a Post. Error: ${response.toString()}');
     }
   }
 
@@ -107,30 +107,4 @@ class PostService {
     );
   }
 
-  Future<List<PostImage>> fetchPostImages(int postId) async {
-    return _imageService.fetchImagesByPostID(postId);
-  }
-
-  Future<List<CachedNetworkImage>> fetchImages(int postId) async {
-    List<CachedNetworkImage> imageLists = new List();
-    List<PostImage> postImages = await fetchPostImages(postId);
-
-    await postImages.forEach(
-      (postImage) => imageLists.add(
-        CachedNetworkImage(
-          imageUrl: postImage.image_url,
-          imageBuilder: (context, imageProvider) => Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: imageProvider,
-                  fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-
-    return imageLists;
-  }
 }

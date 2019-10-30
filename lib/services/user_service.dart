@@ -14,10 +14,10 @@ class UserService {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
         final users = mapResponse["data"].cast<Map<String, dynamic>>();
-        final imageList = await users.map<User>((json) {
+        final userList = await users.map<User>((json) {
           return User.fromJson(json);
         }).toList();
-        return imageList;
+        return userList;
       } else {
         return [];
       }
