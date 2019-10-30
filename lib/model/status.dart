@@ -1,1 +1,1 @@
-enum Status { done, created }
+enum Status { created, active, archivated, deleted }

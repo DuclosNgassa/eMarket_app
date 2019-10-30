@@ -69,6 +69,10 @@ class CategorieService {
 
 
   Categorie convertResponseToCategorie(Map<String, dynamic> json) {
+    if(json["data"] == null){
+      return null;
+    }
+
     return Categorie(
       id: json["data"]["id"],
       title: json["data"]["title"],

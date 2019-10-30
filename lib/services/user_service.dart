@@ -33,7 +33,7 @@ class UserService {
       if (mapResponse["result"] == "ok") {
         return convertResponseToUser(mapResponse);
       } else {
-        throw Exception('Failed to load Users from the internet');
+        return null;
       }
     } else if (response.statusCode == HttpStatus.notFound) {
       return null;
@@ -53,6 +53,9 @@ class UserService {
   }
 
   User convertResponseToUser(Map<String, dynamic> json) {
+    if(json["data"] == null){
+      return null;
+    }
     return User(
       id: json["data"]["id"],
       name: json["data"]["name"],

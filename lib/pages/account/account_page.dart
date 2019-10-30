@@ -30,7 +30,7 @@ class _AccountState extends State<AccountPage>
   TabController controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
-  String userName = 'eMarket';
+  String userName = 'Utilisateur-eMarket';
   String userEmail = 'eMarket@softsolutions.de';
   List<Post> myPosts = new List();
   List<Post> myFavorits = new List();
@@ -174,7 +174,7 @@ class _AccountState extends State<AccountPage>
   }
 
   Future<void> archivatePost(Post post, int index) async {
-    post.status = Status.done;
+    post.status = Status.archivated;
     Map<String, dynamic> postParams = post.toMapUpdate(post);
     Post updatedPost = await _postService.update(postParams);
     myPosts.removeAt(index);
@@ -217,10 +217,12 @@ class _AccountState extends State<AccountPage>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String _userEmail = prefs.getString(USER_EMAIL);
     String _userName = prefs.getString(USER_NAME);
-    userEmail = _userEmail == null ? userEmail : _userEmail;
-    userName = _userName == null ? userName : _userName;
-    myPosts = await _postService.fetchPostByUserEmail(userEmail);
-    setState(() {});
+    if(_userEmail != null) {
+      userEmail = _userEmail;
+      userName = _userName == null ? userName : _userName;
+      myPosts = await _postService.fetchPostByUserEmail(userEmail);
+      setState(() {});
+    }
   }
 
   Widget showLogout() {

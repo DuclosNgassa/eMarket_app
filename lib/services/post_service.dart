@@ -85,10 +85,15 @@ class PostService {
   }
 
   Post convertResponseToPost(Map<String, dynamic> json) {
+    if(json["data"] == null){
+      return null;
+    }
+
     return Post(
       id: json["data"]["id"],
       title: json["data"]["title"],
       created_at: DateTime.parse(json["data"]["created_at"]),
+      updated_at: DateTime.parse(json["data"]["updated_at"]),
       post_typ: Post.convertStringToPostTyp(json["data"]["post_typ"]),
       description: json["data"]["description"],
       fee: int.parse(json["data"]["fee"]),
@@ -96,9 +101,9 @@ class PostService {
       city: json["data"]["city"],
       quarter: json["data"]["quartier"],
       status: Post.convertStringToStatus(json["data"]["status"]),
-      rating: int.parse(json["data"]["rating"]),
+      rating: json["data"]["rating"],
       useremail: json["data"]["useremail"],
-      categorieid: int.parse(json["data"]["categorieid"]),
+      categorieid: json["data"]["categorieid"],
     );
   }
 

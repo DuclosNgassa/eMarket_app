@@ -11,6 +11,7 @@ class Post {
   int id;
   String title;
   DateTime created_at;
+  DateTime updated_at;
   PostTyp post_typ; // 'offer', 'search', 'all'
   String description;
   int fee;
@@ -28,6 +29,7 @@ class Post {
       {this.id,
       this.title,
       this.created_at,
+      this.updated_at,
       this.post_typ,
       this.description,
       this.fee,
@@ -45,6 +47,7 @@ class Post {
       id: json["id"],
       title: json["title"],
       created_at: DateTime.parse(json["created_at"]),
+      updated_at: DateTime.parse(json["updated_at"]),
       post_typ: Post.convertStringToPostTyp(json["post_typ"]),
       description: json["description"],
       fee: int.parse(json["fee"]),
@@ -65,6 +68,7 @@ class Post {
     Map<String, dynamic> params = Map<String, dynamic>();
     params["title"] = post.title;
     params["created_at"] = post.created_at.toString();
+    params["updated_at"] = DateTime.now().toString();
     params["post_typ"] = convertPostTypToString(post.post_typ);
     params["description"] = post.description;
     params["fee"] = post.fee.toString();
@@ -81,21 +85,8 @@ class Post {
   }
 
   Map<String, dynamic> toMapUpdate(Post post) {
-    Map<String, dynamic> params = Map<String, dynamic>();
+    Map<String, dynamic> params = toMap(post);
     params["id"] = post.id.toString();
-    params["title"] = post.title;
-    params["created_at"] = post.created_at.toString();
-    params["post_typ"] = convertPostTypToString(post.post_typ);
-    params["description"] = post.description;
-    params["fee"] = post.fee.toString();
-    params["fee_typ"] = convertFeeTypToString(post.fee_typ);
-    params["city"] = post.city;
-    params["quartier"] = post.quarter;
-    params["status"] = convertStatusToString(post.status);
-    params["rating"] = post.rating.toString();
-    params["useremail"] = post.useremail;
-    params["categorieid"] = post.categorieid.toString();
-    params["phone_number"] = post.phoneNumber;
 
     return params;
   }
@@ -103,6 +94,7 @@ class Post {
   Map<String, dynamic> toJson() => {
         'title': title,
         'created_at': created_at.toString(),
+        'updated_at': updated_at.toString(),
         'post_typ': convertPostTypToString(post_typ),
         'description': description,
         'fee': fee.toString(),
@@ -198,14 +190,24 @@ class Post {
 
   static Status convertStringToStatus(String value) {
     switch (value) {
-      case 'done':
-        {
-          return Status.done;
-        }
-        break;
       case 'created':
         {
           return Status.created;
+        }
+        break;
+      case 'active':
+        {
+          return Status.active;
+        }
+        break;
+      case 'archivated':
+        {
+          return Status.archivated;
+        }
+        break;
+      case 'deleted':
+        {
+          return Status.deleted;
         }
         break;
     }
@@ -213,16 +215,27 @@ class Post {
 
   static String convertStatusToString(Status value) {
     switch (value) {
-      case Status.done:
-        {
-          return 'done';
-        }
-        break;
       case Status.created:
         {
           return 'created';
         }
         break;
+      case Status.active:
+        {
+          return 'active';
+        }
+        break;
+      case Status.archivated:
+        {
+          return 'archivated';
+        }
+        break;
+      case Status.deleted:
+        {
+          return 'deleted';
+        }
+        break;
+
     }
   }
 

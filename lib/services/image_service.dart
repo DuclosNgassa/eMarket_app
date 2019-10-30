@@ -77,6 +77,10 @@ class ImageService{
   }
 
   PostImage convertResponseToImage(Map<String, dynamic> json) {
+    if(json["data"] == null){
+      return null;
+    }
+
     return PostImage(
       id: json["data"]["id"],
       image_url: json["data"]["image_url"],

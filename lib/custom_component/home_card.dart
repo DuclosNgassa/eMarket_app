@@ -1,4 +1,5 @@
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/services/global.dart' as prefix0;
 import 'package:flutter/material.dart';
 
 import '../model/post.dart';
@@ -16,18 +17,19 @@ class HomeCard extends StatefulWidget {
 class _HomeCardState extends State<HomeCard> {
   Post post;
   String renderUrl;
+  Icon favorit = Icon(Icons.star_border, size: 30);
 
   _HomeCardState(this.post);
 
   Widget get postImage {
-    var dogAvatar;
+    var postAvatar;
     if (renderUrl == null) {
-      dogAvatar = Hero(
+      postAvatar = Hero(
         child: Container(),
         tag: post,
       );
     } else {
-      dogAvatar = Hero(
+      postAvatar = Hero(
         tag: post,
         child: Container(
           height: 155.0,
@@ -67,10 +69,10 @@ class _HomeCardState extends State<HomeCard> {
     return AnimatedCrossFade(
       // You pass it the starting widget and the ending widget.
       firstChild: placeholder,
-      secondChild: dogAvatar,
+      secondChild: postAvatar,
       //Then, you pass it a ternary that should be passed on your state
       //If the renderUrl is null tell the widget to use the placeholder,
-      //otherwise use the dogAvatar.
+      //otherwise use the postAvatar.
       crossFadeState: renderUrl == null
           ? CrossFadeState.showFirst
           : CrossFadeState.showSecond,
@@ -81,7 +83,7 @@ class _HomeCardState extends State<HomeCard> {
 
 // IRL, we'd want the Dog class itself to get the image
 // but this is a simpler way to explain Flutter basics
-  void renderDogPic() async {
+  void renderPostPic() async {
     // this makes the service call
     await post.getImageUrl();
     // setState tells Flutter to rerender anything that's been changed.
@@ -117,16 +119,11 @@ class _HomeCardState extends State<HomeCard> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Expanded(
-                child: Text(
-                  widget.post.fee.toString() + ' FCFA',
-                  style: priceStyle,
-                ),
-              ),
-              CircleAvatar(
-                child: Container(),
-                //backgroundImage: getImage(),
+              Text(
+                widget.post.fee.toString() + ' FCFA',
+                style: priceStyle,
               ),
             ],
           ),
@@ -183,17 +180,31 @@ class _HomeCardState extends State<HomeCard> {
 
   void initState() {
     super.initState();
-    renderDogPic();
+    renderPostPic();
   }
 
   @override
   Widget build(BuildContext context) {
     //var divWidth = MediaQuery.of(context).size.width;
 
-    return InkWell(
-      onTap: showPostDetailPage,
-      child: _buildHomeCard(context, 200),
-    );
+    return Stack(children: <Widget>[
+      InkWell(
+        onTap: showPostDetailPage,
+        child: _buildHomeCard(context, 200),
+      ),
+      Positioned(
+        top: 10,
+        right: 15,
+        child: InkWell(
+          onTap: () => updateFavorit(widget.post),
+          child: CircleAvatar(
+            backgroundColor: colorDeepPurple300,
+            child: favorit,
+            //backgroundImage: getImage(),
+          ),
+        ),
+      ),
+    ]);
   }
 
   // This is the builder method that creates a new page
@@ -205,5 +216,19 @@ class _HomeCardState extends State<HomeCard> {
         },
       ),
     );
+  }
+
+  Future<void> updateFavorit(Post post) async {
+    if (favorit.icon == Icons.star) {
+      favorit = Icon(Icons.star_border, size: 30);
+    } else {
+      favorit = Icon(
+        Icons.star,
+        color: Colors.yellow,
+        size: 30,
+      );
+    }
+    setState(() {});
+    print("Favorit updated!");
   }
 }
