@@ -2,11 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-const SERVER_URL           = "http://192.168.2.120:3000";
+const SERVER_URL = "http://192.168.2.120:3000";
 //const SERVER_URL = "http://172.20.10.5:3000";
 //const SERVER_URL = "http://10.0.2.2:3000";
 
 const URL_POSTS = SERVER_URL + "/posts";
+const URL_POST_BY_ID = URL_POSTS + "/";
 const URL_POST_BY_USEREMAIL = URL_POSTS + "/user/";
 
 const URL_USERS = SERVER_URL + "/users";
@@ -26,7 +27,6 @@ const URL_FAVORITS_BY_EMAIL = URL_FAVORITS + "/user/";
 const URL_MESSAGES = SERVER_URL + "/messages";
 const URL_MESSAGES_BY_SENDER = URL_MESSAGES + "/sender/";
 const URL_MESSAGES_BY_RECEIVER = URL_MESSAGES + "/receiver/";
-
 
 const HOMEPAGE = 0;
 const SEARCHPAGE = 1;

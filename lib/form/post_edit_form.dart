@@ -204,6 +204,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                           child: Text(_categorieTile.title),
                                         ),
                                         IconButton(
+                                          onPressed: showCategoriePage,
                                           icon: Icon(Icons.arrow_forward_ios),
                                           tooltip: 'Choisir la catégorie',
                                         )
@@ -814,7 +815,7 @@ class _PostEditFormState extends State<PostEditForm> {
 
   Future<void> _loadImages() async {
     _postTyp = widget.post.post_typ;
-    postImages = await _postService.fetchImages(widget.post.id);
+    postImages = await _imageService.fetchCachedNetworkImageByPostId(widget.post.id);
     Categorie _categorie =
         await _categorieService.fetchCategorieByID(widget.post.categorieid);
     _categorieTile = new CategorieTile(_categorie.title, _categorie.id);

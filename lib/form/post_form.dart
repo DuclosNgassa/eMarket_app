@@ -112,6 +112,7 @@ class PostFormState extends State<PostForm> {
                           child: Text(_categorieTile.title),
                         ),
                         IconButton(
+                          onPressed: showCategoriePage,
                           icon: Icon(Icons.arrow_forward_ios),
                           tooltip: 'Choisir la catégorie',
                         )
@@ -515,7 +516,7 @@ class PostFormState extends State<PostForm> {
     return savedPost;
   }
 
-  Future _uploadImageToServer() async {
+  Future<void> _uploadImageToServer() async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -559,7 +560,7 @@ class PostFormState extends State<PostForm> {
     }
   }
 
-  Future _saveImages(Post savedPost) async {
+  Future<void> _saveImages(Post savedPost) async {
     MyImage.PostImage newImage = new MyImage.PostImage();
     newImage.postid = savedPost.id;
     newImage.created_at = DateTime.now();

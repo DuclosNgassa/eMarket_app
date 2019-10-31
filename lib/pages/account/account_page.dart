@@ -1,12 +1,14 @@
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/form/post_edit_form.dart';
+import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/status.dart';
 import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
+import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/image_service.dart';
 import 'package:emarket_app/services/post_service.dart';
@@ -25,6 +27,7 @@ class AccountPage extends StatefulWidget {
 class _AccountState extends State<AccountPage>
     with SingleTickerProviderStateMixin {
   final PostService _postService = new PostService();
+  final FavoritService _favoritService = new FavoritService();
   final ImageService _imageService = new ImageService();
   final GoogleSignIn _gSignIn = GoogleSignIn();
   TabController controller;
@@ -33,12 +36,14 @@ class _AccountState extends State<AccountPage>
   String userName = 'Utilisateur-eMarket';
   String userEmail = 'eMarket@softsolutions.de';
   List<Post> myPosts = new List();
-  List<Post> myFavorits = new List();
+  List<Post> myPostFavorits = new List();
+  List<Favorit> myFavorits = new List();
 
   @override
   void initState() {
     super.initState();
     _loadMyPosts();
+    _loadMyFavorits();
     controller = TabController(length: 3, vsync: this);
   }
 
@@ -107,8 +112,8 @@ class _AccountState extends State<AccountPage>
                   body: TabBarView(
                     controller: controller,
                     children: [
-                      buildListView(),
-                      Icon(Icons.star),
+                      buildMyPostListView(),
+                      buildMyFavoritPostListView(),
                       Icon(Icons.build),
                     ],
                   ),
@@ -120,7 +125,7 @@ class _AccountState extends State<AccountPage>
         });
   }
 
-  Widget buildListView() {
+  Widget buildMyPostListView() {
     return ListView.separated(
         itemBuilder: (context, index) => Slidable(
               actionPane: SlidableBehindActionPane(),
@@ -173,6 +178,59 @@ class _AccountState extends State<AccountPage>
         itemCount: myPosts.length);
   }
 
+  Widget buildMyFavoritPostListView() {
+    return ListView.separated(
+        itemBuilder: (context, index) => Slidable(
+              actionPane: SlidableBehindActionPane(),
+              actionExtentRatio: 0.25,
+              child: Container(
+                color: colorWhite,
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: colorDeepPurple300,
+                    child: Text((index + 1).toString()),
+                    foregroundColor: colorWhite,
+                  ),
+                  title: Text(myPostFavorits.elementAt(index).title),
+                  subtitle: Text(DateConverter.convertToString(
+                      myPostFavorits.elementAt(index).created_at)),
+                  trailing:
+                      Text(myPostFavorits.elementAt(index).fee.toString() + " FCFA"),
+                ),
+              ),
+              actions: <Widget>[
+                IconSlideAction(
+                  caption: 'Vendu',
+                  color: Colors.green,
+                  icon: Icons.done,
+                  onTap: () => archivatePost(myPostFavorits.elementAt(index), index),
+                ),
+                IconSlideAction(
+                  caption: 'Modifier',
+                  color: colorBlue,
+                  icon: Icons.edit,
+                  onTap: () => showPostEditForm(myPostFavorits.elementAt(index)),
+                ),
+                IconSlideAction(
+                  caption: 'Ouvrir',
+                  color: colorDeepPurple300,
+                  icon: Icons.visibility,
+                  onTap: () => showPostDetailPage(myPostFavorits.elementAt(index)),
+                ),
+              ],
+              secondaryActions: <Widget>[
+                IconSlideAction(
+                  caption: 'Supprimer',
+                  color: colorRed,
+                  icon: Icons.delete,
+                  onTap: () => deletePost(myPostFavorits.elementAt(index).id, index),
+                ),
+              ],
+            ),
+        separatorBuilder: (context, index) => Divider(),
+        itemCount: myPostFavorits.length);
+  }
+
   Future<void> archivatePost(Post post, int index) async {
     post.status = Status.archivated;
     Map<String, dynamic> postParams = post.toMapUpdate(post);
@@ -217,10 +275,23 @@ class _AccountState extends State<AccountPage>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String _userEmail = prefs.getString(USER_EMAIL);
     String _userName = prefs.getString(USER_NAME);
-    if(_userEmail != null) {
+    if (_userEmail != null) {
       userEmail = _userEmail;
       userName = _userName == null ? userName : _userName;
       myPosts = await _postService.fetchPostByUserEmail(userEmail);
+      setState(() {});
+    }
+  }
+
+  Future<void> _loadMyFavorits() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    if (user != null) {
+      myFavorits = await _favoritService.fetchFavoritByUserEmail(user.email);
+
+      for (var i = 0; i < myFavorits.length; i++) {
+        Post post = await _postService.fetchPostById(myFavorits[i].postid);
+        myPostFavorits.add(post);
+      }
       setState(() {});
     }
   }
@@ -259,7 +330,7 @@ class _AccountState extends State<AccountPage>
     Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
         builder: (context) =>
-        new NavigationPage(0), //new ProfileScreen(detailsUser: details),
+            new NavigationPage(0), //new ProfileScreen(detailsUser: details),
       ),
     );
   }

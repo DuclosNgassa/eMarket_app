@@ -18,4 +18,14 @@ class Favorit {
       postid: json["postid"],
     );
   }
+
+  Map<String, dynamic> toMap(Favorit favorit) {
+    Map<String, dynamic> params = Map<String, dynamic>();
+    params["created_at"] = favorit.created_at.toString();
+    params["useremail"] = favorit.useremail;
+    params["postid"] = favorit.postid.toString();
+
+    return params;
+  }
+
 }

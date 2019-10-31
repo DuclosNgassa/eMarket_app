@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:emarket_app/model/post_image.dart';
+import 'package:emarket_app/services/image_service.dart';
 
 import '../model/feetyp.dart';
 import '../model/posttyp.dart';
@@ -113,10 +114,10 @@ class Post {
       return;
     }
 
-    PostService postService = new PostService();
+    ImageService _imageService = new ImageService();
 
     try {
-      List<PostImage> imageList = await postService.fetchPostImages(this.id);
+      List<PostImage> imageList = await _imageService.fetchImagesByPostID(this.id);
       if (imageList.length > 0) {
         imageUrl = imageList.elementAt(0).image_url;
       } else {

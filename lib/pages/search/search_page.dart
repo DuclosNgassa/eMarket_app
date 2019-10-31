@@ -1,8 +1,11 @@
 import 'package:emarket_app/custom_component/home_card.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
+import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/search/searchparameter.dart';
+import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../custom_component/custom_button.dart';
@@ -16,9 +19,11 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  List<Post> postList = new List();
-  PostService _postService = new PostService();
+  final PostService _postService = new PostService();
+  final FavoritService _favoritService = new FavoritService();
 
+  List<Post> postList = new List();
+  List<Favorit> myFavorits = new List();
   SearchParameter _searchParameter;
   final TextEditingController _controller = new TextEditingController();
   bool _isSearching;
@@ -40,6 +45,15 @@ class _SearchPageState extends State<SearchPage> {
         });
       }
     });
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPost();
+    _loadMyFavorits();
+    _isSearching = false;
   }
 
   @override
@@ -157,9 +171,9 @@ class _SearchPageState extends State<SearchPage> {
           ),
         );
       }
-      return HomeCard(searchResult.elementAt(index));
+      return HomeCard(searchResult.elementAt(index), myFavorits);
     }
-    return HomeCard(postList.elementAt(index));
+    return HomeCard(postList.elementAt(index), myFavorits);
   }
 
   Widget _buildButtonLeiste() {
@@ -205,13 +219,6 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       _isSearching = true;
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadPost();
-    _isSearching = false;
   }
 
   void searchOperation(String searchText) {
@@ -267,4 +274,13 @@ class _SearchPageState extends State<SearchPage> {
     }
     setState(() {});
   }
+
+  Future<void> _loadMyFavorits() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    if (user != null) {
+      myFavorits = await _favoritService.fetchFavoritByUserEmail(user.email);
+      setState(() {});
+    }
+  }
+
 }

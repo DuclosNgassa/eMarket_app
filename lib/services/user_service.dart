@@ -8,6 +8,17 @@ import 'package:http/http.dart' as http;
 import '../services/global.dart';
 
 class UserService {
+
+  Future<User> saveUser(Map<String, dynamic> params) async {
+    final response = await http.post(Uri.encodeFull(URL_USERS), body: params);
+    if (response.statusCode == HttpStatus.ok) {
+      final responseBody = await json.decode(response.body);
+      return convertResponseToUser(responseBody);
+    } else {
+      throw Exception('Failed to save a User. Error: ${response.toString()}');
+    }
+  }
+
   Future<List<User>> fetchUsers() async {
     final response = await http.Client().get(URL_USERS);
     if (response.statusCode == HttpStatus.ok) {
@@ -39,16 +50,6 @@ class UserService {
       return null;
     } else {
       throw Exception('Failed to load Users from the internet');
-    }
-  }
-
-  Future<User> saveUser(Map<String, dynamic> params) async {
-    final response = await http.post(Uri.encodeFull(URL_USERS), body: params);
-    if (response.statusCode == HttpStatus.ok) {
-      final responseBody = await json.decode(response.body);
-      return convertResponseToUser(responseBody);
-    } else {
-      throw Exception('Failed to save a User. Error: ${response.toString()}');
     }
   }
 

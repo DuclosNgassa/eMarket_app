@@ -1,5 +1,8 @@
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
+import 'package:emarket_app/model/favorit.dart';
+import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../custom_component/home_card.dart';
@@ -14,12 +17,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final globalKey = new GlobalKey<ScaffoldState>();
   final TextEditingController _controller = new TextEditingController();
-  PostService _postService = new PostService();
+  final PostService _postService = new PostService();
+  final FavoritService _favoritService = new FavoritService();
 
   bool _isSearching;
   String _searchText = "";
   List<Post> searchResult = new List();
   List<Post> postList = new List();
+  List<Favorit> myFavorits = new List();
 
   _HomePageState() {
     _controller.addListener(() {
@@ -35,6 +40,20 @@ class _HomePageState extends State<HomePage> {
         });
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPost();
+    _loadMyFavorits();
+    _isSearching = false;
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    print("leaving homepage");
   }
 
   @override
@@ -151,9 +170,9 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       }
-      return HomeCard(searchResult.elementAt(index));
+      return HomeCard(searchResult.elementAt(index), myFavorits);
     }
-    return HomeCard(postList.elementAt(index));
+    return HomeCard(postList.elementAt(index), myFavorits);
   }
 
   Widget _buildCategorieGridView() {
@@ -232,13 +251,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _loadPost();
-    _isSearching = false;
-  }
-
   void searchOperation(String searchText) {
     searchResult.clear();
     if (_isSearching != null) {
@@ -258,4 +270,13 @@ class _HomePageState extends State<HomePage> {
     }
     setState(() {});
   }
+
+  Future<void> _loadMyFavorits() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    if (user != null) {
+      myFavorits = await _favoritService.fetchFavoritByUserEmail(user.email);
+      setState(() {});
+    }
+  }
+
 }

@@ -2,18 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:emarket_app/model/post_image.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/post.dart';
 import '../services/global.dart';
-import '../services/image_service.dart';
 
 class PostService {
-  ImageService _imageService = new ImageService();
-
   Future<Post> save(Map<String, dynamic> params) async {
     final response = await http.post(Uri.encodeFull(URL_POSTS), body: params);
     if (response.statusCode == HttpStatus.ok) {
@@ -42,6 +36,18 @@ class PostService {
     }
   }
 
+  Future<Post> fetchPostById(int id) async {
+    final response = await http.Client().get('$URL_POST_BY_ID$id');
+    if (response.statusCode == HttpStatus.ok) {
+      final responseBody = await json.decode(response.body);
+      return convertResponseToPost(responseBody);
+    } else if (response.statusCode == HttpStatus.notFound) {
+      return null;
+    } else {
+      throw Exception('Failed to load Posts from the internet');
+    }
+  }
+
   Future<List<Post>> fetchPostByUserEmail(String email) async {
     final response = await http.Client().get('$URL_POST_BY_USEREMAIL$email');
     if (response.statusCode == HttpStatus.ok) {
@@ -63,7 +69,8 @@ class PostService {
   }
 
   Future<Post> update(Map<String, dynamic> params) async {
-    final response = await http.Client().put('$URL_POSTS/${params["id"]}', body: params);
+    final response =
+        await http.Client().put('$URL_POSTS/${params["id"]}', body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToPost(responseBody);
@@ -76,7 +83,7 @@ class PostService {
     final response = await http.Client().delete('$URL_POSTS/$id');
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
-      if(responseBody["result"] == "ok"){
+      if (responseBody["result"] == "ok") {
         return true;
       }
     } else {
@@ -85,7 +92,7 @@ class PostService {
   }
 
   Post convertResponseToPost(Map<String, dynamic> json) {
-    if(json["data"] == null){
+    if (json["data"] == null) {
       return null;
     }
 
@@ -106,5 +113,4 @@ class PostService {
       categorieid: json["data"]["categorieid"],
     );
   }
-
 }

@@ -1,5 +1,7 @@
+import 'package:emarket_app/model/favorit.dart';
+import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
-import 'package:emarket_app/services/global.dart' as prefix0;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../model/post.dart';
@@ -7,19 +9,142 @@ import '../pages/post/post_detail_page.dart';
 
 class HomeCard extends StatefulWidget {
   final Post post;
+  final List<Favorit> myFavorits;
 
-  HomeCard(this.post);
+  HomeCard(this.post, this.myFavorits);
 
   @override
-  _HomeCardState createState() => _HomeCardState(post);
+  _HomeCardState createState() => _HomeCardState(post, myFavorits);
 }
 
 class _HomeCardState extends State<HomeCard> {
   Post post;
+  List<Favorit> myFavorits;
+  Favorit myFavoritToAdd = null;
+  Favorit myFavoritToRemove = null;
   String renderUrl;
-  Icon favorit = Icon(Icons.star_border, size: 30);
+  Icon favoritIcon = Icon(Icons.star_border, size: 30);
 
-  _HomeCardState(this.post);
+  FavoritService _favoritService = new FavoritService();
+
+  _HomeCardState(this.post, this.myFavorits);
+
+  void initState() {
+    super.initState();
+    setFavoritIcon();
+    renderPostPic();
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+
+    if (myFavoritToAdd != null) {
+      saveFavorit(myFavoritToAdd);
+    }
+
+    if (myFavoritToRemove != null) {
+      deleteFavorit(myFavoritToRemove);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //var divWidth = MediaQuery.of(context).size.width;
+
+    return Stack(children: <Widget>[
+      InkWell(
+        onTap: showPostDetailPage,
+        child: _buildHomeCard(context, 200),
+      ),
+      Positioned(
+        top: 10,
+        right: 15,
+        child: InkWell(
+          onTap: () => updateIconFavorit(),
+          child: CircleAvatar(
+            backgroundColor: colorDeepPurple300,
+            child: favoritIcon,
+            //backgroundImage: getImage(),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  // This is the builder method that creates a new page
+  showPostDetailPage() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return PostDetailPage(post);
+        },
+      ),
+    );
+  }
+
+  Future<void> updateIconFavorit() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    if (user != null) {
+      if (favoritIcon.icon == Icons.star) {
+        myFavorits.forEach((item) => {
+              if (item.useremail == user.email && item.postid == post.id)
+                {myFavoritToRemove = item}
+            });
+
+        removeFavorit();
+      } else {
+        Favorit favorit = new Favorit();
+        favorit.postid = post.id;
+        favorit.useremail = user.email;
+        favorit.created_at = DateTime.now();
+        myFavorits.forEach((item) => {
+              if (!(item.useremail == user.email && item.postid == post.id))
+                {myFavoritToAdd = favorit}
+            });
+
+        addFavorit(favorit);
+      }
+      setState(() {});
+    } else {
+      print("Melden sie sich an, um Favorits zu speichern");
+      //TODO Meldung -> Melden sie sich an, um Favorits zu speichern
+    }
+  }
+
+  void removeFavorit() {
+    if (myFavoritToAdd != null) {
+      myFavoritToAdd = null;
+    }
+
+    favoritIcon = Icon(
+      Icons.star_border,
+      size: 30,
+    );
+  }
+
+  void addFavorit(Favorit favorit) {
+    if (myFavorits.isEmpty) {
+      myFavoritToAdd = favorit;
+    }
+
+    favoritIcon = Icon(
+      Icons.star,
+      color: Colors.yellow[600],
+      size: 30,
+    );
+  }
+
+  Future<Favorit> saveFavorit(Favorit favorit) async {
+    Map<String, dynamic> favoritParams = favorit.toMap(favorit);
+    Favorit savedFavorit = await _favoritService.save(favoritParams);
+
+    return savedFavorit;
+  }
+
+  Future<void> deleteFavorit(Favorit favorit) async {
+    await _favoritService.delete(favorit.id);
+  }
 
   Widget get postImage {
     var postAvatar;
@@ -178,57 +303,13 @@ class _HomeCardState extends State<HomeCard> {
 */
   }
 
-  void initState() {
-    super.initState();
-    renderPostPic();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    //var divWidth = MediaQuery.of(context).size.width;
-
-    return Stack(children: <Widget>[
-      InkWell(
-        onTap: showPostDetailPage,
-        child: _buildHomeCard(context, 200),
-      ),
-      Positioned(
-        top: 10,
-        right: 15,
-        child: InkWell(
-          onTap: () => updateFavorit(widget.post),
-          child: CircleAvatar(
-            backgroundColor: colorDeepPurple300,
-            child: favorit,
-            //backgroundImage: getImage(),
-          ),
-        ),
-      ),
-    ]);
-  }
-
-  // This is the builder method that creates a new page
-  showPostDetailPage() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) {
-          return PostDetailPage(post);
-        },
-      ),
-    );
-  }
-
-  Future<void> updateFavorit(Post post) async {
-    if (favorit.icon == Icons.star) {
-      favorit = Icon(Icons.star_border, size: 30);
-    } else {
-      favorit = Icon(
-        Icons.star,
-        color: Colors.yellow[600],
-        size: 30,
-      );
+  Future<void> setFavoritIcon() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    if (user != null) {
+      myFavorits.forEach((item) => {
+            if (item.useremail == user.email && item.postid == post.id)
+              {addFavorit(null)}
+          });
     }
-    setState(() {});
-    print("Favorit updated!");
   }
 }

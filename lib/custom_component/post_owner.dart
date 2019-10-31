@@ -17,7 +17,7 @@ class PostOwner extends StatefulWidget {
       @required this.splashColor,
       @required this.textStyle,
       @required this.post,
-      @required this.user});
+      this.user});
 
   final GestureTapCallback onPressed;
   final Color fillColor;

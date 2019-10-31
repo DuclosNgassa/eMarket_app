@@ -9,7 +9,6 @@ import 'package:emarket_app/services/image_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../model/post.dart';
-import '../../services/post_service.dart';
 
 class PostDetailPage extends StatefulWidget {
   final Post post;
