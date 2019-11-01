@@ -126,6 +126,15 @@ class _AccountState extends State<AccountPage>
   }
 
   Widget buildMyPostListView() {
+    if(myPosts.isEmpty){
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: new Center(
+          child: Text("Vous n´avez pas encore vendu ou recherché d´objects. "
+              "\n\nTransformez les choses que vous n´utilisez tres peu ou jamais en argent!", style: titleDetailStyle,),
+        ),
+      );
+    }
     return ListView.separated(
         itemBuilder: (context, index) => Slidable(
               actionPane: SlidableBehindActionPane(),
@@ -179,6 +188,16 @@ class _AccountState extends State<AccountPage>
   }
 
   Widget buildMyFavoritPostListView() {
+    if(myPostFavorits.isEmpty){
+      return new Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("Vous n´avez pas encore de favorits. "
+              "\n\n Marquez un post avec l´étoile pour l´enregister dans vos favorits!", style: titleDetailStyle,),
+        ),
+      );
+    }
+
     return ListView.separated(
         itemBuilder: (context, index) => Slidable(
               actionPane: SlidableBehindActionPane(),
@@ -194,28 +213,17 @@ class _AccountState extends State<AccountPage>
                   title: Text(myPostFavorits.elementAt(index).title),
                   subtitle: Text(DateConverter.convertToString(
                       myPostFavorits.elementAt(index).created_at)),
-                  trailing:
-                      Text(myPostFavorits.elementAt(index).fee.toString() + " FCFA"),
+                  trailing: Text(
+                      myPostFavorits.elementAt(index).fee.toString() + " FCFA"),
                 ),
               ),
               actions: <Widget>[
                 IconSlideAction(
-                  caption: 'Vendu',
-                  color: Colors.green,
-                  icon: Icons.done,
-                  onTap: () => archivatePost(myPostFavorits.elementAt(index), index),
-                ),
-                IconSlideAction(
-                  caption: 'Modifier',
-                  color: colorBlue,
-                  icon: Icons.edit,
-                  onTap: () => showPostEditForm(myPostFavorits.elementAt(index)),
-                ),
-                IconSlideAction(
                   caption: 'Ouvrir',
                   color: colorDeepPurple300,
                   icon: Icons.visibility,
-                  onTap: () => showPostDetailPage(myPostFavorits.elementAt(index)),
+                  onTap: () =>
+                      showPostDetailPage(myPostFavorits.elementAt(index)),
                 ),
               ],
               secondaryActions: <Widget>[
@@ -223,7 +231,8 @@ class _AccountState extends State<AccountPage>
                   caption: 'Supprimer',
                   color: colorRed,
                   icon: Icons.delete,
-                  onTap: () => deletePost(myPostFavorits.elementAt(index).id, index),
+                  onTap: () => deleteFavoritPost(
+                      myPostFavorits.elementAt(index).id, index),
                 ),
               ],
             ),
@@ -259,6 +268,17 @@ class _AccountState extends State<AccountPage>
       }
       setState(() {});
     }
+  }
+
+  Future<void> deleteFavoritPost(int postId, int index) async {
+    for (int i = 0; i < myFavorits.length; i++) {
+      if (myFavorits[i].postid == postId) {
+        await _favoritService.delete(myFavorits[i].id);
+        myPostFavorits.removeAt(index);
+        break;
+      }
+    }
+    setState(() {});
   }
 
   showPostEditForm(Post post) {

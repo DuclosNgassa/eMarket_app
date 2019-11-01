@@ -2,6 +2,7 @@ import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/login/login.dart';
+import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -225,7 +226,12 @@ class PostOwnerState extends State<PostOwner> {
 
   _sendSMS(BuildContext context) {
     if (isLogedIn) {
-      //TODO send sms
+      Navigator.of(context).pushReplacement(
+        new MaterialPageRoute(
+          builder: (context) => new ChatPage(), //new ProfileScreen(detailsUser: details),
+        ),
+      );
+
       print("Sending a sms to the saler......");
     } else {
       Navigator.of(context).pushReplacement(

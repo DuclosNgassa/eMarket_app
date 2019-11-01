@@ -1,15 +1,14 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:emarket_app/model/login_source.dart';
+import 'package:emarket_app/model/message.dart';
+import 'package:emarket_app/model/post.dart';
+import 'package:emarket_app/model/post_message.dart';
 import 'package:emarket_app/pages/login/login.dart';
+import 'package:emarket_app/services/global.dart' as prefix0;
+import 'package:emarket_app/services/message_service.dart';
+import 'package:emarket_app/services/post_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:image/image.dart' as img;
-import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../services/global.dart';
 
@@ -19,12 +18,25 @@ class MessagePage extends StatefulWidget {
 }
 
 class _MessagePageState extends State<MessagePage> {
-  File imageFile;
-  List<File> images = List<File>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
+  List<Message> messages = new List();
+  List<PostMessage> postMessages = new List();
+  MessageService _messageService = new MessageService();
+  PostService _postService = new PostService();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMessages();
+  }
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    /*24 is for notification bar on Android*/
+    final double itemHeight = size.height;
+    final double itemWidth = size.width;
+
     return FutureBuilder<FirebaseUser>(
         future: FirebaseAuth.instance.currentUser(),
         builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
@@ -32,182 +44,127 @@ class _MessagePageState extends State<MessagePage> {
             FirebaseUser user = snapshot.data;
             // this is your user instance
             /// is because there is user already logged
-            return new Scaffold(
-              key: scaffoldKey,
-              appBar: new AppBar(
-                title: new Text('Upload image'),
-              ),
-              body: new Column(
-                children: <Widget>[
-                  _buildButtons(),
-                  Expanded(
-                    child: buildGridView(),
+            return Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top:55.0, right: 8.0),
+                  child: new Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      new Text("Messages", style: styleTitleWhite,),
+                    ],
                   ),
-                  // _buildPreviewImage(),
-                  //buildGridView(),
-                ],
-              ),
+                ),
+                new Container(
+                  constraints: BoxConstraints.expand(height: itemHeight * 0.67),
+                  child: buildMyMessageListView(),
+                ),
+              ],
             );
           }
           // other way there is no user logged.
           return new Login(LoginSource.messagePage, null);
-
         });
   }
 
-  Widget _buildPreviewImage() {
-    return new Expanded(
-      child: new Card(
-        elevation: 3.0,
-        shape: new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.all(
-            new Radius.circular(4.0),
-          ),
-        ),
-        child: new Stack(
-          children: <Widget>[
-            new Container(
-              constraints: new BoxConstraints.expand(),
-              child: imageFile == null
-                  ? new Image.asset('images/profil.JPG',
-                      colorBlendMode: BlendMode.darken,
-                      color: Colors.black26,
-                      fit: BoxFit.cover)
-                  : new Image.file(imageFile, fit: BoxFit.cover),
-            ),
-            new Align(
-              alignment: AlignmentDirectional.center,
-              child: imageFile == null
-                  ? new Text(
-                      'No selected image',
-                      style: Theme.of(context).textTheme.title,
-                    )
-                  : new Container(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildGridView() {
-    return GridView.count(
-      crossAxisCount: 3,
-      children: List.generate(images.length, (index) {
-        File asset = images[index];
-        return new Container(
-          constraints: new BoxConstraints.expand(),
-          child: new Image.file(asset, fit: BoxFit.cover),
-          width: 300,
-          height: 300,
-        );
-      }),
-    );
-  }
-
-  Widget _buildButtons() {
-    return new Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: new Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          new IconButton(
-            icon: Icon(Icons.camera),
-            onPressed: _takePhoto,
-            tooltip: 'Take photo',
-          ),
-          new IconButton(
-            icon: Icon(Icons.file_upload),
-            onPressed: _uploadImage,
-            tooltip: 'Upload image',
-          ),
-          new IconButton(
-            icon: Icon(Icons.image),
-            onPressed: _selectGalleryImage,
-            tooltip: 'Select from gallery',
-          ),
-        ],
-      ),
-    );
-  }
-
-  _takePhoto() async {
-    imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-    images.add(imageFile);
-    setState(() {});
-  }
-
-  _showSnackbar(String text) => scaffoldKey.currentState?.showSnackBar(
-        new SnackBar(
-          content: new Text(text),
-        ),
+  Widget buildMyMessageListView() {
+    if (messages.isEmpty) {
+      return new Center(
+        child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("Vous n´avez pas encore de messages")),
       );
-
-  _uploadImage() async {
-/*
-    if (imageFile == null) {
-      return _showSnackbar('Please select image');
-    }
-*/
-    if (images.isEmpty) {
-      return _showSnackbar('Please select image');
     }
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return new Center(
-          child: new CircularProgressIndicator(),
-        );
-      },
-      barrierDismissible: false,
-    );
-
-    try {
-      final url = Uri.parse(URL_IMAGES_UPLOAD);
-      //BEGIN LOOP
-      for (var file in images) {
-        var fileName = path.basename(file.path);
-        var bytes = await compute(compress, file.readAsBytesSync());
-
-        var request = http.MultipartRequest('POST', url)
-          ..files.add(
-            new http.MultipartFile.fromBytes(
-              'image',
-              bytes,
-              filename: fileName,
+    return ListView.separated(
+        itemBuilder: (context, index) => Slidable(
+              actionPane: SlidableBehindActionPane(),
+              actionExtentRatio: 0.25,
+              child: Container(
+                color: colorWhite,
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: colorDeepPurple300,
+                    child: Text((index + 1).toString()),
+                    foregroundColor: colorWhite,
+                  ),
+                  title: Text(postMessages.elementAt(index).post.title),
+                  subtitle: postMessages.elementAt(index).messages.length > 1
+                      ? Text(postMessages
+                              .elementAt(index)
+                              .messages
+                              .length
+                              .toString() +
+                          " Messages")
+                      : Text(postMessages
+                              .elementAt(index)
+                              .messages
+                              .length
+                              .toString() +
+                          " Message"),
+                ),
+              ),
+              actions: <Widget>[
+                IconSlideAction(
+                  caption: 'Ouvrir',
+                  color: colorDeepPurple300,
+                  icon: Icons.visibility,
+                  onTap: null,
+                ),
+              ],
+              secondaryActions: <Widget>[
+                IconSlideAction(
+                  caption: 'Supprimer',
+                  color: colorRed,
+                  icon: Icons.delete,
+                  onTap: null,
+                ),
+              ],
             ),
-          );
-
-        var response = await request.send();
-        var decoded = await response.stream.bytesToString().then(json.decode);
-
-        if (response.statusCode == HttpStatus.ok) {
-          _showSnackbar(
-              'Image uploaded, imageUrl = $URL_IMAGES/${decoded['path']}');
-        } else {
-          _showSnackbar('Image failed: ${decoded['message']}');
-        }
-      }
-      Navigator.pop(context); //TODO Check this
-      //END LOOP
-    } catch (e) {
-      //Navigator.pop(context); TODO Check this
-      Navigator.pop(context);
-      _showSnackbar('Image failed: $e');
-    }
+        separatorBuilder: (context, index) => Divider(),
+        itemCount: postMessages.length);
   }
 
-  _selectGalleryImage() async {
-    imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-    images.add(imageFile);
+  Future<List<PostMessage>> _loadMessageByEmail() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    if (user != null) {
+      List<PostMessage> _postMessageList = new List();
+      messages = await _messageService.fetchMessageByEmail(user.email);
+
+      Set<int> postIds = new Set();
+
+      for (int i = 0; i < messages.length; i++) {
+        await postIds.add(messages[i].postid);
+      }
+
+      for (int i = 0; i < postIds.length; i++) {
+        Post post = await _postService.fetchPostById(postIds.elementAt(i));
+        List<Message> messageList = new List();
+
+        int messagesLength = messages.length;
+
+        for (int j = 0; j < messagesLength; j++) {
+          if (postIds.elementAt(i) == messages.elementAt(j).postid) {
+            messageList.add(messages.elementAt(j));
+            //TODO dieser Durchlauf optimieren
+            //messages.removeAt(j);
+            //messagesLength--;
+            //--j;
+          }
+        }
+
+        PostMessage postMessage =
+            new PostMessage(messages: messageList, post: post);
+        _postMessageList.add(postMessage);
+      }
+
+      return _postMessageList;
+    }
+    return null;
+  }
+
+  Future<void> _loadMessages() async {
+    postMessages = await _loadMessageByEmail();
     setState(() {});
   }
-}
-
-List<int> compress(List<int> bytes) {
-  var image = img.decodeImage(bytes);
-  var resize = img.copyResize(image, height: 480, width: 480);
-  return img.encodePng(resize, level: 1);
 }

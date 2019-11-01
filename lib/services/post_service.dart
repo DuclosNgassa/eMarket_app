@@ -110,6 +110,7 @@ class PostService {
       status: Post.convertStringToStatus(json["data"]["status"]),
       rating: json["data"]["rating"],
       useremail: json["data"]["useremail"],
+      phoneNumber: json["data"]["phone_number"],
       categorieid: json["data"]["categorieid"],
     );
   }

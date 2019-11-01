@@ -25,6 +25,7 @@ const URL_FAVORITS = SERVER_URL + "/favorits";
 const URL_FAVORITS_BY_EMAIL = URL_FAVORITS + "/user/";
 
 const URL_MESSAGES = SERVER_URL + "/messages";
+const URL_MESSAGES_BY_EMAIL = URL_MESSAGES + "/email/";
 const URL_MESSAGES_BY_SENDER = URL_MESSAGES + "/sender/";
 const URL_MESSAGES_BY_RECEIVER = URL_MESSAGES + "/receiver/";
 
@@ -43,6 +44,7 @@ Color colorDeepPurple500 = Colors.deepPurple[500]; //Color(0xFF00AA12);
 Color backgroundColor = Color(0xFFEFEEF5);
 Color colorRed = Colors.redAccent;
 Color colorWhite = Colors.white;
+Color colorTransparent = Colors.transparent;
 Color colorBlue = Colors.blue;
 
 const double BUTTON_FONT_SIZE = 10;
@@ -115,6 +117,12 @@ TextStyle priceDetailStyle = new TextStyle(
 
 TextStyle titleDetailStyle = new TextStyle(
     color: Colors.black,
+    fontWeight: FontWeight.bold,
+    fontStyle: FontStyle.italic,
+    fontSize: 20);
+
+TextStyle styleTitleWhite = new TextStyle(
+    color: Colors.white,
     fontWeight: FontWeight.bold,
     fontStyle: FontStyle.italic,
     fontSize: 20);

@@ -27,10 +27,10 @@ class MessageService {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
         final users = mapResponse["data"].cast<Map<String, dynamic>>();
-        final favoritList = await users.map<Message>((json) {
+        final messageList = await users.map<Message>((json) {
           return Message.fromJson(json);
         }).toList();
-        return favoritList;
+        return messageList;
       } else {
         return [];
       }
@@ -39,33 +39,55 @@ class MessageService {
     }
   }
 
-  Future<Message> fetchMessageBySender(String sender) async {
-    final response = await http.Client().get('$URL_MESSAGES_BY_SENDER$sender');
+  Future<List<Message>> fetchMessageByEmail(String email) async {
+    final response = await http.Client().get('$URL_MESSAGES_BY_EMAIL$email');
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
-        return convertResponseToMessage(mapResponse);
+        final users = mapResponse["data"].cast<Map<String, dynamic>>();
+        final messageList = await users.map<Message>((json) {
+          return Message.fromJson(json);
+        }).toList();
+        return messageList;
       } else {
         return null;
       }
-    } else if (response.statusCode == HttpStatus.notFound) {
-      return null;
     } else {
       throw Exception('Failed to load Messages by sender from the internet');
     }
   }
 
-  Future<Message> fetchMessageByReceiver(String receiver) async {
+  Future<List<Message>> fetchMessageBySender(String sender) async {
+    final response = await http.Client().get('$URL_MESSAGES_BY_SENDER$sender');
+    if (response.statusCode == HttpStatus.ok) {
+      Map<String, dynamic> mapResponse = json.decode(response.body);
+      if (mapResponse["result"] == "ok") {
+        final users = mapResponse["data"].cast<Map<String, dynamic>>();
+        final messageList = await users.map<Message>((json) {
+          return Message.fromJson(json);
+        }).toList();
+        return messageList;
+      } else {
+        return null;
+      }
+    } else {
+      throw Exception('Failed to load Messages by sender from the internet');
+    }
+  }
+
+  Future<List<Message>> fetchMessageByReceiver(String receiver) async {
     final response = await http.Client().get('$URL_MESSAGES_BY_RECEIVER$receiver');
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
-        return convertResponseToMessage(mapResponse);
+        final users = mapResponse["data"].cast<Map<String, dynamic>>();
+        final messageList = await users.map<Message>((json) {
+          return Message.fromJson(json);
+        }).toList();
+        return messageList;
       } else {
         return null;
       }
-    } else if (response.statusCode == HttpStatus.notFound) {
-      return null;
     } else {
       throw Exception('Failed to load Messages by receiver from the internet');
     }
