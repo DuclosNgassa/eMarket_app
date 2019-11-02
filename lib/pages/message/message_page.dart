@@ -2,10 +2,13 @@ import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/post_message.dart';
+import 'package:emarket_app/model/user.dart';
+import 'package:emarket_app/model/user_message.dart';
 import 'package:emarket_app/pages/login/login.dart';
-import 'package:emarket_app/services/global.dart' as prefix0;
+import 'package:emarket_app/pages/message/user_message_page.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/post_service.dart';
+import 'package:emarket_app/services/user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -23,6 +26,8 @@ class _MessagePageState extends State<MessagePage> {
   List<PostMessage> postMessages = new List();
   MessageService _messageService = new MessageService();
   PostService _postService = new PostService();
+  UserService _userService = new UserService();
+  FirebaseUser firebaseUser = null;
 
   @override
   void initState() {
@@ -41,17 +46,20 @@ class _MessagePageState extends State<MessagePage> {
         future: FirebaseAuth.instance.currentUser(),
         builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
           if (snapshot.hasData) {
-            FirebaseUser user = snapshot.data;
+            firebaseUser = snapshot.data;
             // this is your user instance
             /// is because there is user already logged
             return Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top:55.0, right: 8.0),
+                  padding: const EdgeInsets.only(top: 55.0, right: 8.0),
                   child: new Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      new Text("Messages", style: styleTitleWhite,),
+                      new Text(
+                        "Messages",
+                        style: styleTitleWhite,
+                      ),
                     ],
                   ),
                 ),
@@ -109,7 +117,7 @@ class _MessagePageState extends State<MessagePage> {
                   caption: 'Ouvrir',
                   color: colorDeepPurple300,
                   icon: Icons.visibility,
-                  onTap: null,
+                  onTap: () => openUserMessage(postMessages.elementAt(index)),
                 ),
               ],
               secondaryActions: <Widget>[
@@ -134,7 +142,7 @@ class _MessagePageState extends State<MessagePage> {
       Set<int> postIds = new Set();
 
       for (int i = 0; i < messages.length; i++) {
-        await postIds.add(messages[i].postid);
+        postIds.add(messages[i].postid);
       }
 
       for (int i = 0; i < postIds.length; i++) {
@@ -166,5 +174,47 @@ class _MessagePageState extends State<MessagePage> {
   Future<void> _loadMessages() async {
     postMessages = await _loadMessageByEmail();
     setState(() {});
+  }
+
+  Future<List<UserMessage>> mapPostMessageToUserMessage(
+      PostMessage postMessage) async {
+    List<UserMessage> userMessages = new List();
+
+    Set<String> userEmails = new Set();
+    for (int i = 0; i < postMessage.messages.length; i++) {
+      userEmails.add(postMessage.messages[i].sender);
+    }
+
+    for (int i = 0; i < userEmails.length; i++) {
+      User user = await _userService.fetchUserByEmail(userEmails.elementAt(i));
+      List<Message> messages = new List();
+
+      for (int j = 0; j < postMessage.messages.length; j++) {
+        if (postMessage.messages[j].sender == user.email) {
+          messages.add(postMessage.messages[j]);
+        }
+      }
+      UserMessage userMessage = new UserMessage(
+          post: postMessage.post, user: user, messages: messages);
+      userMessages.add(userMessage);
+    }
+
+    return userMessages;
+  }
+
+  void openUserMessage(PostMessage postMessage) async {
+    if (firebaseUser.email == postMessage.post.useremail) {
+      List<UserMessage> userMessage =
+          await mapPostMessageToUserMessage(postMessage);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return UserMessagePage(userMessage);
+          },
+        ),
+      );
+    } else {
+      //Navigiere zu Chatpage
+    }
   }
 }

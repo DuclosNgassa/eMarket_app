@@ -24,4 +24,17 @@ class Message {
       body: json["body"],
     );
   }
+
+
+  Map<String, dynamic> toMap(Message message) {
+    Map<String, dynamic> params = Map<String, dynamic>();
+    params["sender"] = message.sender;
+    params["created_at"] = message.created_at.toString();
+    params["receiver"] = message.receiver;
+    params["postid"] = message.postid.toString();
+    params["body"] = message.body;
+
+    return params;
+  }
+
 }

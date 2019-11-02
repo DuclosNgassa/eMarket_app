@@ -127,6 +127,11 @@ TextStyle styleTitleWhite = new TextStyle(
     fontStyle: FontStyle.italic,
     fontSize: 20);
 
+TextStyle styleSubtitleWhite = new TextStyle(
+    color: Colors.white,
+    fontStyle: FontStyle.italic,
+    fontSize: 15);
+
 TextStyle greyDetailStyle = new TextStyle(color: Colors.black45, fontSize: 12);
 
 TextStyle normalDetailStyle = new TextStyle(color: Colors.black, fontSize: 20);

@@ -2,12 +2,41 @@ import 'package:emarket_app/model/message.dart';
 import 'package:flutter/material.dart';
 
 class ChatMessage extends StatelessWidget {
-  ChatMessage({this.text, this.name, this.animationController, this.message});
+  ChatMessage({this.name, this.animationController, this.message});
   final String name;
-  final String text;
   final Message message;
   final AnimationController animationController;
 
+  @override
+  Widget build(BuildContext context) {
+    return new SizeTransition(
+      sizeFactor: new CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+      axisAlignment: 0.0,
+      child: Padding(
+        padding: const EdgeInsets.only(left:58.0),
+        child: new Container(
+          margin: const EdgeInsets.symmetric(vertical: 10.0),
+          child: new Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                child: new Column(
+                  children: <Widget>[
+                    new Text(name, style: Theme.of(context).textTheme.subhead),
+                    new Container(
+                      margin: const EdgeInsets.only(top: 5.0),
+                      child: new Text(message.body),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+/*
   @override
   Widget build(BuildContext context) {
     return new SizeTransition(
@@ -28,7 +57,7 @@ class ChatMessage extends StatelessWidget {
                 new Text(name, style: Theme.of(context).textTheme.subhead),
                 new Container(
                   margin: const EdgeInsets.only(top: 5.0),
-                  child: new Text(text),
+                  child: new Text(message.body),
                 ),
               ],
             ),
@@ -37,4 +66,5 @@ class ChatMessage extends StatelessWidget {
       ),
     );
   }
+*/
 }
