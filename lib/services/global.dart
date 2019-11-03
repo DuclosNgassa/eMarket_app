@@ -26,6 +26,7 @@ const URL_FAVORITS_BY_EMAIL = URL_FAVORITS + "/user/";
 
 const URL_MESSAGES = SERVER_URL + "/messages";
 const URL_MESSAGES_BY_EMAIL = URL_MESSAGES + "/email/";
+const URL_MESSAGES_BY_POSTID = URL_MESSAGES + "/post/";
 const URL_MESSAGES_BY_SENDER = URL_MESSAGES + "/sender/";
 const URL_MESSAGES_BY_RECEIVER = URL_MESSAGES + "/receiver/";
 

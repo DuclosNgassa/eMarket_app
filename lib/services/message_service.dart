@@ -57,6 +57,24 @@ class MessageService {
     }
   }
 
+  Future<List<Message>> fetchMessageByPostId(int postId) async {
+    final response = await http.Client().get('$URL_MESSAGES_BY_POSTID$postId');
+    if (response.statusCode == HttpStatus.ok) {
+      Map<String, dynamic> mapResponse = json.decode(response.body);
+      if (mapResponse["result"] == "ok") {
+        final users = mapResponse["data"].cast<Map<String, dynamic>>();
+        final messageList = await users.map<Message>((json) {
+          return Message.fromJson(json);
+        }).toList();
+        return messageList;
+      } else {
+        return null;
+      }
+    } else {
+      throw Exception('Failed to load Messages by sender from the internet');
+    }
+  }
+
   Future<List<Message>> fetchMessageBySender(String sender) async {
     final response = await http.Client().get('$URL_MESSAGES_BY_SENDER$sender');
     if (response.statusCode == HttpStatus.ok) {

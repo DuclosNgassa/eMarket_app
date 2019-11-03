@@ -1,6 +1,7 @@
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/util/notification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -107,8 +108,17 @@ class _HomeCardState extends State<HomeCard> {
       }
       setState(() {});
     } else {
-      print("Melden sie sich an, um Favorits zu speichern");
-      //TODO Meldung -> Melden sie sich an, um Favorits zu speichern
+      MyNotification.showInfoFlushbar(
+          context,
+          "Info",
+          "Connectez vous pour enregistrer les annonces qui vous interessent",
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.blue.shade300,
+          ),
+          Colors.blue.shade300,
+          8);
     }
   }
 
@@ -312,4 +322,5 @@ class _HomeCardState extends State<HomeCard> {
           });
     }
   }
+
 }

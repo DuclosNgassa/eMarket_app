@@ -25,7 +25,6 @@ class Message {
     );
   }
 
-
   Map<String, dynamic> toMap(Message message) {
     Map<String, dynamic> params = Map<String, dynamic>();
     params["sender"] = message.sender;

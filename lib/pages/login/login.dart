@@ -29,9 +29,6 @@ class _LoginState extends State<Login> {
   UserService _userService = new UserService();
 
   Future<FirebaseUser> _signIn(BuildContext context) async {
-    Scaffold.of(context).showSnackBar(
-      new SnackBar(content: new Text('Sign in')),
-    );
 
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth =

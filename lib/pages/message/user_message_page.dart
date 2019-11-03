@@ -1,19 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:emarket_app/converter/date_converter.dart';
-import 'package:emarket_app/custom_component/custom_button.dart';
-import 'package:emarket_app/custom_component/post_owner.dart';
 import 'package:emarket_app/model/message.dart';
-import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/model/user_message.dart';
 import 'package:emarket_app/pages/message/chat_page.dart';
-import 'package:emarket_app/pages/post/images_detail.dart';
 import 'package:emarket_app/services/global.dart';
-import 'package:emarket_app/services/image_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../model/post.dart';
 
 class UserMessagePage extends StatefulWidget {
   final List<UserMessage> userMessage;

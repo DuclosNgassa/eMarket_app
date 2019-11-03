@@ -5,6 +5,7 @@ import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/model/status.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/post/images_detail.dart';
+import 'package:emarket_app/util/notification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
@@ -492,8 +493,17 @@ class PostFormState extends State<PostForm> {
       await _uploadImageToServer();
       await _saveImages(savedPost);
 
-      _showInfoFlushbar(context,
-          'Votre Post a été enregistré. Il sera controlé avant d´etre publié.');
+      MyNotification.showInfoFlushbar(
+          context,
+          "Info",
+          "Votre Post a été enregistré. Il sera controlé avant d´etre publié.",
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.blue.shade300,
+          ),
+          Colors.blue.shade300,
+          5);
 
       clearForm();
     }
@@ -610,20 +620,6 @@ class PostFormState extends State<PostForm> {
     ));
   }
 
-  void _showInfoFlushbar(BuildContext context, String message) {
-    Flushbar(
-      title: 'Info',
-      message: message,
-      icon: Icon(
-        Icons.info_outline,
-        size: 28,
-        color: Colors.blue.shade300,
-      ),
-      leftBarIndicatorColor: Colors.blue.shade300,
-      duration: Duration(seconds: 5),
-    )
-      ..show(context);
-  }
 }
 
 List<int> compress(List<int> bytes) {

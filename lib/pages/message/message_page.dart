@@ -5,6 +5,7 @@ import 'package:emarket_app/model/post_message.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/model/user_message.dart';
 import 'package:emarket_app/pages/login/login.dart';
+import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/pages/message/user_message_page.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/post_service.dart';
@@ -203,6 +204,7 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   void openUserMessage(PostMessage postMessage) async {
+    //Aktueller User ist Bezitzer des Post, dann kann er alle Nachrichten zu dieser Post sehen
     if (firebaseUser.email == postMessage.post.useremail) {
       List<UserMessage> userMessage =
           await mapPostMessageToUserMessage(postMessage);
@@ -214,7 +216,23 @@ class _MessagePageState extends State<MessagePage> {
         ),
       );
     } else {
-      //Navigiere zu Chatpage
+      List<Message> messagesSentOrReceived = new List<Message>();
+      for(Message message in postMessage.messages){
+        if(message.sender == firebaseUser.email || message.receiver == firebaseUser.email){
+          messagesSentOrReceived.add(message);
+        }
+      }
+
+      messagesSentOrReceived.sort((message1 , message2) => message1.created_at.isAfter(message2.created_at) ? 0 : 1);
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return ChatPage(messages:messagesSentOrReceived);
+          },
+        ),
+      );
+
     }
   }
 }

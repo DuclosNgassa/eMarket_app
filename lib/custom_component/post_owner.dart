@@ -1,12 +1,17 @@
 import 'package:emarket_app/model/login_source.dart';
+import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/user_service.dart';
+import 'package:emarket_app/util/notification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'custom_button.dart';
@@ -33,13 +38,18 @@ class PostOwner extends StatefulWidget {
 
 class PostOwnerState extends State<PostOwner> {
   final UserService _userService = new UserService();
+  final MessageService _messageService = new MessageService();
   bool isLogedIn = false; //TODO save login as sharedPreferencies
-  User _user = new User();
+  User _postOwner = new User();
+  List<Message> messagesSentOrReceived = new List<Message>();
+  String _userEmail;
+  String _userName;
 
   @override
   void initState() {
     super.initState();
     _getUserByEmail();
+    _getMessageByPostIdAndUserEmail();
   }
 
   @override
@@ -81,8 +91,8 @@ class PostOwnerState extends State<PostOwner> {
                         color: colorDeepPurple400,
                         child: Center(
                           child: Text(
-                            _user != null && _user.name != null
-                                ? _user.name[0].toUpperCase()
+                            _postOwner != null && _postOwner.name != null
+                                ? _postOwner.name[0].toUpperCase()
                                 : 'e',
                             style: TextStyle(
                                 color: Colors.white,
@@ -104,8 +114,8 @@ class PostOwnerState extends State<PostOwner> {
                       child: Row(
                         children: <Widget>[
                           Text(
-                              _user != null && _user.name != null
-                                  ? _user.name
+                              _postOwner != null && _postOwner.name != null
+                                  ? _postOwner.name
                                   : 'eMarket',
                               style: titleDetailStyle),
                         ],
@@ -226,13 +236,28 @@ class PostOwnerState extends State<PostOwner> {
 
   _sendSMS(BuildContext context) {
     if (isLogedIn) {
-      Navigator.of(context).pushReplacement(
-        new MaterialPageRoute(
-          builder: (context) => new ChatPage(), //new ProfileScreen(detailsUser: details),
-        ),
-      );
+      if (_userEmail != widget.post.useremail) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return ChatPage(messages: messagesSentOrReceived, post: widget.post);
+            },
+          ),
+        );
+      } else {
+        MyNotification.showInfoFlushbar(
+            context,
+            "Info",
+            "Cette annonce vous appartient. Vous ne pouvez pas vous envoyer des messsages à vous même!",
+            Icon(
+              Icons.info_outline,
+              size: 28,
+              color: Colors.blue.shade300,
+            ),
+            Colors.blue.shade300,
+            8);
 
-      print("Sending a sms to the saler......");
+      }
     } else {
       Navigator.of(context).pushReplacement(
         new MaterialPageRoute(
@@ -244,7 +269,36 @@ class PostOwnerState extends State<PostOwner> {
   }
 
   Future<void> _getUserByEmail() async {
-    _user = await _userService.fetchUserByEmail(widget.post.useremail);
+    _postOwner = await _userService.fetchUserByEmail(widget.post.useremail);
     setState(() {});
   }
+
+  Future<void> _getMessageByPostIdAndUserEmail() async {
+    await setUserDaten();
+
+    //der eingelogte User ist nicht der Besitzer der Post, dann kann er eine Nachricht an den Bezitzer der Post senden
+    if (_userEmail != widget.post.useremail) {
+      List<Message> messages =
+          await _messageService.fetchMessageByPostId(widget.post.id);
+
+      for (Message message in messages) {
+        if (message.sender == _userEmail || message.receiver == _userEmail) {
+          messagesSentOrReceived.add(message);
+        }
+      }
+
+      messagesSentOrReceived.sort((message1, message2) =>
+          message1.created_at.isAfter(message2.created_at) ? 0 : 1);
+      setState(() {});
+    }
+  }
+
+  void setUserDaten() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _userEmail = prefs.getString(USER_EMAIL);
+    _userName = prefs.getString(USER_NAME);
+
+    setState(() {});
+  }
+
 }
