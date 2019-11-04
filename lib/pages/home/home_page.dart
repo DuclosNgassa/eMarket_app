@@ -1,4 +1,5 @@
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
+import 'package:emarket_app/custom_component/searchresult_card.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
@@ -48,12 +49,6 @@ class _HomePageState extends State<HomePage> {
     _loadPost();
     _loadMyFavorits();
     _isSearching = false;
-  }
-
-  @override
-  void deactivate() {
-    super.deactivate();
-    print("leaving homepage");
   }
 
   @override
@@ -151,8 +146,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   int getLength() {
-    if (searchResult.length != 0 || _controller.text.isNotEmpty) {
-      if (searchResult.length == 0 && _controller.text.isNotEmpty) {
+    if (searchResult.isNotEmpty || _controller.text.isNotEmpty) {
+      if (searchResult.isEmpty == 0 && _controller.text.isNotEmpty) {
         return 1;
       }
       return searchResult.length;
@@ -170,7 +165,7 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       }
-      return HomeCard(searchResult.elementAt(index), myFavorits);
+      return SearchResultCard(searchResult.elementAt(index), myFavorits);
     }
     return HomeCard(postList.elementAt(index), myFavorits);
   }
@@ -246,9 +241,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _handleSearchStart() {
-    setState(() {
-      _isSearching = true;
-    });
+    _isSearching = true;
   }
 
   void searchOperation(String searchText) {
@@ -263,6 +256,22 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  /*
+  void searchOperation(String searchText) {
+    searchResult.clear();
+    if(searchText.isNotEmpty) {
+      if (_isSearching != null) {
+        for (var post in postList) {
+          if (post.title.toLowerCase().contains(searchText.toLowerCase())) {
+            searchResult.add(post);
+          }
+        }
+      }
+      setState(() {
+      });
+    }
+  }
+   */
   void _loadPost() async {
     postList = await _postService.fetchPosts();
     for (var post in postList) {

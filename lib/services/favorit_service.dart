@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:emarket_app/model/favorit.dart';
-import 'package:emarket_app/model/user.dart';
 import 'package:http/http.dart' as http;
 
 import '../services/global.dart';

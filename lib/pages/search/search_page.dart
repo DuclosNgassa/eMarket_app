@@ -1,4 +1,5 @@
 import 'package:emarket_app/custom_component/home_card.dart';
+import 'package:emarket_app/custom_component/searchresult_card.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
@@ -151,9 +152,10 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+
   int getLength() {
-    if (searchResult.length != 0 || _controller.text.isNotEmpty) {
-      if (searchResult.length == 0 && _controller.text.isNotEmpty) {
+    if (searchResult.isNotEmpty || _controller.text.isNotEmpty) {
+      if (searchResult.isEmpty == 0 && _controller.text.isNotEmpty) {
         return 1;
       }
       return searchResult.length;
@@ -171,10 +173,11 @@ class _SearchPageState extends State<SearchPage> {
           ),
         );
       }
-      return HomeCard(searchResult.elementAt(index), myFavorits);
+      return SearchResultCard(searchResult.elementAt(index), myFavorits);
     }
     return HomeCard(postList.elementAt(index), myFavorits);
   }
+
 
   Widget _buildButtonLeiste() {
     return Center(
@@ -216,9 +219,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _handleSearchStart() {
-    setState(() {
-      _isSearching = true;
-    });
+    _isSearching = true;
   }
 
   void searchOperation(String searchText) {

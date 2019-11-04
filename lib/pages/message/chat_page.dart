@@ -1,6 +1,7 @@
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
+import 'package:emarket_app/services/global.dart' as prefix0;
 import 'package:emarket_app/services/message_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -76,7 +77,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                         ],
                       ),
                     ),
-                //separatorBuilder: (context, index) => Divider(),
                 itemCount: _messages.length),
           ),
           new Divider(height: 1.0),
@@ -94,7 +94,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       return Padding(
         padding: const EdgeInsets.only(right: 50.0),
         child: Container(
-          color: Colors.blue,
+          color: colorWhite,
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: colorDeepPurple300,
@@ -111,7 +111,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       return Padding(
         padding: const EdgeInsets.only(left: 50.0),
         child: Container(
-          color: Colors.cyan,
+          color: Colors.black26,
           child: ListTile(
             trailing: CircleAvatar(
               backgroundColor: colorDeepPurple300,
@@ -167,18 +167,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     messageService.saveMessage(messageParams);
 
     _textEditingController.clear();
-/*
-    ChatMessage chatMessage = new ChatMessage(
-      message: message,
-      name: userName,
-      animationController: new AnimationController(
-          duration: new Duration(milliseconds: 700), vsync: this),
-    );
-*/
+
     setState(() {
       _messages.insert(0, message);
     });
-    //chatMessage.animationController.forward();
   }
 
   void initChatMessage() async {
@@ -202,8 +194,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         }
       }
     }
-
-    //_chatMessages.sort((message1 , message2) => message1.message.created_at.isAfter(message2.message.created_at) ? 0 : 1);
 
     setState(() {});
   }

@@ -6,7 +6,6 @@ import 'package:emarket_app/services/image_service.dart';
 import '../model/feetyp.dart';
 import '../model/posttyp.dart';
 import '../model/status.dart';
-import '../services/post_service.dart';
 
 class Post {
   int id;
