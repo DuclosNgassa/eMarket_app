@@ -1,6 +1,6 @@
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
-import 'package:emarket_app/custom_component/searchresult_card.dart';
 import 'package:emarket_app/model/favorit.dart';
+import 'package:emarket_app/pages/search/datasearch.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,34 +21,21 @@ class _HomePageState extends State<HomePage> {
   final PostService _postService = new PostService();
   final FavoritService _favoritService = new FavoritService();
 
-  bool _isSearching;
-  String _searchText = "";
   List<Post> searchResult = new List();
   List<Post> postList = new List();
   List<Favorit> myFavorits = new List();
-
-  _HomePageState() {
-    _controller.addListener(() {
-      if (_controller.text.isEmpty) {
-        setState(() {
-          _isSearching = false;
-          _searchText = "";
-        });
-      } else {
-        setState(() {
-          _isSearching = true;
-          _searchText = _controller.text;
-        });
-      }
-    });
-  }
 
   @override
   void initState() {
     super.initState();
     _loadPost();
     _loadMyFavorits();
-    _isSearching = false;
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    print("leaving homepage");
   }
 
   @override
@@ -90,8 +77,12 @@ class _HomePageState extends State<HomePage> {
                                   labelText: 'Recherche',
                                   labelStyle: TextStyle(color: Colors.white),
                                 ),
-                                onChanged: searchOperation,
-                                controller: _controller,
+                                onTap: () {
+                                  showSearch(
+                                    context: context,
+                                    delegate: DataSearch(postList, myFavorits),
+                                  );
+                                },
                               ),
                             ),
                             IconButton(
@@ -100,13 +91,12 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.white,
                               ),
                               tooltip: 'rechercher',
-                              onPressed: (() {
-                                setState(() {
-                                  _handleSearchStart();
-                                });
-                                print('Recherche en cours...');
-                                //_chooseDate(context, _controller.text);
-                              }),
+                              onPressed: () {
+                                showSearch(
+                                  context: context,
+                                  delegate: DataSearch(postList, myFavorits),
+                                );
+                              },
                             )
                           ],
                         ),
@@ -123,51 +113,19 @@ class _HomePageState extends State<HomePage> {
               ),
               delegate: SliverChildListDelegate([_buildCategorieGridView()]),
             ),
-            SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1,
-              ),
+            SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  return Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: _takeCard(index),
-                  );
+                  return HomeCard(postList.elementAt(index), myFavorits, 100,
+                      size.width - 20);
                 },
-                childCount: getLength(),
+                childCount: postList.length,
               ),
-            ),
+            )
           ],
         ),
       ),
     );
-  }
-
-  int getLength() {
-    if (searchResult.isNotEmpty || _controller.text.isNotEmpty) {
-      if (searchResult.isEmpty == 0 && _controller.text.isNotEmpty) {
-        return 1;
-      }
-      return searchResult.length;
-    }
-    return postList.length;
-  }
-
-  Widget _takeCard(int index) {
-    if (searchResult.length != 0 || _controller.text.isNotEmpty) {
-      if (searchResult.length == 0 && _controller.text.isNotEmpty) {
-        return Center(
-          child: Text(
-            "Aucun resultat pour votre recherche",
-            textAlign: TextAlign.center,
-          ),
-        );
-      }
-      return SearchResultCard(searchResult.elementAt(index), myFavorits);
-    }
-    return HomeCard(postList.elementAt(index), myFavorits);
   }
 
   Widget _buildCategorieGridView() {
@@ -240,38 +198,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _handleSearchStart() {
-    _isSearching = true;
-  }
-
-  void searchOperation(String searchText) {
-    searchResult.clear();
-    if (_isSearching != null) {
-      for (int i = 0; i < postList.length; i++) {
-        Post data = postList[i];
-        if (data.title.toLowerCase().contains(searchText.toLowerCase())) {
-          searchResult.add(data);
-        }
-      }
-    }
-  }
-
-  /*
-  void searchOperation(String searchText) {
-    searchResult.clear();
-    if(searchText.isNotEmpty) {
-      if (_isSearching != null) {
-        for (var post in postList) {
-          if (post.title.toLowerCase().contains(searchText.toLowerCase())) {
-            searchResult.add(post);
-          }
-        }
-      }
-      setState(() {
-      });
-    }
-  }
-   */
   void _loadPost() async {
     postList = await _postService.fetchPosts();
     for (var post in postList) {
@@ -287,5 +213,4 @@ class _HomePageState extends State<HomePage> {
       setState(() {});
     }
   }
-
 }

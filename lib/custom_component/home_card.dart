@@ -11,8 +11,11 @@ import '../pages/post/post_detail_page.dart';
 class HomeCard extends StatefulWidget {
   final Post post;
   final List<Favorit> myFavorits;
+  final double width;
+  final double height;
 
-  HomeCard(this.post, this.myFavorits);
+
+  HomeCard(this.post, this.myFavorits, this.width, this.height, );
 
   @override
   _HomeCardState createState() => _HomeCardState(post, myFavorits);
@@ -56,7 +59,7 @@ class _HomeCardState extends State<HomeCard> {
     return Stack(children: <Widget>[
       InkWell(
         onTap: showPostDetailPage,
-        child: _buildHomeCard(context, 200),
+        child: _buildHomeCard(context, widget.height, widget.width),
       ),
       Positioned(
         top: 10,
@@ -167,8 +170,8 @@ class _HomeCardState extends State<HomeCard> {
       postAvatar = Hero(
         tag: post,
         child: Container(
-          height: 155.0,
-          width: 200.0,
+          height: widget.height,
+          width: widget.width,
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(15.0),
@@ -183,8 +186,8 @@ class _HomeCardState extends State<HomeCard> {
 
     // Placeholder is a static container the same size as the dog image
     var placeholder = Container(
-      height: 155.0,
-      width: 200.0,
+      height: widget.height,
+      width: widget.width,
       decoration: BoxDecoration(
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(15.0),
@@ -231,50 +234,53 @@ class _HomeCardState extends State<HomeCard> {
     }
   }
 
-  Widget _buildHomeCard(BuildContext context, double width) {
+  Widget _buildHomeCard(BuildContext context, double width, double height) {
     // A new container
     // The height and width are arbitrary numbers for styling.
-    return Container(
-      width: width,
-      height: 155.0,
-      padding: EdgeInsets.all(10.0),
-      margin: EdgeInsets.only(right: 20, bottom: 10, top: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          new BoxShadow(
-            color: Colors.grey,
-            blurRadius: 20.0,
-          ),
-        ],
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                widget.post.fee.toString() + ' FCFA',
-                style: priceStyle,
-              ),
-            ],
-          ),
-          Row(
-            children: <Widget>[
-              Expanded(child: Text(widget.post.title, style: titleStyle)),
-            ],
-          ),
-          Row(
-            children: _buildRating(widget.post.rating),
-          ),
-          Text(
-            Post.convertPostTypToStringForDisplay(widget.post.post_typ),
-            style: titleStyle,
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(left:15.0),
+      child: Container(
+        height: height,
+        width: width,
+        padding: EdgeInsets.all(10.0),
+        margin: EdgeInsets.only(right: 20, bottom: 10, top: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            new BoxShadow(
+              color: Colors.grey,
+              blurRadius: 20.0,
+            ),
+          ],
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  widget.post.fee.toString() + ' FCFA',
+                  style: priceStyle,
+                ),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(child: Text(widget.post.title, style: titleStyle)),
+              ],
+            ),
+            Row(
+              children: _buildRating(widget.post.rating),
+            ),
+            Text(
+              Post.convertPostTypToStringForDisplay(widget.post.post_typ),
+              style: titleStyle,
+            ),
+          ],
+        ),
       ),
     );
   }

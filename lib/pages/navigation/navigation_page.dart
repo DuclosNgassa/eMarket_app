@@ -1,7 +1,6 @@
 import 'package:emarket_app/pages/account/account_page.dart';
 import 'package:emarket_app/pages/home/home_page.dart';
 import 'package:emarket_app/pages/post/post_page.dart';
-import 'package:emarket_app/pages/search/search_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:flutter/material.dart';
 
@@ -93,10 +92,6 @@ class _NavigationPageState extends State<NavigationPage> {
             title: Text('Home'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            title: Text('Rechercher'),
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.add),
             title: Text('Inserer'),
           ),
@@ -125,7 +120,6 @@ class _NavigationPageState extends State<NavigationPage> {
 
   List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    SearchPage(),
     PostPage(),
     AccountPage(),
     MessagePage(),
