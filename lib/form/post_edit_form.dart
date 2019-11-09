@@ -7,11 +7,12 @@ import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/post/images_detail.dart';
 import 'package:emarket_app/services/categorie_service.dart';
+import 'package:emarket_app/util/notification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
@@ -42,23 +43,36 @@ class _PostEditFormState extends State<PostEditForm> {
   ImageService _imageService = new ImageService();
   CategorieService _categorieService = new CategorieService();
 
-  List<CachedNetworkImage> postImages = new List();
-
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
   FormValidator formValidator = new FormValidator();
 
   PostTyp _postTyp = PostTyp.offer;
+
   List<String> _feeTyps = <String>['Kdo', 'Negociable', 'Fixe'];
   String _feeTyp = 'Kdo';
+
   CategorieTile _categorieTile = new CategorieTile('', 0);
-  //Post newPost = new Post();
+
+  int imageCount = 0;
+  final int MAX_IMAGE = 4;
+
   File imageFile;
 
-  List<File> images = List<File>();
-  List<Image> imageList = List();
+  List<File> newPostImages = List<File>();
+  List<CachedNetworkImage> oldPostImages = new List();
+
+  List<CachedNetworkImage> imageToRemove = new List();
+
   List<String> _imageUrls = List<String>();
+
+  FocusNode _titelFocusNode;
+  FocusNode _feeFocusNode;
+  FocusNode _cityFocusNode;
+  FocusNode _quarterFocusNode;
+  FocusNode _phoneFocusNode;
+  FocusNode _descriptionFocusNode;
 
   _PostEditFormState(this._post);
 
@@ -66,6 +80,25 @@ class _PostEditFormState extends State<PostEditForm> {
   void initState() {
     super.initState();
     _loadImages();
+    _titelFocusNode = FocusNode();
+    _feeFocusNode = FocusNode();
+    _cityFocusNode = FocusNode();
+    _quarterFocusNode = FocusNode();
+    _phoneFocusNode = FocusNode();
+    _descriptionFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    // Clean up the focus node when the Form is disposed.
+    _titelFocusNode.dispose();
+    _feeFocusNode.dispose();
+    _cityFocusNode.dispose();
+    _quarterFocusNode.dispose();
+    _phoneFocusNode.dispose();
+    _descriptionFocusNode.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -145,35 +178,34 @@ class _PostEditFormState extends State<PostEditForm> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
-                          //padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           children: <Widget>[
-                            Container(
-                              height: 125.0,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Expanded(
-                                    child: Row(
-                                      children: <Widget>[
-                                        buildOldImageGridView(),
-                                        buildNewImageGridView(),
-                                      ],
-                                    ),
-                                  ),
-                                  _buildButtons(),
-                                ],
-                              ),
-                            ),
+                            oldPostImages.length > 0
+                                ? Container(
+                                    height: 100.0,
+                                    child: buildOldImageGridView(),
+                                  )
+                                : new Container(),
+                            newPostImages.length > 0
+                                ? new Container(
+                                    height: 100.0,
+                                    child: buildNewImageGridView(),
+                                  )
+                                : new Container(),
+                            _buildButtons(),
                             Divider(),
                             _buildRadioButtons(),
                             TextFormField(
+                              textInputAction: TextInputAction.next,
+                              autofocus: true,
+                              onFieldSubmitted: (term) {
+                                _fieldFocusChange(
+                                    _titelFocusNode, _feeFocusNode);
+                              },
                               decoration: const InputDecoration(
                                 hintText: 'Donnez le titre de votre post',
                                 labelText: 'Titre',
                                 labelStyle: TextStyle(
-                                    //fontFamily: 'Helvetica',
-                                    color: Colors.black,
-                                    fontSize: 15),
+                                    color: Colors.black, fontSize: 15),
                               ),
                               initialValue: _post.title,
                               inputFormatters: [
@@ -219,13 +251,17 @@ class _PostEditFormState extends State<PostEditForm> {
                               children: <Widget>[
                                 Expanded(
                                   child: TextFormField(
+                                    textInputAction: TextInputAction.next,
+                                    focusNode: _feeFocusNode,
+                                    onFieldSubmitted: (term) {
+                                      _fieldFocusChange(
+                                          _feeFocusNode, _cityFocusNode);
+                                    },
                                     decoration: const InputDecoration(
                                       hintText: 'Donnez le prix',
                                       labelText: 'Prix (FCFA)',
                                       labelStyle: TextStyle(
-                                          //fontFamily: 'Helvetica',
-                                          color: Colors.black,
-                                          fontSize: 15),
+                                          color: Colors.black, fontSize: 15),
                                     ),
                                     initialValue: _post.fee.toString(),
                                     inputFormatters: [
@@ -236,7 +272,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                             ? 'Donnez un prix'
                                             : null,
                                     onSaved: (val) =>
-                                    _post.fee = int.parse(val),
+                                        _post.fee = int.parse(val),
                                   ),
                                 ),
                                 Expanded(
@@ -254,7 +290,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                           ),
                                           child: DropdownButtonHideUnderline(
                                             child: DropdownButton(
-                                              value: getFeeTyp(_post.fee_typ),
+                                              value: _feeTyp,
                                               isDense: true,
                                               onChanged: (String newValue) {
                                                 setState(() {
@@ -274,10 +310,6 @@ class _PostEditFormState extends State<PostEditForm> {
                                           ),
                                         );
                                       },
-                                      validator: (val) => formValidator
-                                              .isEmptyText(val)
-                                          ? 'Veuillez choisir le type de prix svp'
-                                          : null,
                                     ),
                                   ),
                                 ),
@@ -291,13 +323,17 @@ class _PostEditFormState extends State<PostEditForm> {
                                 children: <Widget>[
                                   Expanded(
                                     child: TextFormField(
+                                      textInputAction: TextInputAction.next,
+                                      focusNode: _cityFocusNode,
+                                      onFieldSubmitted: (term) {
+                                        _fieldFocusChange(
+                                            _cityFocusNode, _quarterFocusNode);
+                                      },
                                       decoration: const InputDecoration(
                                         hintText: 'Donnez la ville',
                                         labelText: 'Ville',
                                         labelStyle: TextStyle(
-                                            //fontFamily: 'Helvetica',
-                                            color: Colors.black,
-                                            fontSize: 15),
+                                            color: Colors.black, fontSize: 15),
                                       ),
                                       initialValue: _post.city,
                                       inputFormatters: [
@@ -312,13 +348,17 @@ class _PostEditFormState extends State<PostEditForm> {
                                   ),
                                   Expanded(
                                     child: TextFormField(
+                                      textInputAction: TextInputAction.next,
+                                      focusNode: _quarterFocusNode,
+                                      onFieldSubmitted: (term) {
+                                        _fieldFocusChange(
+                                            _quarterFocusNode, _phoneFocusNode);
+                                      },
                                       decoration: const InputDecoration(
                                         hintText: 'Donnez le quartier',
                                         labelText: 'Quartier',
                                         labelStyle: TextStyle(
-                                            //fontFamily: 'Helvetica',
-                                            color: Colors.black,
-                                            fontSize: 15),
+                                            color: Colors.black, fontSize: 15),
                                       ),
                                       initialValue: _post.quarter,
                                       inputFormatters: [
@@ -335,13 +375,17 @@ class _PostEditFormState extends State<PostEditForm> {
                               ),
                             ),
                             TextFormField(
+                              textInputAction: TextInputAction.next,
+                              focusNode: _phoneFocusNode,
+                              onFieldSubmitted: (term) {
+                                _fieldFocusChange(
+                                    _phoneFocusNode, _descriptionFocusNode);
+                              },
                               decoration: const InputDecoration(
                                 hintText: 'Donnez un numero de téléphone',
                                 labelText: 'Numero de téléphone',
                                 labelStyle: TextStyle(
-                                    //fontFamily: 'Helvetica',
-                                    color: Colors.black,
-                                    fontSize: 15),
+                                    color: Colors.black, fontSize: 15),
                               ),
                               initialValue: _post.phoneNumber,
                               inputFormatters: [
@@ -350,7 +394,13 @@ class _PostEditFormState extends State<PostEditForm> {
                               onSaved: (val) => _post.phoneNumber = val,
                             ),
                             TextFormField(
-                              maxLines: 2,
+                              textInputAction: TextInputAction.done,
+                              focusNode: _descriptionFocusNode,
+                              onFieldSubmitted: (value) {
+                                _descriptionFocusNode.unfocus();
+                                _submitForm();
+                              },
+                              maxLines: 4,
                               decoration: const InputDecoration(
                                 hintText: 'Description de votre post',
                                 labelText: 'Description',
@@ -368,15 +418,30 @@ class _PostEditFormState extends State<PostEditForm> {
                                   : null,
                               onSaved: (val) => _post.description = val,
                             ),
-                            Container(
-                              padding: const EdgeInsets.only(top: 10.0),
-                              child: RaisedButton(
-                                shape: const StadiumBorder(),
-                                color: colorDeepPurple400,
-                                child: Text('Enregistrer les modifications',
-                                    style: styleButtonWhite),
-                                onPressed: _submitForm,
-                              ),
+                            Row(
+                              children: <Widget>[
+                                Container(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: RaisedButton(
+                                    shape: const StadiumBorder(),
+                                    color: Colors.red,
+                                    child:
+                                        Text('Retour', style: styleButtonWhite),
+                                    onPressed: _cancelChange,
+                                  ),
+                                ),
+                                Expanded(child: SizedBox()),
+                                Container(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: RaisedButton(
+                                    shape: const StadiumBorder(),
+                                    color: colorDeepPurple400,
+                                    child: Text('Enregistrer les modifications',
+                                        style: styleButtonWhite),
+                                    onPressed: _submitForm,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -406,147 +471,127 @@ class _PostEditFormState extends State<PostEditForm> {
   }
 
   Widget buildOldImageGridView() {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      crossAxisCount: 1,
-      scrollDirection: Axis.horizontal,
-      children: List.generate(
-        postImages.length,
-        (index) {
-          CachedNetworkImage asset = postImages[index];
-          return Dismissible(
-            direction: DismissDirection.endToStart,
-            key: Key('default'),
-            background: ClipRRect(
-              borderRadius: BorderRadius.circular(16.0),
-              child: AspectRatio(
-                aspectRatio: 0.3,
-                child: Container(
-                  color: Colors.red,
-                  alignment: AlignmentDirectional.centerEnd,
-                  child: Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            onDismissed: (direction) => {
-              setState(() {
-                images.removeAt(index);
-              })
-            },
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<Null>(
-                    builder: (BuildContext context) {
-                      return ImageDetailPage(images, null);
-                    },
-                    fullscreenDialog: true,
-                  ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: Container(
-                    width: 75,
-                    height: 75,
-                    decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                      BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(3.0, 6.0),
-                          blurRadius: 10.0)
-                    ]),
-                    child: AspectRatio(
-                      aspectRatio: 0.5,
-                      child: asset != null ? asset : null,
+    return new ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Slidable(
+                actionPane: SlidableBehindActionPane(),
+                actionExtentRatio: 0.25,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<Null>(
+                        builder: (BuildContext context) {
+                          return ImageDetailPage(null, oldPostImages);
+                        },
+                        fullscreenDialog: true,
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16.0),
+                      child: Container(
+                        width: 75,
+                        height: 75,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black12,
+                                  offset: Offset(3.0, 6.0),
+                                  blurRadius: 10.0)
+                            ]),
+                        child: AspectRatio(
+                          aspectRatio: 0.5,
+                          child: oldPostImages[index] != null
+                              ? oldPostImages[index]
+                              : null,
+                        ),
+                      ),
                     ),
                   ),
                 ),
+                secondaryActions: <Widget>[
+                  IconSlideAction(
+                      color: colorRed,
+                      icon: Icons.delete,
+                      onTap: () {
+                        setState(() {
+                          imageCount--;
+                          imageToRemove.add(oldPostImages.elementAt(index));
+                          oldPostImages.removeAt(index);
+                        });
+                      }),
+                ],
               ),
             ),
-          );
-        },
-      ),
-    );
+        itemCount: oldPostImages.length);
   }
 
   Widget buildNewImageGridView() {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      crossAxisCount: 1,
-      scrollDirection: Axis.horizontal,
-      children: List.generate(
-        images.length,
-        (index) {
-          File asset = images[index];
-          return Dismissible(
-            direction: DismissDirection.endToStart,
-            key: Key('default'),
-            background: ClipRRect(
-              borderRadius: BorderRadius.circular(16.0),
-              child: AspectRatio(
-                aspectRatio: 0.3,
-                child: Container(
-                  color: Colors.red,
-                  alignment: AlignmentDirectional.centerEnd,
-                  child: Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            onDismissed: (direction) => {
-              setState(() {
-                images.removeAt(index);
-              })
-            },
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<Null>(
-                    builder: (BuildContext context) {
-                      return ImageDetailPage(images, null);
-                    },
-                    fullscreenDialog: true,
-                  ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: Container(
-                    width: 75,
-                    height: 75,
-                    decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                      BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(3.0, 6.0),
-                          blurRadius: 10.0)
-                    ]),
-                    child: AspectRatio(
-                      aspectRatio: 0.5,
-                      child: asset != null
-                          ? Image.file(asset, fit: BoxFit.cover)
-                          : null,
+    return new ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Slidable(
+                actionPane: SlidableBehindActionPane(),
+                actionExtentRatio: 0.25,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<Null>(
+                        builder: (BuildContext context) {
+                          return ImageDetailPage(newPostImages, null);
+                        },
+                        fullscreenDialog: true,
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16.0),
+                      child: Container(
+                        width: 75,
+                        height: 75,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black12,
+                                  offset: Offset(3.0, 6.0),
+                                  blurRadius: 10.0)
+                            ]),
+                        child: AspectRatio(
+                          aspectRatio: 0.5,
+                          child: newPostImages[index] != null
+                              ? Image.file(newPostImages[index],
+                                  fit: BoxFit.cover)
+                              : null,
+                        ),
+                      ),
                     ),
                   ),
                 ),
+                secondaryActions: <Widget>[
+                  IconSlideAction(
+                      color: colorRed,
+                      icon: Icons.delete,
+                      onTap: () {
+                        setState(() {
+                          imageCount--;
+                          newPostImages.removeAt(index);
+                        });
+                      }),
+                ],
               ),
             ),
-          );
-        },
-      ),
-    );
+        itemCount: newPostImages.length);
   }
 
   Widget _buildButtons() {
@@ -630,52 +675,101 @@ class _PostEditFormState extends State<PostEditForm> {
   }
 
   _takePhoto() async {
-    if (images.length < 4) {
+    if (imageCount < MAX_IMAGE) {
+      imageCount++;
       imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
       if (imageFile != null) {
-        images.add(imageFile);
+        newPostImages.add(imageFile);
       }
       setState(() {});
     } else {
-      _showMessage('Vous ne pouvez que telecharger 4 photos');
+      MyNotification.showInfoFlushbar(
+          context,
+          "Téléchargement d´images",
+          "Vous ne pouvez que telecharger 4 photos",
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.red.shade300,
+          ),
+          Colors.red.shade300,
+          3);
     }
   }
 
   _selectGalleryImage() async {
-    if (images.length < 4) {
+    if (imageCount < MAX_IMAGE) {
+      imageCount++;
       imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
       if (imageFile != null) {
-        images.add(imageFile);
+        newPostImages.add(imageFile);
       }
       setState(() {});
     } else {
-      _showMessage('Vous ne pouvez que telecharger 4 photos');
+      MyNotification.showInfoFlushbar(
+          context,
+          "Téléchargement d´images",
+          "Vous ne pouvez que telecharger 4 photos",
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.red.shade300,
+          ),
+          Colors.red.shade300,
+          3);
     }
+  }
+
+  void _cancelChange() {
+    Navigator.of(context).pop();
   }
 
   void _submitForm() async {
     final FormState form = _formKey.currentState;
 
     if (!form.validate()) {
-      _showMessage(
-          'Le formulaire contient des érreurs! Corrigez le s´il vous plait');
+      MyNotification.showInfoFlushbar(
+          context,
+          "Erreur",
+          "Le formulaire contient des érreurs! Corrigez les s´il vous plait",
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.red.shade300,
+          ),
+          Colors.red.shade300,
+          3);
     } else if (_categorieTile.title.isEmpty) {
-      _showMessage(
-          'Veuillez choisir la categorie dans laquelle vous publiez votre post s´il vous pllait.');
-    } else if (images.isEmpty) {
-      return _showMessage('Veuillez choisir une image s´il vous plait.');
+      MyNotification.showInfoFlushbar(
+          context,
+          "Erreur",
+          "Veuillez choisir la categorie dans laquelle vous publiez votre post s´il vous pllait.",
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.red.shade300,
+          ),
+          Colors.red.shade300,
+          3);
     } else {
       form.save();
 
       Post updatedPost = await _updatePost();
-//      await _uploadImageToServer();
-//      await _saveImages(updatedPost);
+      await _uploadImageToServer();
+      await _saveImages(updatedPost);
+      await imageToRemove.forEach((item) => deleteByImageUrl(item.imageUrl));
 
-      _showInfoFlushbar(context,
-          'Votre Post a été modifié. Il sera controlé avant d´etre publié.');
-
-      //Navigator.pop(context);
-
+      MyNotification.showInfoFlushbar(
+          context,
+          "Info",
+          "Votre Post a été modifié. Les modifications seront controlées avant d´etre publiées.",
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.blue.shade300,
+          ),
+          Colors.blue.shade300,
+          3);
     }
   }
 
@@ -706,7 +800,7 @@ class _PostEditFormState extends State<PostEditForm> {
     try {
       final url = Uri.parse(URL_IMAGES_UPLOAD);
       //BEGIN LOOP
-      for (var file in images) {
+      for (var file in newPostImages) {
         var fileName = path.basename(file.path);
         var bytes = await compute(compress, file.readAsBytesSync());
 
@@ -725,27 +819,51 @@ class _PostEditFormState extends State<PostEditForm> {
         if (response.statusCode == HttpStatus.ok) {
           _imageUrls.add('$SERVER_URL/${decoded['path']}');
         } else {
-          _showMessage('Image failed: ${decoded['message']}');
+          MyNotification.showInfoFlushbar(
+              context,
+              "Info",
+              "Image failed: ${decoded['message']}",
+              Icon(
+                Icons.info_outline,
+                size: 28,
+                color: Colors.red.shade300,
+              ),
+              Colors.red.shade300,
+              3);
         }
       }
       Navigator.pop(context); //TODO Check this
       //END LOOP
     } catch (e) {
       Navigator.pop(context);
-      _showMessage('Image failed: $e');
+      MyNotification.showInfoFlushbar(
+          context,
+          "Info",
+          "Image failed: $e",
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.red.shade300,
+          ),
+          Colors.red.shade300,
+          3);
     }
   }
 
-  Future _saveImages(Post savedPost) async {
+  Future<void> _saveImages(Post updatedPost) async {
     MyImage.PostImage newImage = new MyImage.PostImage();
-    newImage.postid = savedPost.id;
+    newImage.postid = updatedPost.id;
     newImage.created_at = DateTime.now();
 
     for (var item in _imageUrls) {
       newImage.image_url = item;
       Map<String, dynamic> imageParams = _imageService.toMap(newImage);
-      MyImage.PostImage savedImage = await _imageService.saveImage(imageParams);
+      await _imageService.saveImage(imageParams);
     }
+  }
+
+  Future<void> deleteByImageUrl(String url) async {
+    _imageService.deleteByImageUrl(url);
   }
 
   void setFeeTyp(String newValue) {
@@ -790,35 +908,22 @@ class _PostEditFormState extends State<PostEditForm> {
     }
   }
 
-  void _showMessage(String message, [MaterialColor color = Colors.red]) {
-    widget.scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: Text(message),
-      backgroundColor: color,
-    ));
-  }
-
-  void _showInfoFlushbar(BuildContext context, String message) async {
-    Flushbar(
-      title: 'Info',
-      message: message,
-      icon: Icon(
-        Icons.info_outline,
-        size: 28,
-        color: Colors.blue.shade300,
-      ),
-      leftBarIndicatorColor: Colors.blue.shade300,
-      duration: Duration(seconds: 5),
-    )..show(context);
-
-  }
-
   Future<void> _loadImages() async {
+    _feeTyp = getFeeTyp(widget.post.fee_typ);
     _postTyp = widget.post.post_typ;
-    postImages = await _imageService.fetchCachedNetworkImageByPostId(widget.post.id);
+    oldPostImages =
+        await _imageService.fetchCachedNetworkImageByPostId(widget.post.id);
+    imageCount = oldPostImages.length;
+
     Categorie _categorie =
         await _categorieService.fetchCategorieByID(widget.post.categorieid);
     _categorieTile = new CategorieTile(_categorie.title, _categorie.id);
     setState(() {});
+  }
+
+  _fieldFocusChange(FocusNode currentFocus, FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
   }
 }
 

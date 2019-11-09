@@ -14,7 +14,9 @@ const URL_USERS = SERVER_URL + "/users";
 const URL_USERS_BY_EMAIL = URL_USERS + "/email/";
 
 const URL_IMAGES = SERVER_URL + "/images";
+const URL_IMAGES_BY_ID = URL_IMAGES + "/";
 const URL_IMAGES_UPLOAD = URL_IMAGES + "/upload";
+const URL_IMAGES_BY_IMAGE_URL = URL_IMAGES + "/url/";
 const URL_IMAGES_BY_POSTID = URL_IMAGES + "/post/";
 const URL_IMAGES_BY_PATH = URL_IMAGES + "/server/";
 

@@ -73,7 +73,7 @@ class PostService {
         await http.Client().put('$URL_POSTS/${params["id"]}', body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
-      return convertResponseToPost(responseBody);
+      return convertResponseToPostUpdate(responseBody);
     } else {
       throw Exception('Failed to update a Post. Error: ${response.toString()}');
     }
@@ -112,6 +112,30 @@ class PostService {
       useremail: json["data"]["useremail"],
       phoneNumber: json["data"]["phone_number"],
       categorieid: json["data"]["categorieid"],
+    );
+  }
+
+  Post convertResponseToPostUpdate(Map<String, dynamic> json) {
+    if (json["data"] == null) {
+      return null;
+    }
+
+    return Post(
+      id: json["data"]["id"],
+      title: json["data"]["title"],
+      created_at: DateTime.parse(json["data"]["created_at"]),
+      updated_at: DateTime.parse(json["data"]["updated_at"]),
+      post_typ: Post.convertStringToPostTyp(json["data"]["post_typ"]),
+      description: json["data"]["description"],
+      fee: int.parse(json["data"]["fee"]),
+      fee_typ: Post.convertStringToFeeTyp(json["data"]["fee_typ"]),
+      city: json["data"]["city"],
+      quarter: json["data"]["quartier"],
+      status: Post.convertStringToStatus(json["data"]["status"]),
+      rating: int.parse(json["data"]["rating"]),
+      useremail: json["data"]["useremail"],
+      phoneNumber: json["data"]["phone_number"],
+      categorieid: int.parse(json["data"]["categorieid"]),
     );
   }
 }

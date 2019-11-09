@@ -92,6 +92,31 @@ class ImageService{
     }
   }
 
+  Future<bool> deleteByImageUrl(String url) async {
+    String urlToremove = url.split("images/")[1];
+    final response = await http.Client().delete('$URL_IMAGES_BY_IMAGE_URL$urlToremove');
+    if (response.statusCode == HttpStatus.ok) {
+      final responseBody = await json.decode(response.body);
+      if (responseBody["result"] == "ok") {
+        return true;
+      }
+    } else {
+      throw Exception('Failed to delete image. Error: ${response.toString()}');
+    }
+  }
+
+  Future<bool> delete(int id) async {
+    final response = await http.Client().delete('$URL_IMAGES_BY_ID$id');
+    if (response.statusCode == HttpStatus.ok) {
+      final responseBody = await json.decode(response.body);
+      if (responseBody["result"] == "ok") {
+        return true;
+      }
+    } else {
+      throw Exception('Failed to delete image. Error: ${response.toString()}');
+    }
+  }
+
   Map<String, dynamic> toMap(PostImage image){
     Map<String, dynamic> params = Map<String, dynamic>();
     params["image_url"] = image.image_url;

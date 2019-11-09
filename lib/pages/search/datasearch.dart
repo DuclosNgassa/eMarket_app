@@ -18,18 +18,36 @@ class DataSearch extends SearchDelegate<Post> {
   String get searchFieldLabel => 'Recherche';
 
   @override
+  ThemeData appBarTheme(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    return theme.copyWith(
+      primaryColor: colorDeepPurple300,
+      primaryIconTheme: theme.primaryIconTheme,
+      primaryColorBrightness: theme.primaryColorBrightness,
+      primaryTextTheme: theme.primaryTextTheme,
+      inputDecorationTheme: InputDecorationTheme(
+        hintStyle:
+            Theme.of(context).textTheme.title.copyWith(color: Colors.white),
+        labelStyle:
+            Theme.of(context).textTheme.title.copyWith(color: Colors.white),
+
+      ),
+    );
+  }
+
+  @override
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
         icon: Icon(Icons.clear),
-        color: colorDeepPurple400,
+        color: colorWhite,
         onPressed: () {
           query = "";
         },
       ),
       IconButton(
         icon: Icon(Icons.build),
-        color: colorDeepPurple400,
+        color: colorWhite,
         onPressed: () => showSearchParameterPage(context),
       ),
     ];
@@ -98,5 +116,4 @@ class DataSearch extends SearchDelegate<Post> {
     var _searchParameter = transmitedSearchParameter;
     print("Searchparameter Categorie: " + _searchParameter.category);
   }
-
 }

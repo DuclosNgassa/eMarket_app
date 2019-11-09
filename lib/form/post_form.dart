@@ -51,7 +51,38 @@ class PostFormState extends State<PostForm> {
   List<File> images = List<File>();
   List<String> _imageUrls = List<String>();
 
+  FocusNode _titelFocusNode;
+  FocusNode _feeFocusNode;
+  FocusNode _cityFocusNode;
+  FocusNode _quarterFocusNode;
+  FocusNode _phoneFocusNode;
+  FocusNode _descriptionFocusNode;
+
   //PostFormState(this.color);
+
+  @override
+  void initState() {
+    super.initState();
+    _titelFocusNode = FocusNode();
+    _feeFocusNode = FocusNode();
+    _cityFocusNode = FocusNode();
+    _quarterFocusNode = FocusNode();
+    _phoneFocusNode = FocusNode();
+    _descriptionFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    // Clean up the focus node when the Form is disposed.
+    _titelFocusNode.dispose();
+    _feeFocusNode.dispose();
+    _cityFocusNode.dispose();
+    _quarterFocusNode.dispose();
+    _phoneFocusNode.dispose();
+    _descriptionFocusNode.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +109,12 @@ class PostFormState extends State<PostForm> {
             Divider(),
             _buildRadioButtons(),
             TextFormField(
+              textInputAction: TextInputAction.next,
+              autofocus: true,
+              onFieldSubmitted: (term) {
+                _fieldFocusChange(
+                    _titelFocusNode, _feeFocusNode);
+              },
               decoration: const InputDecoration(
                 hintText: 'Donnez le titre de votre post',
                 labelText: 'Titre',
@@ -128,6 +165,12 @@ class PostFormState extends State<PostForm> {
               children: <Widget>[
                 Expanded(
                   child: TextFormField(
+                    textInputAction: TextInputAction.next,
+                    focusNode: _feeFocusNode,
+                    onFieldSubmitted: (term) {
+                      _fieldFocusChange(
+                          _feeFocusNode, _cityFocusNode);
+                    },
                     decoration: const InputDecoration(
                       hintText: 'Donnez le prix',
                       labelText: 'Prix (FCFA)',
@@ -194,6 +237,12 @@ class PostFormState extends State<PostForm> {
                 children: <Widget>[
                   Expanded(
                     child: TextFormField(
+                      textInputAction: TextInputAction.next,
+                      focusNode: _cityFocusNode,
+                      onFieldSubmitted: (term) {
+                        _fieldFocusChange(
+                            _cityFocusNode, _quarterFocusNode);
+                      },
                       decoration: const InputDecoration(
                         hintText: 'Donnez la ville',
                         labelText: 'Ville',
@@ -214,6 +263,12 @@ class PostFormState extends State<PostForm> {
                   ),
                   Expanded(
                     child: TextFormField(
+                      textInputAction: TextInputAction.next,
+                      focusNode: _quarterFocusNode,
+                      onFieldSubmitted: (term) {
+                        _fieldFocusChange(
+                            _quarterFocusNode, _phoneFocusNode);
+                      },
                       decoration: const InputDecoration(
                         hintText: 'Donnez le quartier',
                         labelText: 'Quartier',
@@ -236,6 +291,12 @@ class PostFormState extends State<PostForm> {
               ),
             ),
             TextFormField(
+              textInputAction: TextInputAction.next,
+              focusNode: _phoneFocusNode,
+              onFieldSubmitted: (term) {
+                _fieldFocusChange(
+                    _phoneFocusNode, _descriptionFocusNode);
+              },
               decoration: const InputDecoration(
                 hintText: 'Donnez un numero de téléphone',
                 labelText: 'Numero de téléphone',
@@ -250,6 +311,12 @@ class PostFormState extends State<PostForm> {
               onSaved: (val) => newPost.phoneNumber = val,
             ),
             TextFormField(
+              textInputAction: TextInputAction.done,
+              focusNode: _descriptionFocusNode,
+              onFieldSubmitted: (value) {
+                _descriptionFocusNode.unfocus();
+                _submitForm();
+              },
               maxLines: 2,
               decoration: const InputDecoration(
                 hintText: 'Description de votre post',
@@ -617,6 +684,11 @@ class PostFormState extends State<PostForm> {
       content: Text(message),
       backgroundColor: color,
     ));
+  }
+
+  _fieldFocusChange(FocusNode currentFocus, FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
   }
 
 }

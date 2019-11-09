@@ -1,7 +1,6 @@
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
-import 'package:emarket_app/services/global.dart' as prefix0;
 import 'package:emarket_app/services/message_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -50,34 +49,35 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         children: <Widget>[
           new Flexible(
             child: new ListView.builder(
-                reverse: true,
-                itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: Slidable(
-                        actionPane: SlidableBehindActionPane(),
-                        actionExtentRatio: 0.25,
-                        child: buildMessageItem(index),
-                        actions: <Widget>[
-                          IconSlideAction(
-                              caption: 'Modifier',
-                              color: colorBlue,
-                              icon: Icons.edit,
-                              onTap:
-                                  null //() => showPostEditForm(myPosts.elementAt(index)),
-                              )
-                        ],
-                        secondaryActions: <Widget>[
-                          IconSlideAction(
-                              caption: 'Supprimer',
-                              color: colorRed,
-                              icon: Icons.delete,
-                              onTap:
-                                  null //() => deletePost(myPosts.elementAt(index).id, index),
-                              ),
-                        ],
-                      ),
-                    ),
-                itemCount: _messages.length),
+              reverse: true,
+              itemBuilder: (context, index) => Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Slidable(
+                  actionPane: SlidableBehindActionPane(),
+                  actionExtentRatio: 0.25,
+                  child: buildMessageItem(index),
+                  actions: <Widget>[
+                    IconSlideAction(
+                        caption: 'Modifier',
+                        color: colorBlue,
+                        icon: Icons.edit,
+                        onTap:
+                            null //() => showPostEditForm(myPosts.elementAt(index)),
+                        )
+                  ],
+                  secondaryActions: <Widget>[
+                    IconSlideAction(
+                        caption: 'Supprimer',
+                        color: colorRed,
+                        icon: Icons.delete,
+                        onTap:
+                            null //() => deletePost(myPosts.elementAt(index).id, index),
+                        ),
+                  ],
+                ),
+              ),
+              itemCount: _messages.length,
+            ),
           ),
           new Divider(height: 1.0),
           new Container(
@@ -136,7 +136,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             new Flexible(
               child: new TextField(
                 controller: _textEditingController,
-                onSubmitted: _handleSubmitted,
+                //onSubmitted: _handleSubmitted,
                 decoration: new InputDecoration.collapsed(
                   hintText: "Envoyez un message",
                 ),
@@ -145,9 +145,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             new Container(
               margin: new EdgeInsets.symmetric(horizontal: 4.0),
               child: new IconButton(
-                  icon: new Icon(Icons.send),
-                  onPressed: () =>
-                      _handleSubmitted(_textEditingController.text)),
+                icon: new Icon(Icons.send),
+                onPressed: () => _handleSubmitted(_textEditingController.text),
+              ),
             )
           ],
         ),
@@ -159,7 +159,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     Message message = new Message(
         body: text,
         created_at: DateTime.now(),
-        postid: widget.post.id,
+        postid:
+            widget.post != null ? widget.post.id : widget.messages[0].postid,
         receiver: receiver,
         sender: userEmail);
 
