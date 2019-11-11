@@ -92,6 +92,7 @@ class _MessagePageState extends State<MessagePage> {
               child: Container(
                 color: colorWhite,
                 child: ListTile(
+                  onTap: () => openUserMessage(postMessages.elementAt(index)),
                   leading: CircleAvatar(
                     backgroundColor: colorDeepPurple300,
                     child: Text((index + 1).toString()),
@@ -211,28 +212,32 @@ class _MessagePageState extends State<MessagePage> {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
-            return UserMessagePage(userMessage);
+            return UserMessagePage(userMessage, postMessage.post);
           },
         ),
       );
     } else {
       List<Message> messagesSentOrReceived = new List<Message>();
-      for(Message message in postMessage.messages){
-        if(message.sender == firebaseUser.email || message.receiver == firebaseUser.email){
+      for (Message message in postMessage.messages) {
+        if (message.sender == firebaseUser.email ||
+            message.receiver == firebaseUser.email) {
           messagesSentOrReceived.add(message);
         }
       }
 
-      messagesSentOrReceived.sort((message1 , message2) => message1.created_at.isAfter(message2.created_at) ? 0 : 1);
+      messagesSentOrReceived.sort((message1, message2) =>
+          message1.created_at.isAfter(message2.created_at) ? 0 : 1);
 
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
-            return ChatPage(messages:messagesSentOrReceived);
+            return ChatPage(
+              messages: messagesSentOrReceived,
+              post: postMessage.post,
+            );
           },
         ),
       );
-
     }
   }
 }

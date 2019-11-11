@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
@@ -100,7 +101,7 @@ class PostFormState extends State<PostForm> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    child: buildImageGridView(),
+                    child: buildImageListView(),
                   ),
                   _buildButtons(),
                 ],
@@ -112,14 +113,13 @@ class PostFormState extends State<PostForm> {
               textInputAction: TextInputAction.next,
               autofocus: true,
               onFieldSubmitted: (term) {
-                _fieldFocusChange(
-                    _titelFocusNode, _feeFocusNode);
+                _fieldFocusChange(_titelFocusNode, _feeFocusNode);
               },
               decoration: const InputDecoration(
                 hintText: 'Donnez le titre de votre post',
                 labelText: 'Titre',
                 labelStyle: TextStyle(
-                  //fontFamily: 'Helvetica',
+                    //fontFamily: 'Helvetica',
                     color: Colors.black,
                     fontSize: 15),
               ),
@@ -127,7 +127,7 @@ class PostFormState extends State<PostForm> {
                 LengthLimitingTextInputFormatter(30),
               ],
               validator: (val) =>
-              formValidator.isEmptyText(val) ? 'Donnez un titre' : null,
+                  formValidator.isEmptyText(val) ? 'Donnez un titre' : null,
               onSaved: (val) => newPost.title = val,
             ),
             Container(
@@ -168,22 +168,20 @@ class PostFormState extends State<PostForm> {
                     textInputAction: TextInputAction.next,
                     focusNode: _feeFocusNode,
                     onFieldSubmitted: (term) {
-                      _fieldFocusChange(
-                          _feeFocusNode, _cityFocusNode);
+                      _fieldFocusChange(_feeFocusNode, _cityFocusNode);
                     },
                     decoration: const InputDecoration(
                       hintText: 'Donnez le prix',
                       labelText: 'Prix (FCFA)',
                       labelStyle: TextStyle(
-                        //fontFamily: 'Helvetica',
+                          //fontFamily: 'Helvetica',
                           color: Colors.black,
                           fontSize: 15),
                     ),
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(30),
                     ],
-                    validator: (val) =>
-                    formValidator.isEmptyText(val)
+                    validator: (val) => formValidator.isEmptyText(val)
                         ? 'Donnez un prix'
                         : null,
                     onSaved: (val) => newPost.fee = int.parse(val),
@@ -211,18 +209,17 @@ class PostFormState extends State<PostForm> {
                                 });
                               },
                               items: _feeTyps.map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                    return DropdownMenuItem(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
+                                  (String value) {
+                                return DropdownMenuItem(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
                             ),
                           ),
                         );
                       },
-                      validator: (val) =>
-                      formValidator.isEmptyText(val)
+                      validator: (val) => formValidator.isEmptyText(val)
                           ? 'Veuillez choisir le type de prix svp'
                           : null,
                     ),
@@ -240,22 +237,20 @@ class PostFormState extends State<PostForm> {
                       textInputAction: TextInputAction.next,
                       focusNode: _cityFocusNode,
                       onFieldSubmitted: (term) {
-                        _fieldFocusChange(
-                            _cityFocusNode, _quarterFocusNode);
+                        _fieldFocusChange(_cityFocusNode, _quarterFocusNode);
                       },
                       decoration: const InputDecoration(
                         hintText: 'Donnez la ville',
                         labelText: 'Ville',
                         labelStyle: TextStyle(
-                          //fontFamily: 'Helvetica',
+                            //fontFamily: 'Helvetica',
                             color: Colors.black,
                             fontSize: 15),
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
                       ],
-                      validator: (val) =>
-                      formValidator.isEmptyText(val)
+                      validator: (val) => formValidator.isEmptyText(val)
                           ? 'Donnez la ville'
                           : null,
                       onSaved: (val) => newPost.city = val,
@@ -266,22 +261,20 @@ class PostFormState extends State<PostForm> {
                       textInputAction: TextInputAction.next,
                       focusNode: _quarterFocusNode,
                       onFieldSubmitted: (term) {
-                        _fieldFocusChange(
-                            _quarterFocusNode, _phoneFocusNode);
+                        _fieldFocusChange(_quarterFocusNode, _phoneFocusNode);
                       },
                       decoration: const InputDecoration(
                         hintText: 'Donnez le quartier',
                         labelText: 'Quartier',
                         labelStyle: TextStyle(
-                          //fontFamily: 'Helvetica',
+                            //fontFamily: 'Helvetica',
                             color: Colors.black,
                             fontSize: 15),
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
                       ],
-                      validator: (val) =>
-                      formValidator.isEmptyText(val)
+                      validator: (val) => formValidator.isEmptyText(val)
                           ? 'Donnez le quartier'
                           : null,
                       onSaved: (val) => newPost.quarter = val,
@@ -294,14 +287,13 @@ class PostFormState extends State<PostForm> {
               textInputAction: TextInputAction.next,
               focusNode: _phoneFocusNode,
               onFieldSubmitted: (term) {
-                _fieldFocusChange(
-                    _phoneFocusNode, _descriptionFocusNode);
+                _fieldFocusChange(_phoneFocusNode, _descriptionFocusNode);
               },
               decoration: const InputDecoration(
                 hintText: 'Donnez un numero de téléphone',
                 labelText: 'Numero de téléphone',
                 labelStyle: TextStyle(
-                  //fontFamily: 'Helvetica',
+                    //fontFamily: 'Helvetica',
                     color: Colors.black,
                     fontSize: 15),
               ),
@@ -322,15 +314,14 @@ class PostFormState extends State<PostForm> {
                 hintText: 'Description de votre post',
                 labelText: 'Description',
                 labelStyle: TextStyle(
-                  //fontFamily: 'Helvetica',
+                    //fontFamily: 'Helvetica',
                     color: Colors.black,
                     fontSize: 15),
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(500),
               ],
-              validator: (val) =>
-              formValidator.isEmptyText(val)
+              validator: (val) => formValidator.isEmptyText(val)
                   ? 'Donnez une description à votre post'
                   : null,
               onSaved: (val) => newPost.description = val,
@@ -363,6 +354,68 @@ class PostFormState extends State<PostForm> {
     });
   }
 
+  Widget buildImageListView() {
+    return new ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Slidable(
+            actionPane: SlidableBehindActionPane(),
+            actionExtentRatio: 0.25,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<Null>(
+                    builder: (BuildContext context) {
+                      return ImageDetailPage(images, null);
+                    },
+                    fullscreenDialog: true,
+                  ),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: Container(
+                    width: 75,
+                    height: 75,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black12,
+                              offset: Offset(3.0, 6.0),
+                              blurRadius: 10.0)
+                        ]),
+                    child: AspectRatio(
+                      aspectRatio: 0.5,
+                      child: images[index] != null
+                          ? Image.file(images[index],
+                          fit: BoxFit.cover)
+                          : null,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            secondaryActions: <Widget>[
+              IconSlideAction(
+                  color: colorRed,
+                  icon: Icons.delete,
+                  onTap: () {
+                    setState(() {
+                      images.removeAt(index);
+                    });
+                  }),
+            ],
+          ),
+        ),
+        itemCount: images.length);
+  }
+/*
+
   Widget buildImageGridView() {
     return GridView.count(
       shrinkWrap: true,
@@ -371,8 +424,8 @@ class PostFormState extends State<PostForm> {
       scrollDirection: Axis.horizontal,
       children: List.generate(
         images.length,
-            (index) {
-          File asset = images[index];
+        (index) {
+          //File asset = images[index];
           return Dismissible(
             direction: DismissDirection.endToStart,
             key: Key('default'),
@@ -390,8 +443,7 @@ class PostFormState extends State<PostForm> {
                 ),
               ),
             ),
-            onDismissed: (direction) =>
-            {
+            onDismissed: (direction) => {
               setState(() {
                 images.removeAt(index);
               })
@@ -413,8 +465,8 @@ class PostFormState extends State<PostForm> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16.0),
                   child: Container(
-                    width: 75,
-                    height: 75,
+                    width: 300,
+                    height: 300,
                     decoration: BoxDecoration(color: Colors.white, boxShadow: [
                       BoxShadow(
                           color: Colors.black12,
@@ -423,8 +475,8 @@ class PostFormState extends State<PostForm> {
                     ]),
                     child: AspectRatio(
                       aspectRatio: 0.5,
-                      child: asset != null
-                          ? Image.file(asset, fit: BoxFit.cover)
+                      child: images[index] != null
+                          ? Image.file(images[index], fit: BoxFit.cover)
                           : null,
                     ),
                   ),
@@ -437,6 +489,7 @@ class PostFormState extends State<PostForm> {
     );
   }
 
+*/
   Widget _buildButtons() {
     return new Padding(
       padding: const EdgeInsets.all(1.0),
@@ -520,6 +573,12 @@ class PostFormState extends State<PostForm> {
   _takePhoto() async {
     if (images.length < 4) {
       imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+/*
+      print("FILE SIZE BEFORE: " + imageFile.lengthSync().toString());
+      await CompressImage.compress(imageSrc: imageFile.path, desiredQuality: 3); //desiredQuality ranges from 0 to 100
+      print("FILE SIZE  AFTER: " + imageFile.lengthSync().toString());
+*/
+
       if (imageFile != null) {
         images.add(imageFile);
       }
@@ -532,6 +591,12 @@ class PostFormState extends State<PostForm> {
   _selectGalleryImage() async {
     if (images.length < 4) {
       imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+/*
+      print("FILE SIZE BEFORE: " + imageFile.lengthSync().toString());
+      await CompressImage.compress(imageSrc: imageFile.path, desiredQuality: 50); //desiredQuality ranges from 0 to 100
+      print("FILE SIZE  AFTER: " + imageFile.lengthSync().toString());
+*/
+
       if (imageFile != null) {
         images.add(imageFile);
       }
@@ -550,8 +615,6 @@ class PostFormState extends State<PostForm> {
     } else if (_categorieTile.title.isEmpty) {
       _showMessage(
           'Veuillez choisir la categorie dans laquelle vous publiez votre post s´il vous pllait.');
-    } else if (images.isEmpty) {
-      return _showMessage('Veuillez choisir une image s´il vous plait.');
     } else {
       form.save();
 
@@ -644,8 +707,7 @@ class PostFormState extends State<PostForm> {
     for (var item in _imageUrls) {
       newImage.image_url = item;
       Map<String, dynamic> imageParams = _imageService.toMap(newImage);
-      MyImage.PostImage savedImage =
-      await _imageService.saveImage(imageParams);
+      MyImage.PostImage savedImage = await _imageService.saveImage(imageParams);
     }
   }
 
@@ -690,7 +752,6 @@ class PostFormState extends State<PostForm> {
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
   }
-
 }
 
 List<int> compress(List<int> bytes) {

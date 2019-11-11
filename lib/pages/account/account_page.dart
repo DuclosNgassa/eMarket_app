@@ -142,6 +142,7 @@ class _AccountState extends State<AccountPage>
               child: Container(
                 color: colorWhite,
                 child: ListTile(
+                  onTap: () => showPostDetailPage(myPosts.elementAt(index)),
                   leading: CircleAvatar(
                     backgroundColor: colorDeepPurple300,
                     child: Text((index + 1).toString()),
@@ -205,6 +206,7 @@ class _AccountState extends State<AccountPage>
               child: Container(
                 color: colorWhite,
                 child: ListTile(
+                  onTap: () => showPostDetailPage(myPostFavorits.elementAt(index)),
                   leading: CircleAvatar(
                     backgroundColor: colorDeepPurple300,
                     child: Text((index + 1).toString()),

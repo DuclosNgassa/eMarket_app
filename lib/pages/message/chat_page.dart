@@ -1,6 +1,7 @@
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
+import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -42,7 +43,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("eMarket-Chat"),
+        backgroundColor: colorDeepPurple300,
+        title: _buildTitle(widget.post),
       ),
       body: new Column(
         //modified
@@ -197,5 +199,51 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     }
 
     setState(() {});
+  }
+
+  Widget _buildTitle(Post post) {
+    return Container(
+      child: RawMaterialButton(
+        onPressed: () => _showPostDetailPage(widget.post),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 5.0),
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  new Text(
+                    "eMarket-Chat",
+                    style: styleTitleWhite,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: new Text(
+                      "Annonce: " + widget.post.title,
+                      style: styleSubtitleWhite,
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  _showPostDetailPage(Post post) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return PostDetailPage(post);
+        },
+      ),
+    );
   }
 }
