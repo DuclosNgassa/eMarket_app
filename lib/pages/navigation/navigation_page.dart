@@ -45,7 +45,7 @@ class _NavigationPageState extends State<NavigationPage> {
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.only(left: 10, top: 25),
-                    constraints: BoxConstraints.expand(height: itemHeight / 4),
+                    constraints: BoxConstraints.expand(height: itemHeight / 5),
                     decoration: BoxDecoration(
                       gradient: new LinearGradient(
                           colors: [colorDeepPurple400, colorDeepPurple300],
@@ -58,23 +58,9 @@ class _NavigationPageState extends State<NavigationPage> {
                         bottomRight: Radius.circular(30),
                       ),
                     ),
-                    child: Container(
-                      //padding: EdgeInsets.only(top: 0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              'eMarket',
-                              style: titleStyleWhite,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 55),
+                    margin: EdgeInsets.only(top: 40),
                     constraints:
                         BoxConstraints.expand(height: itemHeight * 0.80),
                     child: _widgetOptions.elementAt(_localSelectedIndex),

@@ -45,7 +45,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.only(left: 10, top: 25),
-                  constraints: BoxConstraints.expand(height: itemHeight / 4),
+                  constraints: BoxConstraints.expand(height: itemHeight / 5),
                   decoration: BoxDecoration(
                       gradient: new LinearGradient(
                           colors: [colorDeepPurple400, colorDeepPurple300],
@@ -97,9 +97,9 @@ class _UserMessagePageState extends State<UserMessagePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    'eMarket',
-                    style: titleStyleWhite,
+                  new Text(
+                    "Mes messages",
+                    style: styleTitleWhite,
                   ),
                 ],
               ),
@@ -107,7 +107,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(top: 50.0, right: 8.0),
+                    padding: const EdgeInsets.only(top: 40.0, right: 8.0),
                     child: Text(
                       'Annonce: ' + widget.userMessage.elementAt(0).post.title,
                       style: styleSubtitleWhite,

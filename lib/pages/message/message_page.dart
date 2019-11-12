@@ -53,19 +53,19 @@ class _MessagePageState extends State<MessagePage> {
             return Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top: 55.0, right: 8.0),
+                  padding: const EdgeInsets.only(left: 10.0),
                   child: new Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       new Text(
-                        "Messages",
+                        "Mes messages",
                         style: styleTitleWhite,
                       ),
                     ],
                   ),
                 ),
                 new Container(
-                  constraints: BoxConstraints.expand(height: itemHeight * 0.67),
+                  constraints: BoxConstraints.expand(height: itemHeight * 0.70),
                   child: buildMyMessageListView(),
                 ),
               ],

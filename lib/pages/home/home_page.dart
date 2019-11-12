@@ -33,97 +33,81 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  void deactivate() {
-    super.deactivate();
-    print("leaving homepage");
-  }
-
-  @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    /*24 is for notification bar on Android*/
-    final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
-    final double itemWidth = size.width / 2;
 
     return Container(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 10.0),
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              backgroundColor: Colors.transparent,
-              expandedHeight: size.height / 2 * 0.2,
-              floating: true,
-              snap: false,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 30.0),
-                        child: Row(
-                          children: <Widget>[
-                            new Expanded(
-                              child: TextField(
-                                decoration: const InputDecoration(
-                                  fillColor: Colors.white,
-                                  border: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10.0)),
-                                  ),
-                                  hintText: 'Entrer votre recherche',
-                                  labelText: 'Recherche',
-                                  labelStyle: TextStyle(color: Colors.white),
-                                ),
-                                onTap: () {
-                                  showSearch(
-                                    context: context,
-                                    delegate: DataSearch(postList, myFavorits),
-                                  );
-                                },
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            backgroundColor: Colors.transparent,
+            expandedHeight: size.height / 2 * 0.2,
+            floating: true,
+            snap: false,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: Row(
+                      children: <Widget>[
+                        new Expanded(
+                          child: TextField(
+                            decoration: const InputDecoration(
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
                               ),
+                              hintText: 'Entrer votre recherche',
+                              labelText: 'Recherche',
+                              labelStyle: TextStyle(color: Colors.white),
                             ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.search,
-                                color: Colors.white,
-                              ),
-                              tooltip: 'rechercher',
-                              onPressed: () {
-                                showSearch(
-                                  context: context,
-                                  delegate: DataSearch(postList, myFavorits),
-                                );
-                              },
-                            )
-                          ],
+                            onTap: () {
+                              showSearch(
+                                context: context,
+                                delegate: DataSearch(postList, myFavorits),
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                        IconButton(
+                          icon: Icon(
+                            Icons.search,
+                            color: Colors.white,
+                          ),
+                          tooltip: 'rechercher',
+                          onPressed: () {
+                            showSearch(
+                              context: context,
+                              delegate: DataSearch(postList, myFavorits),
+                            );
+                          },
+                        )
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-            SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                childAspectRatio: 5,
-              ),
-              delegate: SliverChildListDelegate([_buildCategorieGridView()]),
+          ),
+          SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 1,
+              childAspectRatio: 5,
             ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return HomeCard(postList.elementAt(index), myFavorits, 100,
-                      size.width - 20);
-                },
-                childCount: postList.length,
-              ),
-            )
-          ],
-        ),
+            delegate: SliverChildListDelegate([_buildCategorieGridView()]),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return HomeCard(postList.elementAt(index), myFavorits, 100, size.width - 20);
+              },
+              childCount: postList.length,
+            ),
+          )
+        ],
       ),
     );
   }

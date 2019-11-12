@@ -205,33 +205,27 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     return Container(
       child: RawMaterialButton(
         onPressed: () => _showPostDetailPage(widget.post),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 5.0),
-          child: Column(
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  new Text(
-                    "eMarket-Chat",
-                    style: styleTitleWhite,
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: new Text(
-                      "Annonce: " + widget.post.title,
-                      style: styleSubtitleWhite,
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                new Text(
+                  "Chat",
+                  style: styleTitleWhite,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                new Text(
+                  "Annonce: " + widget.post.title,
+                  style: styleSubtitleWhite,
+                ),
+              ],
+            )
+          ],
         ),
       ),
     );

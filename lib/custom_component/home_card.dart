@@ -15,7 +15,7 @@ class HomeCard extends StatefulWidget {
   final double height;
 
 
-  HomeCard(this.post, this.myFavorits, this.width, this.height, );
+  HomeCard(this.post, this.myFavorits, this.height, this.width);
 
   @override
   _HomeCardState createState() => _HomeCardState(post, myFavorits);
@@ -54,7 +54,6 @@ class _HomeCardState extends State<HomeCard> {
 
   @override
   Widget build(BuildContext context) {
-    //var divWidth = MediaQuery.of(context).size.width;
 
     return Stack(children: <Widget>[
       InkWell(
@@ -234,7 +233,7 @@ class _HomeCardState extends State<HomeCard> {
     }
   }
 
-  Widget _buildHomeCard(BuildContext context, double width, double height) {
+  Widget _buildHomeCard(BuildContext context, double height, double width) {
     // A new container
     // The height and width are arbitrary numbers for styling.
     return Padding(
@@ -310,13 +309,6 @@ class _HomeCardState extends State<HomeCard> {
 
   ImageProvider getImage() {
     return NetworkImage(widget.post.imageUrl);
-/*
-    if (widget.post.imageUrl != null) {
-      return NetworkImage(widget.post.imageUrl);
-    } else
-      return NetworkImage(
-          "http://192.168.2.120:3000/images/scaled_image_picker7760936399678163578-1567804687023.jpg");
-*/
   }
 
   Future<void> setFavoritIcon() async {

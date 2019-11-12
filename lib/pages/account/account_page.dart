@@ -44,7 +44,7 @@ class _AccountState extends State<AccountPage>
     super.initState();
     _loadMyPosts();
     _loadMyFavorits();
-    controller = TabController(length: 3, vsync: this);
+    controller = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -53,70 +53,65 @@ class _AccountState extends State<AccountPage>
         future: FirebaseAuth.instance.currentUser(),
         builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
           if (snapshot.hasData) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child: Container(
-                child: NestedScrollView(
-                  headerSliverBuilder:
-                      (BuildContext context, bool innerBoxIsScrolled) {
-                    return [
-                      SliverAppBar(
-                        pinned: false,
-                        backgroundColor: colorDeepPurple300,
-                        flexibleSpace: FlexibleSpaceBar(
-                          collapseMode: CollapseMode.pin,
-                          background: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Text(
-                                        userName,
-                                        style: titleStyleWhite,
-                                        textAlign: TextAlign.left,
-                                      ),
+            return Container(
+              child: NestedScrollView(
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return [
+                    SliverAppBar(
+                      pinned: false,
+                      backgroundColor: colorDeepPurple300,
+                      flexibleSpace: FlexibleSpaceBar(
+                        collapseMode: CollapseMode.pin,
+                        background: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Text(
+                                      userName,
+                                      style: titleStyleWhite,
+                                      textAlign: TextAlign.left,
                                     ),
-                                    showLogout(),
-                                  ],
-                                ),
+                                  ),
+                                  showLogout(),
+                                ],
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Text(
-                                  userEmail,
-                                  style: normalStyleWhite,
-                                  textAlign: TextAlign.left,
-                                ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Text(
+                                userEmail,
+                                style: normalStyleWhite,
+                                textAlign: TextAlign.left,
                               ),
-                            ],
-                          ),
-                        ),
-                        expandedHeight: 105.0,
-                        bottom: TabBar(
-                          isScrollable: true,
-                          indicatorColor: colorDeepPurple500,
-                          labelColor: colorWhite,
-                          tabs: [
-                            Tab(text: 'POSTS'),
-                            Tab(text: 'FAVORITS'),
-                            Tab(text: 'CONFIGURATION'),
+                            ),
                           ],
-                          controller: controller,
                         ),
-                      )
-                    ];
-                  },
-                  body: TabBarView(
-                    controller: controller,
-                    children: [
-                      buildMyPostListView(),
-                      buildMyFavoritPostListView(),
-                      Icon(Icons.build),
-                    ],
-                  ),
+                      ),
+                      expandedHeight: 105.0,
+                      bottom: TabBar(
+                        //isScrollable: true,
+                        indicatorColor: colorDeepPurple500,
+                        labelColor: colorWhite,
+                        tabs: [
+                          Tab(text: 'MES POSTS'),
+                          Tab(text: 'MES FAVORITS'),
+                        ],
+                        controller: controller,
+                      ),
+                    )
+                  ];
+                },
+                body: TabBarView(
+                  controller: controller,
+                  children: [
+                    buildMyPostListView(),
+                    buildMyFavoritPostListView(),
+                  ],
                 ),
               ),
             );
@@ -129,10 +124,17 @@ class _AccountState extends State<AccountPage>
     if(myPosts.isEmpty){
       return Padding(
         padding: const EdgeInsets.all(8.0),
-        child: new Center(
-          child: Text("Vous n´avez pas encore vendu ou recherché d´objects. "
-              "\n\nTransformez les choses que vous n´utilisez tres peu ou jamais en argent!", style: titleDetailStyle,),
-        ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: Center(
+                  child: Text("Vous n´avez pas encore vendu ou recherché d´objects. "
+                      "\n\nTransformez les choses que vous n´utilisez tres peu ou jamais en argent!", style: titleDetailStyle,),
+                ),
+              ),
+            ],
+          ),
       );
     }
     return ListView.separated(

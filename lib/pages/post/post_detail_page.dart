@@ -46,27 +46,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.only(left: 10, top: 25),
-                  constraints: BoxConstraints.expand(height: itemHeight / 4),
+                  constraints: BoxConstraints.expand(height: itemHeight / 5),
                   decoration: BoxDecoration(
-                      gradient: new LinearGradient(
-                          colors: [colorDeepPurple400, colorDeepPurple300],
-                          begin: const FractionalOffset(1.0, 1.0),
-                          end: const FractionalOffset(0.2, 0.2),
-                          stops: [0.0, 1.0],
-                          tileMode: TileMode.clamp),
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30))),
-                  child: Container(
-                    //padding: EdgeInsets.only(top: 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          'eMarket',
-                          style: titleStyleWhite,
-                        )
-                      ],
+                    gradient: new LinearGradient(
+                        colors: [colorDeepPurple400, colorDeepPurple300],
+                        begin: const FractionalOffset(1.0, 1.0),
+                        end: const FractionalOffset(0.2, 0.2),
+                        stops: [0.0, 1.0],
+                        tileMode: TileMode.clamp),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
                     ),
                   ),
                 ),
@@ -107,10 +97,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   style: priceDetailStyle,
                                 ),
                               ),
-                              Text(
-                                Post.convertFeeTypToDisplay(
-                                    widget.post.fee_typ),
-                                style: priceDetailStyle,
+                              Expanded(
+                                child: Text(
+                                  Post.convertFeeTypToDisplay(
+                                      widget.post.fee_typ),
+                                  style: priceDetailStyle,
+                                ),
                               ),
                             ],
                           ),
@@ -289,8 +281,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 
   Future<void> _loadImages() async {
-    postImages = await _imageService.fetchCachedNetworkImageByPostId(widget.post.id);
+    postImages =
+        await _imageService.fetchCachedNetworkImageByPostId(widget.post.id);
     setState(() {});
   }
-
 }
