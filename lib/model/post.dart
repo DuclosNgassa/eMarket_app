@@ -24,6 +24,7 @@ class Post {
   int categorieid;
   String imageUrl;
   String phoneNumber;
+  int count_view;
 
   Post(
       {this.id,
@@ -40,7 +41,8 @@ class Post {
       this.rating,
       this.useremail,
       this.categorieid,
-      this.phoneNumber});
+      this.phoneNumber,
+      this.count_view});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     Post post = Post(
@@ -59,6 +61,7 @@ class Post {
       useremail: json["useremail"],
       categorieid: json["categorieid"],
       phoneNumber: json["phone_number"],
+      count_view: json["count_view"],
     );
 
     return post;
@@ -80,6 +83,7 @@ class Post {
     params["useremail"] = post.useremail;
     params["categorieid"] = post.categorieid.toString();
     params["phone_number"] = post.phoneNumber;
+    params["count_view"] = post.count_view.toString();
 
     return params;
   }
@@ -106,6 +110,7 @@ class Post {
         'useremail': useremail,
         'categorieid': categorieid.toString(),
         'phone_number': phoneNumber,
+        'count_view': count_view.toString(),
       };
 
   Future getImageUrl() async {

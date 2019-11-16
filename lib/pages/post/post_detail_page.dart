@@ -4,8 +4,10 @@ import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/custom_component/post_owner.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/post/images_detail.dart';
+import 'package:emarket_app/pages/post/post_user_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/image_service.dart';
+import 'package:emarket_app/services/post_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../model/post.dart';
@@ -23,11 +25,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
   List<CachedNetworkImage> postImages = new List();
   ImageService _imageService = new ImageService();
   User user = new User();
+  List<Post> posts = new List();
+  final PostService _postService = new PostService();
 
   @override
   void initState() {
     super.initState();
-    //_loadImages();
+    _loadPosts();
+    _updatePostView();
   }
 
   @override
@@ -40,7 +45,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
     return Container(
       child: Scaffold(
         body: Column(
-          //padding: const EdgeInsets.symmetric(horizontal: 16.0),
           children: <Widget>[
             Stack(
               children: <Widget>[
@@ -163,7 +167,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                         child: Icon(Icons.remove_red_eye,
                                             color: colorDeepPurple300),
                                       ),
-                                      Text('55'),
+                                      Text(widget.post.count_view.toString()),
                                     ],
                                   )
                                 ],
@@ -174,7 +178,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             height: 20,
                           ),
                           PostOwner(
-                            onPressed: null,
+                            postCount: posts.length,
+                            showAllUserPost: () => showPostUserPage(),
                             fillColor: Colors.transparent,
                             post: widget.post,
                             splashColor: colorDeepPurple300,
@@ -189,6 +194,16 @@ class _PostDetailPageState extends State<PostDetailPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  showPostUserPage() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return PostUserPage(posts);
+        },
       ),
     );
   }
@@ -285,4 +300,20 @@ class _PostDetailPageState extends State<PostDetailPage> {
         await _imageService.fetchCachedNetworkImageByPostId(widget.post.id);
     setState(() {});
   }
+
+  Future<void> _loadPosts() async {
+    posts = await _postService.fetchPostByUserEmail(widget.post.useremail);
+    setState(() {});
+  }
+
+  Future<Post> _updatePostView() async {
+    Post post = widget.post;
+    post.count_view++;
+
+    Map<String, dynamic> postParams = post.toMapUpdate(post);
+    Post updatedPost = await _postService.update(postParams);
+
+    return updatedPost;
+  }
+
 }

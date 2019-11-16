@@ -114,6 +114,7 @@ class _MessagePageState extends State<MessagePage> {
                           " Message"),
                 ),
               ),
+/*
               actions: <Widget>[
                 IconSlideAction(
                   caption: 'Ouvrir',
@@ -127,9 +128,10 @@ class _MessagePageState extends State<MessagePage> {
                   caption: 'Supprimer',
                   color: colorRed,
                   icon: Icons.delete,
-                  onTap: null,
+                  onTap: null,//() => _showDeleteMessageDialog(postMessages.elementAt(index)., index),
                 ),
               ],
+*/
             ),
         separatorBuilder: (context, index) => Divider(),
         itemCount: postMessages.length);

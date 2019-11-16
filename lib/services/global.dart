@@ -2,7 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-const SERVER_URL = "http://192.168.2.120:3000";
+const SERVER_URL = "http://192.168.2.120:3000"; // Local at home
+//const SERVER_URL = "https://emarket-server.herokuapp.com"; //on Heroku
 //const SERVER_URL = "http://172.20.10.5:3000";
 //const SERVER_URL = "http://10.0.2.2:3000";
 
@@ -37,6 +38,7 @@ const SEARCHPAGE = 1;
 const POSTPAGE = 2;
 const ACCOUNTPAGE = 3;
 const MESSAGEPAGE = 4;
+
 
 const String USER_EMAIL = "userEmail";
 const String USER_NAME = "userName";
@@ -138,3 +140,4 @@ TextStyle styleSubtitleWhite = new TextStyle(
 TextStyle greyDetailStyle = new TextStyle(color: Colors.black45, fontSize: 12);
 
 TextStyle normalDetailStyle = new TextStyle(color: Colors.black, fontSize: 20);
+

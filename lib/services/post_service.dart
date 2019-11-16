@@ -112,6 +112,7 @@ class PostService {
       useremail: json["data"]["useremail"],
       phoneNumber: json["data"]["phone_number"],
       categorieid: json["data"]["categorieid"],
+      count_view: json["data"]["count_view"],
     );
   }
 
@@ -136,6 +137,7 @@ class PostService {
       useremail: json["data"]["useremail"],
       phoneNumber: json["data"]["phone_number"],
       categorieid: int.parse(json["data"]["categorieid"]),
+      count_view: int.parse(json["data"]["count_view"]),
     );
   }
 }

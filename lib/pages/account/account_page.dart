@@ -12,6 +12,7 @@ import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/image_service.dart';
 import 'package:emarket_app/services/post_service.dart';
+import 'package:emarket_app/util/notification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -121,20 +122,23 @@ class _AccountState extends State<AccountPage>
   }
 
   Widget buildMyPostListView() {
-    if(myPosts.isEmpty){
+    if (myPosts.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: Center(
-                  child: Text("Vous n´avez pas encore vendu ou recherché d´objects. "
-                      "\n\nTransformez les choses que vous n´utilisez tres peu ou jamais en argent!", style: titleDetailStyle,),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: Center(
+                child: Text(
+                  "Vous n´avez pas encore vendu ou recherché d´objects. "
+                  "\n\nTransformez les choses que vous n´utilisez tres peu ou jamais en argent!",
+                  style: titleDetailStyle,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
+        ),
       );
     }
     return ListView.separated(
@@ -170,19 +174,14 @@ class _AccountState extends State<AccountPage>
                   icon: Icons.edit,
                   onTap: () => showPostEditForm(myPosts.elementAt(index)),
                 ),
-                IconSlideAction(
-                  caption: 'Ouvrir',
-                  color: colorDeepPurple300,
-                  icon: Icons.visibility,
-                  onTap: () => showPostDetailPage(myPosts.elementAt(index)),
-                ),
               ],
               secondaryActions: <Widget>[
                 IconSlideAction(
                   caption: 'Supprimer',
                   color: colorRed,
                   icon: Icons.delete,
-                  onTap: () => deletePost(myPosts.elementAt(index).id, index),
+                  onTap: () =>
+                      _showDeletePostDialog(myPosts.elementAt(index).id, index),
                 ),
               ],
             ),
@@ -191,12 +190,15 @@ class _AccountState extends State<AccountPage>
   }
 
   Widget buildMyFavoritPostListView() {
-    if(myPostFavorits.isEmpty){
+    if (myPostFavorits.isEmpty) {
       return new Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text("Vous n´avez pas encore de favorits. "
-              "\n\n Marquez un post avec l´étoile pour l´enregister dans vos favorits!", style: titleDetailStyle,),
+          child: Text(
+            "Vous n´avez pas encore de favorits. "
+            "\n\n Marquez un post avec l´étoile pour l´enregister dans vos favorits!",
+            style: titleDetailStyle,
+          ),
         ),
       );
     }
@@ -208,7 +210,8 @@ class _AccountState extends State<AccountPage>
               child: Container(
                 color: colorWhite,
                 child: ListTile(
-                  onTap: () => showPostDetailPage(myPostFavorits.elementAt(index)),
+                  onTap: () =>
+                      showPostDetailPage(myPostFavorits.elementAt(index)),
                   leading: CircleAvatar(
                     backgroundColor: colorDeepPurple300,
                     child: Text((index + 1).toString()),
@@ -221,21 +224,12 @@ class _AccountState extends State<AccountPage>
                       myPostFavorits.elementAt(index).fee.toString() + " FCFA"),
                 ),
               ),
-              actions: <Widget>[
-                IconSlideAction(
-                  caption: 'Ouvrir',
-                  color: colorDeepPurple300,
-                  icon: Icons.visibility,
-                  onTap: () =>
-                      showPostDetailPage(myPostFavorits.elementAt(index)),
-                ),
-              ],
               secondaryActions: <Widget>[
                 IconSlideAction(
                   caption: 'Supprimer',
                   color: colorRed,
                   icon: Icons.delete,
-                  onTap: () => deleteFavoritPost(
+                  onTap: () => _showDeleteFavoritDialog(
                       myPostFavorits.elementAt(index).id, index),
                 ),
               ],
@@ -261,6 +255,24 @@ class _AccountState extends State<AccountPage>
         },
       ),
     );
+  }
+
+  Future<void> _showDeleteFavoritDialog(int id, int index) async {
+    return MyNotification.showConfirmationDialog(
+        context,
+        'Confirmation',
+        'Voulez vous vraiment supprimer ce favorit?',
+        () => {deleteFavoritPost(id, index), Navigator.of(context).pop()},
+        () => Navigator.of(context).pop());
+  }
+
+  Future<void> _showDeletePostDialog(int id, int index) async {
+    return MyNotification.showConfirmationDialog(
+        context,
+        'Confirmation',
+        'Voulez vous vraiment supprimer cette annonce?',
+        () => {deletePost(id, index), Navigator.of(context).pop()},
+        () => Navigator.of(context).pop());
   }
 
   Future<void> deletePost(int id, int index) async {

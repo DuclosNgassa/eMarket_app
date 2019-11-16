@@ -16,20 +16,22 @@ import 'package:url_launcher/url_launcher.dart';
 import 'custom_button.dart';
 
 class PostOwner extends StatefulWidget {
+
   PostOwner(
-      {@required this.onPressed,
+      {@required this.showAllUserPost,
       @required this.fillColor,
       @required this.splashColor,
       @required this.textStyle,
       @required this.post,
-      this.user});
+      this.user, @required this.postCount});
 
-  final GestureTapCallback onPressed;
+  final GestureTapCallback showAllUserPost;
   final Color fillColor;
   final Color splashColor;
   final TextStyle textStyle;
   final Post post;
   final User user;
+  final int postCount;
 
   @override
   PostOwnerState createState() => PostOwnerState();
@@ -153,13 +155,17 @@ class PostOwnerState extends State<PostOwner> {
                             width: 20,
                             child: Center(
                               child: Text(
-                                '5',
+                                widget.postCount.toString(),
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
                           ),
                         ),
-                        Icon(Icons.arrow_forward_ios)
+                        IconButton(
+                          icon: Icon(Icons.arrow_forward_ios),
+                          tooltip: 'Autres annonces',
+                          onPressed: widget.showAllUserPost,
+                        ),
                       ],
                     ),
                   )
