@@ -8,6 +8,7 @@ import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/post/images_detail.dart';
 import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/util/notification.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -103,10 +104,7 @@ class _PostEditFormState extends State<PostEditForm> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    /*24 is for notification bar on Android*/
-    final double itemHeight = size.height;
-    final double itemWidth = size.width;
+    SizeConfig().init(context);
 
     return new Scaffold(
       body: Center(
@@ -116,8 +114,11 @@ class _PostEditFormState extends State<PostEditForm> {
               Stack(
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.only(left: 10, top: 25),
-                    constraints: BoxConstraints.expand(height: itemHeight / 5),
+                    padding: EdgeInsets.only(
+                        left: SizeConfig.blockSizeHorizontal * 10,
+                        top: SizeConfig.blockSizeVertical * 25),
+                    constraints: BoxConstraints.expand(
+                        height: SizeConfig.screenHeight / 5),
                     decoration: BoxDecoration(
                       gradient: new LinearGradient(
                           colors: [colorDeepPurple400, colorDeepPurple300],
@@ -132,9 +133,12 @@ class _PostEditFormState extends State<PostEditForm> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 40),
-                    constraints:
-                        BoxConstraints.expand(height: itemHeight * 0.80),
+/*
+                    margin:
+                        EdgeInsets.only(top: SizeConfig.safeBlockVertical * 7),
+*/
+                    constraints: BoxConstraints.expand(
+                        height: SizeConfig.safeBlockVertical * 85),
                     child: buildEditForm(),
                   ),
                 ],
@@ -151,293 +155,297 @@ class _PostEditFormState extends State<PostEditForm> {
       child: new SafeArea(
         top: false,
         bottom: false,
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.0),
-          child: CustomScrollView(
-            slivers: <Widget>[
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    Form(
-                      key: _formKey,
-                      autovalidate: false,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: <Widget>[
-                            oldPostImages.length > 0
-                                ? Container(
-                                    height: 100.0,
-                                    child: buildOldImageGridView(),
-                                  )
-                                : new Container(),
-                            newPostImages.length > 0
-                                ? new Container(
-                                    height: 100.0,
-                                    child: buildNewImageGridView(),
-                                  )
-                                : new Container(),
-                            _buildButtons(),
-                            Divider(),
-                            _buildRadioButtons(),
-                            TextFormField(
-                              textInputAction: TextInputAction.next,
-                              autofocus: true,
-                              onFieldSubmitted: (term) {
-                                _fieldFocusChange(
-                                    _titelFocusNode, _feeFocusNode);
-                              },
-                              decoration: const InputDecoration(
-                                hintText: 'Donnez le titre de votre post',
-                                labelText: 'Titre',
-                                labelStyle: TextStyle(
-                                    color: Colors.black, fontSize: 15),
-                              ),
-                              initialValue: _post.title,
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(30),
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  Form(
+                    key: _formKey,
+                    autovalidate: false,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            "Creation d´une annonce",
+                            style: styleTitleWhite,
+                          ),
+
+                          oldPostImages.length > 0
+                              ? Container(
+                                  alignment: Alignment.center,
+                                  height: SizeConfig.blockSizeVertical * 13,
+                                  child: buildOldImageGridView(),
+                                )
+                              : new Container(),
+                          newPostImages.length > 0
+                              ? new Container(
+                                  alignment: Alignment.center,
+                                  height: SizeConfig.blockSizeVertical * 13,
+                                  child: buildNewImageGridView(),
+                                )
+                              : new Container(),
+                          _buildButtons(),
+                          Divider(),
+                          _buildRadioButtons(),
+                          TextFormField(
+                            textInputAction: TextInputAction.next,
+                            autofocus: true,
+                            onFieldSubmitted: (term) {
+                              _fieldFocusChange(
+                                  _titelFocusNode, _feeFocusNode);
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Donnez le titre de votre post',
+                              labelText: 'Titre',
+                              labelStyle: TextStyle(
+                                  color: Colors.black, fontSize: 15),
+                            ),
+                            initialValue: _post.title,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(30),
+                            ],
+                            validator: (val) => formValidator.isEmptyText(val)
+                                ? 'Donnez un titre'
+                                : null,
+                            onSaved: (val) => _post.title = val,
+                          ),
+                          Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 16.0),
+                                  child: Text(
+                                    "Categorie",
+                                    style: formStyle,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: showCategoriePage,
+                                  child: Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Text(_categorieTile.title),
+                                      ),
+                                      IconButton(
+                                        onPressed: showCategoriePage,
+                                        icon: Icon(Icons.arrow_forward_ios),
+                                        tooltip: 'Choisir la catégorie',
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ],
-                              validator: (val) => formValidator.isEmptyText(val)
-                                  ? 'Donnez un titre'
-                                  : null,
-                              onSaved: (val) => _post.title = val,
                             ),
-                            Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 16.0),
-                                    child: Text(
-                                      "Categorie",
-                                      style: formStyle,
-                                    ),
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Expanded(
+                                child: TextFormField(
+                                  textInputAction: TextInputAction.next,
+                                  focusNode: _feeFocusNode,
+                                  onFieldSubmitted: (term) {
+                                    _fieldFocusChange(
+                                        _feeFocusNode, _cityFocusNode);
+                                  },
+                                  decoration: const InputDecoration(
+                                    hintText: 'Donnez le prix',
+                                    labelText: 'Prix (FCFA)',
+                                    labelStyle: TextStyle(
+                                        color: Colors.black, fontSize: 15),
                                   ),
-                                  GestureDetector(
-                                    onTap: showCategoriePage,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Text(_categorieTile.title),
-                                        ),
-                                        IconButton(
-                                          onPressed: showCategoriePage,
-                                          icon: Icon(Icons.arrow_forward_ios),
-                                          tooltip: 'Choisir la catégorie',
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                  initialValue: _post.fee.toString(),
+                                  inputFormatters: [
+                                    LengthLimitingTextInputFormatter(30),
+                                  ],
+                                  validator: (val) =>
+                                      formValidator.isEmptyText(val)
+                                          ? 'Donnez un prix'
+                                          : null,
+                                  onSaved: (val) =>
+                                      _post.fee = int.parse(val),
+                                ),
                               ),
-                            ),
-                            Row(
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 3.0),
+                                  child: FormField(
+                                    builder: (FormFieldState state) {
+                                      return InputDecorator(
+                                        decoration: InputDecoration(
+                                          labelText: 'Typ de prix',
+                                          labelStyle: formStyle,
+                                          errorText: state.hasError
+                                              ? state.errorText
+                                              : null,
+                                        ),
+                                        child: DropdownButtonHideUnderline(
+                                          child: DropdownButton(
+                                            value: _feeTyp,
+                                            isDense: true,
+                                            onChanged: (String newValue) {
+                                              setState(() {
+                                                _feeTyp = newValue;
+                                                state.didChange(newValue);
+                                              });
+                                            },
+                                            items: _feeTyps.map<
+                                                DropdownMenuItem<
+                                                    String>>((String value) {
+                                              return DropdownMenuItem(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            child: Row(
                               mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Expanded(
                                   child: TextFormField(
                                     textInputAction: TextInputAction.next,
-                                    focusNode: _feeFocusNode,
+                                    focusNode: _cityFocusNode,
                                     onFieldSubmitted: (term) {
                                       _fieldFocusChange(
-                                          _feeFocusNode, _cityFocusNode);
+                                          _cityFocusNode, _quarterFocusNode);
                                     },
                                     decoration: const InputDecoration(
-                                      hintText: 'Donnez le prix',
-                                      labelText: 'Prix (FCFA)',
+                                      hintText: 'Donnez la ville',
+                                      labelText: 'Ville',
                                       labelStyle: TextStyle(
                                           color: Colors.black, fontSize: 15),
                                     ),
-                                    initialValue: _post.fee.toString(),
+                                    initialValue: _post.city,
                                     inputFormatters: [
                                       LengthLimitingTextInputFormatter(30),
                                     ],
                                     validator: (val) =>
                                         formValidator.isEmptyText(val)
-                                            ? 'Donnez un prix'
+                                            ? 'Donnez la ville'
                                             : null,
-                                    onSaved: (val) =>
-                                        _post.fee = int.parse(val),
+                                    onSaved: (val) => _post.city = val,
                                   ),
                                 ),
                                 Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 3.0),
-                                    child: FormField(
-                                      builder: (FormFieldState state) {
-                                        return InputDecorator(
-                                          decoration: InputDecoration(
-                                            labelText: 'Typ de prix',
-                                            labelStyle: formStyle,
-                                            errorText: state.hasError
-                                                ? state.errorText
-                                                : null,
-                                          ),
-                                          child: DropdownButtonHideUnderline(
-                                            child: DropdownButton(
-                                              value: _feeTyp,
-                                              isDense: true,
-                                              onChanged: (String newValue) {
-                                                setState(() {
-                                                  _feeTyp = newValue;
-                                                  state.didChange(newValue);
-                                                });
-                                              },
-                                              items: _feeTyps.map<
-                                                  DropdownMenuItem<
-                                                      String>>((String value) {
-                                                return DropdownMenuItem(
-                                                  value: value,
-                                                  child: Text(value),
-                                                );
-                                              }).toList(),
-                                            ),
-                                          ),
-                                        );
-                                      },
+                                  child: TextFormField(
+                                    textInputAction: TextInputAction.next,
+                                    focusNode: _quarterFocusNode,
+                                    onFieldSubmitted: (term) {
+                                      _fieldFocusChange(
+                                          _quarterFocusNode, _phoneFocusNode);
+                                    },
+                                    decoration: const InputDecoration(
+                                      hintText: 'Donnez le quartier',
+                                      labelText: 'Quartier',
+                                      labelStyle: TextStyle(
+                                          color: Colors.black, fontSize: 15),
                                     ),
+                                    initialValue: _post.quarter,
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(30),
+                                    ],
+                                    validator: (val) =>
+                                        formValidator.isEmptyText(val)
+                                            ? 'Donnez le quartier'
+                                            : null,
+                                    onSaved: (val) => _post.quarter = val,
                                   ),
                                 ),
                               ],
                             ),
-                            Container(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Expanded(
-                                    child: TextFormField(
-                                      textInputAction: TextInputAction.next,
-                                      focusNode: _cityFocusNode,
-                                      onFieldSubmitted: (term) {
-                                        _fieldFocusChange(
-                                            _cityFocusNode, _quarterFocusNode);
-                                      },
-                                      decoration: const InputDecoration(
-                                        hintText: 'Donnez la ville',
-                                        labelText: 'Ville',
-                                        labelStyle: TextStyle(
-                                            color: Colors.black, fontSize: 15),
-                                      ),
-                                      initialValue: _post.city,
-                                      inputFormatters: [
-                                        LengthLimitingTextInputFormatter(30),
-                                      ],
-                                      validator: (val) =>
-                                          formValidator.isEmptyText(val)
-                                              ? 'Donnez la ville'
-                                              : null,
-                                      onSaved: (val) => _post.city = val,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: TextFormField(
-                                      textInputAction: TextInputAction.next,
-                                      focusNode: _quarterFocusNode,
-                                      onFieldSubmitted: (term) {
-                                        _fieldFocusChange(
-                                            _quarterFocusNode, _phoneFocusNode);
-                                      },
-                                      decoration: const InputDecoration(
-                                        hintText: 'Donnez le quartier',
-                                        labelText: 'Quartier',
-                                        labelStyle: TextStyle(
-                                            color: Colors.black, fontSize: 15),
-                                      ),
-                                      initialValue: _post.quarter,
-                                      inputFormatters: [
-                                        LengthLimitingTextInputFormatter(30),
-                                      ],
-                                      validator: (val) =>
-                                          formValidator.isEmptyText(val)
-                                              ? 'Donnez le quartier'
-                                              : null,
-                                      onSaved: (val) => _post.quarter = val,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          ),
+                          TextFormField(
+                            textInputAction: TextInputAction.next,
+                            focusNode: _phoneFocusNode,
+                            onFieldSubmitted: (term) {
+                              _fieldFocusChange(
+                                  _phoneFocusNode, _descriptionFocusNode);
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Donnez un numero de téléphone',
+                              labelText: 'Numero de téléphone',
+                              labelStyle: TextStyle(
+                                  color: Colors.black, fontSize: 15),
                             ),
-                            TextFormField(
-                              textInputAction: TextInputAction.next,
-                              focusNode: _phoneFocusNode,
-                              onFieldSubmitted: (term) {
-                                _fieldFocusChange(
-                                    _phoneFocusNode, _descriptionFocusNode);
-                              },
-                              decoration: const InputDecoration(
-                                hintText: 'Donnez un numero de téléphone',
-                                labelText: 'Numero de téléphone',
-                                labelStyle: TextStyle(
-                                    color: Colors.black, fontSize: 15),
-                              ),
-                              initialValue: _post.phoneNumber,
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(30),
-                              ],
-                              onSaved: (val) => _post.phoneNumber = val,
+                            initialValue: _post.phoneNumber,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(30),
+                            ],
+                            onSaved: (val) => _post.phoneNumber = val,
+                          ),
+                          TextFormField(
+                            textInputAction: TextInputAction.done,
+                            focusNode: _descriptionFocusNode,
+                            onFieldSubmitted: (value) {
+                              _descriptionFocusNode.unfocus();
+                              _submitForm();
+                            },
+                            maxLines: 4,
+                            decoration: const InputDecoration(
+                              hintText: 'Description de votre post',
+                              labelText: 'Description',
+                              labelStyle: TextStyle(
+                                  //fontFamily: 'Helvetica',
+                                  color: Colors.black,
+                                  fontSize: 15),
                             ),
-                            TextFormField(
-                              textInputAction: TextInputAction.done,
-                              focusNode: _descriptionFocusNode,
-                              onFieldSubmitted: (value) {
-                                _descriptionFocusNode.unfocus();
-                                _submitForm();
-                              },
-                              maxLines: 4,
-                              decoration: const InputDecoration(
-                                hintText: 'Description de votre post',
-                                labelText: 'Description',
-                                labelStyle: TextStyle(
-                                    //fontFamily: 'Helvetica',
-                                    color: Colors.black,
-                                    fontSize: 15),
-                              ),
-                              initialValue: _post.description,
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(500),
-                              ],
-                              validator: (val) => formValidator.isEmptyText(val)
-                                  ? 'Donnez une description à votre post'
-                                  : null,
-                              onSaved: (val) => _post.description = val,
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Container(
-                                  padding: const EdgeInsets.only(top: 10.0),
-                                  child: RaisedButton(
-                                    shape: const StadiumBorder(),
-                                    color: Colors.red,
-                                    child:
-                                        Text('Retour', style: styleButtonWhite),
-                                    onPressed: _cancelChange,
-                                  ),
+                            initialValue: _post.description,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(500),
+                            ],
+                            validator: (val) => formValidator.isEmptyText(val)
+                                ? 'Donnez une description à votre post'
+                                : null,
+                            onSaved: (val) => _post.description = val,
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                padding: const EdgeInsets.only(top: 10.0),
+                                child: RaisedButton(
+                                  shape: const StadiumBorder(),
+                                  color: Colors.red,
+                                  child:
+                                      Text('Retour', style: styleButtonWhite),
+                                  onPressed: _cancelChange,
                                 ),
-                                Expanded(child: SizedBox()),
-                                Container(
-                                  padding: const EdgeInsets.only(top: 10.0),
-                                  child: RaisedButton(
-                                    shape: const StadiumBorder(),
-                                    color: colorDeepPurple400,
-                                    child: Text('Enregistrer les modifications',
-                                        style: styleButtonWhite),
-                                    onPressed: _submitForm,
-                                  ),
+                              ),
+                              Expanded(child: SizedBox()),
+                              Container(
+                                padding: const EdgeInsets.only(top: 10.0),
+                                child: RaisedButton(
+                                  shape: const StadiumBorder(),
+                                  color: colorDeepPurple400,
+                                  child: Text('Enregistrer les modifications',
+                                      style: styleButtonWhite),
+                                  onPressed: _submitForm,
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -459,60 +467,63 @@ class _PostEditFormState extends State<PostEditForm> {
   Widget buildOldImageGridView() {
     return new ListView.builder(
         scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
         itemBuilder: (context, index) => Padding(
               padding: const EdgeInsets.only(top: 10.0),
-              child: Slidable(
-                actionPane: SlidableBehindActionPane(),
-                actionExtentRatio: 0.25,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute<Null>(
-                        builder: (BuildContext context) {
-                          return ImageDetailPage(null, oldPostImages);
-                        },
-                        fullscreenDialog: true,
-                      ),
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16.0),
-                      child: Container(
-                        width: 75,
-                        height: 75,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12,
-                                  offset: Offset(3.0, 6.0),
-                                  blurRadius: 10.0)
-                            ]),
-                        child: AspectRatio(
-                          aspectRatio: 0.5,
-                          child: oldPostImages[index] != null
-                              ? oldPostImages[index]
-                              : null,
+              child: Center(
+                child: Slidable(
+                  actionPane: SlidableBehindActionPane(),
+                  actionExtentRatio: 0.25,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<Null>(
+                          builder: (BuildContext context) {
+                            return ImageDetailPage(null, oldPostImages);
+                          },
+                          fullscreenDialog: true,
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: Container(
+                          width: SizeConfig.blockSizeHorizontal * 20,
+                          height: SizeConfig.blockSizeVertical * 25,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black12,
+                                    offset: Offset(3.0, 6.0),
+                                    blurRadius: 10.0)
+                              ]),
+                          child: AspectRatio(
+                            aspectRatio: 0.5,
+                            child: oldPostImages[index] != null
+                                ? oldPostImages[index]
+                                : null,
+                          ),
                         ),
                       ),
                     ),
                   ),
+                  secondaryActions: <Widget>[
+                    IconSlideAction(
+                        color: colorRed,
+                        icon: Icons.delete,
+                        onTap: () {
+                          setState(() {
+                            imageCount--;
+                            imageToRemove.add(oldPostImages.elementAt(index));
+                            oldPostImages.removeAt(index);
+                          });
+                        }),
+                  ],
                 ),
-                secondaryActions: <Widget>[
-                  IconSlideAction(
-                      color: colorRed,
-                      icon: Icons.delete,
-                      onTap: () {
-                        setState(() {
-                          imageCount--;
-                          imageToRemove.add(oldPostImages.elementAt(index));
-                          oldPostImages.removeAt(index);
-                        });
-                      }),
-                ],
               ),
             ),
         itemCount: oldPostImages.length);
@@ -521,60 +532,63 @@ class _PostEditFormState extends State<PostEditForm> {
   Widget buildNewImageGridView() {
     return new ListView.builder(
         scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
         itemBuilder: (context, index) => Padding(
               padding: const EdgeInsets.only(top: 10.0),
-              child: Slidable(
-                actionPane: SlidableBehindActionPane(),
-                actionExtentRatio: 0.25,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute<Null>(
-                        builder: (BuildContext context) {
-                          return ImageDetailPage(newPostImages, null);
-                        },
-                        fullscreenDialog: true,
-                      ),
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16.0),
-                      child: Container(
-                        width: 75,
-                        height: 75,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12,
-                                  offset: Offset(3.0, 6.0),
-                                  blurRadius: 10.0)
-                            ]),
-                        child: AspectRatio(
-                          aspectRatio: 0.5,
-                          child: newPostImages[index] != null
-                              ? Image.file(newPostImages[index],
-                                  fit: BoxFit.cover)
-                              : null,
+              child: Center(
+                child: Slidable(
+                  actionPane: SlidableBehindActionPane(),
+                  actionExtentRatio: 0.25,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<Null>(
+                          builder: (BuildContext context) {
+                            return ImageDetailPage(newPostImages, null);
+                          },
+                          fullscreenDialog: true,
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: Container(
+                          width: SizeConfig.blockSizeHorizontal * 20,
+                          height: SizeConfig.blockSizeVertical * 25,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black12,
+                                    offset: Offset(3.0, 6.0),
+                                    blurRadius: 10.0)
+                              ]),
+                          child: AspectRatio(
+                            aspectRatio: 0.5,
+                            child: newPostImages[index] != null
+                                ? Image.file(newPostImages[index],
+                                    fit: BoxFit.cover)
+                                : null,
+                          ),
                         ),
                       ),
                     ),
                   ),
+                  secondaryActions: <Widget>[
+                    IconSlideAction(
+                        color: colorRed,
+                        icon: Icons.delete,
+                        onTap: () {
+                          setState(() {
+                            imageCount--;
+                            newPostImages.removeAt(index);
+                          });
+                        }),
+                  ],
                 ),
-                secondaryActions: <Widget>[
-                  IconSlideAction(
-                      color: colorRed,
-                      icon: Icons.delete,
-                      onTap: () {
-                        setState(() {
-                          imageCount--;
-                          newPostImages.removeAt(index);
-                        });
-                      }),
-                ],
               ),
             ),
         itemCount: newPostImages.length);

@@ -6,6 +6,7 @@ import 'package:emarket_app/model/status.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/post/images_detail.dart';
 import 'package:emarket_app/util/notification.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -59,8 +60,6 @@ class PostFormState extends State<PostForm> {
   FocusNode _phoneFocusNode;
   FocusNode _descriptionFocusNode;
 
-  //PostFormState(this.color);
-
   @override
   void initState() {
     super.initState();
@@ -87,21 +86,28 @@ class PostFormState extends State<PostForm> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return Form(
       key: _formKey,
       autovalidate: false,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(left:8.0, right: 8.0),
         child: Column(
-          //padding: const EdgeInsets.symmetric(horizontal: 16.0),
           children: <Widget>[
             Container(
-              height: 125.0,
+              height: SizeConfig.blockSizeVertical * 25,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  Text(
+                    "Creation d´une annonce",
+                    style: styleTitleWhite,
+                  ),
                   Expanded(
-                    child: buildImageListView(),
+                    child: Container(
+                        alignment: Alignment.center,
+                        child: buildImageListView(),),
                   ),
                   _buildButtons(),
                 ],
@@ -355,141 +361,70 @@ class PostFormState extends State<PostForm> {
   }
 
   Widget buildImageListView() {
+    SizeConfig().init(context);
+
     return new ListView.builder(
         scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
         itemBuilder: (context, index) => Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: Slidable(
-            actionPane: SlidableBehindActionPane(),
-            actionExtentRatio: 0.25,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<Null>(
-                    builder: (BuildContext context) {
-                      return ImageDetailPage(images, null);
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Center(
+                child: Slidable(
+                  actionPane: SlidableBehindActionPane(),
+                  actionExtentRatio: 0.25,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<Null>(
+                          builder: (BuildContext context) {
+                            return ImageDetailPage(images, null);
+                          },
+                          fullscreenDialog: true,
+                        ),
+                      );
                     },
-                    fullscreenDialog: true,
-                  ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: Container(
-                    width: 75,
-                    height: 75,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black12,
-                              offset: Offset(3.0, 6.0),
-                              blurRadius: 10.0)
-                        ]),
-                    child: AspectRatio(
-                      aspectRatio: 0.5,
-                      child: images[index] != null
-                          ? Image.file(images[index],
-                          fit: BoxFit.cover)
-                          : null,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: Container(
+                          width: SizeConfig.blockSizeHorizontal * 20,
+                          height: SizeConfig.blockSizeVertical * 25,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black12,
+                                    offset: Offset(3.0, 6.0),
+                                    blurRadius: 10.0)
+                              ]),
+                          child: AspectRatio(
+                            aspectRatio: 0.5,
+                            child: images[index] != null
+                                ? Image.file(images[index], fit: BoxFit.cover)
+                                : null,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
+                  secondaryActions: <Widget>[
+                    IconSlideAction(
+                        color: colorRed,
+                        icon: Icons.delete,
+                        onTap: () {
+                          setState(() {
+                            images.removeAt(index);
+                          });
+                        }),
+                  ],
                 ),
               ),
             ),
-            secondaryActions: <Widget>[
-              IconSlideAction(
-                  color: colorRed,
-                  icon: Icons.delete,
-                  onTap: () {
-                    setState(() {
-                      images.removeAt(index);
-                    });
-                  }),
-            ],
-          ),
-        ),
         itemCount: images.length);
   }
-/*
 
-  Widget buildImageGridView() {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      crossAxisCount: 1,
-      scrollDirection: Axis.horizontal,
-      children: List.generate(
-        images.length,
-        (index) {
-          //File asset = images[index];
-          return Dismissible(
-            direction: DismissDirection.endToStart,
-            key: Key('default'),
-            background: ClipRRect(
-              borderRadius: BorderRadius.circular(16.0),
-              child: AspectRatio(
-                aspectRatio: 0.3,
-                child: Container(
-                  color: Colors.red,
-                  alignment: AlignmentDirectional.centerEnd,
-                  child: Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            onDismissed: (direction) => {
-              setState(() {
-                images.removeAt(index);
-              })
-            },
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<Null>(
-                    builder: (BuildContext context) {
-                      return ImageDetailPage(images, null);
-                    },
-                    fullscreenDialog: true,
-                  ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: Container(
-                    width: 300,
-                    height: 300,
-                    decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                      BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(3.0, 6.0),
-                          blurRadius: 10.0)
-                    ]),
-                    child: AspectRatio(
-                      aspectRatio: 0.5,
-                      child: images[index] != null
-                          ? Image.file(images[index], fit: BoxFit.cover)
-                          : null,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-*/
   Widget _buildButtons() {
     return new Padding(
       padding: const EdgeInsets.all(1.0),
@@ -573,11 +508,6 @@ class PostFormState extends State<PostForm> {
   _takePhoto() async {
     if (images.length < 4) {
       imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-/*
-      print("FILE SIZE BEFORE: " + imageFile.lengthSync().toString());
-      await CompressImage.compress(imageSrc: imageFile.path, desiredQuality: 3); //desiredQuality ranges from 0 to 100
-      print("FILE SIZE  AFTER: " + imageFile.lengthSync().toString());
-*/
 
       if (imageFile != null) {
         images.add(imageFile);
@@ -591,11 +521,6 @@ class PostFormState extends State<PostForm> {
   _selectGalleryImage() async {
     if (images.length < 4) {
       imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-/*
-      print("FILE SIZE BEFORE: " + imageFile.lengthSync().toString());
-      await CompressImage.compress(imageSrc: imageFile.path, desiredQuality: 50); //desiredQuality ranges from 0 to 100
-      print("FILE SIZE  AFTER: " + imageFile.lengthSync().toString());
-*/
 
       if (imageFile != null) {
         images.add(imageFile);

@@ -26,21 +26,18 @@ class _PostPageState extends State<PostPage> {
               child: new SafeArea(
                 top: false,
                 bottom: false,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.0),
-                  child: CustomScrollView(
-                    slivers: <Widget>[
-                      SliverList(
-                        delegate: SliverChildListDelegate(
-                          [
-                            PostForm(
-                              scaffoldKey: _scaffoldKey,
-                            ),
-                          ],
-                        ),
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          PostForm(
+                            scaffoldKey: _scaffoldKey,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );

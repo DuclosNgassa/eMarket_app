@@ -2,6 +2,7 @@ import 'package:emarket_app/pages/account/account_page.dart';
 import 'package:emarket_app/pages/home/home_page.dart';
 import 'package:emarket_app/pages/post/post_page.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 import '../message/message_page.dart';
@@ -31,10 +32,7 @@ class _NavigationPageState extends State<NavigationPage> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    /*24 is for notification bar on Android*/
-    final double itemHeight = size.height;
-    final double itemWidth = size.width;
+    SizeConfig().init(context);
 
     return new Scaffold(
       body: Center(
@@ -44,8 +42,10 @@ class _NavigationPageState extends State<NavigationPage> {
               Stack(
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.only(left: 10, top: 25),
-                    constraints: BoxConstraints.expand(height: itemHeight / 5),
+                    padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 10, top: SizeConfig.blockSizeVertical * 25),
+                    //padding: EdgeInsets.only(left: 10, top: 25),
+                    constraints: BoxConstraints.expand(height: SizeConfig.screenHeight / 5),
+                    //constraints: BoxConstraints.expand(height: itemHeight / 5),
                     decoration: BoxDecoration(
                       gradient: new LinearGradient(
                           colors: [colorDeepPurple400, colorDeepPurple300],
@@ -60,9 +60,9 @@ class _NavigationPageState extends State<NavigationPage> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 40),
+                    margin: EdgeInsets.only(top: SizeConfig.safeBlockVertical * 7),
                     constraints:
-                        BoxConstraints.expand(height: itemHeight * 0.80),
+                        BoxConstraints.expand(height: SizeConfig.safeBlockVertical * 85),
                     child: _widgetOptions.elementAt(_localSelectedIndex),
                   ),
                 ],

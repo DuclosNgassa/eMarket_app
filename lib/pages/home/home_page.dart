@@ -3,6 +3,7 @@ import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/pages/search/datasearch.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -34,14 +35,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    SizeConfig().init(context);
 
     return Container(
       child: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
             backgroundColor: Colors.transparent,
-            expandedHeight: size.height / 2 * 0.2,
+            expandedHeight: SizeConfig.blockSizeVertical * 10,
             floating: true,
             snap: false,
             pinned: true,
@@ -102,7 +103,12 @@ class _HomePageState extends State<HomePage> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                return HomeCard(postList.elementAt(index), myFavorits, 100, size.width - 20);
+                return HomeCard(
+                    postList.elementAt(index),
+                    myFavorits,
+                    SizeConfig.blockSizeVertical * 15,
+                    SizeConfig.screenWidth -
+                        SizeConfig.blockSizeHorizontal * 10);
               },
               childCount: postList.length,
             ),
@@ -115,7 +121,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildCategorieGridView() {
     TextStyle _myTextStyle = TextStyle(
       color: Colors.black87,
-      fontSize: 10,
+      fontSize: SizeConfig.safeBlockHorizontal * 3,
     );
     return GridView.count(
       shrinkWrap: true,
@@ -124,8 +130,8 @@ class _HomePageState extends State<HomePage> {
       scrollDirection: Axis.horizontal,
       children: <Widget>[
         CustomCategorieButton(
-          width: 50,
-          height: 33,
+          width: SizeConfig.blockSizeHorizontal * 30,
+          height: SizeConfig.blockSizeVertical * 5,
           fillColor: colorDeepPurple400,
           icon: Icons.phone_iphone,
           splashColor: Colors.white,
@@ -135,8 +141,8 @@ class _HomePageState extends State<HomePage> {
           onPressed: null,
         ),
         CustomCategorieButton(
-          width: 50,
-          height: 33,
+          width: SizeConfig.blockSizeHorizontal * 30,
+          height: SizeConfig.blockSizeVertical * 5,
           fillColor: colorDeepPurple400,
           icon: Icons.weekend,
           splashColor: Colors.white,
@@ -146,8 +152,8 @@ class _HomePageState extends State<HomePage> {
           onPressed: null,
         ),
         CustomCategorieButton(
-          width: 50,
-          height: 33,
+          width: SizeConfig.blockSizeHorizontal * 30,
+          height: SizeConfig.blockSizeVertical * 5,
           fillColor: colorDeepPurple400,
           icon: Icons.home,
           splashColor: Colors.white,
@@ -157,8 +163,8 @@ class _HomePageState extends State<HomePage> {
           onPressed: null,
         ),
         CustomCategorieButton(
-          width: 50,
-          height: 33,
+          width: SizeConfig.blockSizeHorizontal * 30,
+          height: SizeConfig.blockSizeVertical * 5,
           fillColor: colorDeepPurple400,
           icon: Icons.local_play,
           splashColor: Colors.white,
@@ -168,8 +174,8 @@ class _HomePageState extends State<HomePage> {
           onPressed: null,
         ),
         CustomCategorieButton(
-          width: 50,
-          height: 33,
+          width: SizeConfig.blockSizeHorizontal * 30,
+          height: SizeConfig.blockSizeVertical * 5,
           fillColor: colorDeepPurple400,
           icon: Icons.list,
           splashColor: Colors.white,
