@@ -2,6 +2,7 @@ import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/notification.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -234,6 +235,8 @@ class _HomeCardState extends State<HomeCard> {
   }
 
   Widget _buildHomeCard(BuildContext context, double height, double width) {
+    SizeConfig().init(context);
+
     // A new container
     // The height and width are arbitrary numbers for styling.
     return Padding(
@@ -262,13 +265,13 @@ class _HomeCardState extends State<HomeCard> {
               children: <Widget>[
                 Text(
                   widget.post.fee.toString() + ' FCFA',
-                  style: priceStyle,
+                  style: SizeConfig.stylePrice,
                 ),
               ],
             ),
             Row(
               children: <Widget>[
-                Expanded(child: Text(widget.post.title, style: titleStyle)),
+                Expanded(child: Text(widget.post.title, style: SizeConfig.styleTitleBlack)),
               ],
             ),
             Row(
@@ -276,7 +279,7 @@ class _HomeCardState extends State<HomeCard> {
             ),
             Text(
               Post.convertPostTypToStringForDisplay(widget.post.post_typ),
-              style: titleStyle,
+              style: SizeConfig.styleTitleBlack,
             ),
           ],
         ),
@@ -285,11 +288,13 @@ class _HomeCardState extends State<HomeCard> {
   }
 
   List<Widget> _buildRating(int rating) {
+    SizeConfig().init(context);
+
     List<Widget> widgetList = new List();
     Widget city = Expanded(
       child: Text(
         widget.post.city,
-        style: cityStyle,
+        style: SizeConfig.styleCity,
       ),
     );
 

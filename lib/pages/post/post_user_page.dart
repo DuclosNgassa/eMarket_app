@@ -1,6 +1,7 @@
 import 'package:emarket_app/custom_component/home_card.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 class PostUserPage extends StatefulWidget {
@@ -21,6 +22,7 @@ class _PostUserPageState extends State<PostUserPage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     var size = MediaQuery.of(context).size;
     /*24 is for notification bar on Android*/
     final double deviceHeight = size.height;
@@ -34,8 +36,9 @@ class _PostUserPageState extends State<PostUserPage> {
             Stack(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(left: 10, top: 25),
-                  constraints: BoxConstraints.expand(height: deviceHeight / 6),
+                  //padding: EdgeInsets.only(left: 10, top: 25),
+                  padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 10, top: SizeConfig.blockSizeVertical * 25),
+                  constraints: BoxConstraints.expand(height: SizeConfig.screenHeight / 6),
                   decoration: BoxDecoration(
                       gradient: new LinearGradient(
                           colors: [colorDeepPurple400, colorDeepPurple300],
@@ -49,8 +52,10 @@ class _PostUserPageState extends State<PostUserPage> {
                   child: _buildTitle(),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 130),
+                    margin: EdgeInsets.only(top: SizeConfig.safeBlockVertical * 7),
+                  //margin: EdgeInsets.only(top: 130),
                   constraints: BoxConstraints.expand(height: deviceHeight * 0.72),
+                  //constraints: BoxConstraints.expand(height: SizeConfig.safeBlockVertical * 85),
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -88,7 +93,7 @@ class _PostUserPageState extends State<PostUserPage> {
                   Expanded(
                     child: new Text(
                       "List des annonces de " + widget.posts.elementAt(0).useremail,
-                      style: styleTitleWhite,
+                      style: SizeConfig.styleTitleWhite,
                     ),
                   ),
                 ],

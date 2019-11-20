@@ -8,6 +8,7 @@ import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/notification.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -118,7 +119,7 @@ class PostOwnerState extends State<PostOwner> {
                               _postOwner != null && _postOwner.name != null
                                   ? _postOwner.name
                                   : 'eMarket',
-                              style: titleDetailStyle),
+                              style: SizeConfig.styleTitleBlack),
                         ],
                       ),
                     ),
@@ -126,7 +127,7 @@ class PostOwnerState extends State<PostOwner> {
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Row(
                         children: <Widget>[
-                          Text('Utilisateur privé', style: greyDetailStyle),
+                          Text('Utilisateur privé', style: SizeConfig.styleGreyDetail,),
                         ],
                       ),
                     ),
@@ -135,7 +136,7 @@ class PostOwnerState extends State<PostOwner> {
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.sentiment_satisfied),
-                          Text('Satisfaction: TOP', style: greyDetailStyle),
+                          Text('Satisfaction: TOP', style: SizeConfig.styleGreyDetail,),
                         ],
                       ),
                     ),

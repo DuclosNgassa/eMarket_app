@@ -3,6 +3,7 @@ import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/message_service.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,6 +42,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return new Scaffold(
       appBar: new AppBar(
         backgroundColor: colorDeepPurple300,
@@ -212,7 +215,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               children: <Widget>[
                 new Text(
                   "Chat",
-                  style: styleTitleWhite,
+                  style: SizeConfig.styleTitleWhite,
                 ),
               ],
             ),
@@ -221,7 +224,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               children: <Widget>[
                 new Text(
                   "Annonce: " + widget.post.title,
-                  style: styleSubtitleWhite,
+                  style: SizeConfig.styleSubtitleWhite,
                 ),
               ],
             )

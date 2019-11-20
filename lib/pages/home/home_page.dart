@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                 return HomeCard(
                     postList.elementAt(index),
                     myFavorits,
-                    SizeConfig.blockSizeVertical * 15,
+                    SizeConfig.blockSizeVertical * 18,
                     SizeConfig.screenWidth -
                         SizeConfig.blockSizeHorizontal * 10);
               },

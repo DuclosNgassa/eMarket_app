@@ -10,6 +10,7 @@ import 'package:emarket_app/pages/message/user_message_page.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/user_service.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -38,6 +39,8 @@ class _MessagePageState extends State<MessagePage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     var size = MediaQuery.of(context).size;
     /*24 is for notification bar on Android*/
     final double itemHeight = size.height;
@@ -59,7 +62,7 @@ class _MessagePageState extends State<MessagePage> {
                     children: <Widget>[
                       new Text(
                         "Mes messages",
-                        style: styleTitleWhite,
+                        style: SizeConfig.styleTitleWhite,
                       ),
                     ],
                   ),

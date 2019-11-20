@@ -13,6 +13,7 @@ import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/image_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/util/notification.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -74,7 +75,7 @@ class _AccountState extends State<AccountPage>
                                   Expanded(
                                     child: Text(
                                       userName,
-                                      style: titleStyleWhite,
+                                      style: SizeConfig.styleTitleWhite,
                                       textAlign: TextAlign.left,
                                     ),
                                   ),
@@ -86,7 +87,7 @@ class _AccountState extends State<AccountPage>
                               padding: const EdgeInsets.only(left: 10.0),
                               child: Text(
                                 userEmail,
-                                style: normalStyleWhite,
+                                style: SizeConfig.styleNormalWhite,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -133,7 +134,7 @@ class _AccountState extends State<AccountPage>
                 child: Text(
                   "Vous n´avez pas encore vendu ou recherché d´objects. "
                   "\n\nTransformez les choses que vous n´utilisez tres peu ou jamais en argent!",
-                  style: titleDetailStyle,
+                  style: SizeConfig.styleTitleBlack,
                 ),
               ),
             ),
@@ -197,7 +198,7 @@ class _AccountState extends State<AccountPage>
           child: Text(
             "Vous n´avez pas encore de favorits. "
             "\n\n Marquez un post avec l´étoile pour l´enregister dans vos favorits!",
-            style: titleDetailStyle,
+            style: SizeConfig.styleTitleBlack,
           ),
         ),
       );

@@ -39,7 +39,6 @@ const POSTPAGE = 2;
 const ACCOUNTPAGE = 3;
 const MESSAGEPAGE = 4;
 
-
 const String USER_EMAIL = "userEmail";
 const String USER_NAME = "userName";
 
@@ -54,90 +53,79 @@ Color colorBlue = Colors.blue;
 
 const double BUTTON_FONT_SIZE = 10;
 
-TextStyle titleStyleWhite = new TextStyle(
-    fontFamily: 'Helvetica',
-    color: Colors.white,
-    fontWeight: FontWeight.bold,
-    fontSize: 25);
-TextStyle jobCardTitileStyleBlue = new TextStyle(
-    fontFamily: 'Avenir',
-    color: colorDeepPurple400,
-    fontWeight: FontWeight.bold,
-    fontSize: 12);
-TextStyle jobCardTitileStyleBlack = new TextStyle(
-    fontFamily: 'Avenir',
-    color: Colors.black,
-    fontWeight: FontWeight.bold,
-    fontSize: 12);
-TextStyle titileStyleLighterBlack = new TextStyle(
-    fontFamily: 'Avenir',
-    color: Color(0xFF34475D),
-    fontWeight: FontWeight.bold,
-    fontSize: 20);
-
-TextStyle titileStyleBlack = new TextStyle(
-    fontFamily: 'Helvetica',
-    color: Colors.black,
-    fontWeight: FontWeight.bold,
-    fontSize: 20);
-TextStyle salaryStyle = new TextStyle(
-    fontFamily: 'Avenir',
-    color: colorDeepPurple500,
-    fontWeight: FontWeight.bold,
-    fontSize: 12);
-
+/*
 TextStyle formStyle = new TextStyle(
-    //fontFamily: 'Helvetica',
     color: Colors.black,
     fontSize: 12);
+*/
 
+/*
 TextStyle radioButtonStyle = new TextStyle(
     //fontFamily: 'Helvetica',
     color: Colors.black,
     fontSize: 10);
-
+*/
+/*
 TextStyle priceStyle = new TextStyle(
     fontFamily: 'Avenir',
     color: colorDeepPurple500,
     fontWeight: FontWeight.bold,
-    fontSize: 12);
+    fontSize: 10);
+*/
 
+/*
 TextStyle titleStyle = new TextStyle(
     fontFamily: 'Avenir',
     color: Colors.black,
     fontWeight: FontWeight.bold,
     fontStyle: FontStyle.italic,
     fontSize: 12);
+*/
 
-TextStyle cityStyle =
-    new TextStyle(fontFamily: 'Avenir', color: Colors.black45, fontSize: 12);
+/*
+TextStyle cityStyle = new TextStyle(
+  fontFamily: 'Avenir',
+  color: Colors.black45,
+  fontSize: 12,
+);
+*/
 
-TextStyle normalStyle = new TextStyle(color: Colors.black, fontSize: 12);
-TextStyle normalStyleWhite = new TextStyle(color: Colors.white, fontSize: 15);
+//TextStyle normalStyle = new TextStyle(color: Colors.black, fontSize: 12);
+//TextStyle normalStyleWhite = new TextStyle(color: Colors.white, fontSize: 15);
 
-TextStyle styleButtonWhite = new TextStyle(color: Colors.white, fontSize: 12);
+/*
+TextStyle styleButtonWhite = new TextStyle(
+  color: Colors.white,
+  fontSize: 12,
+);
+*/
 
+/*
 TextStyle priceDetailStyle = new TextStyle(
     color: colorDeepPurple500, fontWeight: FontWeight.bold, fontSize: 15);
+*/
 
+/*
 TextStyle titleDetailStyle = new TextStyle(
     color: Colors.black,
     fontWeight: FontWeight.bold,
     fontStyle: FontStyle.italic,
     fontSize: 20);
+*/
 
+/*
 TextStyle styleTitleWhite = new TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.bold,
     fontStyle: FontStyle.italic,
     fontSize: 20);
+*/
 
+/*
 TextStyle styleSubtitleWhite = new TextStyle(
-    color: Colors.white,
-    fontStyle: FontStyle.italic,
-    fontSize: 15);
+    color: Colors.white, fontStyle: FontStyle.italic, fontSize: 15);
+*/
 
-TextStyle greyDetailStyle = new TextStyle(color: Colors.black45, fontSize: 12);
+//TextStyle greyDetailStyle = new TextStyle(color: Colors.black45, fontSize: 12);
 
-TextStyle normalDetailStyle = new TextStyle(color: Colors.black, fontSize: 20);
-
+//TextStyle normalDetailStyle = new TextStyle(color: Colors.black, fontSize: 20);

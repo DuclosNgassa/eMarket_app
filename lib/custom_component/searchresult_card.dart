@@ -2,6 +2,7 @@ import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/notification.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,8 @@ class SearchResultCard extends StatefulWidget {
   SearchResultCard(this.post, this.myFavorits);
 
   @override
-  _SearchResultCardState createState() => _SearchResultCardState(post, myFavorits);
+  _SearchResultCardState createState() =>
+      _SearchResultCardState(post, myFavorits);
 }
 
 class _SearchResultCardState extends State<SearchResultCard> {
@@ -232,6 +234,7 @@ class _SearchResultCardState extends State<SearchResultCard> {
   }
 
   Widget _buildSearchResultCard(BuildContext context, double width) {
+    SizeConfig().init(context);
     // A new container
     // The height and width are arbitrary numbers for styling.
     return Container(
@@ -258,13 +261,18 @@ class _SearchResultCardState extends State<SearchResultCard> {
             children: <Widget>[
               Text(
                 widget.post.fee.toString() + ' FCFA',
-                style: priceStyle,
+                style: SizeConfig.stylePrice,
               ),
             ],
           ),
           Row(
             children: <Widget>[
-              Expanded(child: Text(widget.post.title, style: titleStyle)),
+              Expanded(
+                child: Text(
+                  widget.post.title,
+                  style: SizeConfig.styleTitleBlack,
+                ),
+              ),
             ],
           ),
           Row(
@@ -272,7 +280,7 @@ class _SearchResultCardState extends State<SearchResultCard> {
           ),
           Text(
             Post.convertPostTypToStringForDisplay(widget.post.post_typ),
-            style: titleStyle,
+            style: SizeConfig.styleTitleBlack,
           ),
         ],
       ),
@@ -284,7 +292,7 @@ class _SearchResultCardState extends State<SearchResultCard> {
     Widget city = Expanded(
       child: Text(
         widget.post.city,
-        style: cityStyle,
+        style: SizeConfig.styleCity,
       ),
     );
 
@@ -322,5 +330,4 @@ class _SearchResultCardState extends State<SearchResultCard> {
           });
     }
   }
-
 }

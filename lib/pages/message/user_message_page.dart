@@ -4,6 +4,7 @@ import 'package:emarket_app/model/user_message.dart';
 import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,6 +32,8 @@ class _UserMessagePageState extends State<UserMessagePage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     var size = MediaQuery.of(context).size;
     /*24 is for notification bar on Android*/
     final double itemHeight = size.height;
@@ -44,8 +47,10 @@ class _UserMessagePageState extends State<UserMessagePage> {
             Stack(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(left: 10, top: 25),
-                  constraints: BoxConstraints.expand(height: itemHeight / 5),
+                  //padding: EdgeInsets.only(left: 10, top: 25),
+                  padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 10, top: SizeConfig.blockSizeVertical * 25),
+                  //constraints: BoxConstraints.expand(height: itemHeight / 5),
+                  constraints: BoxConstraints.expand(height: SizeConfig.screenHeight / 5),
                   decoration: BoxDecoration(
                       gradient: new LinearGradient(
                           colors: [colorDeepPurple400, colorDeepPurple300],
@@ -59,8 +64,10 @@ class _UserMessagePageState extends State<UserMessagePage> {
                   child: _buildTitle(),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 135),
-                  constraints: BoxConstraints.expand(height: itemHeight * 0.78),
+                  //margin: EdgeInsets.only(top: 135),
+                    margin: EdgeInsets.only(top: SizeConfig.safeBlockVertical * 7),
+                  //constraints: BoxConstraints.expand(height: itemHeight * 0.78),
+                  constraints: BoxConstraints.expand(height: SizeConfig.safeBlockVertical * 85),
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -99,7 +106,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
                 children: <Widget>[
                   new Text(
                     "Mes messages",
-                    style: styleTitleWhite,
+                    style: SizeConfig.styleTitleWhite,
                   ),
                 ],
               ),
@@ -110,7 +117,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
                     padding: const EdgeInsets.only(top: 40.0, right: 8.0),
                     child: Text(
                       'Annonce: ' + widget.userMessage.elementAt(0).post.title,
-                      style: styleSubtitleWhite,
+                      style: SizeConfig.styleSubtitleWhite,
                     ),
                   ),
                 ],

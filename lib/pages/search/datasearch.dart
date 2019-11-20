@@ -6,6 +6,7 @@ import 'package:emarket_app/model/searchparameter.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/search/searchparameter.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 class DataSearch extends SearchDelegate<Post> {
@@ -70,8 +71,7 @@ class DataSearch extends SearchDelegate<Post> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    double width = size.width - 20;
+    SizeConfig().init(context);
 
     final resultList = query.isEmpty
         ? postList
@@ -82,7 +82,7 @@ class DataSearch extends SearchDelegate<Post> {
 
     return ListView.builder(
       itemBuilder: (context, index) =>
-          HomeCard(resultList[index], myFavorits, 100, width),
+          HomeCard(resultList[index], myFavorits, SizeConfig.blockSizeVertical * 18, SizeConfig.screenWidth - 20),
       itemCount: resultList.length,
     );
   }

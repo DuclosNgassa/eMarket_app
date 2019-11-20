@@ -8,6 +8,7 @@ import 'package:emarket_app/pages/post/post_user_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/image_service.dart';
 import 'package:emarket_app/services/post_service.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 import '../../model/post.dart';
@@ -37,6 +38,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     var size = MediaQuery.of(context).size;
     /*24 is for notification bar on Android*/
     final double itemHeight = size.height;
@@ -49,8 +51,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
             Stack(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(left: 10, top: 25),
-                  constraints: BoxConstraints.expand(height: itemHeight / 5),
+                  //padding: EdgeInsets.only(left: 10, top: 25),
+                  padding: EdgeInsets.only(
+                      left: SizeConfig.blockSizeHorizontal * 10,
+                      top: SizeConfig.blockSizeVertical * 25),
+                  //constraints: BoxConstraints.expand(height: itemHeight / 5),
+                  constraints: BoxConstraints.expand(
+                      height: SizeConfig.screenHeight / 5),
                   decoration: BoxDecoration(
                     gradient: new LinearGradient(
                         colors: [colorDeepPurple400, colorDeepPurple300],
@@ -65,8 +72,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 55),
-                  constraints: BoxConstraints.expand(height: itemHeight * 0.84),
+                  //margin: EdgeInsets.only(top: 55),
+                  margin:
+                      EdgeInsets.only(top: SizeConfig.blockSizeVertical * 10),
+                  //constraints: BoxConstraints.expand(height: itemHeight * 0.84),
+                  constraints: BoxConstraints.expand(
+                      height: SizeConfig.screenHeight * 0.9),
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -74,7 +85,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Container(
-                            height: 125.0,
+                            height: SizeConfig.blockSizeVertical * 20,
+                            //height: 125.0,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
@@ -88,8 +100,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           Row(
                             children: <Widget>[
                               Expanded(
-                                  child: Text(widget.post.title,
-                                      style: titleDetailStyle)),
+                                child: Text(
+                                  widget.post.title,
+                                  style: SizeConfig.styleTitleBlack,
+                                  //style: titleDetailStyle,
+                                ),
+                              ),
                             ],
                           ),
                           SizedBox(height: 10),
@@ -98,14 +114,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               Expanded(
                                 child: Text(
                                   widget.post.fee.toString() + ' FCFA',
-                                  style: priceDetailStyle,
+                                  style: SizeConfig.stylePrice,
                                 ),
                               ),
                               Expanded(
                                 child: Text(
                                   Post.convertFeeTypToDisplay(
                                       widget.post.fee_typ),
-                                  style: priceDetailStyle,
+                                  style: SizeConfig.stylePrice,
                                 ),
                               ),
                             ],
@@ -120,7 +136,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               Text(
                                 Post.convertPostTypToStringForDisplay(
                                     widget.post.post_typ),
-                                style: titleDetailStyle,
+                                style: SizeConfig.styleTitleBlack,
                               ),
                             ],
                           ),
@@ -130,7 +146,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               Expanded(
                                 child: Text(
                                   widget.post.description,
-                                  style: normalDetailStyle,
+                                  style: SizeConfig.styleNormalBlack,
                                 ),
                               ),
                             ],
@@ -183,7 +199,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             fillColor: Colors.transparent,
                             post: widget.post,
                             splashColor: colorDeepPurple300,
-                            textStyle: titleDetailStyle,
+                            textStyle: SizeConfig.styleTitleBlack,
                           )
                         ],
                       ),
@@ -214,7 +230,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     Widget city = Expanded(
       child: Text(
         widget.post.city + ', ' + widget.post.quarter,
-        style: greyDetailStyle,
+        style: SizeConfig.styleGreyDetail,
       ),
     );
 
@@ -225,7 +241,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       Icon icon = Icon(
         Icons.star,
         color: colorDeepPurple300,
-        size: 10,
+        size: SizeConfig.safeBlockHorizontal * 3,
       );
 
       widgetList.add(icon);
@@ -315,5 +331,4 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
     return updatedPost;
   }
-
 }

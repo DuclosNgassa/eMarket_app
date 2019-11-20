@@ -88,11 +88,14 @@ class PostFormState extends State<PostForm> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
+    TextStyle textStyle = TextStyle(
+        color: Colors.black, fontSize: SizeConfig.safeBlockHorizontal * 4);
+
     return Form(
       key: _formKey,
       autovalidate: false,
       child: Padding(
-        padding: const EdgeInsets.only(left:8.0, right: 8.0),
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
         child: Column(
           children: <Widget>[
             Container(
@@ -102,12 +105,13 @@ class PostFormState extends State<PostForm> {
                 children: <Widget>[
                   Text(
                     "Creation d´une annonce",
-                    style: styleTitleWhite,
+                    style: SizeConfig.styleTitleWhite,
                   ),
                   Expanded(
                     child: Container(
-                        alignment: Alignment.center,
-                        child: buildImageListView(),),
+                      alignment: Alignment.center,
+                      child: buildImageListView(),
+                    ),
                   ),
                   _buildButtons(),
                 ],
@@ -116,6 +120,7 @@ class PostFormState extends State<PostForm> {
             Divider(),
             _buildRadioButtons(),
             TextFormField(
+              style: SizeConfig.styleForm,
               textInputAction: TextInputAction.next,
               autofocus: true,
               onFieldSubmitted: (term) {
@@ -124,10 +129,6 @@ class PostFormState extends State<PostForm> {
               decoration: const InputDecoration(
                 hintText: 'Donnez le titre de votre post',
                 labelText: 'Titre',
-                labelStyle: TextStyle(
-                    //fontFamily: 'Helvetica',
-                    color: Colors.black,
-                    fontSize: 15),
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(30),
@@ -144,7 +145,7 @@ class PostFormState extends State<PostForm> {
                     padding: const EdgeInsets.only(top: 16.0),
                     child: Text(
                       "Categorie",
-                      style: formStyle,
+                      style: SizeConfig.styleForm,
                     ),
                   ),
                   GestureDetector(
@@ -171,6 +172,7 @@ class PostFormState extends State<PostForm> {
               children: <Widget>[
                 Expanded(
                   child: TextFormField(
+                    style: SizeConfig.styleForm,
                     textInputAction: TextInputAction.next,
                     focusNode: _feeFocusNode,
                     onFieldSubmitted: (term) {
@@ -179,10 +181,6 @@ class PostFormState extends State<PostForm> {
                     decoration: const InputDecoration(
                       hintText: 'Donnez le prix',
                       labelText: 'Prix (FCFA)',
-                      labelStyle: TextStyle(
-                          //fontFamily: 'Helvetica',
-                          color: Colors.black,
-                          fontSize: 15),
                     ),
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(30),
@@ -195,13 +193,13 @@ class PostFormState extends State<PostForm> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 3.0),
+                    padding: const EdgeInsets.only(bottom: 7.0),
                     child: FormField(
                       builder: (FormFieldState state) {
                         return InputDecorator(
                           decoration: InputDecoration(
                             labelText: 'Typ de prix',
-                            labelStyle: formStyle,
+                            labelStyle: SizeConfig.styleForm,
                             errorText: state.hasError ? state.errorText : null,
                           ),
                           child: DropdownButtonHideUnderline(
@@ -240,6 +238,7 @@ class PostFormState extends State<PostForm> {
                 children: <Widget>[
                   Expanded(
                     child: TextFormField(
+                      style: SizeConfig.styleForm,
                       textInputAction: TextInputAction.next,
                       focusNode: _cityFocusNode,
                       onFieldSubmitted: (term) {
@@ -248,10 +247,6 @@ class PostFormState extends State<PostForm> {
                       decoration: const InputDecoration(
                         hintText: 'Donnez la ville',
                         labelText: 'Ville',
-                        labelStyle: TextStyle(
-                            //fontFamily: 'Helvetica',
-                            color: Colors.black,
-                            fontSize: 15),
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
@@ -264,6 +259,7 @@ class PostFormState extends State<PostForm> {
                   ),
                   Expanded(
                     child: TextFormField(
+                      style: SizeConfig.styleForm,
                       textInputAction: TextInputAction.next,
                       focusNode: _quarterFocusNode,
                       onFieldSubmitted: (term) {
@@ -272,10 +268,6 @@ class PostFormState extends State<PostForm> {
                       decoration: const InputDecoration(
                         hintText: 'Donnez le quartier',
                         labelText: 'Quartier',
-                        labelStyle: TextStyle(
-                            //fontFamily: 'Helvetica',
-                            color: Colors.black,
-                            fontSize: 15),
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
@@ -290,6 +282,7 @@ class PostFormState extends State<PostForm> {
               ),
             ),
             TextFormField(
+              style: SizeConfig.styleForm,
               textInputAction: TextInputAction.next,
               focusNode: _phoneFocusNode,
               onFieldSubmitted: (term) {
@@ -298,10 +291,6 @@ class PostFormState extends State<PostForm> {
               decoration: const InputDecoration(
                 hintText: 'Donnez un numero de téléphone',
                 labelText: 'Numero de téléphone',
-                labelStyle: TextStyle(
-                    //fontFamily: 'Helvetica',
-                    color: Colors.black,
-                    fontSize: 15),
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(30),
@@ -309,20 +298,17 @@ class PostFormState extends State<PostForm> {
               onSaved: (val) => newPost.phoneNumber = val,
             ),
             TextFormField(
+              style: SizeConfig.styleForm,
               textInputAction: TextInputAction.done,
               focusNode: _descriptionFocusNode,
               onFieldSubmitted: (value) {
                 _descriptionFocusNode.unfocus();
                 _submitForm();
               },
-              maxLines: 2,
+              maxLines: 4,
               decoration: const InputDecoration(
                 hintText: 'Description de votre post',
                 labelText: 'Description',
-                labelStyle: TextStyle(
-                    //fontFamily: 'Helvetica',
-                    color: Colors.black,
-                    fontSize: 15),
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(500),
@@ -337,7 +323,7 @@ class PostFormState extends State<PostForm> {
               child: RaisedButton(
                 shape: const StadiumBorder(),
                 color: colorDeepPurple400,
-                child: Text('Transmettre', style: styleButtonWhite),
+                child: Text('Transmettre', style: SizeConfig.styleButtonWhite),
                 onPressed: _submitForm,
               ),
             ),
@@ -454,54 +440,55 @@ class PostFormState extends State<PostForm> {
   }
 
   Widget _buildRadioButtons() {
-    return Row(
-      //mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Radio(
-          value: PostTyp.offer,
-          groupValue: _postTyp,
-          onChanged: (PostTyp value) {
-            setState(() {
-              _postTyp = value;
-            });
-          },
-        ),
-        Text(
-          "J'offre",
-          style: radioButtonStyle,
-        ),
-        Radio(
-          value: PostTyp.search,
-          groupValue: _postTyp,
-          onChanged: (PostTyp value) {
-            setState(() {
-              _postTyp = value;
-            });
-          },
-        ),
-        Expanded(
-          child: Text(
-            "Je recherche",
-            style: radioButtonStyle,
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Radio(
+            value: PostTyp.offer,
+            groupValue: _postTyp,
+            onChanged: (PostTyp value) {
+              setState(() {
+                _postTyp = value;
+              });
+            },
           ),
-        ),
-        Radio(
-          value: PostTyp.all,
-          groupValue: _postTyp,
-          onChanged: (PostTyp value) {
-            setState(() {
-              _postTyp = value;
-            });
-          },
-        ),
-        Expanded(
-          child: Text(
-            "Tous",
-            style: radioButtonStyle,
+          Text(
+            "J'offre",
+            style: SizeConfig.styleRadioButton,
           ),
-        ),
-      ],
+          Radio(
+            value: PostTyp.search,
+            groupValue: _postTyp,
+            onChanged: (PostTyp value) {
+              setState(() {
+                _postTyp = value;
+              });
+            },
+          ),
+          Expanded(
+            child: Text(
+              "Je recherche",
+              style: SizeConfig.styleRadioButton,
+            ),
+          ),
+          Radio(
+            value: PostTyp.all,
+            groupValue: _postTyp,
+            onChanged: (PostTyp value) {
+              setState(() {
+                _postTyp = value;
+              });
+            },
+          ),
+          Expanded(
+            child: Text(
+              "Tous",
+              style: SizeConfig.styleRadioButton,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
