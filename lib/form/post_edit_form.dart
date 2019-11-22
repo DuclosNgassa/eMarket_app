@@ -456,7 +456,7 @@ class _PostEditFormState extends State<PostEditForm> {
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.only(top: 10.0),
+              padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical),
               child: Center(
                 child: Slidable(
                   actionPane: SlidableBehindActionPane(),
@@ -474,7 +474,7 @@ class _PostEditFormState extends State<PostEditForm> {
                       );
                     },
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
+                      padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
                         child: Container(
@@ -521,7 +521,7 @@ class _PostEditFormState extends State<PostEditForm> {
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.only(top: 10.0),
+              padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical),
               child: Center(
                 child: Slidable(
                   actionPane: SlidableBehindActionPane(),
@@ -539,7 +539,7 @@ class _PostEditFormState extends State<PostEditForm> {
                       );
                     },
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
+                      padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
                         child: Container(
