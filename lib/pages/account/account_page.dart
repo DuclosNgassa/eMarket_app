@@ -51,6 +51,8 @@ class _AccountState extends State<AccountPage>
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return FutureBuilder<FirebaseUser>(
         future: FirebaseAuth.instance.currentUser(),
         builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
@@ -69,7 +71,7 @@ class _AccountState extends State<AccountPage>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
+                              padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
                               child: Row(
                                 children: <Widget>[
                                   Expanded(
@@ -84,7 +86,7 @@ class _AccountState extends State<AccountPage>
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
+                              padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
                               child: Text(
                                 userEmail,
                                 style: SizeConfig.styleNormalWhite,
@@ -94,11 +96,11 @@ class _AccountState extends State<AccountPage>
                           ],
                         ),
                       ),
-                      expandedHeight: 105.0,
+                      expandedHeight: SizeConfig.screenHeight * 0.17,
                       bottom: TabBar(
+                        labelStyle: SizeConfig.styleNormalWhite,
                         //isScrollable: true,
                         indicatorColor: colorDeepPurple500,
-                        labelColor: colorWhite,
                         tabs: [
                           Tab(text: 'MES POSTS'),
                           Tab(text: 'MES FAVORITS'),
@@ -125,7 +127,7 @@ class _AccountState extends State<AccountPage>
   Widget buildMyPostListView() {
     if (myPosts.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockSizeHorizontal * 2, vertical: SizeConfig.blockSizeVertical),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -194,7 +196,7 @@ class _AccountState extends State<AccountPage>
     if (myPostFavorits.isEmpty) {
       return new Center(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockSizeHorizontal * 2, vertical: SizeConfig.blockSizeVertical),
           child: Text(
             "Vous n´avez pas encore de favorits. "
             "\n\n Marquez un post avec l´étoile pour l´enregister dans vos favorits!",
