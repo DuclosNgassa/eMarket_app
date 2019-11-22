@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
               background: Column(
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
+                    padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
                     child: Row(
                       children: <Widget>[
                         new Expanded(
