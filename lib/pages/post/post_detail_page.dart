@@ -39,10 +39,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    var size = MediaQuery.of(context).size;
-    /*24 is for notification bar on Android*/
-    final double itemHeight = size.height;
-    final double itemWidth = size.width;
 
     return Container(
       child: Scaffold(
@@ -51,7 +47,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
             Stack(
               children: <Widget>[
                 Container(
-                  //padding: EdgeInsets.only(left: 10, top: 25),
                   padding: EdgeInsets.only(
                       left: SizeConfig.blockSizeHorizontal * 10,
                       top: SizeConfig.blockSizeVertical * 25),
@@ -72,10 +67,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ),
                 ),
                 Container(
-                  //margin: EdgeInsets.only(top: 55),
                   margin:
                       EdgeInsets.only(top: SizeConfig.blockSizeVertical * 10),
-                  //constraints: BoxConstraints.expand(height: itemHeight * 0.84),
                   constraints: BoxConstraints.expand(
                       height: SizeConfig.screenHeight * 0.9),
                   child: SingleChildScrollView(

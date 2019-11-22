@@ -51,7 +51,9 @@ class _PostUserPageState extends State<PostUserPage> {
                   margin: EdgeInsets.only(top: SizeConfig.screenHeight * 0.125),
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: SizeConfig.blockSizeHorizontal * 2,
+                          vertical: SizeConfig.blockSizeVertical),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -105,7 +107,6 @@ class _PostUserPageState extends State<PostUserPage> {
             new List(),
             SizeConfig.blockSizeVertical * 18,
             SizeConfig.screenWidth - SizeConfig.blockSizeHorizontal * 10),
-        //separatorBuilder: (context, index) => Divider(),
         itemCount: widget.posts.length);
   }
 }
