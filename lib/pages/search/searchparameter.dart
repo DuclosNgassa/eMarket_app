@@ -1,3 +1,4 @@
+import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 import '../../custom_component/custom_linear_gradient.dart';
@@ -16,6 +17,8 @@ class _SearchParameterPageState extends State<SearchParameterPage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -27,7 +30,7 @@ class _SearchParameterPageState extends State<SearchParameterPage> {
           top: false,
           bottom: false,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
+            padding: EdgeInsets.symmetric(vertical: SizeConfig.blockSizeVertical * 2),
             child: CustomScrollView(
               slivers: <Widget>[
                 SliverList(
