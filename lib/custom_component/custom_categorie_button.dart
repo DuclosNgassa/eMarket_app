@@ -1,3 +1,4 @@
+import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 class CustomCategorieButton extends StatelessWidget {
@@ -24,12 +25,13 @@ class CustomCategorieButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return RawMaterialButton(
       onPressed: onPressed,
-      //fillColor: fillColor,
       splashColor: splashColor,
       child: Padding(
-        padding: const EdgeInsets.symmetric( horizontal: 10.0),
+        padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockSizeHorizontal),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -46,7 +48,7 @@ class CustomCategorieButton extends StatelessWidget {
               ),
             ),
             SizedBox(
-              width: 8.0,
+              width: SizeConfig.blockSizeHorizontal * 2,
             ),
             Container(
               width: width + 10,

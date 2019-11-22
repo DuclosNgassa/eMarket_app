@@ -29,7 +29,8 @@ class CustomButton extends StatelessWidget {
       splashColor: splashColor,
       shape: const StadiumBorder(),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockSizeHorizontal * 2.0),
+        padding: EdgeInsets.symmetric(
+            horizontal: SizeConfig.blockSizeHorizontal * 2.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -37,7 +38,9 @@ class CustomButton extends StatelessWidget {
               icon,
               color: iconColor,
             ),
-            SizedBox(width: 5.0,),
+            SizedBox(
+              width: SizeConfig.blockSizeHorizontal * 2,
+            ),
             Text(
               text,
               style: textStyle,

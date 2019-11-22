@@ -17,14 +17,14 @@ import 'package:url_launcher/url_launcher.dart';
 import 'custom_button.dart';
 
 class PostOwner extends StatefulWidget {
-
   PostOwner(
       {@required this.showAllUserPost,
       @required this.fillColor,
       @required this.splashColor,
       @required this.textStyle,
       @required this.post,
-      this.user, @required this.postCount});
+      this.user,
+      @required this.postCount});
 
   final GestureTapCallback showAllUserPost;
   final Color fillColor;
@@ -56,6 +56,8 @@ class PostOwnerState extends State<PostOwner> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return FutureBuilder<FirebaseUser>(
         future: FirebaseAuth.instance.currentUser(),
         builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
@@ -77,29 +79,28 @@ class PostOwnerState extends State<PostOwner> {
 
   Padding buildUserInformation(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+      padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockSizeHorizontal),
       child: Column(
         children: <Widget>[
           Row(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 10),
+                padding: EdgeInsets.only(
+                    left: SizeConfig.blockSizeHorizontal * 1.5,
+                    right: SizeConfig.blockSizeHorizontal * 2),
                 child: Column(
                   children: <Widget>[
                     ClipOval(
                       child: Container(
-                        height: 40,
-                        width: 40,
+                        height: SizeConfig.blockSizeVertical * 6,
+                        width: SizeConfig.blockSizeHorizontal * 10,
                         color: colorDeepPurple400,
                         child: Center(
                           child: Text(
                             _postOwner != null && _postOwner.name != null
                                 ? _postOwner.name[0].toUpperCase()
                                 : 'e',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
+                            style: SizeConfig.styleTitleWhite,
                           ),
                         ),
                       ),
@@ -112,7 +113,8 @@ class PostOwnerState extends State<PostOwner> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
+                      padding:
+                          EdgeInsets.only(bottom: SizeConfig.blockSizeVertical),
                       child: Row(
                         children: <Widget>[
                           Text(
@@ -124,19 +126,27 @@ class PostOwnerState extends State<PostOwner> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
+                      padding:
+                          EdgeInsets.only(top: SizeConfig.blockSizeVertical),
                       child: Row(
                         children: <Widget>[
-                          Text('Utilisateur privé', style: SizeConfig.styleGreyDetail,),
+                          Text(
+                            'Utilisateur privé',
+                            style: SizeConfig.styleGreyDetail,
+                          ),
                         ],
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
+                      padding:
+                          EdgeInsets.only(top: SizeConfig.blockSizeVertical),
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.sentiment_satisfied),
-                          Text('Satisfaction: TOP', style: SizeConfig.styleGreyDetail,),
+                          Text(
+                            'Satisfaction: TOP',
+                            style: SizeConfig.styleGreyDetail,
+                          ),
                         ],
                       ),
                     ),
@@ -152,8 +162,8 @@ class PostOwnerState extends State<PostOwner> {
                           borderRadius: BorderRadius.all(Radius.circular(5.0)),
                           child: Container(
                             color: colorDeepPurple400,
-                            height: 20,
-                            width: 20,
+                            height: SizeConfig.blockSizeVertical * 3,
+                            width: SizeConfig.blockSizeHorizontal * 5,
                             child: Center(
                               child: Text(
                                 widget.postCount.toString(),
@@ -175,7 +185,7 @@ class PostOwnerState extends State<PostOwner> {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 8.0),
+            padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
             child: buildContactInformation(context),
           ),
         ],
@@ -193,13 +203,13 @@ class PostOwnerState extends State<PostOwner> {
             splashColor: Colors.white,
             iconColor: Colors.white,
             text: 'Fais moi un SMS',
-            textStyle:
-                TextStyle(color: Colors.white, fontSize: SizeConfig.BUTTON_FONT_SIZE),
+            textStyle: TextStyle(
+                color: Colors.white, fontSize: SizeConfig.BUTTON_FONT_SIZE),
             onPressed: () => _sendSMS(context),
           ),
         ),
         SizedBox(
-          width: 4.0,
+          width: SizeConfig.blockSizeHorizontal,
         ),
         widget.post.phoneNumber != null
             ? Expanded(
@@ -210,13 +220,14 @@ class PostOwnerState extends State<PostOwner> {
                   iconColor: Colors.white,
                   text: isLogedIn ? widget.post.phoneNumber : 'Appele moi',
                   textStyle: TextStyle(
-                      color: Colors.white, fontSize: SizeConfig.BUTTON_FONT_SIZE),
+                      color: Colors.white,
+                      fontSize: SizeConfig.BUTTON_FONT_SIZE),
                   onPressed: () => _callSaler(context),
                 ),
               )
             : Container(),
         SizedBox(
-          width: 10.0,
+          width: SizeConfig.blockSizeHorizontal * 2,
         ),
         Icon(
           Icons.share,
@@ -246,7 +257,8 @@ class PostOwnerState extends State<PostOwner> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              return ChatPage(messages: messagesSentOrReceived, post: widget.post);
+              return ChatPage(
+                  messages: messagesSentOrReceived, post: widget.post);
             },
           ),
         );
@@ -262,7 +274,6 @@ class PostOwnerState extends State<PostOwner> {
             ),
             Colors.blue.shade300,
             8);
-
       }
     } else {
       Navigator.of(context).pushReplacement(
@@ -306,5 +317,4 @@ class PostOwnerState extends State<PostOwner> {
 
     setState(() {});
   }
-
 }

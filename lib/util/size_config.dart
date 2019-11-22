@@ -91,7 +91,7 @@ class SizeConfig {
 
     styleGreyDetail = new TextStyle(
       color: Colors.black45,
-      fontSize: SizeConfig.safeBlockHorizontal * 3,
+      fontSize: SizeConfig.safeBlockHorizontal * 4,
     );
 
     styleSubtitleWhite = new TextStyle(

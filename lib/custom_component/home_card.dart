@@ -62,8 +62,8 @@ class _HomeCardState extends State<HomeCard> {
         child: _buildHomeCard(context, widget.height, widget.width),
       ),
       Positioned(
-        top: 10,
-        right: 15,
+        top: SizeConfig.blockSizeVertical * 1.5,
+        right: SizeConfig.blockSizeHorizontal * 4,
         child: InkWell(
           onTap: () => updateIconFavorit(),
           child: CircleAvatar(
@@ -240,12 +240,12 @@ class _HomeCardState extends State<HomeCard> {
     // A new container
     // The height and width are arbitrary numbers for styling.
     return Padding(
-      padding: const EdgeInsets.only(left:15.0),
+      padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 5),
       child: Container(
         height: height,
         width: width,
-        padding: EdgeInsets.all(10.0),
-        margin: EdgeInsets.only(right: 20, bottom: 10, top: 10),
+        padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockSizeHorizontal * 3, vertical: SizeConfig.blockSizeVertical * 3),
+        margin: EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 3, top: SizeConfig.blockSizeVertical * 2),
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
@@ -304,7 +304,7 @@ class _HomeCardState extends State<HomeCard> {
       Icon icon = Icon(
         Icons.star,
         color: colorDeepPurple300,
-        size: 10,
+        size: SizeConfig.BUTTON_FONT_SIZE,
       );
 
       widgetList.add(icon);
