@@ -45,7 +45,6 @@ class _NavigationPageState extends State<NavigationPage> {
                     padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 10, top: SizeConfig.blockSizeVertical * 25),
                     //padding: EdgeInsets.only(left: 10, top: 25),
                     constraints: BoxConstraints.expand(height: SizeConfig.screenHeight / 5),
-                    //constraints: BoxConstraints.expand(height: itemHeight / 5),
                     decoration: BoxDecoration(
                       gradient: new LinearGradient(
                           colors: [colorDeepPurple400, colorDeepPurple300],
@@ -62,7 +61,7 @@ class _NavigationPageState extends State<NavigationPage> {
                   Container(
                     margin: EdgeInsets.only(top: SizeConfig.safeBlockVertical * 7),
                     constraints:
-                        BoxConstraints.expand(height: SizeConfig.safeBlockVertical * 85),
+                        BoxConstraints.expand(height: SizeConfig.safeBlockVertical * 90),
                     child: _widgetOptions.elementAt(_localSelectedIndex),
                   ),
                 ],

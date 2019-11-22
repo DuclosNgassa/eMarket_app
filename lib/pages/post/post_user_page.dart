@@ -14,7 +14,6 @@ class PostUserPage extends StatefulWidget {
 }
 
 class _PostUserPageState extends State<PostUserPage> {
-
   @override
   void initState() {
     super.initState();
@@ -23,22 +22,19 @@ class _PostUserPageState extends State<PostUserPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    var size = MediaQuery.of(context).size;
-    /*24 is for notification bar on Android*/
-    final double deviceHeight = size.height;
-    final double deviceWidth = size.width;
 
     return Container(
       child: Scaffold(
         body: Column(
-          //padding: const EdgeInsets.symmetric(horizontal: 16.0),
           children: <Widget>[
             Stack(
               children: <Widget>[
                 Container(
-                  //padding: EdgeInsets.only(left: 10, top: 25),
-                  padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 10, top: SizeConfig.blockSizeVertical * 25),
-                  constraints: BoxConstraints.expand(height: SizeConfig.screenHeight / 6),
+                  padding: EdgeInsets.only(
+                      left: SizeConfig.blockSizeHorizontal * 5,
+                      top: SizeConfig.blockSizeVertical * 5),
+                  constraints: BoxConstraints.expand(
+                      height: SizeConfig.screenHeight / 6),
                   decoration: BoxDecoration(
                       gradient: new LinearGradient(
                           colors: [colorDeepPurple400, colorDeepPurple300],
@@ -52,10 +48,7 @@ class _PostUserPageState extends State<PostUserPage> {
                   child: _buildTitle(),
                 ),
                 Container(
-                    margin: EdgeInsets.only(top: SizeConfig.safeBlockVertical * 7),
-                  //margin: EdgeInsets.only(top: 130),
-                  constraints: BoxConstraints.expand(height: deviceHeight * 0.72),
-                  //constraints: BoxConstraints.expand(height: SizeConfig.safeBlockVertical * 85),
+                  margin: EdgeInsets.only(top: SizeConfig.screenHeight * 0.125),
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -64,7 +57,7 @@ class _PostUserPageState extends State<PostUserPage> {
                         children: <Widget>[
                           new Container(
                             constraints: BoxConstraints.expand(
-                                height: deviceHeight * 0.72),
+                                height: SizeConfig.screenHeight * 0.845),
                             child: buildMyPostListView(),
                           ),
                         ],
@@ -82,38 +75,37 @@ class _PostUserPageState extends State<PostUserPage> {
 
   Container _buildTitle() {
     return Container(
-        child: Padding(
-          padding: EdgeInsets.only(top: 10, left: 10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    child: new Text(
-                      "List des annonces de " + widget.posts.elementAt(0).useremail,
-                      style: SizeConfig.styleTitleWhite,
-                    ),
+      child: Padding(
+        padding: EdgeInsets.only(top: 10, left: 10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: new Text(
+                    "List des annonces de " +
+                        widget.posts.elementAt(0).useremail,
+                    style: SizeConfig.styleTitleWhite,
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
+      ),
     );
   }
 
   Widget buildMyPostListView() {
-    var size = MediaQuery.of(context).size;
-    /*24 is for notification bar on Android*/
-    final double deviceHeight = size.height;
-    final double deviceWidth = size.width;
-
-    return ListView.separated(
-        itemBuilder: (context, index) => HomeCard(widget.posts.elementAt(index), new List(), 100, deviceWidth - 20),
-        separatorBuilder: (context, index) => Divider(),
+    return ListView.builder(
+        itemBuilder: (context, index) => HomeCard(
+            widget.posts.elementAt(index),
+            new List(),
+            SizeConfig.blockSizeVertical * 18,
+            SizeConfig.screenWidth - SizeConfig.blockSizeHorizontal * 10),
+        //separatorBuilder: (context, index) => Divider(),
         itemCount: widget.posts.length);
   }
-
 }

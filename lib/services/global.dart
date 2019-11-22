@@ -34,10 +34,9 @@ const URL_MESSAGES_BY_SENDER = URL_MESSAGES + "/sender/";
 const URL_MESSAGES_BY_RECEIVER = URL_MESSAGES + "/receiver/";
 
 const HOMEPAGE = 0;
-const SEARCHPAGE = 1;
-const POSTPAGE = 2;
-const ACCOUNTPAGE = 3;
-const MESSAGEPAGE = 4;
+const POSTPAGE = 1;
+const ACCOUNTPAGE = 2;
+const MESSAGEPAGE = 3;
 
 const String USER_EMAIL = "userEmail";
 const String USER_NAME = "userName";
@@ -50,82 +49,3 @@ Color colorRed = Colors.redAccent;
 Color colorWhite = Colors.white;
 Color colorTransparent = Colors.transparent;
 Color colorBlue = Colors.blue;
-
-const double BUTTON_FONT_SIZE = 10;
-
-/*
-TextStyle formStyle = new TextStyle(
-    color: Colors.black,
-    fontSize: 12);
-*/
-
-/*
-TextStyle radioButtonStyle = new TextStyle(
-    //fontFamily: 'Helvetica',
-    color: Colors.black,
-    fontSize: 10);
-*/
-/*
-TextStyle priceStyle = new TextStyle(
-    fontFamily: 'Avenir',
-    color: colorDeepPurple500,
-    fontWeight: FontWeight.bold,
-    fontSize: 10);
-*/
-
-/*
-TextStyle titleStyle = new TextStyle(
-    fontFamily: 'Avenir',
-    color: Colors.black,
-    fontWeight: FontWeight.bold,
-    fontStyle: FontStyle.italic,
-    fontSize: 12);
-*/
-
-/*
-TextStyle cityStyle = new TextStyle(
-  fontFamily: 'Avenir',
-  color: Colors.black45,
-  fontSize: 12,
-);
-*/
-
-//TextStyle normalStyle = new TextStyle(color: Colors.black, fontSize: 12);
-//TextStyle normalStyleWhite = new TextStyle(color: Colors.white, fontSize: 15);
-
-/*
-TextStyle styleButtonWhite = new TextStyle(
-  color: Colors.white,
-  fontSize: 12,
-);
-*/
-
-/*
-TextStyle priceDetailStyle = new TextStyle(
-    color: colorDeepPurple500, fontWeight: FontWeight.bold, fontSize: 15);
-*/
-
-/*
-TextStyle titleDetailStyle = new TextStyle(
-    color: Colors.black,
-    fontWeight: FontWeight.bold,
-    fontStyle: FontStyle.italic,
-    fontSize: 20);
-*/
-
-/*
-TextStyle styleTitleWhite = new TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.bold,
-    fontStyle: FontStyle.italic,
-    fontSize: 20);
-*/
-
-/*
-TextStyle styleSubtitleWhite = new TextStyle(
-    color: Colors.white, fontStyle: FontStyle.italic, fontSize: 15);
-*/
-
-//TextStyle greyDetailStyle = new TextStyle(color: Colors.black45, fontSize: 12);
-
-//TextStyle normalDetailStyle = new TextStyle(color: Colors.black, fontSize: 20);

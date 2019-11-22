@@ -56,7 +56,7 @@ class _MessagePageState extends State<MessagePage> {
             return Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
+                  padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 5),
                   child: new Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -67,9 +67,12 @@ class _MessagePageState extends State<MessagePage> {
                     ],
                   ),
                 ),
-                new Container(
-                  constraints: BoxConstraints.expand(height: itemHeight * 0.70),
-                  child: buildMyMessageListView(),
+                Padding(
+                  padding: EdgeInsets.only(top: SizeConfig.blockSizeHorizontal * 5),
+                  child: new Container(
+                    constraints: BoxConstraints.expand(height: SizeConfig.screenHeight * 0.75),
+                    child: buildMyMessageListView(),
+                  ),
                 ),
               ],
             );

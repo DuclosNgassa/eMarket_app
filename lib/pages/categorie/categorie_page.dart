@@ -1,7 +1,6 @@
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/services/global.dart';
-import 'package:emarket_app/services/global.dart' as prefix0;
 import 'package:flutter/material.dart';
 
 import '../../services/categorie_service.dart';

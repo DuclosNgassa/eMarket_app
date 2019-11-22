@@ -13,6 +13,9 @@ class SizeConfig {
   static double _safeAreaVertical;
   static double safeBlockHorizontal;
   static double safeBlockVertical;
+
+  static double BUTTON_FONT_SIZE;
+
   static TextStyle styleTitleBlack;
   static TextStyle styleCity;
   static TextStyle stylePrice;
@@ -32,6 +35,8 @@ class SizeConfig {
     screenHeight = _mediaQueryData.size.height;
     blockSizeHorizontal = screenWidth / 100;
     blockSizeVertical = screenHeight / 100;
+
+    BUTTON_FONT_SIZE = blockSizeHorizontal * 3;
 
     _safeAreaHorizontal =
         _mediaQueryData.padding.left + _mediaQueryData.padding.right;

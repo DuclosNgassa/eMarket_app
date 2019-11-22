@@ -47,10 +47,8 @@ class _UserMessagePageState extends State<UserMessagePage> {
             Stack(
               children: <Widget>[
                 Container(
-                  //padding: EdgeInsets.only(left: 10, top: 25),
-                  padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 10, top: SizeConfig.blockSizeVertical * 25),
-                  //constraints: BoxConstraints.expand(height: itemHeight / 5),
-                  constraints: BoxConstraints.expand(height: SizeConfig.screenHeight / 5),
+                  padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 5, top: SizeConfig.blockSizeVertical * 5,),
+                  constraints: BoxConstraints.expand(height: SizeConfig.screenHeight / 6),
                   decoration: BoxDecoration(
                       gradient: new LinearGradient(
                           colors: [colorDeepPurple400, colorDeepPurple300],
@@ -64,9 +62,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
                   child: _buildTitle(),
                 ),
                 Container(
-                  //margin: EdgeInsets.only(top: 135),
-                    margin: EdgeInsets.only(top: SizeConfig.safeBlockVertical * 7),
-                  //constraints: BoxConstraints.expand(height: itemHeight * 0.78),
+                    margin: EdgeInsets.only(top: SizeConfig.screenHeight * 0.125),
                   constraints: BoxConstraints.expand(height: SizeConfig.safeBlockVertical * 85),
                   child: SingleChildScrollView(
                     child: Padding(
@@ -76,7 +72,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
                         children: <Widget>[
                           new Container(
                             constraints: BoxConstraints.expand(
-                                height: itemHeight * 0.67),
+                                height: SizeConfig.screenHeight * 0.845),
                             child: buildMyMessageListView(),
                           ),
                         ],
@@ -97,7 +93,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
       child: new RawMaterialButton(
           onPressed: () => _showPostDetailPage(widget.post),
         child: Padding(
-          padding: EdgeInsets.only(top: 10),
+          padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -114,11 +110,15 @@ class _UserMessagePageState extends State<UserMessagePage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(top: 40.0, right: 8.0),
+                    padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical, right: SizeConfig.blockSizeHorizontal),
                     child: Text(
                       'Annonce: ' + widget.userMessage.elementAt(0).post.title,
                       style: SizeConfig.styleSubtitleWhite,
                     ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: SizeConfig.blockSizeHorizontal),
+                    child: Icon(Icons.arrow_forward_ios, color: colorWhite,),
                   ),
                 ],
               ),

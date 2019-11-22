@@ -348,7 +348,7 @@ class _AccountState extends State<AccountPage>
               iconColor: Colors.white,
               text: 'Se deconnecter',
               textStyle:
-                  TextStyle(color: Colors.white, fontSize: BUTTON_FONT_SIZE),
+                  TextStyle(color: Colors.white, fontSize: SizeConfig.BUTTON_FONT_SIZE),
               onPressed: () => _logOut(),
             );
           }

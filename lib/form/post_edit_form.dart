@@ -114,9 +114,6 @@ class _PostEditFormState extends State<PostEditForm> {
               Stack(
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.only(
-                        left: SizeConfig.blockSizeHorizontal * 10,
-                        top: SizeConfig.blockSizeVertical * 25),
                     constraints: BoxConstraints.expand(
                         height: SizeConfig.screenHeight / 5),
                     decoration: BoxDecoration(
@@ -134,7 +131,7 @@ class _PostEditFormState extends State<PostEditForm> {
                   ),
                   Container(
                     constraints: BoxConstraints.expand(
-                        height: SizeConfig.safeBlockVertical * 85),
+                        height: SizeConfig.screenHeight),
                     child: buildEditForm(),
                   ),
                 ],
@@ -160,14 +157,16 @@ class _PostEditFormState extends State<PostEditForm> {
                     key: _formKey,
                     autovalidate: false,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 3.0),
                       child: Column(
                         children: <Widget>[
-                          Text(
-                            "Creation d´une annonce",
-                            style: SizeConfig.styleTitleWhite,
+                          Padding(
+                            padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 5.0),
+                            child: Text(
+                              "Modification d´une annonce",
+                              style: SizeConfig.styleTitleWhite,
+                            ),
                           ),
-
                           oldPostImages.length > 0
                               ? Container(
                                   alignment: Alignment.center,
@@ -211,7 +210,7 @@ class _PostEditFormState extends State<PostEditForm> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 16.0),
+                                  padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
                                   child: Text(
                                     "Categorie",
                                     style: SizeConfig.styleForm,
@@ -266,7 +265,7 @@ class _PostEditFormState extends State<PostEditForm> {
                               ),
                               Expanded(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 7.0),
+                                  padding: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical),
                                   child: FormField(
                                     builder: (FormFieldState state) {
                                       return InputDecorator(
@@ -404,7 +403,7 @@ class _PostEditFormState extends State<PostEditForm> {
                           Row(
                             children: <Widget>[
                               Container(
-                                padding: const EdgeInsets.only(top: 10.0),
+                                padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
                                 child: RaisedButton(
                                   shape: const StadiumBorder(),
                                   color: Colors.red,
@@ -415,7 +414,7 @@ class _PostEditFormState extends State<PostEditForm> {
                               ),
                               Expanded(child: SizedBox()),
                               Container(
-                                padding: const EdgeInsets.only(top: 10.0),
+                                padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
                                 child: RaisedButton(
                                   shape: const StadiumBorder(),
                                   color: colorDeepPurple400,

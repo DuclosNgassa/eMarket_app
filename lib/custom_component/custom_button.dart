@@ -1,3 +1,4 @@
+import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
@@ -20,13 +21,15 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return RawMaterialButton(
       onPressed: onPressed,
       fillColor: fillColor,
       splashColor: splashColor,
       shape: const StadiumBorder(),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+        padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockSizeHorizontal * 2.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[

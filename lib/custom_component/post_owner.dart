@@ -194,7 +194,7 @@ class PostOwnerState extends State<PostOwner> {
             iconColor: Colors.white,
             text: 'Fais moi un SMS',
             textStyle:
-                TextStyle(color: Colors.white, fontSize: BUTTON_FONT_SIZE),
+                TextStyle(color: Colors.white, fontSize: SizeConfig.BUTTON_FONT_SIZE),
             onPressed: () => _sendSMS(context),
           ),
         ),
@@ -210,7 +210,7 @@ class PostOwnerState extends State<PostOwner> {
                   iconColor: Colors.white,
                   text: isLogedIn ? widget.post.phoneNumber : 'Appele moi',
                   textStyle: TextStyle(
-                      color: Colors.white, fontSize: BUTTON_FONT_SIZE),
+                      color: Colors.white, fontSize: SizeConfig.BUTTON_FONT_SIZE),
                   onPressed: () => _callSaler(context),
                 ),
               )

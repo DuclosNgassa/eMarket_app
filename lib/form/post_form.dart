@@ -88,14 +88,11 @@ class PostFormState extends State<PostForm> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    TextStyle textStyle = TextStyle(
-        color: Colors.black, fontSize: SizeConfig.safeBlockHorizontal * 4);
-
     return Form(
       key: _formKey,
       autovalidate: false,
       child: Padding(
-        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
           children: <Widget>[
             Container(
@@ -142,7 +139,7 @@ class PostFormState extends State<PostForm> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
+                    padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
                     child: Text(
                       "Categorie",
                       style: SizeConfig.styleForm,
@@ -193,7 +190,7 @@ class PostFormState extends State<PostForm> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 7.0),
+                    padding: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical),
                     child: FormField(
                       builder: (FormFieldState state) {
                         return InputDecorator(
@@ -319,11 +316,11 @@ class PostFormState extends State<PostForm> {
               onSaved: (val) => newPost.description = val,
             ),
             Container(
-              padding: const EdgeInsets.only(top: 10.0),
+              padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
               child: RaisedButton(
                 shape: const StadiumBorder(),
                 color: colorDeepPurple400,
-                child: Text('Transmettre', style: SizeConfig.styleButtonWhite),
+                child: Text('Publier', style: SizeConfig.styleButtonWhite),
                 onPressed: _submitForm,
               ),
             ),

@@ -48,43 +48,15 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       appBar: new AppBar(
         backgroundColor: colorDeepPurple300,
         title: _buildTitle(widget.post),
+        automaticallyImplyLeading: false,
       ),
       body: new Column(
         //modified
         children: <Widget>[
           new Flexible(
-            child: new ListView.builder(
-              reverse: true,
-              itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Slidable(
-                  actionPane: SlidableBehindActionPane(),
-                  actionExtentRatio: 0.25,
-                  child: buildMessageItem(index),
-                  actions: <Widget>[
-                    IconSlideAction(
-                        caption: 'Modifier',
-                        color: colorBlue,
-                        icon: Icons.edit,
-                        onTap:
-                            null //() => showPostEditForm(myPosts.elementAt(index)),
-                        )
-                  ],
-                  secondaryActions: <Widget>[
-                    IconSlideAction(
-                        caption: 'Supprimer',
-                        color: colorRed,
-                        icon: Icons.delete,
-                        onTap:
-                            null //() => deletePost(myPosts.elementAt(index).id, index),
-                        ),
-                  ],
-                ),
-              ),
-              itemCount: _messages.length,
-            ),
+            child: buildChatListView(),
           ),
-          new Divider(height: 1.0),
+          new Divider(height: SizeConfig.blockSizeVertical * 0.5),
           new Container(
             decoration: new BoxDecoration(color: Theme.of(context).cardColor),
             child: _buildTextComposer(), //modified
@@ -94,38 +66,82 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
+  ListView buildChatListView() {
+    return new ListView.builder(
+      reverse: true,
+      itemBuilder: (context, index) => Padding(
+        padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical),
+        child: Slidable(
+          actionPane: SlidableBehindActionPane(),
+          actionExtentRatio: 0.25,
+          child: buildMessageItem(index),
+          actions: <Widget>[
+            IconSlideAction(
+                caption: 'Modifier',
+                color: colorBlue,
+                icon: Icons.edit,
+                onTap: null //() => showPostEditForm(myPosts.elementAt(index)),
+                )
+          ],
+          secondaryActions: <Widget>[
+            IconSlideAction(
+                caption: 'Supprimer',
+                color: colorRed,
+                icon: Icons.delete,
+                onTap:
+                    null //() => deletePost(myPosts.elementAt(index).id, index),
+                ),
+          ],
+        ),
+      ),
+      itemCount: _messages.length,
+    );
+  }
+
   Padding buildMessageItem(int index) {
     if (userEmail == _messages.elementAt(index).sender) {
       return Padding(
-        padding: const EdgeInsets.only(right: 50.0),
-        child: Container(
-          color: colorWhite,
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: colorDeepPurple300,
-              child: Text(_messages.elementAt(index).sender[0].toUpperCase()),
-              foregroundColor: colorWhite,
+        padding: EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 20),
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(16),
+            bottomRight: Radius.circular(16),
+          ),
+          child: Container(
+            color: Colors.deepPurple[100],
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: colorDeepPurple300,
+                child: Text(_messages.elementAt(index).sender[0].toUpperCase()),
+                foregroundColor: colorWhite,
+              ),
+              title: Text(_messages.elementAt(index).body),
+              subtitle: Text(DateConverter.convertToString(
+                  _messages.elementAt(index).created_at)),
             ),
-            title: Text(_messages.elementAt(index).body),
-            subtitle: Text(DateConverter.convertToString(
-                _messages.elementAt(index).created_at)),
           ),
         ),
       );
     } else
       return Padding(
-        padding: const EdgeInsets.only(left: 50.0),
-        child: Container(
-          color: Colors.black26,
-          child: ListTile(
-            trailing: CircleAvatar(
-              backgroundColor: colorDeepPurple300,
-              child: Text(_messages.elementAt(index).sender[0].toUpperCase()),
-              foregroundColor: colorWhite,
+        padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 20),
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            bottomLeft: Radius.circular(16),
+          ),
+          child: Container(
+            color: Colors.black26,
+            child: ListTile(
+              trailing: CircleAvatar(
+                backgroundColor: colorDeepPurple300,
+                child: Text(_messages.elementAt(index).sender[0].toUpperCase()),
+                foregroundColor: colorWhite,
+              ),
+              title: Text(_messages.elementAt(index).body),
+              subtitle: Text(DateConverter.convertToString(
+                  _messages.elementAt(index).created_at)),
             ),
-            title: Text(_messages.elementAt(index).body),
-            subtitle: Text(DateConverter.convertToString(
-                _messages.elementAt(index).created_at)),
           ),
         ),
       );
@@ -135,22 +151,26 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     return new IconTheme(
       data: new IconThemeData(color: Theme.of(context).accentColor),
       child: new Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        margin: EdgeInsets.symmetric(
+            horizontal: SizeConfig.blockSizeHorizontal * 2),
         child: new Row(
           children: <Widget>[
             new Flexible(
               child: new TextField(
                 controller: _textEditingController,
-                //onSubmitted: _handleSubmitted,
                 decoration: new InputDecoration.collapsed(
                   hintText: "Envoyez un message",
                 ),
               ),
             ),
             new Container(
-              margin: new EdgeInsets.symmetric(horizontal: 4.0),
+              margin: EdgeInsets.symmetric(
+                  horizontal: SizeConfig.blockSizeHorizontal),
               child: new IconButton(
-                icon: new Icon(Icons.send),
+                icon: new Icon(
+                  Icons.send,
+                  color: colorDeepPurple300,
+                ),
                 onPressed: () => _handleSubmitted(_textEditingController.text),
               ),
             )
@@ -208,27 +228,43 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     return Container(
       child: RawMaterialButton(
         onPressed: () => _showPostDetailPage(widget.post),
-        child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                new Text(
-                  "Chat",
-                  style: SizeConfig.styleTitleWhite,
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                new Text(
-                  "Annonce: " + widget.post.title,
-                  style: SizeConfig.styleSubtitleWhite,
-                ),
-              ],
-            )
-          ],
+        child: Padding(
+          padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical),
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  new Text(
+                    "Chat",
+                    style: SizeConfig.styleTitleWhite,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: SizeConfig.blockSizeVertical,
+                        right: SizeConfig.blockSizeHorizontal),
+                    child: new Text(
+                      "Annonce: " + widget.post.title,
+                      style: SizeConfig.styleSubtitleWhite,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        right: SizeConfig.blockSizeHorizontal),
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: colorWhite,
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
