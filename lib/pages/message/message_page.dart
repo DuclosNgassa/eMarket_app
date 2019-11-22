@@ -120,24 +120,6 @@ class _MessagePageState extends State<MessagePage> {
                           " Message"),
                 ),
               ),
-/*
-              actions: <Widget>[
-                IconSlideAction(
-                  caption: 'Ouvrir',
-                  color: colorDeepPurple300,
-                  icon: Icons.visibility,
-                  onTap: () => openUserMessage(postMessages.elementAt(index)),
-                ),
-              ],
-              secondaryActions: <Widget>[
-                IconSlideAction(
-                  caption: 'Supprimer',
-                  color: colorRed,
-                  icon: Icons.delete,
-                  onTap: null,//() => _showDeleteMessageDialog(postMessages.elementAt(index)., index),
-                ),
-              ],
-*/
             ),
         separatorBuilder: (context, index) => Divider(),
         itemCount: postMessages.length);

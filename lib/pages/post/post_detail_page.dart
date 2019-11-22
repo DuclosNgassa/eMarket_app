@@ -80,7 +80,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       height: SizeConfig.screenHeight * 0.9),
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: SizeConfig.blockSizeHorizontal * 2,
+                          vertical: SizeConfig.blockSizeVertical),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -155,14 +157,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           Row(
                             children: <Widget>[
                               Padding(
-                                padding: const EdgeInsets.only(right: 20),
+                                padding: EdgeInsets.only(
+                                    right: SizeConfig.blockSizeHorizontal * 5),
                                 child: Column(
                                   children: <Widget>[
                                     Row(
                                       children: <Widget>[
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 8.0),
+                                          padding: EdgeInsets.only(
+                                            right:
+                                                SizeConfig.blockSizeHorizontal,
+                                          ),
                                           child: Icon(Icons.calendar_today,
                                               color: colorDeepPurple300),
                                         ),
@@ -179,7 +184,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     children: <Widget>[
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(right: 8.0),
+                                             EdgeInsets.only(right: SizeConfig.blockSizeHorizontal),
                                         child: Icon(Icons.remove_red_eye,
                                             color: colorDeepPurple300),
                                       ),
@@ -191,7 +196,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             ],
                           ),
                           Divider(
-                            height: 20,
+                            height: SizeConfig.blockSizeVertical * 4,
                           ),
                           PostOwner(
                             postCount: posts.length,
@@ -286,7 +291,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
               );
             },
             child: Padding(
-              padding: const EdgeInsets.only(left: 8.0),
+              padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16.0),
                 child: Container(
