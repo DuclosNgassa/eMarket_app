@@ -3,7 +3,7 @@ import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/custom_component/post_owner.dart';
 import 'package:emarket_app/model/user.dart';
-import 'package:emarket_app/pages/post/images_detail.dart';
+import 'package:emarket_app/pages/image/images_detail.dart';
 import 'package:emarket_app/pages/post/post_user_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/image_service.dart';

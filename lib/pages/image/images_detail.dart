@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 class ImageDetailPage extends StatefulWidget {
@@ -14,14 +15,16 @@ class ImageDetailPage extends StatefulWidget {
   _ImageDetailState createState() => new _ImageDetailState();
 }
 
-var cardAspectRatio = 12.0 / 16.0;
-var widgetAspectRatio = cardAspectRatio * 1.2;
+var cardAspectRatio = 5.0 / 16.0;
+var widgetAspectRatio = cardAspectRatio * 2;
 final int IMAGESLENGTH = 4;
 
 class _ImageDetailState extends State<ImageDetailPage> {
   var currentPage = IMAGESLENGTH - 1.0;
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     PageController controller = widget.files != null ?
         PageController(initialPage: widget.files.length - 1) :  PageController(initialPage: widget.images.length - 1);
     controller.addListener(() {
@@ -50,8 +53,8 @@ class _ImageDetailState extends State<ImageDetailPage> {
           child: Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 12.0, right: 12.0, top: 30.0, bottom: 8.0),
+                padding: EdgeInsets.symmetric(
+                    horizontal: SizeConfig.blockSizeHorizontal * 2, vertical: SizeConfig.blockSizeVertical * 2),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
