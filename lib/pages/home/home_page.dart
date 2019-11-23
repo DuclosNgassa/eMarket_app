@@ -38,6 +38,7 @@ class _HomePageState extends State<HomePage> {
     SizeConfig().init(context);
 
     return Container(
+      height: SizeConfig.screenHeight,
       child: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
@@ -50,7 +51,8 @@ class _HomePageState extends State<HomePage> {
               background: Column(
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
+                    padding: EdgeInsets.only(
+                        left: SizeConfig.blockSizeHorizontal * 2),
                     child: Row(
                       children: <Widget>[
                         new Expanded(
@@ -100,19 +102,27 @@ class _HomePageState extends State<HomePage> {
             ),
             delegate: SliverChildListDelegate([_buildCategorieGridView()]),
           ),
-          SliverList(
+          SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 0,
+              crossAxisSpacing: 0,
+              childAspectRatio: 1.7,
+            ),
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                return HomeCard(
-                    postList.elementAt(index),
-                    myFavorits,
-                    SizeConfig.blockSizeVertical * 18,
-                    SizeConfig.screenWidth -
-                        SizeConfig.blockSizeHorizontal * 10);
+                return Padding(
+                  padding: EdgeInsets.only(left: index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 3 : 0),
+                  child: HomeCard(
+                      postList.elementAt(index),
+                      myFavorits,
+                      SizeConfig.blockSizeVertical * 20,
+                      SizeConfig.screenWidth * 0.5 - 10),
+                );
               },
               childCount: postList.length,
             ),
-          )
+          ),
         ],
       ),
     );

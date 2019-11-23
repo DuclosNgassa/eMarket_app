@@ -1,10 +1,12 @@
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/services/global.dart' as prefix1;
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 
 import '../model/post.dart';
 import '../pages/post/post_detail_page.dart';
@@ -14,7 +16,6 @@ class HomeCard extends StatefulWidget {
   final List<Favorit> myFavorits;
   final double width;
   final double height;
-
 
   HomeCard(this.post, this.myFavorits, this.height, this.width);
 
@@ -28,7 +29,8 @@ class _HomeCardState extends State<HomeCard> {
   Favorit myFavoritToAdd = null;
   Favorit myFavoritToRemove = null;
   String renderUrl;
-  Icon favoritIcon = Icon(Icons.star_border, size: 30);
+  Icon favoritIcon = Icon(Icons.star_border, size: 30,);
+  final int  MAX_RATING = 5;
 
   FavoritService _favoritService = new FavoritService();
 
@@ -55,21 +57,19 @@ class _HomeCardState extends State<HomeCard> {
 
   @override
   Widget build(BuildContext context) {
-
     return Stack(children: <Widget>[
       InkWell(
         onTap: showPostDetailPage,
         child: _buildHomeCard(context, widget.height, widget.width),
       ),
       Positioned(
-        top: SizeConfig.blockSizeVertical * 1.5,
-        right: SizeConfig.blockSizeHorizontal * 4,
+        top: SizeConfig.blockSizeVertical,
+        right: SizeConfig.blockSizeHorizontal,
         child: InkWell(
           onTap: () => updateIconFavorit(),
           child: CircleAvatar(
-            backgroundColor: colorDeepPurple300,
+            backgroundColor: colorGrey100,
             child: favoritIcon,
-            //backgroundImage: getImage(),
           ),
         ),
       ),
@@ -239,76 +239,92 @@ class _HomeCardState extends State<HomeCard> {
 
     // A new container
     // The height and width are arbitrary numbers for styling.
-    return Padding(
-      padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 5),
-      child: Container(
-        height: height,
-        width: width,
-        padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockSizeHorizontal * 3, vertical: SizeConfig.blockSizeVertical * 3),
-        margin: EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 3, top: SizeConfig.blockSizeVertical * 2),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            new BoxShadow(
-              color: Colors.grey,
-              blurRadius: 20.0,
-            ),
-          ],
-          borderRadius: BorderRadius.all(Radius.circular(15)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Text(
+    return Container(
+      height: height,
+      width: width,
+      padding: EdgeInsets.symmetric(
+          horizontal: SizeConfig.blockSizeHorizontal * 2,
+          vertical: SizeConfig.blockSizeVertical),
+      margin: EdgeInsets.only(
+          right: SizeConfig.blockSizeHorizontal * 2,
+          top: SizeConfig.blockSizeVertical * 2),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          new BoxShadow(
+            color: Colors.grey,
+            blurRadius: 20.0,
+          ),
+        ],
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                  child: Text(widget.post.title,
+                      style: SizeConfig.styleTitleBlackCard)),
+            ],
+          ),
+          SizedBox(
+            height: SizeConfig.blockSizeVertical * 2,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: Text(
                   widget.post.fee.toString() + ' FCFA',
-                  style: SizeConfig.stylePrice,
+                  style: SizeConfig.stylePriceCard,
                 ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(child: Text(widget.post.title, style: SizeConfig.styleTitleBlack)),
-              ],
-            ),
-            Row(
-              children: _buildRating(widget.post.rating),
-            ),
-            Text(
-              Post.convertPostTypToStringForDisplay(widget.post.post_typ),
-              style: SizeConfig.styleTitleBlack,
-            ),
-          ],
-        ),
+              ),
+              Text(
+                Post.convertPostTypToStringForDisplay(widget.post.post_typ),
+                style: SizeConfig.styleNormalBlackCard,
+              ),
+            ],
+          ),
+          SizedBox(
+            height: SizeConfig.blockSizeVertical,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: _buildRating(widget.post.rating),
+          ),
+        ],
       ),
     );
   }
 
   List<Widget> _buildRating(int rating) {
-    SizeConfig().init(context);
 
     List<Widget> widgetList = new List();
+    Widget icon =  Icon(Icons.location_on, color:colorGrey400);
+
     Widget city = Expanded(
       child: Text(
         widget.post.city,
-        style: SizeConfig.styleCity,
+        style: SizeConfig.styleNormalBlack3,
       ),
     );
 
+    widgetList.add(icon);
     widgetList.add(city);
 
-    for (var i = 0; i < rating; i++) {
+    for (var i = 0; i < MAX_RATING; i++) {
       Icon icon = Icon(
         Icons.star,
-        color: colorDeepPurple300,
+        color: i < rating ? colorBlue : colorGrey300,
         size: SizeConfig.BUTTON_FONT_SIZE,
       );
 
       widgetList.add(icon);
     }
+
     return widgetList;
   }
 
@@ -325,5 +341,4 @@ class _HomeCardState extends State<HomeCard> {
           });
     }
   }
-
 }

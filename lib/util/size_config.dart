@@ -17,14 +17,18 @@ class SizeConfig {
   static double BUTTON_FONT_SIZE;
 
   static TextStyle styleTitleBlack;
+  static TextStyle styleTitleBlackCard;
   static TextStyle styleCity;
   static TextStyle stylePrice;
+  static TextStyle stylePriceCard;
   static TextStyle styleTitleWhite;
   static TextStyle styleNormalWhite;
+  static TextStyle styleNormalBlack;
+  static TextStyle styleNormalBlackCard;
+  static TextStyle styleNormalBlack3;
   static TextStyle styleButtonWhite;
   static TextStyle styleForm;
   static TextStyle styleRadioButton;
-  static TextStyle styleNormalBlack;
   static TextStyle styleGreyDetail;
   static TextStyle styleSubtitleWhite;
   static TextStyle styleSubtitleBlack;
@@ -51,6 +55,12 @@ class SizeConfig {
         fontStyle: FontStyle.italic,
         fontSize: SizeConfig.safeBlockHorizontal * 4);
 
+    styleTitleBlackCard = new TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.bold,
+        fontStyle: FontStyle.italic,
+        fontSize: SizeConfig.safeBlockHorizontal * 3);
+
     styleCity = new TextStyle(
         color: Colors.black45, fontSize: SizeConfig.safeBlockHorizontal * 3);
 
@@ -58,6 +68,11 @@ class SizeConfig {
         color: colorDeepPurple500,
         fontWeight: FontWeight.bold,
         fontSize: SizeConfig.safeBlockHorizontal * 4);
+
+    stylePriceCard = new TextStyle(
+        color: colorDeepPurple500,
+        fontWeight: FontWeight.bold,
+        fontSize: SizeConfig.safeBlockHorizontal * 3);
 
     styleTitleWhite = new TextStyle(
         color: Colors.white,
@@ -67,6 +82,21 @@ class SizeConfig {
     styleNormalWhite = new TextStyle(
       color: Colors.white,
       fontSize: SizeConfig.safeBlockHorizontal * 4,
+    );
+
+    styleNormalBlack = new TextStyle(
+      color: Colors.black,
+      fontSize: SizeConfig.safeBlockHorizontal * 4,
+    );
+
+    styleNormalBlackCard = new TextStyle(
+      color: Colors.black,
+      fontSize: SizeConfig.safeBlockHorizontal * 3,
+    );
+
+    styleNormalBlack3 = new TextStyle(
+      color: Colors.black,
+      fontSize: SizeConfig.safeBlockHorizontal * 3,
     );
 
     styleButtonWhite = new TextStyle(
@@ -80,11 +110,6 @@ class SizeConfig {
     );
 
     styleRadioButton = new TextStyle(
-      color: Colors.black,
-      fontSize: SizeConfig.safeBlockHorizontal * 4,
-    );
-
-    styleNormalBlack = new TextStyle(
       color: Colors.black,
       fontSize: SizeConfig.safeBlockHorizontal * 4,
     );

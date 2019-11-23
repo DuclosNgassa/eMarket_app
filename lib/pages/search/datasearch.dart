@@ -31,7 +31,6 @@ class DataSearch extends SearchDelegate<Post> {
             Theme.of(context).textTheme.title.copyWith(color: Colors.white),
         labelStyle:
             Theme.of(context).textTheme.title.copyWith(color: Colors.white),
-
       ),
     );
   }
@@ -80,10 +79,21 @@ class DataSearch extends SearchDelegate<Post> {
                 post.title.toLowerCase().contains(query.toLowerCase()))
             .toList();
 
-    return ListView.builder(
-      itemBuilder: (context, index) =>
-          HomeCard(resultList[index], myFavorits, SizeConfig.blockSizeVertical * 18, SizeConfig.screenWidth - 20),
-      itemCount: resultList.length,
+    return GridView.count(
+      // Create a grid with 2 columns. If you change the scrollDirection to
+      // horizontal, this produces 2 rows.
+      crossAxisCount: 2,
+      mainAxisSpacing: 0,
+      crossAxisSpacing: 0,
+      childAspectRatio: 1.5,
+
+      children: List.generate(resultList.length, (index) {
+        return HomeCard(
+            resultList[index],
+            myFavorits,
+            SizeConfig.blockSizeVertical * 18,
+            SizeConfig.screenWidth * 0.5 - 10);
+      }),
     );
   }
 

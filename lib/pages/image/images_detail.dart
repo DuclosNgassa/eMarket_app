@@ -15,8 +15,8 @@ class ImageDetailPage extends StatefulWidget {
   _ImageDetailState createState() => new _ImageDetailState();
 }
 
-var cardAspectRatio = 5.0 / 16.0;
-var widgetAspectRatio = cardAspectRatio * 2;
+var cardAspectRatio = 13.0 / 16.0;
+var widgetAspectRatio = cardAspectRatio * 1.2;
 final int IMAGESLENGTH = 4;
 
 class _ImageDetailState extends State<ImageDetailPage> {
@@ -106,6 +106,8 @@ class CardScrollWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return new AspectRatio(
       aspectRatio: widgetAspectRatio,
       child: LayoutBuilder(builder: (context, contraints) {
@@ -114,6 +116,8 @@ class CardScrollWidget extends StatelessWidget {
 
         var safeWidth = width - 2 * padding;
         var safeHeight = height - 2 * padding;
+//        var safeWidth = SizeConfig.screenWidth - 2 * padding;
+//        var safeHeight = SizeConfig.screenHeight - 2 * padding;
 
         var heightOfPrimaryCard = safeHeight;
         var widthOfPrimaryCard = heightOfPrimaryCard * cardAspectRatio;

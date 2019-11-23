@@ -96,7 +96,7 @@ class _AccountState extends State<AccountPage>
                           ],
                         ),
                       ),
-                      expandedHeight: SizeConfig.screenHeight * 0.17,
+                      expandedHeight: SizeConfig.screenHeight * 0.19,
                       bottom: TabBar(
                         labelStyle: SizeConfig.styleNormalWhite,
                         //isScrollable: true,

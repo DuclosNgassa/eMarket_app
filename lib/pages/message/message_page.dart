@@ -41,11 +41,6 @@ class _MessagePageState extends State<MessagePage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    var size = MediaQuery.of(context).size;
-    /*24 is for notification bar on Android*/
-    final double itemHeight = size.height;
-    final double itemWidth = size.width;
-
     return FutureBuilder<FirebaseUser>(
         future: FirebaseAuth.instance.currentUser(),
         builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
@@ -68,9 +63,9 @@ class _MessagePageState extends State<MessagePage> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: SizeConfig.blockSizeHorizontal * 5),
+                  padding: EdgeInsets.only(top: SizeConfig.blockSizeHorizontal * 8),
                   child: new Container(
-                    constraints: BoxConstraints.expand(height: SizeConfig.screenHeight * 0.75),
+                    constraints: BoxConstraints.expand(height: SizeConfig.screenHeight * 0.78),
                     child: buildMyMessageListView(),
                   ),
                 ),

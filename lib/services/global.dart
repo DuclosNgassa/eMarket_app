@@ -49,3 +49,6 @@ Color colorRed = Colors.redAccent;
 Color colorWhite = Colors.white;
 Color colorTransparent = Colors.transparent;
 Color colorBlue = Colors.blue;
+Color colorGrey400 = Colors.grey;
+Color colorGrey300 = Colors.grey[300];
+Color colorGrey100 = Colors.grey[100];
