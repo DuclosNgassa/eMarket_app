@@ -103,7 +103,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: SizeConfig.blockSizeVertical),
                           Row(
                             children: <Widget>[
                               Expanded(
@@ -112,41 +112,21 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   style: SizeConfig.stylePrice,
                                 ),
                               ),
-                              Expanded(
-                                child: Text(
-                                  Post.convertFeeTypToDisplay(
-                                      widget.post.fee_typ),
-                                  style: SizeConfig.stylePrice,
-                                ),
+                              Text(
+                                Post.convertFeeTypToDisplay(
+                                    widget.post.fee_typ),
+                                style: SizeConfig.stylePrice,
                               ),
                             ],
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: SizeConfig.blockSizeVertical),
                           Row(
                             children: _buildRating(widget.post.rating),
                           ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: <Widget>[
-                              Text(
-                                Post.convertPostTypToStringForDisplay(
-                                    widget.post.post_typ),
-                                style: SizeConfig.styleTitleBlack,
-                              ),
-                            ],
+                          SizedBox(height: SizeConfig.blockSizeVertical),
+                          Divider(
+                            height: SizeConfig.blockSizeVertical * 4,
                           ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  widget.post.description,
-                                  style: SizeConfig.styleNormalBlack,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Divider(height: 20),
                           Row(
                             children: <Widget>[
                               Padding(
@@ -171,13 +151,30 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   ],
                                 ),
                               ),
+                              Padding(
+                                padding: EdgeInsets.only(right:SizeConfig.blockSizeHorizontal),
+                                child: Icon(Icons.remove_red_eye,
+                                    color: colorDeepPurple300),
+                              ),
+                              Text(widget.post.count_view.toString()),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    Post.convertPostTypToStringForDisplay(
+                                        widget.post.post_typ),
+                                    style: SizeConfig.styleTitleBlack,
+                                  ),
+                                ),
+                              ),
+/*
                               Column(
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
                                       Padding(
                                         padding:
-                                             EdgeInsets.only(right: SizeConfig.blockSizeHorizontal),
+                                        EdgeInsets.only(right: SizeConfig.blockSizeHorizontal),
                                         child: Icon(Icons.remove_red_eye,
                                             color: colorDeepPurple300),
                                       ),
@@ -185,6 +182,36 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     ],
                                   )
                                 ],
+                              ),
+                              Text(
+                                Post.convertPostTypToStringForDisplay(
+                                    widget.post.post_typ),
+                                style: SizeConfig.styleTitleBlack,
+                              ),
+*/
+                            ],
+                          ),
+                          SizedBox(height: SizeConfig.blockSizeVertical),
+                          Divider(
+                            height: SizeConfig.blockSizeVertical * 4,
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Text(
+                                "Description",
+                                style: SizeConfig.styleTitleBlack,
+                                //style: titleDetailStyle,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: SizeConfig.blockSizeVertical),
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(
+                                  widget.post.description,
+                                  style: SizeConfig.styleNormalBlack,
+                                ),
                               ),
                             ],
                           ),
@@ -284,7 +311,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
               );
             },
             child: Padding(
-              padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
+              padding:
+                  EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16.0),
                 child: Container(

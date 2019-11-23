@@ -30,7 +30,8 @@ class _SearchParameterPageState extends State<SearchParameterPage> {
           top: false,
           bottom: false,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: SizeConfig.blockSizeVertical * 2),
+            padding: EdgeInsets.symmetric(
+                vertical: SizeConfig.blockSizeVertical * 2),
             child: CustomScrollView(
               slivers: <Widget>[
                 SliverList(

@@ -64,13 +64,13 @@ class PostOwnerState extends State<PostOwner> {
           if (snapshot.hasData) {
             isLogedIn = true;
             FirebaseUser user = snapshot.data; // this is your user instance
-            /// is because there is user already logged
+            // is because there is user already logged
             return new Container(
               child: buildUserInformation(context),
             );
           }
 
-          /// other way there is no user logged.
+          // other way there is no user logged.
           return new Container(
             child: buildUserInformation(context),
           );
@@ -154,9 +154,12 @@ class PostOwnerState extends State<PostOwner> {
                 ),
               ),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   Center(
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
                         ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(5.0)),
@@ -211,7 +214,7 @@ class PostOwnerState extends State<PostOwner> {
         SizedBox(
           width: SizeConfig.blockSizeHorizontal,
         ),
-        widget.post.phoneNumber != null
+        widget.post.phoneNumber != null && widget.post.phoneNumber.isNotEmpty
             ? Expanded(
                 child: CustomButton(
                   fillColor: colorDeepPurple400,

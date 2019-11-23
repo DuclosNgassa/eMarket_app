@@ -9,7 +9,6 @@ import '../model/categorie_tile.dart';
 import '../services/global.dart';
 
 class CategorieService {
-
   Future<List<Categorie>> fetchCategories() async {
     final response = await http.Client().get(URL_CATEGORIES);
     if (response.statusCode == HttpStatus.ok) {
@@ -62,14 +61,13 @@ class CategorieService {
       final responseBody = await json.decode(response.body);
       return convertResponseToCategorie(responseBody);
     } else {
-      throw Exception('Failed to save a Categorie. Error: ${response.toString()}');
+      throw Exception(
+          'Failed to save a Categorie. Error: ${response.toString()}');
     }
   }
 
-
-
   Categorie convertResponseToCategorie(Map<String, dynamic> json) {
-    if(json["data"] == null){
+    if (json["data"] == null) {
       return null;
     }
 
@@ -80,5 +78,4 @@ class CategorieService {
       icon: json["data"]["icon"],
     );
   }
-
 }

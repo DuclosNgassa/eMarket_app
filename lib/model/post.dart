@@ -298,7 +298,7 @@ class Post {
         break;
       case FeeTyp.gift:
         {
-          return 'Offert gratuitemen';
+          return 'Gratuit';
         }
         break;
     }

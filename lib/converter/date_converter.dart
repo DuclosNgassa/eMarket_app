@@ -27,6 +27,6 @@ class DateConverter {
   }
 
   static String convertToHour(DateTime dateTime) {
-    return dateTime.hour.toString() + ":" + dateTime.minute.toString();
+    return dateTime.add(Duration(hours: 2)).hour.toString() + ":" + dateTime.minute.toString();
   }
 }
