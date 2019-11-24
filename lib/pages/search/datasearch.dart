@@ -2,9 +2,7 @@ import 'package:emarket_app/custom_component/home_card.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/model/favorit.dart';
-import 'package:emarket_app/model/feetyp.dart';
 import 'package:emarket_app/model/post.dart';
-import 'package:emarket_app/model/posttyp.dart';
 import 'package:emarket_app/model/searchparameter.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/search/searchparameter.dart';
@@ -13,13 +11,12 @@ import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 class DataSearch extends SearchDelegate<Post> {
-  DataSearch(
-      this.postList, this.myFavorits, this.searchParameter, this.myCategories);
+  DataSearch(this.postList, this.myFavorits, this.searchParameter, this.childCategories);
 
   final List<Post> postList;
   final List<Favorit> myFavorits;
-  final List<Categorie> myCategories;
-  final SearchParameter searchParameter;
+  SearchParameter searchParameter;
+  List<int> childCategories;
 
   @override
   String get searchFieldLabel => 'Recherche';
@@ -49,6 +46,8 @@ class DataSearch extends SearchDelegate<Post> {
         color: colorWhite,
         onPressed: () {
           query = "";
+          searchParameter = null;
+          childCategories = null;
         },
       ),
       IconButton(
@@ -78,9 +77,21 @@ class DataSearch extends SearchDelegate<Post> {
   Widget buildSuggestions(BuildContext context) {
     SizeConfig().init(context);
 
-    final resultList = query.isEmpty && searchParameter == null
+    final resultList = query.isEmpty && searchParameter == null && childCategories == null
         ? postList
         : postList.where((post) => isSelected(post)).toList();
+
+    if(resultList.isEmpty){
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 2),
+          child: Text(
+            "Aucun resultat n´a été trouvé pour votre recherche",
+            style: SizeConfig.styleTitleBlack,
+          ),
+        ),
+      );
+    }
 
     return GridView.count(
       // Create a grid with 2 columns. If you change the scrollDirection to
@@ -106,18 +117,22 @@ class DataSearch extends SearchDelegate<Post> {
   }
 
   bool isSelected(Post post) {
-    bool isSelect;
+
+    if (childCategories != null) {
+      return childCategories.contains(post.categorieid);
+    }
+
     if (query.isNotEmpty) {
       return post.title.toLowerCase().contains(query.toLowerCase());
     }
-    isSelect = _compareString(post.title, searchParameter.title) ||
+
+    return _compareString(post.title, searchParameter.title) ||
         _compareInt(post.categorieid, searchParameter.category) ||
         _compareFee(post) ||
         _compareString(post.city, searchParameter.city) ||
         post.post_typ == searchParameter.postTyp ||
         post.fee_typ == searchParameter.feeTyp;
 
-    return isSelect;
   }
 
   bool _compareString(String value1, String value2) {
@@ -134,17 +149,17 @@ class DataSearch extends SearchDelegate<Post> {
   }
 
   bool _compareFee(Post post) {
-
-    if(searchParameter.feeMax == null && searchParameter.feeMin != null){
-        return post.fee >= searchParameter.feeMin;
+    if (searchParameter.feeMax == null && searchParameter.feeMin != null) {
+      return post.fee >= searchParameter.feeMin;
     }
 
-    if(searchParameter.feeMax != null && searchParameter.feeMin == null){
-        return post.fee <= searchParameter.feeMax;
+    if (searchParameter.feeMax != null && searchParameter.feeMin == null) {
+      return post.fee <= searchParameter.feeMax;
     }
 
-    if(searchParameter.feeMax != null && searchParameter.feeMin != null){
-      return post.fee >= searchParameter.feeMin && post.fee <= searchParameter.feeMax;
+    if (searchParameter.feeMax != null && searchParameter.feeMin != null) {
+      return post.fee >= searchParameter.feeMin &&
+          post.fee <= searchParameter.feeMax;
     }
 
     return true;
@@ -162,7 +177,6 @@ class DataSearch extends SearchDelegate<Post> {
   }
 
   Future showSearchParameterPage(BuildContext context) async {
-    // SearchParameter transmitedSearchParameter = await Navigator.push(context,
     SearchParameter transmitedSearchParameter = new SearchParameter();
     transmitedSearchParameter = await Navigator.push(
       context,

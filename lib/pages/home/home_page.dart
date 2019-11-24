@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                             onTap: () {
                               showSearch(
                                 context: context,
-                                delegate: DataSearch(postList, myFavorits, null, categories),
+                                delegate: DataSearch(postList, myFavorits, null, null),
                               );
                             },
                           ),
@@ -91,7 +91,8 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () {
                             showSearch(
                               context: context,
-                              delegate: DataSearch(postList, myFavorits, null, categories),
+                              delegate: DataSearch(
+                                  postList, myFavorits, null, null),
                             );
                           },
                         )
@@ -119,7 +120,10 @@ class _HomePageState extends State<HomePage> {
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
                 return Padding(
-                  padding: EdgeInsets.only(left: index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
+                  padding: EdgeInsets.only(
+                      left: index % 2 == 0
+                          ? SizeConfig.blockSizeHorizontal * 2
+                          : 0),
                   child: HomeCard(
                       postList.elementAt(index),
                       myFavorits,
@@ -136,19 +140,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCategorieGridView() {
-    SearchParameter searchParameterElectromenager = new SearchParameter();
-    searchParameterElectromenager.category = 387;
-    SearchParameter searchParameterAccessoires = new SearchParameter();
-    searchParameterElectromenager.category = 380;
-    SearchParameter searchParameterImmobilier = new SearchParameter();
-    searchParameterElectromenager.category = 24;
-    SearchParameter searchParameterMode = new SearchParameter();
-    searchParameterElectromenager.category = 30;
 
     TextStyle _myTextStyle = TextStyle(
       color: Colors.black87,
       fontSize: SizeConfig.safeBlockHorizontal * 3,
     );
+
     return GridView.count(
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
@@ -164,12 +161,7 @@ class _HomePageState extends State<HomePage> {
           iconColor: Colors.white,
           text: 'Electromenager',
           textStyle: _myTextStyle,
-          onPressed: (){
-            showSearch(
-              context: context,
-              delegate: DataSearch(postList, myFavorits, searchParameterElectromenager, categories),
-            );
-          },
+          onPressed: () => showSearchWithParentCategorie(387),
         ),
         CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 30,
@@ -180,12 +172,7 @@ class _HomePageState extends State<HomePage> {
           iconColor: Colors.white,
           text: 'Accessoires de maison',
           textStyle: _myTextStyle,
-          onPressed:  (){
-            showSearch(
-              context: context,
-              delegate: DataSearch(postList, myFavorits, searchParameterAccessoires, categories),
-            );
-          },
+          onPressed: () => showSearchWithParentCategorie(300),
         ),
         CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 30,
@@ -196,12 +183,7 @@ class _HomePageState extends State<HomePage> {
           iconColor: Colors.white,
           text: 'Immobilier',
           textStyle: _myTextStyle,
-          onPressed:  (){
-            showSearch(
-              context: context,
-              delegate: DataSearch(postList, myFavorits, searchParameterImmobilier, categories),
-            );
-          },
+          onPressed: () => showSearchWithParentCategorie(24),
         ),
         CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 30,
@@ -212,12 +194,7 @@ class _HomePageState extends State<HomePage> {
           iconColor: Colors.white,
           text: 'Mode & Beauté',
           textStyle: _myTextStyle,
-          onPressed:  (){
-            showSearch(
-              context: context,
-              delegate: DataSearch(postList, myFavorits, searchParameterMode, categories),
-            );
-          },
+          onPressed: () => showSearchWithParentCategorie(30),
         ),
         CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 30,
@@ -234,8 +211,22 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void showSearchWithParentCategorie(int parentCategorie) async {
+    List<int> childCategories = new List();
+
+    for (Categorie categorie in categories) {
+      if (categorie.parentid == parentCategorie) {
+        childCategories.add(categorie.id);
+      }
+    }
+
+    showSearch(
+      context: context,
+      delegate: DataSearch(postList, myFavorits, null, childCategories),
+    );
+  }
+
   void showSearchParameterPage() async {
-    // SearchParameter transmitedSearchParameter = await Navigator.push(context,
     SearchParameter transmitedSearchParameter = new SearchParameter();
     transmitedSearchParameter = await Navigator.push(
       context,
@@ -245,17 +236,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-    if (transmitedSearchParameter.city != null) {
-      print('Ville: ${transmitedSearchParameter.city}');
-    }
 
     showSearch(
       context: context,
-      delegate: DataSearch(postList, myFavorits, transmitedSearchParameter, categories),
+      delegate: DataSearch(
+          postList, myFavorits, transmitedSearchParameter, null),
     );
-
-    var _searchParameter = transmitedSearchParameter;
-    print("Searchparameter Categorie: " + _searchParameter.category.toString());
   }
 
   void _loadPost() async {
@@ -275,7 +261,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadMyCategories() async {
-      categories = await _categorieService.fetchCategories();
-      setState(() {});
+    categories = await _categorieService.fetchCategories();
+    setState(() {});
   }
 }

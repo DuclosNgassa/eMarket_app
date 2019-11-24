@@ -103,7 +103,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               ),
                             ],
                           ),
-                          SizedBox(height: SizeConfig.blockSizeVertical),
+                          SizedBox(height: SizeConfig.blockSizeVertical * 1.5),
                           Row(
                             children: <Widget>[
                               Expanded(
@@ -121,11 +121,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           ),
                           SizedBox(height: SizeConfig.blockSizeVertical),
                           Row(
-                            children: _buildRating(widget.post.rating),
+                            children: _buildAddress(widget.post.rating),
                           ),
-                          SizedBox(height: SizeConfig.blockSizeVertical),
+                          //SizedBox(height: SizeConfig.blockSizeVertical),
                           Divider(
-                            height: SizeConfig.blockSizeVertical * 4,
+                            height: SizeConfig.blockSizeVertical * 3,
                           ),
                           Row(
                             children: <Widget>[
@@ -167,33 +167,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   ),
                                 ),
                               ),
-/*
-                              Column(
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding:
-                                        EdgeInsets.only(right: SizeConfig.blockSizeHorizontal),
-                                        child: Icon(Icons.remove_red_eye,
-                                            color: colorDeepPurple300),
-                                      ),
-                                      Text(widget.post.count_view.toString()),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Text(
-                                Post.convertPostTypToStringForDisplay(
-                                    widget.post.post_typ),
-                                style: SizeConfig.styleTitleBlack,
-                              ),
-*/
                             ],
                           ),
-                          SizedBox(height: SizeConfig.blockSizeVertical),
                           Divider(
-                            height: SizeConfig.blockSizeVertical * 4,
+                            height: SizeConfig.blockSizeVertical * 3,
                           ),
                           Row(
                             children: <Widget>[
@@ -249,7 +226,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
   }
 
-  List<Widget> _buildRating(int rating) {
+  List<Widget> _buildAddress(int rating) {
     List<Widget> widgetList = new List();
     Widget location = Icon(Icons.location_on, color: colorDeepPurple300);
     Widget city = Expanded(
@@ -262,15 +239,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
     widgetList.add(location);
     widgetList.add(city);
 
-    for (var i = 0; i < rating; i++) {
-      Icon icon = Icon(
-        Icons.star,
-        color: colorDeepPurple300,
-        size: SizeConfig.safeBlockHorizontal * 3,
-      );
-
-      widgetList.add(icon);
-    }
     return widgetList;
   }
 
