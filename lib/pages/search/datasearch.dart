@@ -182,7 +182,7 @@ class DataSearch extends SearchDelegate<Post> {
       context,
       MaterialPageRoute(
         builder: (context) => SearchParameterPage(
-          pageTitle: "Search",
+          pageTitle: "Recherche",
         ),
       ),
     );

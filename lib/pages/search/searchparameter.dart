@@ -1,7 +1,7 @@
+import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
-import '../../custom_component/custom_linear_gradient.dart';
 import '../../form/searchparameter_form.dart';
 
 class SearchParameterPage extends StatefulWidget {
@@ -23,24 +23,22 @@ class _SearchParameterPageState extends State<SearchParameterPage> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(widget.pageTitle),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: colorDeepPurple300,
       ),
-      body: CustomLinearGradient(
-        myChild: new SafeArea(
-          top: false,
-          bottom: false,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: SizeConfig.blockSizeVertical * 2),
-            child: CustomScrollView(
-              slivers: <Widget>[
-                SliverList(
-                  delegate: SliverChildListDelegate(
-                    [SearchParameterForm(context)],
-                  ),
+      body: SafeArea(
+        top: false,
+        bottom: false,
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(vertical: SizeConfig.blockSizeVertical * 2),
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [SearchParameterForm(context)],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

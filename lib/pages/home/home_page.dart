@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> {
       context,
       MaterialPageRoute(
         builder: (context) => SearchParameterPage(
-          pageTitle: "Search",
+          pageTitle: "Recherche",
         ),
       ),
     );

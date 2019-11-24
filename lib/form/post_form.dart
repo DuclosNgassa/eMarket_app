@@ -92,7 +92,8 @@ class PostFormState extends State<PostForm> {
       key: _formKey,
       autovalidate: false,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockSizeHorizontal * 2),
+        padding: EdgeInsets.symmetric(
+            horizontal: SizeConfig.blockSizeHorizontal * 2),
         child: Column(
           children: <Widget>[
             Container(
@@ -139,7 +140,8 @@ class PostFormState extends State<PostForm> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
+                    padding:
+                        EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
                     child: Text(
                       "Categorie",
                       style: SizeConfig.styleForm,
@@ -190,7 +192,8 @@ class PostFormState extends State<PostForm> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical),
+                    padding:
+                        EdgeInsets.only(bottom: SizeConfig.blockSizeVertical),
                     child: FormField(
                       builder: (FormFieldState state) {
                         return InputDecorator(
@@ -368,7 +371,8 @@ class PostFormState extends State<PostForm> {
                       );
                     },
                     child: Padding(
-                      padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
+                      padding: EdgeInsets.only(
+                          left: SizeConfig.blockSizeHorizontal * 2),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
                         child: Container(
@@ -437,7 +441,8 @@ class PostFormState extends State<PostForm> {
   }
 
   Widget _buildRadioButtons() {
-    return Center(
+    return Padding(
+      padding: const EdgeInsets.only(right: 20.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
@@ -451,7 +456,7 @@ class PostFormState extends State<PostForm> {
             },
           ),
           Text(
-            "J'offre",
+            "Offre",
             style: SizeConfig.styleRadioButton,
           ),
           Radio(
@@ -463,11 +468,9 @@ class PostFormState extends State<PostForm> {
               });
             },
           ),
-          Expanded(
-            child: Text(
-              "Je recherche",
-              style: SizeConfig.styleRadioButton,
-            ),
+          Text(
+            "Recherche",
+            style: SizeConfig.styleRadioButton,
           ),
           Radio(
             value: PostTyp.all,
@@ -478,11 +481,9 @@ class PostFormState extends State<PostForm> {
               });
             },
           ),
-          Expanded(
-            child: Text(
-              "Tous",
-              style: SizeConfig.styleRadioButton,
-            ),
+          Text(
+            "Tout",
+            style: SizeConfig.styleRadioButton,
           ),
         ],
       ),
