@@ -1,6 +1,10 @@
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
+import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/favorit.dart';
+import 'package:emarket_app/model/searchparameter.dart';
 import 'package:emarket_app/pages/search/datasearch.dart';
+import 'package:emarket_app/pages/search/searchparameter.dart';
+import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
@@ -21,16 +25,19 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _controller = new TextEditingController();
   final PostService _postService = new PostService();
   final FavoritService _favoritService = new FavoritService();
+  final CategorieService _categorieService = new CategorieService();
 
   List<Post> searchResult = new List();
   List<Post> postList = new List();
   List<Favorit> myFavorits = new List();
+  List<Categorie> categories = new List();
 
   @override
   void initState() {
     super.initState();
     _loadPost();
     _loadMyFavorits();
+    _loadMyCategories();
   }
 
   @override
@@ -70,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                             onTap: () {
                               showSearch(
                                 context: context,
-                                delegate: DataSearch(postList, myFavorits),
+                                delegate: DataSearch(postList, myFavorits, null, categories),
                               );
                             },
                           ),
@@ -84,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () {
                             showSearch(
                               context: context,
-                              delegate: DataSearch(postList, myFavorits),
+                              delegate: DataSearch(postList, myFavorits, null, categories),
                             );
                           },
                         )
@@ -112,7 +119,7 @@ class _HomePageState extends State<HomePage> {
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
                 return Padding(
-                  padding: EdgeInsets.only(left: index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 3 : 0),
+                  padding: EdgeInsets.only(left: index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
                   child: HomeCard(
                       postList.elementAt(index),
                       myFavorits,
@@ -129,6 +136,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCategorieGridView() {
+    SearchParameter searchParameterElectromenager = new SearchParameter();
+    searchParameterElectromenager.category = 387;
+    SearchParameter searchParameterAccessoires = new SearchParameter();
+    searchParameterElectromenager.category = 380;
+    SearchParameter searchParameterImmobilier = new SearchParameter();
+    searchParameterElectromenager.category = 24;
+    SearchParameter searchParameterMode = new SearchParameter();
+    searchParameterElectromenager.category = 30;
+
     TextStyle _myTextStyle = TextStyle(
       color: Colors.black87,
       fontSize: SizeConfig.safeBlockHorizontal * 3,
@@ -148,7 +164,12 @@ class _HomePageState extends State<HomePage> {
           iconColor: Colors.white,
           text: 'Electromenager',
           textStyle: _myTextStyle,
-          onPressed: null,
+          onPressed: (){
+            showSearch(
+              context: context,
+              delegate: DataSearch(postList, myFavorits, searchParameterElectromenager, categories),
+            );
+          },
         ),
         CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 30,
@@ -157,9 +178,14 @@ class _HomePageState extends State<HomePage> {
           icon: Icons.weekend,
           splashColor: Colors.white,
           iconColor: Colors.white,
-          text: 'Haus & Garten',
+          text: 'Accessoires de maison',
           textStyle: _myTextStyle,
-          onPressed: null,
+          onPressed:  (){
+            showSearch(
+              context: context,
+              delegate: DataSearch(postList, myFavorits, searchParameterAccessoires, categories),
+            );
+          },
         ),
         CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 30,
@@ -170,7 +196,12 @@ class _HomePageState extends State<HomePage> {
           iconColor: Colors.white,
           text: 'Immobilier',
           textStyle: _myTextStyle,
-          onPressed: null,
+          onPressed:  (){
+            showSearch(
+              context: context,
+              delegate: DataSearch(postList, myFavorits, searchParameterImmobilier, categories),
+            );
+          },
         ),
         CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 30,
@@ -181,7 +212,12 @@ class _HomePageState extends State<HomePage> {
           iconColor: Colors.white,
           text: 'Mode & Beauté',
           textStyle: _myTextStyle,
-          onPressed: null,
+          onPressed:  (){
+            showSearch(
+              context: context,
+              delegate: DataSearch(postList, myFavorits, searchParameterMode, categories),
+            );
+          },
         ),
         CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 30,
@@ -192,10 +228,34 @@ class _HomePageState extends State<HomePage> {
           iconColor: Colors.white,
           text: 'Autres Categories',
           textStyle: _myTextStyle,
-          onPressed: null,
+          onPressed: () => showSearchParameterPage(),
         ),
       ],
     );
+  }
+
+  void showSearchParameterPage() async {
+    // SearchParameter transmitedSearchParameter = await Navigator.push(context,
+    SearchParameter transmitedSearchParameter = new SearchParameter();
+    transmitedSearchParameter = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchParameterPage(
+          pageTitle: "Search",
+        ),
+      ),
+    );
+    if (transmitedSearchParameter.city != null) {
+      print('Ville: ${transmitedSearchParameter.city}');
+    }
+
+    showSearch(
+      context: context,
+      delegate: DataSearch(postList, myFavorits, transmitedSearchParameter, categories),
+    );
+
+    var _searchParameter = transmitedSearchParameter;
+    print("Searchparameter Categorie: " + _searchParameter.category.toString());
   }
 
   void _loadPost() async {
@@ -212,5 +272,10 @@ class _HomePageState extends State<HomePage> {
       myFavorits = await _favoritService.fetchFavoritByUserEmail(user.email);
       setState(() {});
     }
+  }
+
+  Future<void> _loadMyCategories() async {
+      categories = await _categorieService.fetchCategories();
+      setState(() {});
   }
 }

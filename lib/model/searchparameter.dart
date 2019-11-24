@@ -1,10 +1,13 @@
+import 'package:emarket_app/model/feetyp.dart';
+
 import '../model/posttyp.dart';
 
 class SearchParameter {
-  String name;
-  String category = '';
+  String title;
+  int category;
   int feeMin;
   int feeMax;
   String city;
-  PostTyp typ;
+  PostTyp postTyp;
+  FeeTyp feeTyp;
 }

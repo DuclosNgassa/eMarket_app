@@ -1,3 +1,4 @@
+import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,6 +22,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
   final Color color;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   String _categorie = '';
+  int _categorieId;
   PostTyp _postTyp = PostTyp.offer;
 
   List<String> _cities = <String>[
@@ -116,7 +118,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                           inputFormatters: [
                             LengthLimitingTextInputFormatter(10),
                           ],
-                          onSaved: (val) => searchParameter.feeMin = int.parse(val),
+                          onSaved: (val) => val.isEmpty ? 0 : searchParameter.feeMin = int.parse(val),
                         ),
                       ],
                     ),
@@ -140,7 +142,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                           inputFormatters: [
                             LengthLimitingTextInputFormatter(10),
                           ],
-                          onSaved: (val) => searchParameter.feeMax = int.parse(val),
+                          onSaved: (val) => val.isEmpty ? 0 : searchParameter.feeMax = int.parse(val),
                         ),
                       ],
                     ),
@@ -238,7 +240,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
   }
 
   Future showCategoriePage() async {
-    String categorieChoosed = await Navigator.of(context).push(
+    CategorieTile categorieChoosed = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
           return CategoriePage();
@@ -246,8 +248,9 @@ class SearchParameterFormState extends State<SearchParameterForm> {
       ),
     );
     setState(() {
-      _categorie = categorieChoosed;
-      print("Choosed categorie: " + categorieChoosed);
+      _categorie = categorieChoosed.title;
+      _categorieId = categorieChoosed.id;
+      print("Choosed categorie: " + categorieChoosed.title);
     });
   }
 
@@ -271,34 +274,22 @@ class SearchParameterFormState extends State<SearchParameterForm> {
   void _submitForm() {
     final FormState form = _formKey.currentState;
 
-    if (!form.validate()) {
-      //showMessage('Form is not valide! Please review and correct.');
-      print('Form is not valide! Please review and correct.');
-    } else if (_categorie.isEmpty) {
-/*
-      showMessage(
-          'Veuiillez choisir la categorie dans laquelle vous publiez votre post s´il vous pllait.');
-*/
-      print(
-          'Veuiillez choisir la categorie dans laquelle vous publiez votre post s´il vous pllait.');
-    } else {
       form.save();
-      searchParameter.category = _categorie;
-      searchParameter.typ = _postTyp;
+      searchParameter.category = _categorieId;
+      searchParameter.postTyp = _postTyp;
 
       print('Form save called, newContact is now up to date...');
       if(searchParameter.city != null) {
         print('Ville: ${searchParameter.city}');
       }
       print('Categorie: ${searchParameter.category}');
-      print('PrixMin: ${searchParameter.feeMin}');
-      print('PrixMax: ${searchParameter.feeMax}');
-      print('Typ: ${searchParameter.typ}');
+      print('PrixMin: ${searchParameter.feeMin.toString()}');
+      print('PrixMax: ${searchParameter.feeMax.toString()}');
+      print('Typ: ${searchParameter.postTyp}');
       print('========================================');
       print('Submitting to back end...');
       print('TODO - we will write the submission part next...');
 
       Navigator.of(context).pop(searchParameter);
-    }
   }
 }

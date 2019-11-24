@@ -141,13 +141,8 @@ class PostOwnerState extends State<PostOwner> {
                       padding:
                           EdgeInsets.only(top: SizeConfig.blockSizeVertical),
                       child: Row(
-                        children: <Widget>[
-                          Icon(Icons.sentiment_satisfied),
-                          Text(
-                            'Satisfaction: TOP',
-                            style: SizeConfig.styleGreyDetail,
-                          ),
-                        ],
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: _buildRating(widget.post.rating),
                       ),
                     ),
                   ],
@@ -194,6 +189,33 @@ class PostOwnerState extends State<PostOwner> {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildRating(int rating) {
+    List<Widget> widgetList = new List();
+    Widget icon = Icon(Icons.sentiment_satisfied, color: colorGrey400);
+
+    Widget satisfaction = Expanded(
+      child: Text(
+        "Satisfaction: TOP",
+        style: SizeConfig.styleGreyDetail,
+      ),
+    );
+
+    widgetList.add(icon);
+    widgetList.add(satisfaction);
+
+    for (var i = 0; i < MAX_RATING; i++) {
+      Icon icon = Icon(
+        Icons.star,
+        color: i < rating ? colorBlue : colorGrey300,
+        size: SizeConfig.BUTTON_FONT_SIZE,
+      );
+
+      widgetList.add(icon);
+    }
+
+    return widgetList;
   }
 
   Row buildContactInformation(BuildContext context) {

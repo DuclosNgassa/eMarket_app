@@ -1,7 +1,10 @@
 import 'package:emarket_app/custom_component/home_card.dart';
+import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/model/favorit.dart';
+import 'package:emarket_app/model/feetyp.dart';
 import 'package:emarket_app/model/post.dart';
+import 'package:emarket_app/model/posttyp.dart';
 import 'package:emarket_app/model/searchparameter.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/search/searchparameter.dart';
@@ -10,10 +13,13 @@ import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 class DataSearch extends SearchDelegate<Post> {
-  DataSearch(this.postList, this.myFavorits);
+  DataSearch(
+      this.postList, this.myFavorits, this.searchParameter, this.myCategories);
 
   final List<Post> postList;
   final List<Favorit> myFavorits;
+  final List<Categorie> myCategories;
+  final SearchParameter searchParameter;
 
   @override
   String get searchFieldLabel => 'Recherche';
@@ -72,12 +78,9 @@ class DataSearch extends SearchDelegate<Post> {
   Widget buildSuggestions(BuildContext context) {
     SizeConfig().init(context);
 
-    final resultList = query.isEmpty
+    final resultList = query.isEmpty && searchParameter == null
         ? postList
-        : postList
-            .where((post) =>
-                post.title.toLowerCase().contains(query.toLowerCase()))
-            .toList();
+        : postList.where((post) => isSelected(post)).toList();
 
     return GridView.count(
       // Create a grid with 2 columns. If you change the scrollDirection to
@@ -88,13 +91,63 @@ class DataSearch extends SearchDelegate<Post> {
       childAspectRatio: 1.5,
 
       children: List.generate(resultList.length, (index) {
-        return HomeCard(
+        return Padding(
+          padding: EdgeInsets.only(
+              left: index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
+          child: HomeCard(
             resultList[index],
             myFavorits,
             SizeConfig.blockSizeVertical * 18,
-            SizeConfig.screenWidth * 0.5 - 10);
+            SizeConfig.screenWidth * 0.5 - 10,
+          ),
+        );
       }),
     );
+  }
+
+  bool isSelected(Post post) {
+    bool isSelect;
+    if (query.isNotEmpty) {
+      return post.title.toLowerCase().contains(query.toLowerCase());
+    }
+    isSelect = _compareString(post.title, searchParameter.title) ||
+        _compareInt(post.categorieid, searchParameter.category) ||
+        _compareFee(post) ||
+        _compareString(post.city, searchParameter.city) ||
+        post.post_typ == searchParameter.postTyp ||
+        post.fee_typ == searchParameter.feeTyp;
+
+    return isSelect;
+  }
+
+  bool _compareString(String value1, String value2) {
+    if (value1 == null && value2 == null) return true; // both are null
+    if (value1 == null || value2 == null) return false; // only one are null
+    return value1.toLowerCase().contains(value2.toLowerCase());
+  }
+
+  bool _compareInt(int value1, int value2) {
+    if (value1 == null && value2 == null) return true; // all are null
+    if (value1 == null || value2 == null) return false; // only one are null
+
+    return value1 == value2;
+  }
+
+  bool _compareFee(Post post) {
+
+    if(searchParameter.feeMax == null && searchParameter.feeMin != null){
+        return post.fee >= searchParameter.feeMin;
+    }
+
+    if(searchParameter.feeMax != null && searchParameter.feeMin == null){
+        return post.fee <= searchParameter.feeMax;
+    }
+
+    if(searchParameter.feeMax != null && searchParameter.feeMin != null){
+      return post.fee >= searchParameter.feeMin && post.fee <= searchParameter.feeMax;
+    }
+
+    return true;
   }
 
   Future showCategoriePage(BuildContext context) async {
@@ -124,6 +177,6 @@ class DataSearch extends SearchDelegate<Post> {
     }
 
     var _searchParameter = transmitedSearchParameter;
-    print("Searchparameter Categorie: " + _searchParameter.category);
+    print("Searchparameter Categorie: " + _searchParameter.category.toString());
   }
 }

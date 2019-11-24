@@ -34,11 +34,6 @@ class _UserMessagePageState extends State<UserMessagePage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    var size = MediaQuery.of(context).size;
-    /*24 is for notification bar on Android*/
-    final double itemHeight = size.height;
-    final double itemWidth = size.width;
-
     return Container(
       child: Scaffold(
         body: Column(

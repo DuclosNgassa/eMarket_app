@@ -30,7 +30,6 @@ class _HomeCardState extends State<HomeCard> {
   Favorit myFavoritToRemove = null;
   String renderUrl;
   Icon favoritIcon = Icon(Icons.star_border, size: 30,);
-  final int  MAX_RATING = 5;
 
   FavoritService _favoritService = new FavoritService();
 

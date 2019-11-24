@@ -78,7 +78,7 @@ class _PostUserPageState extends State<PostUserPage> {
   Container _buildTitle() {
     return Container(
       child: Padding(
-        padding: EdgeInsets.only(top: 10, left: 10.0),
+        padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2, left: SizeConfig.blockSizeHorizontal * 2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -101,12 +101,25 @@ class _PostUserPageState extends State<PostUserPage> {
   }
 
   Widget buildMyPostListView() {
-    return ListView.builder(
-        itemBuilder: (context, index) => HomeCard(
+
+    return GridView.count(
+      crossAxisCount: 2,
+      mainAxisSpacing: 0,
+      crossAxisSpacing: 0,
+      childAspectRatio: 1.5,
+
+      children: List.generate(widget.posts.length, (index) {
+        return Padding(
+          padding: EdgeInsets.only(
+              left: index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
+          child: HomeCard(
             widget.posts.elementAt(index),
-            new List(),
+            new List(),//myFavorits,
             SizeConfig.blockSizeVertical * 18,
-            SizeConfig.screenWidth - SizeConfig.blockSizeHorizontal * 10),
-        itemCount: widget.posts.length);
+            SizeConfig.screenWidth * 0.5 - 10,
+          ),
+        );
+      }),
+    );
   }
 }
