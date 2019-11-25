@@ -130,8 +130,8 @@ class _PostEditFormState extends State<PostEditForm> {
                     ),
                   ),
                   Container(
-                    constraints: BoxConstraints.expand(
-                        height: SizeConfig.screenHeight),
+                    constraints:
+                        BoxConstraints.expand(height: SizeConfig.screenHeight),
                     child: buildEditForm(),
                   ),
                 ],
@@ -157,13 +157,15 @@ class _PostEditFormState extends State<PostEditForm> {
                     key: _formKey,
                     autovalidate: false,
                     child: Padding(
-                      padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 3.0),
+                      padding:
+                          EdgeInsets.all(SizeConfig.blockSizeHorizontal * 3.0),
                       child: Column(
                         children: <Widget>[
                           Padding(
-                            padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 5.0),
+                            padding: EdgeInsets.only(
+                                top: SizeConfig.blockSizeVertical * 5.0),
                             child: Text(
-                              "Modification d´une annonce",
+                              "Modification d´annonce",
                               style: SizeConfig.styleTitleWhite,
                             ),
                           ),
@@ -185,16 +187,16 @@ class _PostEditFormState extends State<PostEditForm> {
                           Divider(),
                           _buildRadioButtons(),
                           TextFormField(
-                            style: SizeConfig.styleForm,
+                            style: SizeConfig.styleFormGrey,
                             textInputAction: TextInputAction.next,
                             autofocus: true,
                             onFieldSubmitted: (term) {
-                              _fieldFocusChange(
-                                  _titelFocusNode, _feeFocusNode);
+                              _fieldFocusChange(_titelFocusNode, _feeFocusNode);
                             },
                             decoration: const InputDecoration(
                               hintText: 'Donnez le titre de votre post',
                               labelText: 'Titre',
+                              labelStyle: SizeConfig.styleFormBlack,
                             ),
                             initialValue: _post.title,
                             inputFormatters: [
@@ -210,10 +212,11 @@ class _PostEditFormState extends State<PostEditForm> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Padding(
-                                  padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
+                                  padding: EdgeInsets.only(
+                                      top: SizeConfig.blockSizeVertical * 2),
                                   child: Text(
                                     "Categorie",
-                                    style: SizeConfig.styleForm,
+                                    style: SizeConfig.styleFormBlack,
                                   ),
                                 ),
                                 GestureDetector(
@@ -221,7 +224,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                   child: Row(
                                     children: <Widget>[
                                       Expanded(
-                                        child: Text(_categorieTile.title),
+                                        child: Text(_categorieTile.title, style: SizeConfig.styleFormGrey),
                                       ),
                                       IconButton(
                                         onPressed: showCategoriePage,
@@ -240,7 +243,7 @@ class _PostEditFormState extends State<PostEditForm> {
                             children: <Widget>[
                               Expanded(
                                 child: TextFormField(
-                                  style: SizeConfig.styleForm,
+                                  style: SizeConfig.styleFormGrey,
                                   textInputAction: TextInputAction.next,
                                   focusNode: _feeFocusNode,
                                   onFieldSubmitted: (term) {
@@ -250,6 +253,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                   decoration: const InputDecoration(
                                     hintText: 'Donnez le prix',
                                     labelText: 'Prix (FCFA)',
+                                    labelStyle: SizeConfig.styleFormBlack,
                                   ),
                                   initialValue: _post.fee.toString(),
                                   inputFormatters: [
@@ -259,19 +263,19 @@ class _PostEditFormState extends State<PostEditForm> {
                                       formValidator.isEmptyText(val)
                                           ? 'Donnez un prix'
                                           : null,
-                                  onSaved: (val) =>
-                                      _post.fee = int.parse(val),
+                                  onSaved: (val) => _post.fee = int.parse(val),
                                 ),
                               ),
                               Expanded(
                                 child: Padding(
-                                  padding: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical),
+                                  padding: EdgeInsets.only(
+                                      bottom: SizeConfig.blockSizeVertical),
                                   child: FormField(
                                     builder: (FormFieldState state) {
                                       return InputDecorator(
                                         decoration: InputDecoration(
                                           labelText: 'Typ de prix',
-                                          labelStyle: SizeConfig.styleForm,
+                                          labelStyle: SizeConfig.styleFormBlack,
                                           errorText: state.hasError
                                               ? state.errorText
                                               : null,
@@ -286,12 +290,15 @@ class _PostEditFormState extends State<PostEditForm> {
                                                 state.didChange(newValue);
                                               });
                                             },
-                                            items: _feeTyps.map<
-                                                DropdownMenuItem<
-                                                    String>>((String value) {
+                                            items: _feeTyps
+                                                .map<DropdownMenuItem<String>>(
+                                                    (String value) {
                                               return DropdownMenuItem(
                                                 value: value,
-                                                child: Text(value),
+                                                child: Text(
+                                                  value,
+                                                  style: SizeConfig.styleFormGrey,
+                                                ),
                                               );
                                             }).toList(),
                                           ),
@@ -306,12 +313,11 @@ class _PostEditFormState extends State<PostEditForm> {
                           Container(
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Expanded(
                                   child: TextFormField(
-                                    style: SizeConfig.styleForm,
+                                    style: SizeConfig.styleFormGrey,
                                     textInputAction: TextInputAction.next,
                                     focusNode: _cityFocusNode,
                                     onFieldSubmitted: (term) {
@@ -321,6 +327,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                     decoration: const InputDecoration(
                                       hintText: 'Donnez la ville',
                                       labelText: 'Ville',
+                                      labelStyle: SizeConfig.styleFormBlack,
                                     ),
                                     initialValue: _post.city,
                                     inputFormatters: [
@@ -335,7 +342,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                 ),
                                 Expanded(
                                   child: TextFormField(
-                                    style: SizeConfig.styleForm,
+                                    style: SizeConfig.styleFormGrey,
                                     textInputAction: TextInputAction.next,
                                     focusNode: _quarterFocusNode,
                                     onFieldSubmitted: (term) {
@@ -345,6 +352,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                     decoration: const InputDecoration(
                                       hintText: 'Donnez le quartier',
                                       labelText: 'Quartier',
+                                      labelStyle: SizeConfig.styleFormBlack,
                                     ),
                                     initialValue: _post.quarter,
                                     inputFormatters: [
@@ -361,7 +369,7 @@ class _PostEditFormState extends State<PostEditForm> {
                             ),
                           ),
                           TextFormField(
-                            style: SizeConfig.styleForm,
+                            style: SizeConfig.styleFormGrey,
                             textInputAction: TextInputAction.next,
                             focusNode: _phoneFocusNode,
                             onFieldSubmitted: (term) {
@@ -371,6 +379,7 @@ class _PostEditFormState extends State<PostEditForm> {
                             decoration: const InputDecoration(
                               hintText: 'Donnez un numero de téléphone',
                               labelText: 'Numero de téléphone',
+                              labelStyle: SizeConfig.styleFormBlack,
                             ),
                             initialValue: _post.phoneNumber,
                             inputFormatters: [
@@ -379,7 +388,7 @@ class _PostEditFormState extends State<PostEditForm> {
                             onSaved: (val) => _post.phoneNumber = val,
                           ),
                           TextFormField(
-                            style: SizeConfig.styleForm,
+                            style: SizeConfig.styleFormGrey,
                             textInputAction: TextInputAction.done,
                             focusNode: _descriptionFocusNode,
                             onFieldSubmitted: (value) {
@@ -390,6 +399,7 @@ class _PostEditFormState extends State<PostEditForm> {
                             decoration: const InputDecoration(
                               hintText: 'Description de votre post',
                               labelText: 'Description',
+                              labelStyle: SizeConfig.styleFormBlack,
                             ),
                             initialValue: _post.description,
                             inputFormatters: [
@@ -403,18 +413,20 @@ class _PostEditFormState extends State<PostEditForm> {
                           Row(
                             children: <Widget>[
                               Container(
-                                padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
+                                padding: EdgeInsets.only(
+                                    top: SizeConfig.blockSizeVertical * 2),
                                 child: RaisedButton(
                                   shape: const StadiumBorder(),
                                   color: Colors.red,
-                                  child:
-                                      Text('Annuler', style: SizeConfig.styleButtonWhite),
+                                  child: Text('Annuler',
+                                      style: SizeConfig.styleButtonWhite),
                                   onPressed: _cancelChange,
                                 ),
                               ),
                               Expanded(child: SizedBox()),
                               Container(
-                                padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
+                                padding: EdgeInsets.only(
+                                    top: SizeConfig.blockSizeVertical * 2),
                                 child: RaisedButton(
                                   shape: const StadiumBorder(),
                                   color: colorDeepPurple400,
@@ -474,7 +486,8 @@ class _PostEditFormState extends State<PostEditForm> {
                       );
                     },
                     child: Padding(
-                      padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
+                      padding: EdgeInsets.only(
+                          left: SizeConfig.blockSizeHorizontal * 2),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
                         child: Container(
@@ -539,7 +552,8 @@ class _PostEditFormState extends State<PostEditForm> {
                       );
                     },
                     child: Padding(
-                      padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
+                      padding: EdgeInsets.only(
+                          left: SizeConfig.blockSizeHorizontal * 2),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
                         child: Container(
@@ -610,7 +624,8 @@ class _PostEditFormState extends State<PostEditForm> {
   }
 
   Widget _buildRadioButtons() {
-    return Center(
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockSizeHorizontal),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[

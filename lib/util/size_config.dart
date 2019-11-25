@@ -27,7 +27,12 @@ class SizeConfig {
   static TextStyle styleNormalBlackCard;
   static TextStyle styleNormalBlack3;
   static TextStyle styleButtonWhite;
-  static TextStyle styleForm;
+  static TextStyle styleFormGrey;
+
+  static const TextStyle styleFormBlack = const TextStyle(
+    color: Colors.black,
+  );
+
   static TextStyle styleRadioButton;
   static TextStyle styleGreyDetail;
   static TextStyle styleSubtitleWhite;
@@ -104,14 +109,14 @@ class SizeConfig {
       fontSize: SizeConfig.safeBlockHorizontal * 4,
     );
 
-    styleForm = new TextStyle(
+    styleFormGrey = new TextStyle(
       color: Colors.black54,
       fontSize: SizeConfig.safeBlockHorizontal * 4,
     );
 
     styleRadioButton = new TextStyle(
       color: Colors.black,
-      fontSize: SizeConfig.safeBlockHorizontal * 4,
+      fontSize: SizeConfig.safeBlockHorizontal * 3,
     );
 
     styleGreyDetail = new TextStyle(

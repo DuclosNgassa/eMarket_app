@@ -76,41 +76,7 @@ class _LoginState extends State<Login> {
               color: colorDeepPurple300,
               width: SizeConfig.screenWidth,
               height: SizeConfig.screenHeight,
-              /*
-              child: Image.network(
-                  'https://images.unsplash.com/photo-1518050947974-4be8c7469f0c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60',
-                  fit: BoxFit.fill,
-                  color: Color.fromRGBO(255, 255, 255, 0.6),
-                  colorBlendMode: BlendMode.modulate),
-                  */
             ),
-/*
-            Container(
-              padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
-              child: RaisedButton(
-                shape: const StadiumBorder(),
-                color: colorDeepPurple400,
-                child:  Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      FontAwesomeIcons.google,
-                      color: Color(0xffCE107C),
-                    ),
-                    SizedBox(width: 10.0),
-                    Text(
-                      'S´enregistrer avec Google',
-                      style:
-                      SizeConfig.styleButtonWhite,
-                    ),
-                  ],
-                ),
-                onPressed: () => _signIn(context)
-                    .then((FirebaseUser user) => _saveUser(user))
-                    .catchError((e) => print(e)),
-              ),
-            ),
-*/
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -118,7 +84,6 @@ class _LoginState extends State<Login> {
                 Container(
                   width: SizeConfig.screenWidth -
                       SizeConfig.blockSizeHorizontal * 10,
-                  //height: SizeConfig.blockSizeVertical *10,
                   child: Align(
                     alignment: Alignment.center,
                     child: RaisedButton(
@@ -129,7 +94,7 @@ class _LoginState extends State<Login> {
                         children: <Widget>[
                           Icon(
                             FontAwesomeIcons.google,
-                            color: Color(0xffCE107C),
+                            color: colorRed,
                           ),
                           SizedBox(width: SizeConfig.blockSizeHorizontal * 3),
                             Text(

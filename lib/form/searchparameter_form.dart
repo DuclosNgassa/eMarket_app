@@ -62,7 +62,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                   ),
                   Text(
                     "Offre",
-                    style: SizeConfig.styleForm,
+                    style: SizeConfig.styleRadioButton,
                   ),
                   Radio(
                     value: PostTyp.search,
@@ -75,7 +75,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                   ),
                   Text(
                     "Recherche",
-                    style: SizeConfig.styleForm,
+                    style: SizeConfig.styleRadioButton,
                   ),
                   Radio(
                     value: PostTyp.all,
@@ -88,7 +88,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                   ),
                   Text(
                     "Tout",
-                    style: SizeConfig.styleForm,
+                    style: SizeConfig.styleRadioButton,
                   ),
                 ],
               ),
@@ -99,7 +99,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                 return InputDecorator(
                   decoration: InputDecoration(
                     labelText: 'Ville',
-                    labelStyle: SizeConfig.styleForm,
+                    labelStyle: SizeConfig.styleFormBlack,
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton(
@@ -115,7 +115,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                       items: _cities.map((String value) {
                         return DropdownMenuItem(
                           value: value,
-                          child: Text(value),
+                          child: Text(value, style: SizeConfig.styleFormGrey,),
                         );
                       }).toList(),
                     ),
@@ -135,7 +135,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                     child: Column(children: <Widget>[
                       Text(
                         "Prix",
-                        style: SizeConfig.styleForm,
+                        style: SizeConfig.styleFormBlack,
                       ),
                     ]),
                   ),
@@ -145,10 +145,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                         TextFormField(
                           decoration: const InputDecoration(
                             hintText: 'Fcfa',
-                            labelStyle: TextStyle(
-                              color: Colors.black54,
-                              fontSize: 12,
-                            ),
+                            labelStyle: TextStyle(color: Colors.black)
                           ),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
@@ -166,7 +163,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                       children: <Widget>[
                         Text(
                           "jusqu´à",
-                          style: SizeConfig.styleForm,
+                          style: SizeConfig.styleFormGrey,
                         ),
                       ],
                     ),
@@ -178,8 +175,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                           decoration: const InputDecoration(
                             hintText: 'Fcfa',
                             labelStyle: TextStyle(
-                              color: Colors.black54,
-                              fontSize: 12,
+                              color: Colors.black,
                             ),
                           ),
                           keyboardType: TextInputType.number,
@@ -205,13 +201,13 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                     padding: const EdgeInsets.only(top: 16.0),
                     child: Text(
                       "Categorie",
-                      style: SizeConfig.styleForm,
+                      style: SizeConfig.styleFormBlack,
                     ),
                   ),
                   Row(
                     children: <Widget>[
                       new Expanded(
-                        child: Text(_categorie),
+                        child: Text(_categorie, style: SizeConfig.styleFormGrey),
                       ),
                       IconButton(
                         icon: Icon(Icons.arrow_forward_ios),
@@ -228,7 +224,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
               child: RaisedButton(
                 shape: const StadiumBorder(),
                 color: colorDeepPurple400,
-                child: Text('Afficher les resultats',
+                child: Text('Rechercher',
                     style: SizeConfig.styleButtonWhite),
                 onPressed: _submitForm,
               ),

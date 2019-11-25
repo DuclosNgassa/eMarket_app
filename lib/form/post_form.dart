@@ -118,7 +118,7 @@ class PostFormState extends State<PostForm> {
             Divider(),
             _buildRadioButtons(),
             TextFormField(
-              style: SizeConfig.styleForm,
+              style: SizeConfig.styleFormGrey,
               textInputAction: TextInputAction.next,
               autofocus: true,
               onFieldSubmitted: (term) {
@@ -127,6 +127,7 @@ class PostFormState extends State<PostForm> {
               decoration: const InputDecoration(
                 hintText: 'Donnez le titre de votre post',
                 labelText: 'Titre',
+                labelStyle: SizeConfig.styleFormBlack
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(30),
@@ -144,7 +145,7 @@ class PostFormState extends State<PostForm> {
                         EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
                     child: Text(
                       "Categorie",
-                      style: SizeConfig.styleForm,
+                      style: SizeConfig.styleFormBlack,
                     ),
                   ),
                   GestureDetector(
@@ -171,7 +172,7 @@ class PostFormState extends State<PostForm> {
               children: <Widget>[
                 Expanded(
                   child: TextFormField(
-                    style: SizeConfig.styleForm,
+                    style: SizeConfig.styleFormGrey,
                     textInputAction: TextInputAction.next,
                     focusNode: _feeFocusNode,
                     onFieldSubmitted: (term) {
@@ -180,6 +181,7 @@ class PostFormState extends State<PostForm> {
                     decoration: const InputDecoration(
                       hintText: 'Donnez le prix',
                       labelText: 'Prix (FCFA)',
+                      labelStyle: SizeConfig.styleFormBlack,
                     ),
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(30),
@@ -199,7 +201,7 @@ class PostFormState extends State<PostForm> {
                         return InputDecorator(
                           decoration: InputDecoration(
                             labelText: 'Typ de prix',
-                            labelStyle: SizeConfig.styleForm,
+                            labelStyle: SizeConfig.styleFormBlack,
                             errorText: state.hasError ? state.errorText : null,
                           ),
                           child: DropdownButtonHideUnderline(
@@ -216,7 +218,7 @@ class PostFormState extends State<PostForm> {
                                   (String value) {
                                 return DropdownMenuItem(
                                   value: value,
-                                  child: Text(value),
+                                  child: Text(value, style: SizeConfig.styleFormGrey),
                                 );
                               }).toList(),
                             ),
@@ -238,7 +240,7 @@ class PostFormState extends State<PostForm> {
                 children: <Widget>[
                   Expanded(
                     child: TextFormField(
-                      style: SizeConfig.styleForm,
+                      style: SizeConfig.styleFormGrey,
                       textInputAction: TextInputAction.next,
                       focusNode: _cityFocusNode,
                       onFieldSubmitted: (term) {
@@ -247,6 +249,7 @@ class PostFormState extends State<PostForm> {
                       decoration: const InputDecoration(
                         hintText: 'Donnez la ville',
                         labelText: 'Ville',
+                        labelStyle: SizeConfig.styleFormBlack,
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
@@ -259,7 +262,7 @@ class PostFormState extends State<PostForm> {
                   ),
                   Expanded(
                     child: TextFormField(
-                      style: SizeConfig.styleForm,
+                      style: SizeConfig.styleFormGrey,
                       textInputAction: TextInputAction.next,
                       focusNode: _quarterFocusNode,
                       onFieldSubmitted: (term) {
@@ -268,6 +271,7 @@ class PostFormState extends State<PostForm> {
                       decoration: const InputDecoration(
                         hintText: 'Donnez le quartier',
                         labelText: 'Quartier',
+                        labelStyle: SizeConfig.styleFormBlack,
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
@@ -282,7 +286,7 @@ class PostFormState extends State<PostForm> {
               ),
             ),
             TextFormField(
-              style: SizeConfig.styleForm,
+              style: SizeConfig.styleFormGrey,
               textInputAction: TextInputAction.next,
               focusNode: _phoneFocusNode,
               onFieldSubmitted: (term) {
@@ -291,6 +295,7 @@ class PostFormState extends State<PostForm> {
               decoration: const InputDecoration(
                 hintText: 'Donnez un numero de téléphone',
                 labelText: 'Numero de téléphone',
+                labelStyle: SizeConfig.styleFormBlack,
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(30),
@@ -298,7 +303,7 @@ class PostFormState extends State<PostForm> {
               onSaved: (val) => newPost.phoneNumber = val,
             ),
             TextFormField(
-              style: SizeConfig.styleForm,
+              style: SizeConfig.styleFormGrey,
               textInputAction: TextInputAction.done,
               focusNode: _descriptionFocusNode,
               onFieldSubmitted: (value) {
@@ -309,6 +314,7 @@ class PostFormState extends State<PostForm> {
               decoration: const InputDecoration(
                 hintText: 'Description de votre post',
                 labelText: 'Description',
+                labelStyle: SizeConfig.styleFormBlack,
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(500),
