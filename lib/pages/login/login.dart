@@ -6,6 +6,7 @@ import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/user_service.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,6 @@ class _LoginState extends State<Login> {
   UserService _userService = new UserService();
 
   Future<FirebaseUser> _signIn(BuildContext context) async {
-
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
@@ -65,33 +65,65 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    SizeConfig().init(context);
+
     return Scaffold(
       body: Builder(
         builder: (context) => Stack(
           fit: StackFit.expand,
           children: <Widget>[
             Container(
-              width: size.width,
-              height: size.height,
+              color: colorDeepPurple300,
+              width: SizeConfig.screenWidth,
+              height: SizeConfig.screenHeight,
+              /*
               child: Image.network(
                   'https://images.unsplash.com/photo-1518050947974-4be8c7469f0c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60',
                   fit: BoxFit.fill,
                   color: Color.fromRGBO(255, 255, 255, 0.6),
                   colorBlendMode: BlendMode.modulate),
+                  */
             ),
+/*
+            Container(
+              padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
+              child: RaisedButton(
+                shape: const StadiumBorder(),
+                color: colorDeepPurple400,
+                child:  Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      FontAwesomeIcons.google,
+                      color: Color(0xffCE107C),
+                    ),
+                    SizedBox(width: 10.0),
+                    Text(
+                      'S´enregistrer avec Google',
+                      style:
+                      SizeConfig.styleButtonWhite,
+                    ),
+                  ],
+                ),
+                onPressed: () => _signIn(context)
+                    .then((FirebaseUser user) => _saveUser(user))
+                    .catchError((e) => print(e)),
+              ),
+            ),
+*/
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: 10.0),
+                SizedBox(height: SizeConfig.blockSizeVertical),
                 Container(
-                  width: size.width -10,
+                  width: SizeConfig.screenWidth -
+                      SizeConfig.blockSizeHorizontal * 10,
+                  //height: SizeConfig.blockSizeVertical *10,
                   child: Align(
                     alignment: Alignment.center,
                     child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0)),
-                      color: Color(0xffffffff),
+                      shape: const StadiumBorder(),
+                      color: colorDeepPurple500,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -99,11 +131,10 @@ class _LoginState extends State<Login> {
                             FontAwesomeIcons.google,
                             color: Color(0xffCE107C),
                           ),
-                          SizedBox(width: 10.0),
-                          Text(
-                              'Sign in with Google',
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 18.0),
+                          SizedBox(width: SizeConfig.blockSizeHorizontal * 3),
+                            Text(
+                              'S´enregistrer avec Google',
+                              style: SizeConfig.styleButtonWhite,
                           ),
                         ],
                       ),
@@ -153,10 +184,9 @@ class _LoginState extends State<Login> {
     prefs.setString(USER_EMAIL, firebaseUser.email);
     prefs.setString(USER_NAME, firebaseUser.displayName);
 
-    if(existsUser != null){
+    if (existsUser != null) {
       return existsUser;
-    }
-    else {
+    } else {
       User user = new User();
       user = _mapFirebaseUserToUser(firebaseUser);
 
@@ -174,7 +204,7 @@ class _LoginState extends State<Login> {
     user.created_at = DateTime.now();
     user.rating = 5;
     user.status = UserStatus.active;
-    user.phone_number ="";
+    user.phone_number = "";
 
     return user;
   }

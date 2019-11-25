@@ -51,7 +51,8 @@ class _MessagePageState extends State<MessagePage> {
             return Column(
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 5),
+                  padding:
+                      EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 5),
                   child: new Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -63,9 +64,11 @@ class _MessagePageState extends State<MessagePage> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: SizeConfig.blockSizeHorizontal * 8),
+                  padding:
+                      EdgeInsets.only(top: SizeConfig.blockSizeHorizontal * 8),
                   child: new Container(
-                    constraints: BoxConstraints.expand(height: SizeConfig.screenHeight * 0.78),
+                    constraints: BoxConstraints.expand(
+                        height: SizeConfig.screenHeight * 0.70),
                     child: buildMyMessageListView(),
                   ),
                 ),
@@ -81,7 +84,10 @@ class _MessagePageState extends State<MessagePage> {
     if (messages.isEmpty) {
       return new Center(
         child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.symmetric(
+              horizontal: SizeConfig.blockSizeHorizontal * 3,
+              vertical: SizeConfig.blockSizeVertical * 2,
+            ),
             child: Text("Vous n´avez pas encore de messages")),
       );
     }

@@ -408,7 +408,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                   shape: const StadiumBorder(),
                                   color: Colors.red,
                                   child:
-                                      Text('Retour', style: SizeConfig.styleButtonWhite),
+                                      Text('Annuler', style: SizeConfig.styleButtonWhite),
                                   onPressed: _cancelChange,
                                 ),
                               ),
@@ -418,7 +418,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                 child: RaisedButton(
                                   shape: const StadiumBorder(),
                                   color: colorDeepPurple400,
-                                  child: Text('Enregistrer les modifications',
+                                  child: Text('Enregistrer',
                                       style: SizeConfig.styleButtonWhite),
                                   onPressed: _submitForm,
                                 ),
@@ -624,7 +624,7 @@ class _PostEditFormState extends State<PostEditForm> {
             },
           ),
           Text(
-            "J'offre",
+            "Offre",
             style: SizeConfig.styleRadioButton,
           ),
           Radio(
@@ -638,7 +638,7 @@ class _PostEditFormState extends State<PostEditForm> {
           ),
           Expanded(
             child: Text(
-              "Je recherche",
+              "Recherche",
               style: SizeConfig.styleRadioButton,
             ),
           ),
@@ -653,7 +653,7 @@ class _PostEditFormState extends State<PostEditForm> {
           ),
           Expanded(
             child: Text(
-              "Tous",
+              "Tout",
               style: SizeConfig.styleRadioButton,
             ),
           ),

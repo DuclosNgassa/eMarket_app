@@ -342,16 +342,19 @@ class _AccountState extends State<AccountPage>
           if (snapshot.hasData) {
             FirebaseUser user = snapshot.data; // this is your user instance
             /// is because there is user already logged
-            return CustomButton(
-              fillColor: colorRed,
-              icon: FontAwesomeIcons.signOutAlt,
-              //icon: Icons.directions_run,
-              splashColor: Colors.white,
-              iconColor: Colors.white,
-              text: 'Se deconnecter',
-              textStyle:
-                  TextStyle(color: Colors.white, fontSize: SizeConfig.BUTTON_FONT_SIZE),
-              onPressed: () => _logOut(),
+            return Padding(
+              padding: EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 2),
+              child: CustomButton(
+                fillColor: colorRed,
+                icon: FontAwesomeIcons.signOutAlt,
+                //icon: Icons.directions_run,
+                splashColor: Colors.white,
+                iconColor: Colors.white,
+                text: 'Se deconnecter',
+                textStyle:
+                    TextStyle(color: Colors.white, fontSize: SizeConfig.BUTTON_FONT_SIZE),
+                onPressed: () => _logOut(),
+              ),
             );
           }
 
@@ -364,7 +367,6 @@ class _AccountState extends State<AccountPage>
     await FirebaseAuth.instance.signOut();
     _gSignIn.signOut();
     clearSharedPreferences();
-    print('Signed out');
 
     Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
