@@ -153,7 +153,7 @@ class PostFormState extends State<PostForm> {
                     child: Row(
                       children: <Widget>[
                         Expanded(
-                          child: Text(_categorieTile.title),
+                          child: Text(_categorieTile.title, style: SizeConfig.styleFormGrey,),
                         ),
                         IconButton(
                           onPressed: showCategoriePage,
