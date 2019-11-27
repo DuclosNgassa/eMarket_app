@@ -143,9 +143,10 @@ class _HomePageState extends State<HomePage> {
 
     TextStyle _myTextStyle = TextStyle(
       color: Colors.black87,
-      fontSize: SizeConfig.safeBlockHorizontal * 3,
+      fontSize: SizeConfig.safeBlockHorizontal * 2.6,
     );
 
+    double heightCustomCategorieButton = SizeConfig.blockSizeVertical * 5;
     return GridView.count(
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
@@ -154,7 +155,7 @@ class _HomePageState extends State<HomePage> {
       children: <Widget>[
         CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 30,
-          height: SizeConfig.blockSizeVertical * 5,
+          height: heightCustomCategorieButton,
           fillColor: colorDeepPurple400,
           icon: Icons.phone_iphone,
           splashColor: Colors.white,
@@ -165,18 +166,18 @@ class _HomePageState extends State<HomePage> {
         ),
         CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 30,
-          height: SizeConfig.blockSizeVertical * 5,
+          height: heightCustomCategorieButton,
           fillColor: colorDeepPurple400,
           icon: Icons.weekend,
           splashColor: Colors.white,
           iconColor: Colors.white,
-          text: 'Accessoires de maison',
+          text: 'Ameublement',
           textStyle: _myTextStyle,
           onPressed: () => showSearchWithParentCategorie(300),
         ),
         CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 30,
-          height: SizeConfig.blockSizeVertical * 5,
+          height: heightCustomCategorieButton,
           fillColor: colorDeepPurple400,
           icon: Icons.home,
           splashColor: Colors.white,
@@ -187,7 +188,7 @@ class _HomePageState extends State<HomePage> {
         ),
         CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 30,
-          height: SizeConfig.blockSizeVertical * 5,
+          height: heightCustomCategorieButton,
           fillColor: colorDeepPurple400,
           icon: Icons.local_play,
           splashColor: Colors.white,
@@ -198,7 +199,40 @@ class _HomePageState extends State<HomePage> {
         ),
         CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 30,
-          height: SizeConfig.blockSizeVertical * 5,
+          height: heightCustomCategorieButton,
+          fillColor: colorDeepPurple400,
+          icon: Icons.phone_iphone,
+          splashColor: Colors.white,
+          iconColor: Colors.white,
+          text: 'Electromenager',
+          textStyle: _myTextStyle,
+          onPressed: () => showSearchWithParentCategorie(387),
+        ),
+        CustomCategorieButton(
+          width: SizeConfig.blockSizeHorizontal * 30,
+          height: heightCustomCategorieButton,
+          fillColor: colorDeepPurple400,
+          icon: Icons.phone_iphone,
+          splashColor: Colors.white,
+          iconColor: Colors.white,
+          text: 'Electromenager',
+          textStyle: _myTextStyle,
+          onPressed: () => showSearchWithParentCategorie(387),
+        ),
+        CustomCategorieButton(
+          width: SizeConfig.blockSizeHorizontal * 30,
+          height: heightCustomCategorieButton,
+          fillColor: colorDeepPurple400,
+          icon: Icons.phone_iphone,
+          splashColor: Colors.white,
+          iconColor: Colors.white,
+          text: 'Electromenager',
+          textStyle: _myTextStyle,
+          onPressed: () => showSearchWithParentCategorie(387),
+        ),
+        CustomCategorieButton(
+          width: SizeConfig.blockSizeHorizontal * 30,
+          height: heightCustomCategorieButton,
           fillColor: colorDeepPurple400,
           icon: Icons.list,
           splashColor: Colors.white,
@@ -245,7 +279,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _loadPost() async {
-    postList = await _postService.fetchPosts();
+    postList = await _postService.fetchActivePosts();
     for (var post in postList) {
       await post.getImageUrl();
     }

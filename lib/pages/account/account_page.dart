@@ -10,6 +10,7 @@ import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/services/global.dart' as prefix0;
 import 'package:emarket_app/services/image_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/util/notification.dart';
@@ -71,7 +72,8 @@ class _AccountState extends State<AccountPage>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Padding(
-                              padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
+                              padding: EdgeInsets.only(
+                                  left: SizeConfig.blockSizeHorizontal * 2),
                               child: Row(
                                 children: <Widget>[
                                   Expanded(
@@ -86,7 +88,8 @@ class _AccountState extends State<AccountPage>
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
+                              padding: EdgeInsets.only(
+                                  left: SizeConfig.blockSizeHorizontal * 2),
                               child: Text(
                                 userEmail,
                                 style: SizeConfig.styleNormalWhite,
@@ -127,7 +130,9 @@ class _AccountState extends State<AccountPage>
   Widget buildMyPostListView() {
     if (myPosts.isEmpty) {
       return Padding(
-        padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockSizeHorizontal * 2, vertical: SizeConfig.blockSizeVertical),
+        padding: EdgeInsets.symmetric(
+            horizontal: SizeConfig.blockSizeHorizontal * 2,
+            vertical: SizeConfig.blockSizeVertical),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -153,30 +158,47 @@ class _AccountState extends State<AccountPage>
                 child: ListTile(
                   onTap: () => showPostDetailPage(myPosts.elementAt(index)),
                   leading: CircleAvatar(
-                    backgroundColor: colorDeepPurple300,
+                    backgroundColor: isPostArchivated(index)
+                        ? colorGrey400
+                        : colorDeepPurple300,
                     child: Text((index + 1).toString()),
                     foregroundColor: colorWhite,
                   ),
                   title: Text(myPosts.elementAt(index).title),
                   subtitle: Text(DateConverter.convertToString(
                       myPosts.elementAt(index).created_at)),
-                  trailing:
+                  trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
                       Text(myPosts.elementAt(index).fee.toString() + " FCFA"),
+                      SizedBox(
+                        height: SizeConfig.blockSizeVertical,
+                      ),
+                      if (isPostArchivated(index))
+                        Text(
+                          'Vendu',
+                          style: SizeConfig.styleFormGrey,
+                        ),
+                    ],
+                  ),
                 ),
               ),
               actions: <Widget>[
-                IconSlideAction(
-                  caption: 'Vendu',
-                  color: Colors.green,
-                  icon: Icons.done,
-                  onTap: () => archivatePost(myPosts.elementAt(index), index),
-                ),
-                IconSlideAction(
-                  caption: 'Modifier',
-                  color: colorBlue,
-                  icon: Icons.edit,
-                  onTap: () => showPostEditForm(myPosts.elementAt(index)),
-                ),
+                if (isPostActive(index))
+                  IconSlideAction(
+                    caption: 'Vendu',
+                    color: Colors.green,
+                    icon: Icons.done,
+                    onTap: () => archivatePost(myPosts.elementAt(index), index),
+                  ),
+                if (isPostActive(index))
+                  IconSlideAction(
+                    caption: 'Modifier',
+                    color: colorBlue,
+                    icon: Icons.edit,
+                    onTap: () => showPostEditForm(myPosts.elementAt(index)),
+                  ),
               ],
               secondaryActions: <Widget>[
                 IconSlideAction(
@@ -184,7 +206,7 @@ class _AccountState extends State<AccountPage>
                   color: colorRed,
                   icon: Icons.delete,
                   onTap: () =>
-                      _showDeletePostDialog(myPosts.elementAt(index).id, index),
+                      _showDeletePostDialog(myPosts.elementAt(index), index),
                 ),
               ],
             ),
@@ -192,11 +214,21 @@ class _AccountState extends State<AccountPage>
         itemCount: myPosts.length);
   }
 
+  bool isPostActive(int index) {
+    return myPosts.elementAt(index).status == Status.active;
+  }
+
+  bool isPostArchivated(int index) {
+    return myPosts.elementAt(index).status == Status.archivated;
+  }
+
   Widget buildMyFavoritPostListView() {
     if (myPostFavorits.isEmpty) {
       return new Center(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockSizeHorizontal * 2, vertical: SizeConfig.blockSizeVertical),
+          padding: EdgeInsets.symmetric(
+              horizontal: SizeConfig.blockSizeHorizontal * 2,
+              vertical: SizeConfig.blockSizeVertical),
           child: Text(
             "Vous n´avez pas encore de favorits. "
             "\n\n Marquez un post avec l´étoile pour l´enregister dans vos favorits!",
@@ -246,7 +278,7 @@ class _AccountState extends State<AccountPage>
     Map<String, dynamic> postParams = post.toMapUpdate(post);
     Post updatedPost = await _postService.update(postParams);
     myPosts.removeAt(index);
-    myPosts.add(updatedPost);
+    myPosts.insert(index, updatedPost);
     setState(() {});
   }
 
@@ -269,24 +301,24 @@ class _AccountState extends State<AccountPage>
         () => Navigator.of(context).pop());
   }
 
-  Future<void> _showDeletePostDialog(int id, int index) async {
+  Future<void> _showDeletePostDialog(Post post, int index) async {
     return MyNotification.showConfirmationDialog(
         context,
         'Confirmation',
         'Voulez vous vraiment supprimer cette annonce?',
-        () => {deletePost(id, index), Navigator.of(context).pop()},
+        () => {deletePost(post, index), Navigator.of(context).pop()},
         () => Navigator.of(context).pop());
   }
 
-  Future<void> deletePost(int id, int index) async {
-    bool isImageDeleted = await _imageService.deleteByPostID(id);
-    if (isImageDeleted) {
-      bool isPostDeleted = await _postService.delete(id);
-      if (isPostDeleted) {
-        myPosts.removeAt(index);
-      }
-      setState(() {});
-    }
+  Future<void> deletePost(Post _post, int index) async {
+    Post post = _post;
+    post.status = Status.deleted;
+
+    Map<String, dynamic> postParams = post.toMapUpdate(post);
+    await _postService.update(postParams);
+    myPosts.removeAt(index);
+
+    setState(() {});
   }
 
   Future<void> deleteFavoritPost(int postId, int index) async {
@@ -343,7 +375,8 @@ class _AccountState extends State<AccountPage>
             FirebaseUser user = snapshot.data; // this is your user instance
             /// is because there is user already logged
             return Padding(
-              padding: EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 2),
+              padding:
+                  EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 2),
               child: CustomButton(
                 fillColor: colorRed,
                 icon: FontAwesomeIcons.signOutAlt,
@@ -351,8 +384,8 @@ class _AccountState extends State<AccountPage>
                 splashColor: Colors.white,
                 iconColor: Colors.white,
                 text: 'Se deconnecter',
-                textStyle:
-                    TextStyle(color: Colors.white, fontSize: SizeConfig.BUTTON_FONT_SIZE),
+                textStyle: TextStyle(
+                    color: Colors.white, fontSize: SizeConfig.BUTTON_FONT_SIZE),
                 onPressed: () => _logOut(),
               ),
             );

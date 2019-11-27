@@ -36,6 +36,24 @@ class PostService {
     }
   }
 
+  Future<List<Post>> fetchActivePosts() async {
+    final response = await http.Client().get(URL_POST_ACTIVE);
+    if (response.statusCode == HttpStatus.ok) {
+      Map<String, dynamic> mapResponse = json.decode(response.body);
+      if (mapResponse["result"] == "ok") {
+        final posts = mapResponse["data"].cast<Map<String, dynamic>>();
+        final postList = await posts.map<Post>((json) {
+          return Post.fromJson(json);
+        }).toList();
+        return postList;
+      } else {
+        return [];
+      }
+    } else {
+      throw Exception('Failed to load Posts from the internet');
+    }
+  }
+
   Future<Post> fetchPostById(int id) async {
     final response = await http.Client().get('$URL_POST_BY_ID$id');
     if (response.statusCode == HttpStatus.ok) {

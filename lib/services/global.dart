@@ -9,6 +9,7 @@ const SERVER_URL = "http://192.168.2.120:3000"; // Local at home
 
 const URL_POSTS = SERVER_URL + "/posts";
 const URL_POST_BY_ID = URL_POSTS + "/";
+const URL_POST_ACTIVE = URL_POSTS + "/active";
 const URL_POST_BY_USEREMAIL = URL_POSTS + "/user/";
 
 const URL_USERS = SERVER_URL + "/users";
