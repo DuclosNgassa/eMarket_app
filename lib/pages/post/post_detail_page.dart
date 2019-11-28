@@ -2,15 +2,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/custom_component/post_owner.dart';
+import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/image/images_detail.dart';
 import 'package:emarket_app/pages/post/post_user_page.dart';
+import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/image_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/post.dart';
 
@@ -27,8 +30,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
   List<CachedNetworkImage> postImages = new List();
   ImageService _imageService = new ImageService();
   List<Post> posts = new List();
+  List<Favorit> myFavorits = new List();
   final PostService _postService = new PostService();
   final UserService _userService = new UserService();
+  final FavoritService _favoritService = new FavoritService();
 
   User _postOwner;
 
@@ -36,6 +41,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   void initState() {
     super.initState();
     _loadPosts();
+    _loadMyFavorits();
     _getUserByEmail();
     _updatePostView();
   }
@@ -72,7 +78,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 ),
                 Container(
                   margin:
-                      EdgeInsets.only(top: SizeConfig.blockSizeVertical * 10),
+                  EdgeInsets.only(top: SizeConfig.blockSizeVertical * 10),
                   constraints: BoxConstraints.expand(
                       height: SizeConfig.screenHeight * 0.9),
                   child: SingleChildScrollView(
@@ -143,7 +149,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                         Padding(
                                           padding: EdgeInsets.only(
                                             right:
-                                                SizeConfig.blockSizeHorizontal,
+                                            SizeConfig.blockSizeHorizontal,
                                           ),
                                           child: Icon(Icons.calendar_today,
                                               color: colorDeepPurple300),
@@ -156,7 +162,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.only(right:SizeConfig.blockSizeHorizontal),
+                                padding: EdgeInsets.only(
+                                    right: SizeConfig.blockSizeHorizontal),
                                 child: Icon(Icons.remove_red_eye,
                                     color: colorDeepPurple300),
                               ),
@@ -225,7 +232,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return PostUserPage(posts, _postOwner.name);
+          return PostUserPage(posts, _postOwner.name, myFavorits);
         },
       ),
     );
@@ -269,7 +276,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       scrollDirection: Axis.horizontal,
       children: List.generate(
         postImages.length,
-        (index) {
+            (index) {
           CachedNetworkImage asset = postImages[index];
           return GestureDetector(
             onTap: () {
@@ -285,7 +292,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
             },
             child: Padding(
               padding:
-                  EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
+              EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16.0),
                 child: Container(
@@ -312,7 +319,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   Future<void> _loadImages() async {
     postImages =
-        await _imageService.fetchCachedNetworkImageByPostId(widget.post.id);
+    await _imageService.fetchCachedNetworkImageByPostId(widget.post.id);
     setState(() {});
   }
 
@@ -322,19 +329,26 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 
 
-  Future<void> _getUserByEmail() async {
-    _postOwner = await _userService.fetchUserByEmail(widget.post.useremail);
+  Future<void> _loadMyFavorits() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String _userEmail = prefs.getString(USER_EMAIL);
+    myFavorits = await _favoritService.fetchFavoritByUserEmail(_userEmail);
+
     setState(() {});
   }
 
-
-  Future<Post> _updatePostView() async {
-    Post post = widget.post;
-    post.count_view++;
-
-    Map<String, dynamic> postParams = post.toMapUpdate(post);
-    Post updatedPost = await _postService.update(postParams);
-
-    return updatedPost;
-  }
+Future<void> _getUserByEmail() async {
+  _postOwner = await _userService.fetchUserByEmail(widget.post.useremail);
+  setState(() {});
 }
+
+
+Future<Post> _updatePostView() async {
+  Post post = widget.post;
+  post.count_view++;
+
+  Map<String, dynamic> postParams = post.toMapUpdate(post);
+  Post updatedPost = await _postService.update(postParams);
+
+  return updatedPost;
+}}

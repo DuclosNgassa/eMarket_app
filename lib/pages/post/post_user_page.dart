@@ -1,4 +1,5 @@
 import 'package:emarket_app/custom_component/home_card.dart';
+import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
@@ -6,9 +7,10 @@ import 'package:flutter/material.dart';
 
 class PostUserPage extends StatefulWidget {
   final List<Post> posts;
+  final List<Favorit> myFavorits;
   final String userName;
 
-  PostUserPage(this.posts, this.userName);
+  PostUserPage(this.posts, this.userName, this.myFavorits);
 
   @override
   _PostUserPageState createState() => _PostUserPageState();
@@ -115,7 +117,7 @@ class _PostUserPageState extends State<PostUserPage> {
               left: index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
           child: HomeCard(
             widget.posts.elementAt(index),
-            new List(),//myFavorits,
+            widget.myFavorits,
             SizeConfig.blockSizeVertical * 18,
             SizeConfig.screenWidth * 0.5 - 10,
           ),
