@@ -54,6 +54,8 @@ class _LoginState extends State<Login> {
       providerData,
     );
 
+      await setSharedPreferences(userDetails);
+
     Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
         builder: (context) =>
@@ -61,6 +63,12 @@ class _LoginState extends State<Login> {
       ),
     );
     return userDetails;
+  }
+
+  Future setSharedPreferences(FirebaseUser userDetails) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(USER_EMAIL, userDetails.email);
+    prefs.setString(USER_NAME, userDetails.displayName);
   }
 
   @override
@@ -145,9 +153,7 @@ class _LoginState extends State<Login> {
   Future<User> _saveUser(FirebaseUser firebaseUser) async {
     User existsUser = await _userService.fetchUserByEmail(firebaseUser.email);
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(USER_EMAIL, firebaseUser.email);
-    prefs.setString(USER_NAME, firebaseUser.displayName);
+    await setSharedPreferences(firebaseUser);
 
     if (existsUser != null) {
       return existsUser;

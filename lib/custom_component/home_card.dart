@@ -258,11 +258,11 @@ class _HomeCardState extends State<HomeCard> {
         borderRadius: BorderRadius.all(Radius.circular(15)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
                   child: Text(widget.post.title,

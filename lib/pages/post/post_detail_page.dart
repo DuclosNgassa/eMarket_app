@@ -8,6 +8,7 @@ import 'package:emarket_app/pages/post/post_user_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/image_service.dart';
 import 'package:emarket_app/services/post_service.dart';
+import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
@@ -25,14 +26,17 @@ class PostDetailPage extends StatefulWidget {
 class _PostDetailPageState extends State<PostDetailPage> {
   List<CachedNetworkImage> postImages = new List();
   ImageService _imageService = new ImageService();
-  User user = new User();
   List<Post> posts = new List();
   final PostService _postService = new PostService();
+  final UserService _userService = new UserService();
+
+  User _postOwner;
 
   @override
   void initState() {
     super.initState();
     _loadPosts();
+    _getUserByEmail();
     _updatePostView();
   }
 
@@ -200,6 +204,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             showAllUserPost: () => showPostUserPage(),
                             fillColor: Colors.transparent,
                             post: widget.post,
+                            user: _postOwner,
                             splashColor: colorDeepPurple300,
                             textStyle: SizeConfig.styleTitleBlack,
                           )
@@ -220,7 +225,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return PostUserPage(posts);
+          return PostUserPage(posts, _postOwner.name);
         },
       ),
     );
@@ -315,6 +320,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
     posts = await _postService.fetchPostByUserEmail(widget.post.useremail);
     setState(() {});
   }
+
+
+  Future<void> _getUserByEmail() async {
+    _postOwner = await _userService.fetchUserByEmail(widget.post.useremail);
+    setState(() {});
+  }
+
 
   Future<Post> _updatePostView() async {
     Post post = widget.post;

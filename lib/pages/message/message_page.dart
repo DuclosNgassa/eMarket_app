@@ -55,10 +55,14 @@ class _MessagePageState extends State<MessagePage> {
                       EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 5),
                   child: new Row(
                     mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      new Text(
-                        "Mes messages",
-                        style: SizeConfig.styleTitleWhite,
+                      Padding(
+                        padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 3),
+                        child: new Text(
+                          "Mes messages",
+                          style: SizeConfig.styleTitleWhite,
+                        ),
                       ),
                     ],
                   ),
@@ -99,7 +103,7 @@ class _MessagePageState extends State<MessagePage> {
               child: Container(
                 color: colorWhite,
                 child: ListTile(
-                  onTap: () => openUserMessage(postMessages.elementAt(index)),
+                  onTap: () => openUserMessage(postMessages.elementAt(index), postMessages.elementAt(index).post.title),
                   leading: CircleAvatar(
                     backgroundColor: colorDeepPurple300,
                     child: Text((index + 1).toString()),
@@ -195,7 +199,7 @@ class _MessagePageState extends State<MessagePage> {
     return userMessages;
   }
 
-  void openUserMessage(PostMessage postMessage) async {
+  void openUserMessage(PostMessage postMessage, String userName) async {
     //Aktueller User ist Bezitzer des Post, dann kann er alle Nachrichten zu dieser Post sehen
     if (firebaseUser.email == postMessage.post.useremail) {
       List<UserMessage> userMessage =

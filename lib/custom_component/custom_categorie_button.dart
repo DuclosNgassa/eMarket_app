@@ -30,8 +30,8 @@ class CustomCategorieButton extends StatelessWidget {
     return RawMaterialButton(
       onPressed: onPressed,
       splashColor: splashColor,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockSizeHorizontal),
+      child: Container(
+        width: width + 50,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -47,11 +47,8 @@ class CustomCategorieButton extends StatelessWidget {
                 color: iconColor,
               ),
             ),
-            SizedBox(
-              width: SizeConfig.blockSizeHorizontal * 2,
-            ),
             Container(
-              width: width + 10,
+              width: width + 50,
               height: height,
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,

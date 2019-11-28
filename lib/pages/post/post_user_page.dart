@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 
 class PostUserPage extends StatefulWidget {
   final List<Post> posts;
+  final String userName;
 
-  PostUserPage(this.posts);
+  PostUserPage(this.posts, this.userName);
 
   @override
   _PostUserPageState createState() => _PostUserPageState();
@@ -88,7 +89,7 @@ class _PostUserPageState extends State<PostUserPage> {
                 Expanded(
                   child: new Text(
                     "List des annonces de " +
-                        widget.posts.elementAt(0).useremail,
+                        widget.userName,
                     style: SizeConfig.styleTitleWhite,
                   ),
                 ),

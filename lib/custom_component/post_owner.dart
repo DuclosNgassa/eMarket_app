@@ -23,7 +23,7 @@ class PostOwner extends StatefulWidget {
       @required this.splashColor,
       @required this.textStyle,
       @required this.post,
-      this.user,
+      @required this.user,
       @required this.postCount});
 
   final GestureTapCallback showAllUserPost;
@@ -42,7 +42,7 @@ class PostOwnerState extends State<PostOwner> {
   final UserService _userService = new UserService();
   final MessageService _messageService = new MessageService();
   bool isLogedIn = false; //TODO save login as sharedPreferencies
-  User _postOwner = new User();
+  //User _postOwner = new User();
   List<Message> messagesSentOrReceived = new List<Message>();
   String _userEmail;
   String _userName;
@@ -50,7 +50,6 @@ class PostOwnerState extends State<PostOwner> {
   @override
   void initState() {
     super.initState();
-    _getUserByEmail();
     _getMessageByPostIdAndUserEmail();
   }
 
@@ -97,8 +96,8 @@ class PostOwnerState extends State<PostOwner> {
                         color: colorDeepPurple400,
                         child: Center(
                           child: Text(
-                            _postOwner != null && _postOwner.name != null
-                                ? _postOwner.name[0].toUpperCase()
+                            widget.user != null && widget.user.name != null
+                                ? widget.user.name[0].toUpperCase()
                                 : 'e',
                             style: SizeConfig.styleTitleWhite,
                           ),
@@ -118,8 +117,8 @@ class PostOwnerState extends State<PostOwner> {
                       child: Row(
                         children: <Widget>[
                           Text(
-                              _postOwner != null && _postOwner.name != null
-                                  ? _postOwner.name
+                              widget.user != null && widget.user.name != null
+                                  ? widget.user.name
                                   : 'eMarket',
                               style: SizeConfig.styleTitleBlack),
                         ],
@@ -310,11 +309,6 @@ class PostOwnerState extends State<PostOwner> {
     }
   }
 
-  Future<void> _getUserByEmail() async {
-    _postOwner = await _userService.fetchUserByEmail(widget.post.useremail);
-    setState(() {});
-  }
-
   Future<void> _getMessageByPostIdAndUserEmail() async {
     await setUserDaten();
 
@@ -338,7 +332,6 @@ class PostOwnerState extends State<PostOwner> {
   void setUserDaten() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _userEmail = prefs.getString(USER_EMAIL);
-    _userName = prefs.getString(USER_NAME);
 
     setState(() {});
   }

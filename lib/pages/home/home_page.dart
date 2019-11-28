@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisCount: 2,
               mainAxisSpacing: 0,
               crossAxisSpacing: 0,
-              childAspectRatio: 1.7,
+              childAspectRatio: 1.5,
             ),
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
@@ -154,7 +154,7 @@ class _HomePageState extends State<HomePage> {
       scrollDirection: Axis.horizontal,
       children: <Widget>[
         CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 30,
+          width: SizeConfig.blockSizeHorizontal * 32,
           height: heightCustomCategorieButton,
           fillColor: colorDeepPurple400,
           icon: Icons.phone_iphone,
@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () => showSearchWithParentCategorie(387),
         ),
         CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 30,
+          width: SizeConfig.blockSizeHorizontal * 32,
           height: heightCustomCategorieButton,
           fillColor: colorDeepPurple400,
           icon: Icons.weekend,
@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () => showSearchWithParentCategorie(300),
         ),
         CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 30,
+          width: SizeConfig.blockSizeHorizontal * 32,
           height: heightCustomCategorieButton,
           fillColor: colorDeepPurple400,
           icon: Icons.home,
@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () => showSearchWithParentCategorie(24),
         ),
         CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 30,
+          width: SizeConfig.blockSizeHorizontal * 32,
           height: heightCustomCategorieButton,
           fillColor: colorDeepPurple400,
           icon: Icons.local_play,
@@ -198,7 +198,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () => showSearchWithParentCategorie(30),
         ),
         CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 30,
+          width: SizeConfig.blockSizeHorizontal * 32,
           height: heightCustomCategorieButton,
           fillColor: colorDeepPurple400,
           icon: Icons.phone_iphone,
@@ -209,7 +209,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () => showSearchWithParentCategorie(387),
         ),
         CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 30,
+          width: SizeConfig.blockSizeHorizontal * 32,
           height: heightCustomCategorieButton,
           fillColor: colorDeepPurple400,
           icon: Icons.phone_iphone,
@@ -220,7 +220,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () => showSearchWithParentCategorie(387),
         ),
         CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 30,
+          width: SizeConfig.blockSizeHorizontal * 32,
           height: heightCustomCategorieButton,
           fillColor: colorDeepPurple400,
           icon: Icons.phone_iphone,
@@ -231,7 +231,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () => showSearchWithParentCategorie(387),
         ),
         CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 30,
+          width: SizeConfig.blockSizeHorizontal * 32,
           height: heightCustomCategorieButton,
           fillColor: colorDeepPurple400,
           icon: Icons.list,

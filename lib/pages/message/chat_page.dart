@@ -1,8 +1,10 @@
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
+import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/message_service.dart';
+import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -13,6 +15,7 @@ import '../../services/global.dart';
 class ChatPage extends StatefulWidget {
   List<Message> messages;
   Post post;
+  String receiverName;
 
   ChatPage({this.messages, this.post});
 
@@ -27,10 +30,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   String userEmail;
   String userName;
-  String receiver = null;
+  User receiver;
+
   List<Message> _messages = new List(); // new
   final TextEditingController _textController = new TextEditingController();
   MessageService messageService = new MessageService();
+  UserService _userService = new UserService();
 
   _ChatPageState(List<Message> messages, Post post);
 
@@ -56,7 +61,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           new Flexible(
             child: buildChatListView(),
           ),
-          new Divider(height: SizeConfig.blockSizeVertical * 0.5),
+          new Divider(height: SizeConfig.blockSizeVertical),
           new Container(
             decoration: new BoxDecoration(color: Theme.of(context).cardColor),
             child: _buildTextComposer(), //modified
@@ -110,14 +115,15 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           child: Container(
             color: Colors.deepPurple[100],
             child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: colorDeepPurple300,
-                child: Text(_messages.elementAt(index).sender[0].toUpperCase()),
-                foregroundColor: colorWhite,
-              ),
               title: Text(_messages.elementAt(index).body),
-              subtitle: Text(DateConverter.convertToString(
-                  _messages.elementAt(index).created_at)),
+              subtitle: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(child: Text("Moi")),
+                  Text(DateConverter.convertToString(
+                      _messages.elementAt(index).created_at)),
+                ],
+              ),
             ),
           ),
         ),
@@ -133,14 +139,17 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           child: Container(
             color: Colors.black26,
             child: ListTile(
-              trailing: CircleAvatar(
-                backgroundColor: colorDeepPurple300,
-                child: Text(_messages.elementAt(index).sender[0].toUpperCase()),
-                foregroundColor: colorWhite,
-              ),
               title: Text(_messages.elementAt(index).body),
-              subtitle: Text(DateConverter.convertToString(
-                  _messages.elementAt(index).created_at)),
+              subtitle: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Expanded(
+                    child: Text(DateConverter.convertToString(
+                        _messages.elementAt(index).created_at)),
+                  ),
+                  Text(receiver.name),
+                ],
+              ),
             ),
           ),
         ),
@@ -186,7 +195,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         created_at: DateTime.now(),
         postid:
             widget.post != null ? widget.post.id : widget.messages[0].postid,
-        receiver: receiver,
+        receiver: receiver.email,
         sender: userEmail);
 
     Map<String, dynamic> messageParams = message.toMap(message);
@@ -201,21 +210,21 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   void initChatMessage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userEmail = prefs.getString(USER_EMAIL);
+    userEmail = await prefs.getString(USER_EMAIL);
     userName = prefs.getString(USER_NAME);
     _messages = widget.messages;
 
     if (_messages.isEmpty) {
-      receiver = widget.post.useremail;
+      await _getUserByEmail(widget.post.useremail);
     } else {
       for (Message message in widget.messages) {
-        if (receiver == null && message.sender != userEmail) {
-          receiver = message.sender;
+        if (message.sender != userEmail) {
+          await _getUserByEmail(message.sender);
           break;
         }
 
-        if (receiver == null && message.receiver != userEmail) {
-          receiver = message.receiver;
+        if (message.receiver != userEmail) {
+          await _getUserByEmail(message.receiver);
           break;
         }
       }
@@ -229,40 +238,36 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       child: RawMaterialButton(
         onPressed: () => _showPostDetailPage(widget.post),
         child: Padding(
-          padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical),
+          padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
           child: Column(
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  new Text(
-                    "Chat",
-                    style: SizeConfig.styleTitleWhite,
+                  Expanded(
+                    child: new Text(
+                      "Chat",
+                      style: SizeConfig.styleTitleWhite,
+                    ),
                   ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(
-                        top: SizeConfig.blockSizeVertical,
-                        right: SizeConfig.blockSizeHorizontal),
+                    padding:
+                        EdgeInsets.only(right: SizeConfig.blockSizeHorizontal),
                     child: new Text(
                       "Annonce: " + widget.post.title,
                       style: SizeConfig.styleSubtitleWhite,
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(
-                        right: SizeConfig.blockSizeHorizontal),
+                    padding:
+                        EdgeInsets.only(right: SizeConfig.blockSizeHorizontal),
                     child: Icon(
                       Icons.arrow_forward_ios,
                       color: colorWhite,
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -278,5 +283,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         },
       ),
     );
+  }
+
+  Future<void> _getUserByEmail(String email) async {
+    receiver = await _userService.fetchUserByEmail(email);
+    setState(() {});
   }
 }
