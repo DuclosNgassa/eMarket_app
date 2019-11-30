@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
@@ -40,6 +41,7 @@ class PostFormState extends State<PostForm> {
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
+  final int MAX_IMAGE = 4;
 
   FormValidator formValidator = new FormValidator();
 
@@ -125,10 +127,9 @@ class PostFormState extends State<PostForm> {
                 _fieldFocusChange(_titelFocusNode, _feeFocusNode);
               },
               decoration: const InputDecoration(
-                hintText: 'Donnez le titre de votre post',
-                labelText: 'Titre',
-                labelStyle: SizeConfig.styleFormBlack
-              ),
+                  hintText: 'Donnez le titre de votre post',
+                  labelText: 'Titre',
+                  labelStyle: SizeConfig.styleFormBlack),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(30),
               ],
@@ -153,7 +154,10 @@ class PostFormState extends State<PostForm> {
                     child: Row(
                       children: <Widget>[
                         Expanded(
-                          child: Text(_categorieTile.title, style: SizeConfig.styleFormGrey,),
+                          child: Text(
+                            _categorieTile.title,
+                            style: SizeConfig.styleFormGrey,
+                          ),
                         ),
                         IconButton(
                           onPressed: showCategoriePage,
@@ -218,7 +222,8 @@ class PostFormState extends State<PostForm> {
                                   (String value) {
                                 return DropdownMenuItem(
                                   value: value,
-                                  child: Text(value, style: SizeConfig.styleFormGrey),
+                                  child: Text(value,
+                                      style: SizeConfig.styleFormGrey),
                                 );
                               }).toList(),
                             ),
@@ -395,7 +400,10 @@ class PostFormState extends State<PostForm> {
                           child: AspectRatio(
                             aspectRatio: 0.5,
                             child: images[index] != null
-                                ? Image.file(images[index], fit: BoxFit.cover)
+                                ? Image.file(
+                                    images[index],
+                                    fit: BoxFit.cover,
+                                  )
                                 : null,
                           ),
                         ),
@@ -497,28 +505,54 @@ class PostFormState extends State<PostForm> {
   }
 
   _takePhoto() async {
-    if (images.length < 4) {
-      imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+    if (images.length < MAX_IMAGE) {
+      File picture = await ImagePicker.pickImage(
+          source: ImageSource.camera, maxWidth: 800.0, maxHeight: 800.0);
 
-      if (imageFile != null) {
-        images.add(imageFile);
+      if (picture != null) {
+        setState(() {
+          images.add(picture);
+          imageFile = picture;
+        });
       }
-      setState(() {});
     } else {
-      _showMessage('Vous ne pouvez que telecharger 4 photos');
+      MyNotification.showInfoFlushbar(
+          context,
+          "Info",
+          "Vous ne pouvez que telecharger " + MAX_IMAGE.toString() + " photos",
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.blue.shade300,
+          ),
+          Colors.blue.shade300,
+          2);
     }
   }
 
   _selectGalleryImage() async {
-    if (images.length < 4) {
-      imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (images.length < MAX_IMAGE) {
+      File picture = await ImagePicker.pickImage(
+          source: ImageSource.gallery, maxWidth: 800.0, maxHeight: 800.0);
 
-      if (imageFile != null) {
-        images.add(imageFile);
+      if (picture != null) {
+        setState(() {
+          images.add(picture);
+          imageFile = picture;
+        });
       }
-      setState(() {});
     } else {
-      _showMessage('Vous ne pouvez que telecharger 4 photos');
+      MyNotification.showInfoFlushbar(
+          context,
+          "Info",
+          "Vous ne pouvez que telecharger " + MAX_IMAGE.toString() + " photos",
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.blue.shade300,
+          ),
+          Colors.blue.shade300,
+          2);
     }
   }
 
@@ -526,11 +560,31 @@ class PostFormState extends State<PostForm> {
     final FormState form = _formKey.currentState;
 
     if (!form.validate()) {
-      _showMessage(
-          'Le formulaire contient des érreurs! Corrigez le s´il vous plait');
+      MyNotification.showInfoFlushbar(
+          context,
+          "Info",
+          "Le formulaire contient des érreurs! Corrigez le s´il vous plait",
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.red.shade300,
+          ),
+          Colors.red.shade300,
+          2);
+
     } else if (_categorieTile.title.isEmpty) {
-      _showMessage(
-          'Veuillez choisir la categorie dans laquelle vous publiez votre post s´il vous pllait.');
+      MyNotification.showInfoFlushbar(
+          context,
+          "Info",
+          "Veuillez choisir la categorie dans laquelle vous publiez votre post s´il vous plait.",
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.red.shade300,
+          ),
+          Colors.red.shade300,
+          2);
+
     } else {
       form.save();
 
@@ -548,7 +602,7 @@ class PostFormState extends State<PostForm> {
             color: Colors.blue.shade300,
           ),
           Colors.blue.shade300,
-          5);
+          2);
 
       clearForm();
     }
@@ -587,14 +641,17 @@ class PostFormState extends State<PostForm> {
       //BEGIN LOOP
       for (var file in images) {
         var fileName = path.basename(file.path);
-        var bytes = await compute(compress, file.readAsBytesSync());
+
+        img.Image image_temp = img.decodeImage(file.readAsBytesSync());
+        img.Image resized_img = img.copyResize(image_temp, width: 480);
 
         var request = http.MultipartRequest('POST', url)
           ..files.add(
             new http.MultipartFile.fromBytes(
               'image',
-              bytes,
+              img.encodeJpg(resized_img),
               filename: fileName,
+              contentType: MediaType.parse('image/jpeg'),
             ),
           );
 
@@ -604,14 +661,34 @@ class PostFormState extends State<PostForm> {
         if (response.statusCode == HttpStatus.ok) {
           _imageUrls.add('$SERVER_URL/${decoded['path']}');
         } else {
-          _showMessage('Image failed: ${decoded['message']}');
+          MyNotification.showInfoFlushbar(
+              context,
+              "Info",
+              "Image failed: ${decoded['message']}",
+              Icon(
+                Icons.info_outline,
+                size: 28,
+                color: Colors.blue.shade300,
+              ),
+              Colors.blue.shade300,
+              2);
         }
       }
       Navigator.pop(context); //TODO Check this
       //END LOOP
     } catch (e) {
       Navigator.pop(context);
-      _showMessage('Image failed: $e');
+      MyNotification.showInfoFlushbar(
+          context,
+          "Error",
+          "Image failed: $e",
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.red.shade300,
+          ),
+          Colors.red.shade300,
+          2);
     }
   }
 
@@ -657,21 +734,8 @@ class PostFormState extends State<PostForm> {
     setState(() {});
   }
 
-  void _showMessage(String message, [MaterialColor color = Colors.red]) {
-    widget.scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: Text(message),
-      backgroundColor: color,
-    ));
-  }
-
   _fieldFocusChange(FocusNode currentFocus, FocusNode nextFocus) {
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
   }
-}
-
-List<int> compress(List<int> bytes) {
-  var image = img.decodeImage(bytes);
-  var resize = img.copyResize(image, height: 480, width: 480);
-  return img.encodePng(resize, level: 1);
 }

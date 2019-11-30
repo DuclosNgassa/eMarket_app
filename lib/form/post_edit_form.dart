@@ -10,11 +10,11 @@ import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
@@ -679,17 +679,23 @@ class _PostEditFormState extends State<PostEditForm> {
 
   _takePhoto() async {
     if (imageCount < MAX_IMAGE) {
-      imageCount++;
-      imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-      if (imageFile != null) {
-        newPostImages.add(imageFile);
+
+      File picture = await ImagePicker.pickImage(
+          source: ImageSource.camera, maxWidth: 800.0, maxHeight: 800.0);
+
+      if (picture != null) {
+        setState(() {
+          imageCount++;
+          newPostImages.add(picture);
+          imageFile = picture;
+        });
       }
-      setState(() {});
+
     } else {
       MyNotification.showInfoFlushbar(
           context,
           "Téléchargement d´images",
-          "Vous ne pouvez que telecharger 4 photos",
+          "Vous ne pouvez que telecharger " + MAX_IMAGE.toString() + " photos",
           Icon(
             Icons.info_outline,
             size: 28,
@@ -702,24 +708,30 @@ class _PostEditFormState extends State<PostEditForm> {
 
   _selectGalleryImage() async {
     if (imageCount < MAX_IMAGE) {
-      imageCount++;
-      imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-      if (imageFile != null) {
-        newPostImages.add(imageFile);
+
+      File picture = await ImagePicker.pickImage(
+          source: ImageSource.gallery, maxWidth: 800.0, maxHeight: 800.0);
+
+      if (picture != null) {
+        setState(() {
+          imageCount++;
+          newPostImages.add(picture);
+          imageFile = picture;
+        });
       }
-      setState(() {});
+
     } else {
       MyNotification.showInfoFlushbar(
           context,
           "Téléchargement d´images",
-          "Vous ne pouvez que telecharger 4 photos",
+          "Vous ne pouvez que telecharger " + MAX_IMAGE.toString() + " photos",
           Icon(
             Icons.info_outline,
             size: 28,
             color: Colors.red.shade300,
           ),
           Colors.red.shade300,
-          3);
+          2);
     }
   }
 
@@ -805,14 +817,17 @@ class _PostEditFormState extends State<PostEditForm> {
       //BEGIN LOOP
       for (var file in newPostImages) {
         var fileName = path.basename(file.path);
-        var bytes = await compute(compress, file.readAsBytesSync());
+
+        img.Image image_temp = img.decodeImage(file.readAsBytesSync());
+        img.Image resized_img = img.copyResize(image_temp, width: 480);
 
         var request = http.MultipartRequest('POST', url)
           ..files.add(
             new http.MultipartFile.fromBytes(
               'image',
-              bytes,
+              img.encodeJpg(resized_img),
               filename: fileName,
+              contentType: MediaType.parse('image/jpeg'),
             ),
           );
 
@@ -928,10 +943,4 @@ class _PostEditFormState extends State<PostEditForm> {
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
   }
-}
-
-List<int> compress(List<int> bytes) {
-  var image = img.decodeImage(bytes);
-  var resize = img.copyResize(image, height: 480, width: 480);
-  return img.encodePng(resize, level: 1);
 }
