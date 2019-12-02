@@ -47,12 +47,20 @@ class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
         children: <Widget>[
           Container(
             height: SizeConfig.screenHeight * 0.5,
+            child: Image.asset(
+              "images/help.gif",
+            ),
+          ),
+/*
+          Container(
+            height: SizeConfig.screenHeight * 0.5,
             child: Icon(
               Icons.info_outline,
               color: colorDeepPurple300,
               size: SizeConfig.safeBlockHorizontal * 60,
             ),
           ),
+*/
           ListTile(
             //onTap: () => showConfigAccountPage(),
             leading: Icon(

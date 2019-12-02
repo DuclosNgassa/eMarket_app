@@ -50,10 +50,8 @@ class _SharePageState extends State<SharePage> {
         children: <Widget>[
           Container(
             height: SizeConfig.screenHeight * 0.5,
-            child: Icon(
-              Icons.share,
-              color: colorDeepPurple300,
-              size: SizeConfig.safeBlockHorizontal * 60,
+            child: Image.asset(
+              "images/sharesocial.gif",
             ),
           ),
           ListTile(
