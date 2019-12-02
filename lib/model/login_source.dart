@@ -1,1 +1,1 @@
-enum LoginSource { ownerPage, postPage, accountPage, messagePage }
+enum LoginSource { ownerPage, postPage, accountPage, messagePage, configurationPage }

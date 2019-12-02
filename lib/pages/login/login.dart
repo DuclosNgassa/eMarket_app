@@ -142,6 +142,11 @@ class _LoginState extends State<Login> {
           return new NavigationPage(MESSAGEPAGE);
         }
         break;
+      case LoginSource.configurationPage:
+        {
+          return new NavigationPage(CONFIGURATIONPAGE);
+        }
+        break;
       case LoginSource.ownerPage:
         {
           return new PostDetailPage(widget._post);

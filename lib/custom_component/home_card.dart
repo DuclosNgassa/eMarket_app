@@ -1,12 +1,11 @@
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
-import 'package:emarket_app/services/global.dart' as prefix1;
+import 'package:emarket_app/services/global.dart' as prefix0;
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 
 import '../model/post.dart';
 import '../pages/post/post_detail_page.dart';
@@ -29,7 +28,11 @@ class _HomeCardState extends State<HomeCard> {
   Favorit myFavoritToAdd = null;
   Favorit myFavoritToRemove = null;
   String renderUrl;
-  Icon favoritIcon = Icon(Icons.star_border, size: 30,);
+  Icon favoritIcon = Icon(
+    Icons.favorite_border,
+    size: 30,
+    color: colorGrey400,
+  );
 
   FavoritService _favoritService = new FavoritService();
 
@@ -89,7 +92,7 @@ class _HomeCardState extends State<HomeCard> {
   Future<void> updateIconFavorit() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     if (user != null) {
-      if (favoritIcon.icon == Icons.star) {
+      if (favoritIcon.icon == Icons.favorite) {
         myFavorits.forEach((item) => {
               if (item.useremail == user.email && item.postid == post.id)
                 {myFavoritToRemove = item}
@@ -130,8 +133,9 @@ class _HomeCardState extends State<HomeCard> {
     }
 
     favoritIcon = Icon(
-      Icons.star_border,
+      Icons.favorite_border,
       size: 30,
+      color: colorGrey400,
     );
   }
 
@@ -141,8 +145,8 @@ class _HomeCardState extends State<HomeCard> {
     }
 
     favoritIcon = Icon(
-      Icons.star,
-      color: Colors.yellow[600],
+      Icons.favorite,
+      color: Colors.redAccent,
       size: 30,
     );
   }
@@ -300,9 +304,8 @@ class _HomeCardState extends State<HomeCard> {
   }
 
   List<Widget> _buildRating(int rating) {
-
     List<Widget> widgetList = new List();
-    Widget icon =  Icon(Icons.location_on, color:colorGrey400);
+    Widget icon = Icon(Icons.location_on, color: colorGrey400);
 
     Widget city = Expanded(
       child: Text(
