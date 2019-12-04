@@ -1,5 +1,4 @@
 import 'package:emarket_app/custom_component/home_card.dart';
-import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
@@ -11,7 +10,8 @@ import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 class DataSearch extends SearchDelegate<Post> {
-  DataSearch(this.postList, this.myFavorits, this.searchParameter, this.childCategories);
+  DataSearch(this.postList, this.myFavorits, this.searchParameter,
+      this.childCategories);
 
   final List<Post> postList;
   final List<Favorit> myFavorits;
@@ -44,11 +44,7 @@ class DataSearch extends SearchDelegate<Post> {
       IconButton(
         icon: Icon(Icons.clear),
         color: colorWhite,
-        onPressed: () {
-          query = "";
-          searchParameter = null;
-          childCategories = null;
-        },
+        onPressed: () => _clearFormSearch(),
       ),
       IconButton(
         icon: Icon(Icons.build),
@@ -77,11 +73,12 @@ class DataSearch extends SearchDelegate<Post> {
   Widget buildSuggestions(BuildContext context) {
     SizeConfig().init(context);
 
-    final resultList = query.isEmpty && searchParameter == null && childCategories == null
-        ? postList
-        : postList.where((post) => isSelected(post)).toList();
+    final resultList =
+        query.isEmpty && searchParameter == null && childCategories == null
+            ? postList
+            : postList.where((post) => isSelected(post)).toList();
 
-    if(resultList.isEmpty){
+    if (resultList.isEmpty) {
       return Center(
         child: Padding(
           padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 2),
@@ -117,7 +114,6 @@ class DataSearch extends SearchDelegate<Post> {
   }
 
   bool isSelected(Post post) {
-
     if (childCategories != null) {
       return childCategories.contains(post.categorieid);
     }
@@ -132,12 +128,15 @@ class DataSearch extends SearchDelegate<Post> {
         _compareString(post.city, searchParameter.city) ||
         post.post_typ == searchParameter.postTyp ||
         post.fee_typ == searchParameter.feeTyp;
-
   }
 
   bool _compareString(String value1, String value2) {
-    if (value1 == null && value2 == null) return true; // both are null
-    if (value1 == null || value2 == null) return false; // only one are null
+    if ((value1 == null && value2 == null) ||
+        (value1.isEmpty && value2.isEmpty))
+      return true; // both are null or empty
+    if (value1 == null || value2 == null || value1.isEmpty || value2.isEmpty)
+      return false;
+
     return value1.toLowerCase().contains(value2.toLowerCase());
   }
 
@@ -162,7 +161,7 @@ class DataSearch extends SearchDelegate<Post> {
           post.fee <= searchParameter.feeMax;
     }
 
-    return true;
+    return false;
   }
 
   Future showCategoriePage(BuildContext context) async {
@@ -177,20 +176,23 @@ class DataSearch extends SearchDelegate<Post> {
   }
 
   Future showSearchParameterPage(BuildContext context) async {
-    SearchParameter transmitedSearchParameter = new SearchParameter();
-    transmitedSearchParameter = await Navigator.push(
+    searchParameter = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SearchParameterPage(
-          pageTitle: "Recherche",
-        ),
+        builder: (context) => SearchParameterPage(),
       ),
     );
-    if (transmitedSearchParameter.city != null) {
-      print('Ville: ${transmitedSearchParameter.city}');
+    if (searchParameter.city != null) {
+      print('Ville: ${searchParameter.city}');
     }
 
-    var _searchParameter = transmitedSearchParameter;
+    var _searchParameter = searchParameter;
     print("Searchparameter Categorie: " + _searchParameter.category.toString());
+  }
+
+  void _clearFormSearch() {
+    query = "";
+    searchParameter = null;
+    childCategories = null;
   }
 }

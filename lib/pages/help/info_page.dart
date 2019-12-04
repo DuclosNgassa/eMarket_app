@@ -1,5 +1,5 @@
 import 'package:emarket_app/model/login_source.dart';
-import 'package:emarket_app/pages/configuration/share_page.dart';
+import 'package:emarket_app/pages/help/share_page.dart';
 import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,12 +9,12 @@ import '../../services/global.dart';
 import 'config_account_page.dart';
 import 'help_page.dart';
 
-class ConfigurationPage extends StatefulWidget {
+class InfoPage extends StatefulWidget {
   @override
-  _ConfigurationPageState createState() => new _ConfigurationPageState();
+  _InfoPageState createState() => new _InfoPageState();
 }
 
-class _ConfigurationPageState extends State<ConfigurationPage> {
+class _InfoPageState extends State<InfoPage> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   FirebaseUser firebaseUser = null;
 
@@ -42,7 +42,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                         padding: EdgeInsets.only(
                             top: SizeConfig.blockSizeVertical * 3),
                         child: new Text(
-                          "Configuration",
+                          "Infos",
                           style: SizeConfig.styleTitleWhite,
                         ),
                       ),
@@ -70,22 +70,12 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     return Container(
       child: ListView(
         children: <Widget>[
-          ListTile(
-            onTap: () => showConfigAccountPage(),
-            leading: Icon(
-              Icons.vpn_key,
-              color: colorDeepPurple300,
-            ),
-            title: Text("Mon compte"),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              color: colorGrey300,
+          Container(
+            height: SizeConfig.screenHeight * 0.36,
+            child: Image.asset(
+              "images/info.gif",
             ),
           ),
-          SizedBox(
-            height: SizeConfig.blockSizeVertical * 7,
-          ),
-          Divider(),
           ListTile(
             onTap: () => showHelpPage(),
             leading: Icon(
@@ -108,6 +98,21 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
               color: colorRed,
             ),
             title: Text("Informer les amis"),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              color: colorGrey300,
+            ),
+          ),
+          Divider(
+            height: SizeConfig.blockSizeVertical,
+          ),
+          ListTile(
+            onTap: () => showSharePage(),
+            leading: Icon(
+              Icons.sentiment_satisfied,
+              color: colorDeepPurple300,
+            ),
+            title: Text("Qui sommes-nous?"),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: colorGrey300,

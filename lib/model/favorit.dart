@@ -4,11 +4,7 @@ class Favorit {
   DateTime created_at;
   int postid;
 
-  Favorit(
-      {this.id,
-      this.useremail,
-      this.created_at,
-      this.postid});
+  Favorit({this.id, this.useremail, this.created_at, this.postid});
 
   factory Favorit.fromJson(Map<String, dynamic> json) {
     return Favorit(
@@ -27,5 +23,4 @@ class Favorit {
 
     return params;
   }
-
 }

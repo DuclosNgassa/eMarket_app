@@ -1,5 +1,5 @@
 import 'package:emarket_app/pages/account/account_page.dart';
-import 'package:emarket_app/pages/configuration/configuration_page.dart';
+import 'package:emarket_app/pages/help/info_page.dart';
 import 'package:emarket_app/pages/home/home_page.dart';
 import 'package:emarket_app/pages/post/post_page.dart';
 import 'package:emarket_app/services/global.dart';
@@ -90,8 +90,8 @@ class _NavigationPageState extends State<NavigationPage> {
             title: Text('Message'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.build),
-            title: Text('Configuration'),
+            icon: Icon(Icons.info),
+            title: Text('Infos'),
           ),
         ],
         currentIndex: _localSelectedIndex,
@@ -113,7 +113,7 @@ class _NavigationPageState extends State<NavigationPage> {
     PostPage(),
     AccountPage(),
     MessagePage(),
-    ConfigurationPage(),
+    InfoPage(),
   ];
 
 }

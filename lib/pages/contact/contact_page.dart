@@ -1,16 +1,14 @@
+import 'package:emarket_app/form/contact_form.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
-import '../../form/searchparameter_form.dart';
-
-class SearchParameterPage extends StatefulWidget {
-
+class ContactPage extends StatefulWidget {
   @override
-  _SearchParameterPageState createState() => new _SearchParameterPageState();
+  _ContactPageState createState() => new _ContactPageState();
 }
 
-class _SearchParameterPageState extends State<SearchParameterPage> {
+class _ContactPageState extends State<ContactPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
   @override
@@ -20,7 +18,7 @@ class _SearchParameterPageState extends State<SearchParameterPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text("Parametrisation de la recherche"),
+        title: Text("Contactez nous"),
         backgroundColor: colorDeepPurple300,
       ),
       body: SafeArea(
@@ -28,12 +26,12 @@ class _SearchParameterPageState extends State<SearchParameterPage> {
         bottom: false,
         child: Padding(
           padding:
-              EdgeInsets.symmetric(vertical: SizeConfig.blockSizeVertical * 2),
+              EdgeInsets.symmetric(vertical: SizeConfig.blockSizeVertical * 5),
           child: CustomScrollView(
             slivers: <Widget>[
               SliverList(
                 delegate: SliverChildListDelegate(
-                  [SearchParameterForm(context)],
+                  [ContactForm(context)],
                 ),
               ),
             ],

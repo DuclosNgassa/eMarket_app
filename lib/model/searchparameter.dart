@@ -8,6 +8,7 @@ class SearchParameter {
   int feeMin;
   int feeMax;
   String city;
+  String quarter;
   PostTyp postTyp;
   FeeTyp feeTyp;
 }

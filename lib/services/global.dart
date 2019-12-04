@@ -29,6 +29,9 @@ const URL_CATEGORIES_BY_ID = URL_CATEGORIES + "/";
 const URL_FAVORITS = SERVER_URL + "/favorits";
 const URL_FAVORITS_BY_EMAIL = URL_FAVORITS + "/user/";
 
+const URL_USER_NOTIFICATION = SERVER_URL + "/userNotification";
+const URL_USER_NOTIFICATION_BY_EMAIL = URL_FAVORITS + "/useremail/";
+
 const URL_MESSAGES = SERVER_URL + "/messages";
 const URL_MESSAGES_BY_EMAIL = URL_MESSAGES + "/email/";
 const URL_MESSAGES_BY_POSTID = URL_MESSAGES + "/post/";

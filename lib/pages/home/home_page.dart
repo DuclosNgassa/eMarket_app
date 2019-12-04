@@ -1,9 +1,7 @@
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/favorit.dart';
-import 'package:emarket_app/model/searchparameter.dart';
 import 'package:emarket_app/pages/search/datasearch.dart';
-import 'package:emarket_app/pages/search/searchparameter.dart';
 import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
@@ -31,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   List<Post> postList = new List();
   List<Favorit> myFavorits = new List();
   List<Categorie> categories = new List();
+  List<Categorie> parentCategories = new List();
 
   @override
   void initState() {
@@ -77,7 +76,8 @@ class _HomePageState extends State<HomePage> {
                             onTap: () {
                               showSearch(
                                 context: context,
-                                delegate: DataSearch(postList, myFavorits, null, null),
+                                delegate: DataSearch(
+                                    postList, myFavorits, null, null),
                               );
                             },
                           ),
@@ -91,8 +91,8 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () {
                             showSearch(
                               context: context,
-                              delegate: DataSearch(
-                                  postList, myFavorits, null, null),
+                              delegate:
+                                  DataSearch(postList, myFavorits, null, null),
                             );
                           },
                         )
@@ -140,7 +140,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCategorieGridView() {
-
     TextStyle _myTextStyle = TextStyle(
       color: Colors.black87,
       fontSize: SizeConfig.safeBlockHorizontal * 2.6,
@@ -152,96 +151,21 @@ class _HomePageState extends State<HomePage> {
       physics: ClampingScrollPhysics(),
       crossAxisCount: 1,
       scrollDirection: Axis.horizontal,
-      children: <Widget>[
-        CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 32,
-          height: heightCustomCategorieButton,
-          fillColor: colorDeepPurple400,
-          icon: Icons.phone_iphone,
-          splashColor: Colors.white,
-          iconColor: Colors.white,
-          text: 'Electromenager',
-          textStyle: _myTextStyle,
-          onPressed: () => showSearchWithParentCategorie(387),
-        ),
-        CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 32,
-          height: heightCustomCategorieButton,
-          fillColor: colorDeepPurple400,
-          icon: Icons.weekend,
-          splashColor: Colors.white,
-          iconColor: Colors.white,
-          text: 'Ameublement',
-          textStyle: _myTextStyle,
-          onPressed: () => showSearchWithParentCategorie(300),
-        ),
-        CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 32,
-          height: heightCustomCategorieButton,
-          fillColor: colorDeepPurple400,
-          icon: Icons.home,
-          splashColor: Colors.white,
-          iconColor: Colors.white,
-          text: 'Immobilier',
-          textStyle: _myTextStyle,
-          onPressed: () => showSearchWithParentCategorie(24),
-        ),
-        CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 32,
-          height: heightCustomCategorieButton,
-          fillColor: colorDeepPurple400,
-          icon: Icons.local_play,
-          splashColor: Colors.white,
-          iconColor: Colors.white,
-          text: 'Mode & Beauté',
-          textStyle: _myTextStyle,
-          onPressed: () => showSearchWithParentCategorie(30),
-        ),
-        CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 32,
-          height: heightCustomCategorieButton,
-          fillColor: colorDeepPurple400,
-          icon: Icons.phone_iphone,
-          splashColor: Colors.white,
-          iconColor: Colors.white,
-          text: 'Electromenager',
-          textStyle: _myTextStyle,
-          onPressed: () => showSearchWithParentCategorie(387),
-        ),
-        CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 32,
-          height: heightCustomCategorieButton,
-          fillColor: colorDeepPurple400,
-          icon: Icons.phone_iphone,
-          splashColor: Colors.white,
-          iconColor: Colors.white,
-          text: 'Electromenager',
-          textStyle: _myTextStyle,
-          onPressed: () => showSearchWithParentCategorie(387),
-        ),
-        CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 32,
-          height: heightCustomCategorieButton,
-          fillColor: colorDeepPurple400,
-          icon: Icons.phone_iphone,
-          splashColor: Colors.white,
-          iconColor: Colors.white,
-          text: 'Electromenager',
-          textStyle: _myTextStyle,
-          onPressed: () => showSearchWithParentCategorie(387),
-        ),
-        CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 32,
-          height: heightCustomCategorieButton,
-          fillColor: colorDeepPurple400,
-          icon: Icons.list,
-          splashColor: Colors.white,
-          iconColor: Colors.white,
-          text: 'Autres Categories',
-          textStyle: _myTextStyle,
-          onPressed: () => showSearchParameterPage(),
-        ),
-      ],
+      children: List.generate(parentCategories.length, (index) {
+        return CustomCategorieButton(
+            width: SizeConfig.blockSizeHorizontal * 32,
+            height: heightCustomCategorieButton,
+            fillColor: colorDeepPurple400,
+            icon: IconData(int.parse(parentCategories[index].icon),
+                fontFamily: 'MaterialIcons'),
+            splashColor: Colors.white,
+            iconColor: Colors.white,
+            text: parentCategories[index].title,
+            textStyle: _myTextStyle,
+            onPressed: () =>
+                showSearchWithParentCategorie(parentCategories[index].id),
+        );
+      }),
     );
   }
 
@@ -257,24 +181,6 @@ class _HomePageState extends State<HomePage> {
     showSearch(
       context: context,
       delegate: DataSearch(postList, myFavorits, null, childCategories),
-    );
-  }
-
-  void showSearchParameterPage() async {
-    SearchParameter transmitedSearchParameter = new SearchParameter();
-    transmitedSearchParameter = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SearchParameterPage(
-          pageTitle: "Recherche",
-        ),
-      ),
-    );
-
-    showSearch(
-      context: context,
-      delegate: DataSearch(
-          postList, myFavorits, transmitedSearchParameter, null),
     );
   }
 
@@ -296,6 +202,17 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadMyCategories() async {
     categories = await _categorieService.fetchCategories();
-    setState(() {});
+    for (var _categorie in categories) {
+      if (_categorie.parentid == null) {
+        parentCategories.add(_categorie);
+      }
+    }
+    setState(() {
+      parentCategories.sort( (a,b) => a.title.compareTo(b.title));
+      Categorie categorie = parentCategories.firstWhere((categorie) => categorie.title == 'Autres');
+      parentCategories.removeWhere((categorie) => categorie.title == 'Autres');
+      parentCategories.add(categorie);
+
+    });
   }
 }

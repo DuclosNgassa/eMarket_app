@@ -1,16 +1,16 @@
-import 'package:emarket_app/services/user_service.dart';
+import 'package:emarket_app/pages/contact/contact_page.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/global.dart';
+import 'faq_page.dart';
 
-class SharePage extends StatefulWidget {
-
+class HelpPage extends StatefulWidget {
   @override
-  _SharePageState createState() => new _SharePageState();
+  _HelpPageState createState() => new _HelpPageState();
 }
 
-class _SharePageState extends State<SharePage> {
+class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final TextEditingController _textEditingController =
       new TextEditingController();
@@ -19,7 +19,6 @@ class _SharePageState extends State<SharePage> {
   String userName;
 
   final TextEditingController _textController = new TextEditingController();
-  UserService _userService = new UserService();
 
   @override
   void initState() {
@@ -41,7 +40,7 @@ class _SharePageState extends State<SharePage> {
   }
 
   _buildTitle() {
-    return Text("Partage");
+    return Text("Aide");
   }
 
   Widget buildListTile() {
@@ -49,18 +48,18 @@ class _SharePageState extends State<SharePage> {
       child: ListView(
         children: <Widget>[
           Container(
-            height: SizeConfig.screenHeight * 0.5,
+            height: SizeConfig.screenHeight * 0.6,
             child: Image.asset(
-              "images/sharesocial.gif",
+              "images/help.gif",
             ),
           ),
           ListTile(
-            //onTap: () => showConfigAccountPage(),
+            onTap: () => showFaqPage(),
             leading: Icon(
               Icons.help_outline,
               color: colorDeepPurple300,
             ),
-            title: Text("Mail"),
+            title: Text("Comment ça marche"),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: colorGrey300,
@@ -68,49 +67,16 @@ class _SharePageState extends State<SharePage> {
           ),
           Divider(),
           ListTile(
-            //onTap: () => showHelpPage(),
+            onTap: () => showContactPage(),
             leading: Icon(
               Icons.message,
               color: colorBlue,
             ),
-            title: Text("SMS"),
+            title: Text("Nous contacter"),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: colorGrey300,
             ),
-          ),
-          Divider(
-            height: SizeConfig.blockSizeVertical,
-          ),
-          ListTile(
-            //onTap: () => showHelpPage(),
-            leading: Icon(
-              Icons.message,
-              color: colorBlue,
-            ),
-            title: Text("Facebook"),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              color: colorGrey300,
-            ),
-          ),
-          Divider(
-            height: SizeConfig.blockSizeVertical,
-          ),
-          ListTile(
-            //onTap: () => showHelpPage(),
-            leading: Icon(
-              Icons.message,
-              color: colorBlue,
-            ),
-            title: Text("Instagram"),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              color: colorGrey300,
-            ),
-          ),
-          Divider(
-            height: SizeConfig.blockSizeVertical,
           ),
         ],
       ),
@@ -118,17 +84,27 @@ class _SharePageState extends State<SharePage> {
   }
 
 // This is the builder method that creates a new page
-/*
-  showConfigAccountPage() {
+
+  showFaqPage() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return ConfigAccountPage();
+          return FaqPage();
         },
       ),
     );
   }
-*/
+
+  showContactPage() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return ContactPage();
+        },
+      ),
+    );
+  }
+
 
 // This is the builder method that creates a new page
 /*

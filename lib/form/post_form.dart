@@ -18,7 +18,6 @@ import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
-import '../model/feetyp.dart';
 import '../model/post.dart';
 import '../model/post_image.dart' as MyImage;
 import '../model/posttyp.dart';
@@ -190,6 +189,7 @@ class PostFormState extends State<PostForm> {
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(30),
                     ],
+                    keyboardType: TextInputType.number,
                     validator: (val) => formValidator.isEmptyText(val)
                         ? 'Donnez un prix'
                         : null,
@@ -329,13 +329,17 @@ class PostFormState extends State<PostForm> {
                   : null,
               onSaved: (val) => newPost.description = val,
             ),
-            Container(
-              padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
-              child: RaisedButton(
-                shape: const StadiumBorder(),
-                color: colorDeepPurple400,
-                child: Text('Publier', style: SizeConfig.styleButtonWhite),
-                onPressed: _submitForm,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: SizeConfig.screenWidth * 0.9,
+                padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
+                child: RaisedButton(
+                  shape: const StadiumBorder(),
+                  color: colorDeepPurple400,
+                  child: Text('Publier', style: SizeConfig.styleButtonWhite),
+                  onPressed: _submitForm,
+                ),
               ),
             ),
           ],
@@ -612,7 +616,7 @@ class PostFormState extends State<PostForm> {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     print("User: " + user.email);
 
-    setFeeTyp(_feeTyp);
+    newPost.fee_typ = Post.convertStringToFeeTyp(_feeTyp);
     newPost.categorieid = _categorieTile.id;
     newPost.post_typ = _postTyp;
     newPost.useremail = user.email;
@@ -702,28 +706,6 @@ class PostFormState extends State<PostForm> {
       Map<String, dynamic> imageParams = _imageService.toMap(newImage);
       MyImage.PostImage savedImage = await _imageService.saveImage(imageParams);
     }
-  }
-
-  void setFeeTyp(String newValue) {
-    setState(() {
-      switch (newValue) {
-        case 'Kdo':
-          {
-            newPost.fee_typ = FeeTyp.gift;
-          }
-          break;
-        case 'Negociable':
-          {
-            newPost.fee_typ = FeeTyp.negotiable;
-          }
-          break;
-        case 'Fixe':
-          {
-            newPost.fee_typ = FeeTyp.fixed;
-          }
-          break;
-      }
-    });
   }
 
   clearForm() {

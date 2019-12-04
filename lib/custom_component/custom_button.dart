@@ -33,14 +33,15 @@ class CustomButton extends StatelessWidget {
             horizontal: SizeConfig.blockSizeHorizontal * 2.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(
-              icon,
-              color: iconColor,
-            ),
-            SizedBox(
-              width: SizeConfig.blockSizeHorizontal * 2,
-            ),
+            icon != null ? Padding(
+              padding: EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 2),
+              child: Icon(
+                icon,
+                color: iconColor,
+              ),
+            ): Container(),
             Text(
               text,
               style: textStyle,
