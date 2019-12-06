@@ -5,6 +5,7 @@ class User {
   String name;
   DateTime created_at;
   String phone_number = '';
+  String device_token = '';
   String email = '';
   int rating = 5; //max 10 Bewerztungssystem
   UserStatus status;
@@ -14,6 +15,7 @@ class User {
       this.name,
       this.created_at,
       this.phone_number,
+      this.device_token,
       this.email,
       this.rating,
       this.status});
@@ -23,6 +25,7 @@ class User {
       id: json["id"],
       name: json["name"],
       phone_number: json["phone_number"],
+      device_token: json["device_token"],
       email: json["email"],
       created_at: DateTime.parse(json["created_at"]),
       rating: json["rating"],
@@ -35,6 +38,7 @@ class User {
     params["name"] = user.name;
     params["created_at"] = user.created_at.toString();
     params["phone_number"] = user.phone_number;
+    params["device_token"] = user.device_token;
     params["email"] = user.email;
     params["rating"] = user.rating.toString();
     params["user_status"] = convertStatusToString(user.status);

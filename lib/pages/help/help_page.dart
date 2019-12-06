@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../services/global.dart';
 import 'faq_page.dart';
+import 'messaging_widget.dart';
 
 class HelpPage extends StatefulWidget {
   @override
@@ -73,6 +74,19 @@ class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
               color: colorBlue,
             ),
             title: Text("Nous contacter"),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              color: colorGrey300,
+            ),
+          ),
+          Divider(),
+          ListTile(
+            //onTap: () => showContactPage(),
+            leading: Icon(
+              Icons.message,
+              color: colorBlue,
+            ),
+            title: MessagingWidget(),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: colorGrey300,

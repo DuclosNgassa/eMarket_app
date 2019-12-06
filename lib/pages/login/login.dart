@@ -8,6 +8,7 @@ import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -27,7 +28,21 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  String _deviceToken="";
+
   UserService _userService = new UserService();
+
+
+  @override
+  void initState() {
+    _firebaseMessaging.requestNotificationPermissions();
+
+    _firebaseMessaging.onTokenRefresh.listen(setDeviceToken);
+    _firebaseMessaging.getToken();
+
+  }
 
   Future<FirebaseUser> _signIn(BuildContext context) async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
@@ -69,6 +84,7 @@ class _LoginState extends State<Login> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(USER_EMAIL, userDetails.email);
     prefs.setString(USER_NAME, userDetails.displayName);
+    prefs.setString(DEVICE_TOKEN, _deviceToken);
   }
 
   @override
@@ -161,6 +177,20 @@ class _LoginState extends State<Login> {
     await setSharedPreferences(firebaseUser);
 
     if (existsUser != null) {
+      if(_deviceToken.isNotEmpty) {
+        if (existsUser.device_token != _deviceToken) {
+          // user use a new device
+          User user = new User();
+          user.id = existsUser.id;
+          user.device_token = _deviceToken;
+
+          Map<String, dynamic> userParams = user.toMap(user);
+          User updatedUser = await _userService.update(userParams);
+
+          return updatedUser;
+
+        }
+      }
       return existsUser;
     } else {
       User user = new User();
@@ -181,9 +211,17 @@ class _LoginState extends State<Login> {
     user.rating = 5;
     user.status = UserStatus.active;
     user.phone_number = "";
+    user.device_token = _deviceToken;
 
     return user;
   }
+
+  void setDeviceToken(String fcmToken) {
+    _deviceToken = fcmToken;
+
+    print('Device-Token: $fcmToken');
+  }
+
 }
 
 class UserDetails {

@@ -53,6 +53,17 @@ class UserService {
     }
   }
 
+  Future<User> update(Map<String, dynamic> params) async {
+    final response =
+    await http.Client().put('$URL_USERS/${params["id"]}', body: params);
+    if (response.statusCode == HttpStatus.ok) {
+      final responseBody = await json.decode(response.body);
+      return convertResponseToUserUpdate(responseBody);
+    } else {
+      throw Exception('Failed to update a Post. Error: ${response.toString()}');
+    }
+  }
+
   User convertResponseToUser(Map<String, dynamic> json) {
     if(json["data"] == null){
       return null;
@@ -63,8 +74,25 @@ class UserService {
       created_at: DateTime.parse(json["data"]["created_at"]),
       email: json["data"]["email"],
       phone_number: json["data"]["phone_number"],
+      device_token: json["data"]["device_token"],
       status: User.convertStringToStatus(json["data"]["user_status"]),
       rating: json["data"]["rating"],
+    );
+  }
+
+  User convertResponseToUserUpdate(Map<String, dynamic> json) {
+    if(json["data"] == null){
+      return null;
+    }
+    return User(
+      id: json["data"]["id"],
+      name: json["data"]["name"],
+      created_at: DateTime.parse(json["data"]["created_at"]),
+      email: json["data"]["email"],
+      phone_number: json["data"]["phone_number"],
+      device_token: json["data"]["device_token"],
+      status: User.convertStringToStatus(json["data"]["user_status"]),
+      rating: int.parse(json["data"]["rating"]),
     );
   }
 

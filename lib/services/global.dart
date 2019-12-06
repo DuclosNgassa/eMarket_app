@@ -46,6 +46,7 @@ const CONFIGURATIONPAGE = 4;
 
 const String USER_EMAIL = "userEmail";
 const String USER_NAME = "userName";
+const String DEVICE_TOKEN = "deviceToken";
 
 Color colorDeepPurple300 = Colors.deepPurple[300]; //Color(0xFF95E08E);
 Color colorDeepPurple400 = Colors.deepPurple[400]; //Color(0xFF33BBB5);
@@ -61,3 +62,5 @@ Color colorGrey100 = Colors.grey[100];
 
 final int  MAX_RATING = 5;
 
+final String SERVER_KEY = "AAAA3RFWb2g:APA91bHZ8ZgSyvEpVclsAjKmLjUndGnuQK4ZK6302Anw3Vfout-Ffb7s2Xum8wGSiZi0xlOE8v1Y9bZ9gZDyocYe7a4-nNSpk7FcSvmO4Z52rfCpMJR_sFdO2yWeo8NKhKHtbYMIGOQg";
+final String GOOGLE_FCM_END_POINT = 'https://fcm.googleapis.com/fcm/send';

@@ -173,37 +173,11 @@ class _MessagePageState extends State<MessagePage> {
     setState(() {});
   }
 
-  Future<List<UserMessage>> mapPostMessageToUserMessage(
-      PostMessage postMessage) async {
-    List<UserMessage> userMessages = new List();
-
-    Set<String> userEmails = new Set();
-    for (int i = 0; i < postMessage.messages.length; i++) {
-      userEmails.add(postMessage.messages[i].sender);
-    }
-
-    for (int i = 0; i < userEmails.length; i++) {
-      User user = await _userService.fetchUserByEmail(userEmails.elementAt(i));
-      List<Message> messages = new List();
-
-      for (int j = 0; j < postMessage.messages.length; j++) {
-        if (postMessage.messages[j].sender == user.email) {
-          messages.add(postMessage.messages[j]);
-        }
-      }
-      UserMessage userMessage = new UserMessage(
-          post: postMessage.post, user: user, messages: messages);
-      userMessages.add(userMessage);
-    }
-
-    return userMessages;
-  }
-
   void openUserMessage(PostMessage postMessage, String userName) async {
     //Aktueller User ist Bezitzer des Post, dann kann er alle Nachrichten zu dieser Post sehen
     if (firebaseUser.email == postMessage.post.useremail) {
       List<UserMessage> userMessage =
-          await mapPostMessageToUserMessage(postMessage);
+          await _mapPostMessageToUserMessage(postMessage);
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
@@ -235,4 +209,32 @@ class _MessagePageState extends State<MessagePage> {
       );
     }
   }
+
+
+  Future<List<UserMessage>> _mapPostMessageToUserMessage(
+      PostMessage postMessage) async {
+    List<UserMessage> userMessages = new List();
+
+    Set<String> userEmails = new Set();
+    for (int i = 0; i < postMessage.messages.length; i++) {
+      userEmails.add(postMessage.messages[i].sender);
+    }
+
+    for (int i = 0; i < userEmails.length; i++) {
+      User user = await _userService.fetchUserByEmail(userEmails.elementAt(i));
+      List<Message> messages = new List();
+
+      for (int j = 0; j < postMessage.messages.length; j++) {
+        if (postMessage.messages[j].sender == user.email) {
+          messages.add(postMessage.messages[j]);
+        }
+      }
+      UserMessage userMessage = new UserMessage(
+          post: postMessage.post, user: user, messages: messages);
+      userMessages.add(userMessage);
+    }
+
+    return userMessages;
+  }
+
 }
