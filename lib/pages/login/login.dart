@@ -30,10 +30,9 @@ class _LoginState extends State<Login> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
-  String _deviceToken="";
+  String _deviceToken = "";
 
   UserService _userService = new UserService();
-
 
   @override
   void initState() {
@@ -41,7 +40,6 @@ class _LoginState extends State<Login> {
 
     _firebaseMessaging.onTokenRefresh.listen(setDeviceToken);
     _firebaseMessaging.getToken();
-
   }
 
   Future<FirebaseUser> _signIn(BuildContext context) async {
@@ -69,7 +67,7 @@ class _LoginState extends State<Login> {
       providerData,
     );
 
-      await setSharedPreferences(userDetails);
+    await setSharedPreferences(userDetails);
 
     Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
@@ -84,7 +82,7 @@ class _LoginState extends State<Login> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(USER_EMAIL, userDetails.email);
     prefs.setString(USER_NAME, userDetails.displayName);
-    prefs.setString(DEVICE_TOKEN, _deviceToken);
+    //prefs.setString(DEVICE_TOKEN, _deviceToken);
   }
 
   @override
@@ -121,9 +119,9 @@ class _LoginState extends State<Login> {
                             color: colorRed,
                           ),
                           SizedBox(width: SizeConfig.blockSizeHorizontal * 3),
-                            Text(
-                              'S´enregistrer avec Google',
-                              style: SizeConfig.styleButtonWhite,
+                          Text(
+                            'S´enregistrer avec Google',
+                            style: SizeConfig.styleButtonWhite,
                           ),
                         ],
                       ),
@@ -173,22 +171,22 @@ class _LoginState extends State<Login> {
 
   Future<User> _saveUser(FirebaseUser firebaseUser) async {
     User existsUser = await _userService.fetchUserByEmail(firebaseUser.email);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     await setSharedPreferences(firebaseUser);
 
-    if (existsUser != null) {
-      if(_deviceToken.isNotEmpty) {
-        if (existsUser.device_token != _deviceToken) {
-          // user use a new device
-          User user = new User();
-          user.id = existsUser.id;
-          user.device_token = _deviceToken;
+    _deviceToken = await prefs.getString(DEVICE_TOKEN);
 
-          Map<String, dynamic> userParams = user.toMap(user);
+    if (existsUser != null && _deviceToken != null) {
+      if (_deviceToken.isNotEmpty) {
+        if (existsUser.device_token != _deviceToken) {
+          // user uses a new device
+          existsUser.device_token = _deviceToken;
+
+          Map<String, dynamic> userParams = existsUser.toMapUpdate(existsUser);
           User updatedUser = await _userService.update(userParams);
 
           return updatedUser;
-
         }
       }
       return existsUser;
@@ -216,12 +214,14 @@ class _LoginState extends State<Login> {
     return user;
   }
 
-  void setDeviceToken(String fcmToken) {
+  void setDeviceToken(String fcmToken) async {
     _deviceToken = fcmToken;
-
+    if (_deviceToken.isNotEmpty) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString(DEVICE_TOKEN, _deviceToken);
+    }
     print('Device-Token: $fcmToken');
   }
-
 }
 
 class UserDetails {

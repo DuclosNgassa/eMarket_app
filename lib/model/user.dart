@@ -33,6 +33,13 @@ class User {
     );
   }
 
+  Map<String, dynamic> toMapUpdate(User user) {
+    Map<String, dynamic> params = toMap(user);
+    params["id"] = user.id.toString();
+
+    return params;
+  }
+
   Map<String, dynamic> toMap(User user) {
     Map<String, dynamic> params = Map<String, dynamic>();
     params["name"] = user.name;

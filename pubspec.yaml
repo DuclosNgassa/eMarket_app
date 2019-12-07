@@ -39,6 +39,10 @@ dependencies:
   flutter_share_me: ^0.4.0
   firebase_messaging: ^6.0.2
 
+  flutter_localizations:
+    sdk: flutter
+  #flutter_cupertino_localizations: ^1.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -64,6 +68,8 @@ flutter:
      - images/info.gif
      - images/help.gif
      - images/sharesocial.gif
+     - lang/en.json
+     - lang/fr.json
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

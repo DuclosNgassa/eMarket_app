@@ -50,27 +50,86 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   @override
   void initState() {
     initChatMessage();
-    _fireBaseCloudMessagingListeners();
+   // _fireBaseCloudMessagingListeners();
+
+
+    final Completer<Map<String, dynamic>> completer =
+    Completer<Map<String, dynamic>>();
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+
+        setState(() {
+          Message fireBaseMessage = new Message(
+              body: message["notification"]["body"],
+              created_at: DateTime.now(),
+              postid:
+              widget.post != null ? widget.post.id : widget.messages[0].postid,
+              receiver: userName,
+              sender: receiver.email);
+
+          _messages.insert(0, fireBaseMessage);
+        });
+
+        completer.complete(message);
+      },
+    );
+
+    //return completer.future;
+
     super.initState();
   }
+/*
 
   void _fireBaseCloudMessagingListeners() {
 
     if (Platform.isIOS) iOS_Permission();
 
     _firebaseMessaging.getToken().then((token){
-      print(token);
+      print("DEviceToken -->" + token);
     });
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
-        //_showItemDialog(message);
+        if (message.containsKey('notification')) {
+          // Handle notification message
+          final dynamic notification = message['notification'];
+
+          Message fireBaseMessage = new Message();
+          fireBaseMessage.created_at = DateTime.now();
+          fireBaseMessage.sender = "Sender";
+          fireBaseMessage.receiver = "Receiver";
+          fireBaseMessage.body = notification["body"];
+
+          _handleSubmitted(notification["body"]);
+
+          //fireBaseMessages.add(fireBaseMessage);
+
+          print("Message: " + notification["body"]);
+        }
+
       },
       //onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
-        //_navigateToItemDetail(message);
+        if (message.containsKey('notification')) {
+          // Handle notification message
+          final dynamic notification = message['notification'];
+
+          Message fireBaseMessage = new Message();
+          fireBaseMessage.created_at = DateTime.now();
+          fireBaseMessage.sender = "Sender";
+          fireBaseMessage.receiver = "Receiver";
+          fireBaseMessage.body = notification["body"];
+
+          _handleSubmitted(notification["body"]);
+
+          //fireBaseMessages.add(fireBaseMessage);
+
+          print("Message: " + notification["body"]);
+        }
+
       },
       onResume: (Map<String, dynamic> message) async {
 
@@ -80,10 +139,11 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
           Message fireBaseMessage = new Message();
           fireBaseMessage.created_at = DateTime.now();
-          fireBaseMessage.id = 1;
           fireBaseMessage.sender = "Sender";
           fireBaseMessage.receiver = "Receiver";
           fireBaseMessage.body = notification["body"];
+
+          _handleSubmitted(notification["body"]);
 
           //fireBaseMessages.add(fireBaseMessage);
 
@@ -96,6 +156,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
+*/
 
   void iOS_Permission() {
     _firebaseMessaging.requestNotificationPermissions(
@@ -336,13 +397,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     setState(() {
       _messages.insert(0, message);
     });
-    sendAndRetrieveMessage(message);
+    sendMessage(message);
   }
 
-  Future<Map<String, dynamic>> sendAndRetrieveMessage(Message _message) async {
-    await _firebaseMessaging.requestNotificationPermissions(
-      const IosNotificationSettings(sound: true, badge: true, alert: true),
-    );
+  Future sendMessage(Message _message) async {
 
     await http.post(
       GOOGLE_FCM_END_POINT,
@@ -366,17 +424,33 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         },
       ),
     );
+/*
 
     final Completer<Map<String, dynamic>> completer =
     Completer<Map<String, dynamic>>();
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
+
+        setState(() {
+          Message fireBaseMessage = new Message(
+              body: message["notification"]["body"],
+              created_at: DateTime.now(),
+              postid:
+              widget.post != null ? widget.post.id : widget.messages[0].postid,
+              receiver: receiver.email,
+              sender: userEmail);
+
+          _messages.insert(0, fireBaseMessage);
+        });
+
         completer.complete(message);
       },
     );
 
     return completer.future;
+*/
+
   }
 
   _showPostDetailPage(Post post) {

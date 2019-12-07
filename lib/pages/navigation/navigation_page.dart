@@ -1,3 +1,4 @@
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/pages/account/account_page.dart';
 import 'package:emarket_app/pages/help/info_page.dart';
 import 'package:emarket_app/pages/home/home_page.dart';
@@ -72,26 +73,26 @@ class _NavigationPageState extends State<NavigationPage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            title: Text('Home'),
+            title: Text(AppLocalizations.of(context).translate('home')),//Text('Home'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
-            title: Text('Inserer'),
+            title: Text(AppLocalizations.of(context).translate('add_post')),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
-            title: Text('Mon compte'),
+            title: Text(AppLocalizations.of(context).translate('account')),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.message),
-            title: Text('Message'),
+            title: Text(AppLocalizations.of(context).translate('messages')),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.info),
-            title: Text('Infos'),
+            title: Text(AppLocalizations.of(context).translate('infos')),
           ),
         ],
         currentIndex: _localSelectedIndex,
