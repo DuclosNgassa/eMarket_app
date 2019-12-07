@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/model/message.dart';
@@ -13,8 +12,8 @@ import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/global.dart';
 
@@ -50,121 +49,63 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   @override
   void initState() {
     initChatMessage();
-   // _fireBaseCloudMessagingListeners();
 
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        if (message.containsKey('notification')) {
+          final dynamic notification = message['notification'];
+          // Handle notification message
+          insertFirebaseMessagingInMessages(notification, message);
+        }
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+        if (message.containsKey('notification')) {
+          final dynamic notification = message['data'];
+          // Handle notification message
+          insertFirebaseMessagingInMessages(notification, message);
+        }
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+
+        if (message.containsKey('notification')) {
+          final dynamic notification = message['data'];
+          // Handle notification message
+          insertFirebaseMessagingInMessages(notification, message);
+        }
+      },
+    );
+
+    super.initState();
+  }
+
+  void insertFirebaseMessagingInMessages(notification, Map<String, dynamic> message) {
 
     final Completer<Map<String, dynamic>> completer =
     Completer<Map<String, dynamic>>();
 
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
+    setState(() {
+      Message fireBaseMessage = new Message(
+          body: notification["body"],
+          created_at: DateTime.now().subtract(Duration(hours: 2)),
+          postid: widget.post != null
+              ? widget.post.id
+              : widget.messages[0].postid,
+          receiver: userName,
+          sender: receiver.email);
 
-        setState(() {
-          Message fireBaseMessage = new Message(
-              body: message["notification"]["body"],
-              created_at: DateTime.now(),
-              postid:
-              widget.post != null ? widget.post.id : widget.messages[0].postid,
-              receiver: userName,
-              sender: receiver.email);
-
-          _messages.insert(0, fireBaseMessage);
-        });
-
-        completer.complete(message);
-      },
-    );
-
-    //return completer.future;
-
-    super.initState();
-  }
-/*
-
-  void _fireBaseCloudMessagingListeners() {
-
-    if (Platform.isIOS) iOS_Permission();
-
-    _firebaseMessaging.getToken().then((token){
-      print("DEviceToken -->" + token);
+      _messages.insert(0, fireBaseMessage);
     });
 
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        if (message.containsKey('notification')) {
-          // Handle notification message
-          final dynamic notification = message['notification'];
-
-          Message fireBaseMessage = new Message();
-          fireBaseMessage.created_at = DateTime.now();
-          fireBaseMessage.sender = "Sender";
-          fireBaseMessage.receiver = "Receiver";
-          fireBaseMessage.body = notification["body"];
-
-          _handleSubmitted(notification["body"]);
-
-          //fireBaseMessages.add(fireBaseMessage);
-
-          print("Message: " + notification["body"]);
-        }
-
-      },
-      //onBackgroundMessage: myBackgroundMessageHandler,
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-        if (message.containsKey('notification')) {
-          // Handle notification message
-          final dynamic notification = message['notification'];
-
-          Message fireBaseMessage = new Message();
-          fireBaseMessage.created_at = DateTime.now();
-          fireBaseMessage.sender = "Sender";
-          fireBaseMessage.receiver = "Receiver";
-          fireBaseMessage.body = notification["body"];
-
-          _handleSubmitted(notification["body"]);
-
-          //fireBaseMessages.add(fireBaseMessage);
-
-          print("Message: " + notification["body"]);
-        }
-
-      },
-      onResume: (Map<String, dynamic> message) async {
-
-        if (message.containsKey('notification')) {
-          // Handle notification message
-          final dynamic notification = message['notification'];
-
-          Message fireBaseMessage = new Message();
-          fireBaseMessage.created_at = DateTime.now();
-          fireBaseMessage.sender = "Sender";
-          fireBaseMessage.receiver = "Receiver";
-          fireBaseMessage.body = notification["body"];
-
-          _handleSubmitted(notification["body"]);
-
-          //fireBaseMessages.add(fireBaseMessage);
-
-          print("Message: " + notification["body"]);
-        }
-
-        print("onResume: $message");
-        //_navigateToItemDetail(message);
-      },
-    );
+    completer.complete(message);
   }
-
-*/
 
   void iOS_Permission() {
     _firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true)
-    );
+        IosNotificationSettings(sound: true, badge: true, alert: true));
     _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings)
-    {
+        .listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
   }
@@ -204,23 +145,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           actionPane: SlidableBehindActionPane(),
           actionExtentRatio: 0.25,
           child: buildMessageItem(index),
-          actions: <Widget>[
-            IconSlideAction(
-                caption: 'Modifier',
-                color: colorBlue,
-                icon: Icons.edit,
-                onTap: null //() => showPostEditForm(myPosts.elementAt(index)),
-                )
-          ],
-          secondaryActions: <Widget>[
-            IconSlideAction(
-                caption: 'Supprimer',
-                color: colorRed,
-                icon: Icons.delete,
-                onTap:
-                    null //() => deletePost(myPosts.elementAt(index).id, index),
-                ),
-          ],
         ),
       ),
       itemCount: _messages.length,
@@ -313,6 +237,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
+  int _reverse(int value) {
+    return -value;
+  }
+
   void initChatMessage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userEmail = await prefs.getString(USER_EMAIL);
@@ -322,6 +250,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     if (_messages.isEmpty) {
       await _getReceiverByEmail(widget.post.useremail);
     } else {
+      _messages.sort((message1, message2) =>
+          _reverse(message1.created_at.compareTo(message2.created_at)));
+
       for (Message message in widget.messages) {
         if (message.sender != userEmail) {
           await _getReceiverByEmail(message.sender);
@@ -385,7 +316,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         body: text,
         created_at: DateTime.now(),
         postid:
-        widget.post != null ? widget.post.id : widget.messages[0].postid,
+            widget.post != null ? widget.post.id : widget.messages[0].postid,
         receiver: receiver.email,
         sender: userEmail);
 
@@ -394,14 +325,14 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
     _textEditingController.clear();
 
+    message.created_at = message.created_at.subtract(Duration(hours: 2));
     setState(() {
       _messages.insert(0, message);
     });
-    sendMessage(message);
+    sendFirebaseMessage(message);
   }
 
-  Future sendMessage(Message _message) async {
-
+  Future sendFirebaseMessage(Message _message) async {
     await http.post(
       GOOGLE_FCM_END_POINT,
       headers: <String, String>{
@@ -412,45 +343,22 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         <String, dynamic>{
           'notification': <String, dynamic>{
             'body': _message.body,
-            'title': widget.post.title
+            'title':
+                "Nouveau message concernant l´annonce: " + widget.post.title
           },
           'priority': 'high',
           'data': <String, dynamic>{
             'click_action': 'FLUTTER_NOTIFICATION_CLICK',
             'id': '1',
-            'status': 'done'
+            'status': 'done',
+            'body': _message.body,
+            'title':
+            "Nouveau message concernant l´annonce: " + widget.post.title
           },
-          'to': receiver.device_token,//await _firebaseMessaging.getToken(),
+          'to': receiver.device_token,
         },
       ),
     );
-/*
-
-    final Completer<Map<String, dynamic>> completer =
-    Completer<Map<String, dynamic>>();
-
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-
-        setState(() {
-          Message fireBaseMessage = new Message(
-              body: message["notification"]["body"],
-              created_at: DateTime.now(),
-              postid:
-              widget.post != null ? widget.post.id : widget.messages[0].postid,
-              receiver: receiver.email,
-              sender: userEmail);
-
-          _messages.insert(0, fireBaseMessage);
-        });
-
-        completer.complete(message);
-      },
-    );
-
-    return completer.future;
-*/
-
   }
 
   _showPostDetailPage(Post post) {

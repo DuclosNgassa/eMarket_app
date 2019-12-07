@@ -37,7 +37,6 @@ class _UserMessagePageState extends State<UserMessagePage> {
     return Container(
       child: Scaffold(
         body: Column(
-          //padding: const EdgeInsets.symmetric(horizontal: 16.0),
           children: <Widget>[
             Stack(
               children: <Widget>[
@@ -223,8 +222,6 @@ class _UserMessagePageState extends State<UserMessagePage> {
 
     allMessages.addAll(receivedMessages);
     allMessages.addAll(sentMessages);
-    allMessages.sort((message1, message2) =>
-        message1.created_at.isAfter(message2.created_at) ? 0 : 1);
 
     Navigator.of(context).push(
       MaterialPageRoute(

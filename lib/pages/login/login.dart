@@ -82,7 +82,6 @@ class _LoginState extends State<Login> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(USER_EMAIL, userDetails.email);
     prefs.setString(USER_NAME, userDetails.displayName);
-    //prefs.setString(DEVICE_TOKEN, _deviceToken);
   }
 
   @override
@@ -177,8 +176,8 @@ class _LoginState extends State<Login> {
 
     _deviceToken = await prefs.getString(DEVICE_TOKEN);
 
-    if (existsUser != null && _deviceToken != null) {
-      if (_deviceToken.isNotEmpty) {
+    if (existsUser != null) {
+      if (_deviceToken != null && _deviceToken.isNotEmpty) {
         if (existsUser.device_token != _deviceToken) {
           // user uses a new device
           existsUser.device_token = _deviceToken;

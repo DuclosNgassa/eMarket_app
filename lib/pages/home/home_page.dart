@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:http/http.dart' as http;
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/favorit.dart';
@@ -13,8 +11,9 @@ import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../custom_component/home_card.dart';
 import '../../model/post.dart';
@@ -32,8 +31,7 @@ class _HomePageState extends State<HomePage> {
   final FavoritService _favoritService = new FavoritService();
   final CategorieService _categorieService = new CategorieService();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-
-  String deviceToken = "cxiEqLHygXM:APA91bFXcnEgp6mk2hei3QH3nNLEjH6DnC7h1NwtpYIjwf8g3BZJpIqsNNe6b3RSAuNUVJfJXghM-ol6GvMyBxc-_X3fpZxOBKuN0hmxJ4UJ-TgDGGvtIzOQV4ALmYVqkjxOu57afe9i";
+  String _deviceToken = "";
 
   final List<Message> fireBaseMessages = [];
 
@@ -51,35 +49,30 @@ class _HomePageState extends State<HomePage> {
     _loadMyFavorits();
     _loadMyCategories();
 
-    //_firebaseMessaging.subscribeToTopic("test");
+    _firebaseMessaging.onTokenRefresh.listen(setDeviceToken);
+    _firebaseMessaging.getToken();
 
-    sendAndRetrieveMessage();
+    //_firebaseMessaging.subscribeToTopic("test");
 
     _fireBaseCloudMessagingListeners();
   }
 
   void _fireBaseCloudMessagingListeners() {
-    //_firebaseMessaging.onTokenRefresh.listen(sendTokenToServer);
-    //_firebaseMessaging.getToken();
-
     if (Platform.isIOS) iOS_Permission();
 
-    _firebaseMessaging.getToken().then((token){
+    _firebaseMessaging.getToken().then((token) {
       print(token);
     });
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
-        //_showItemDialog(message);
       },
       //onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
-        //_navigateToItemDetail(message);
       },
       onResume: (Map<String, dynamic> message) async {
-
         if (message.containsKey('notification')) {
           // Handle notification message
           final dynamic notification = message['notification'];
@@ -97,7 +90,6 @@ class _HomePageState extends State<HomePage> {
         }
 
         print("onResume: $message");
-        //_navigateToItemDetail(message);
       },
     );
   }
@@ -107,8 +99,7 @@ class _HomePageState extends State<HomePage> {
         IosNotificationSettings(sound: true, badge: true, alert: true)
     );
     _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings)
-    {
+        .listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
   }
@@ -141,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                               fillColor: Colors.white,
                               border: OutlineInputBorder(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
+                                BorderRadius.all(Radius.circular(10.0)),
                               ),
                               hintText: 'Entrer votre recherche',
                               labelText: 'Recherche',
@@ -166,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                             showSearch(
                               context: context,
                               delegate:
-                                  DataSearch(postList, myFavorits, null, null),
+                              DataSearch(postList, myFavorits, null, null),
                             );
                           },
                         )
@@ -192,7 +183,7 @@ class _HomePageState extends State<HomePage> {
               childAspectRatio: 1.5,
             ),
             delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
+                  (BuildContext context, int index) {
                 return Padding(
                   padding: EdgeInsets.only(
                       left: index % 2 == 0
@@ -243,22 +234,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildMessage() {
-    TextStyle _myTextStyle = TextStyle(
-      color: Colors.black87,
-      fontSize: SizeConfig.safeBlockHorizontal * 2.6,
-    );
-
-    double heightCustomCategorieButton = SizeConfig.blockSizeVertical * 5;
-    return GridView.count(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      crossAxisCount: 1,
-      scrollDirection: Axis.vertical,
-      children: fireBaseMessages.map(buildMessages).toList(),
-    );
-  }
-
   void showSearchWithParentCategorie(int parentCategorie) async {
     List<int> childCategories = new List();
 
@@ -305,11 +280,6 @@ class _HomePageState extends State<HomePage> {
       parentCategories.add(categorie);
     });
   }
-
-  buildMessages(Message message) => ListTile(
-        title: Text(message.sender),
-        subtitle: Text(message.body),
-      );
 /*
   static Future<dynamic> myBackgroundMessageHandler(
       Map<String, dynamic> message) {
@@ -340,47 +310,12 @@ class _HomePageState extends State<HomePage> {
   }
 */
 
-  void sendTokenToServer(String fcmToken) {
-    print('Token: $fcmToken');
-  }
-
-  Future<Map<String, dynamic>> sendAndRetrieveMessage() async {
-    await _firebaseMessaging.requestNotificationPermissions(
-      const IosNotificationSettings(sound: true, badge: true, alert: true),
-    );
-
-    await http.post(
-      'https://fcm.googleapis.com/fcm/send',
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'key=$SERVER_KEY',
-      },
-      body: jsonEncode(
-        <String, dynamic>{
-          'notification': <String, dynamic>{
-            'body': 'this is a body',
-            'title': 'this is a title'
-          },
-          'priority': 'high',
-          'data': <String, dynamic>{
-            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-            'id': '1',
-            'status': 'done'
-          },
-          'to': deviceToken,//await _firebaseMessaging.getToken(),
-        },
-      ),
-    );
-
-    final Completer<Map<String, dynamic>> completer =
-    Completer<Map<String, dynamic>>();
-
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        completer.complete(message);
-      },
-    );
-
-    return completer.future;
+  void setDeviceToken(String event) async {
+    _deviceToken = event;
+    if (_deviceToken.isNotEmpty) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString(DEVICE_TOKEN, _deviceToken);
+    }
+    print('Device-Token: $event');
   }
 }
