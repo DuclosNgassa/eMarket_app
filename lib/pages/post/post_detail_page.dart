@@ -4,7 +4,6 @@ import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/custom_component/post_owner.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
-import 'package:emarket_app/model/posttyp.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/image/images_detail.dart';
 import 'package:emarket_app/pages/post/post_user_page.dart';

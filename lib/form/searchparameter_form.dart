@@ -1,7 +1,6 @@
 import 'package:emarket_app/converter/utils.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
-import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';

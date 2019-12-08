@@ -1,6 +1,5 @@
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
-import 'package:emarket_app/model/posttyp.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/notification.dart';
