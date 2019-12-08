@@ -1,3 +1,5 @@
+import 'package:emarket_app/converter/utils.dart';
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
@@ -55,7 +57,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                     },
                   ),
                   Text(
-                    "Offre",
+                    AppLocalizations.of(context).translate('offer'),
                     style: SizeConfig.styleRadioButton,
                   ),
                   Radio(
@@ -68,7 +70,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                     },
                   ),
                   Text(
-                    "Recherche",
+                    AppLocalizations.of(context).translate('search'),
                     style: SizeConfig.styleRadioButton,
                   ),
                   Radio(
@@ -81,7 +83,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                     },
                   ),
                   Text(
-                    "Tout",
+                    AppLocalizations.of(context).translate('all'),
                     style: SizeConfig.styleRadioButton,
                   ),
                 ],
@@ -90,9 +92,9 @@ class SearchParameterFormState extends State<SearchParameterForm> {
             Divider(),
             TextFormField(
               style: SizeConfig.styleFormGrey,
-              decoration: const InputDecoration(
-                hintText: 'Titre',
-                labelText: 'Titre',
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context).translate('title'),
+                labelText: AppLocalizations.of(context).translate('title'),
                 labelStyle: SizeConfig.styleFormBlack,
               ),
               inputFormatters: [
@@ -108,7 +110,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                     padding:
                     EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
                     child: Text(
-                      "Categorie",
+                      AppLocalizations.of(context).translate('category'),
                       style: SizeConfig.styleFormBlack,
                     ),
                   ),
@@ -125,7 +127,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                         IconButton(
                           onPressed: showCategoriePage,
                           icon: Icon(Icons.arrow_forward_ios),
-                          tooltip: 'Choisir la catégorie',
+                          tooltip: AppLocalizations.of(context).translate('choose_category'),
                         )
                       ],
                     ),
@@ -141,9 +143,9 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                   Expanded(
                     child: TextFormField(
                       style: SizeConfig.styleFormGrey,
-                      decoration: const InputDecoration(
-                        hintText: 'Ville de l´annonce',
-                        labelText: 'Ville',
+                      decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context).translate('advert_city'),
+                        labelText: AppLocalizations.of(context).translate('city'),
                         labelStyle: SizeConfig.styleFormBlack,
                       ),
                       inputFormatters: [
@@ -155,9 +157,9 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                   Expanded(
                     child: TextFormField(
                       style: SizeConfig.styleFormGrey,
-                      decoration: const InputDecoration(
-                        hintText: 'Quartier de l´annonce',
-                        labelText: 'Quartier',
+                      decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context).translate('advert_neighborhood'),
+                        labelText: AppLocalizations.of(context).translate('neighborhood'),
                         labelStyle: SizeConfig.styleFormBlack,
                       ),
                       inputFormatters: [
@@ -178,7 +180,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                     padding: const EdgeInsets.only(right: 8.0),
                     child: Column(children: <Widget>[
                       Text(
-                        "Prix min",
+                        AppLocalizations.of(context).translate('min_price'),
                         style: SizeConfig.styleFormBlack,
                       ),
                     ]),
@@ -187,8 +189,8 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                     child: Column(
                       children: <Widget>[
                         TextFormField(
-                          decoration: const InputDecoration(
-                              hintText: 'Fcfa',
+                          decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context).translate('fcfa'),
                               labelStyle: TextStyle(color: Colors.black)),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
@@ -205,7 +207,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                     child: Column(
                       children: <Widget>[
                         Text(
-                          "Prix max",
+                          AppLocalizations.of(context).translate('max_price'),
                           style: SizeConfig.styleFormBlack,
                         ),
                       ],
@@ -215,8 +217,8 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                     child: Column(
                       children: <Widget>[
                         TextFormField(
-                          decoration: const InputDecoration(
-                            hintText: 'Fcfa',
+                          decoration: InputDecoration(
+                            hintText: AppLocalizations.of(context).translate('fcfa'),
                             labelStyle: TextStyle(
                               color: Colors.black,
                             ),
@@ -239,7 +241,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
               builder: (FormFieldState state) {
                 return InputDecorator(
                   decoration: InputDecoration(
-                    labelText: 'Typ de prix',
+                    labelText: AppLocalizations.of(context).translate('price_typ'),
                     labelStyle: SizeConfig.styleFormBlack,
                     errorText: state.hasError ? state.errorText : null,
                   ),
@@ -271,7 +273,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
               child: RaisedButton(
                 shape: const StadiumBorder(),
                 color: colorDeepPurple400,
-                child: Text('Rechercher', style: SizeConfig.styleButtonWhite),
+                child: Text(AppLocalizations.of(context).translate('to_search_capital'), style: SizeConfig.styleButtonWhite),
                 onPressed: _submitForm,
               ),
             ),
@@ -301,7 +303,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
     form.save();
     searchParameter.category = _categorieId;
     searchParameter.postTyp = _postTyp;
-    searchParameter.feeTyp = Post.convertStringToFeeTyp(_feeTyp);
+    searchParameter.feeTyp = Converter.convertStringToFeeTyp (_feeTyp);
 
     Navigator.of(context).pop(searchParameter);
   }

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:emarket_app/converter/utils.dart' as utils;
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/model/status.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
@@ -103,7 +105,7 @@ class PostFormState extends State<PostForm> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "Creation d´une annonce",
+                    AppLocalizations.of(context).translate('advert_creation'),
                     style: SizeConfig.styleTitleWhite,
                   ),
                   Expanded(
@@ -125,15 +127,15 @@ class PostFormState extends State<PostForm> {
               onFieldSubmitted: (term) {
                 _fieldFocusChange(_titelFocusNode, _feeFocusNode);
               },
-              decoration: const InputDecoration(
-                  hintText: 'Donnez le titre de votre post',
-                  labelText: 'Titre',
+              decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context).translate('give_title'),
+                  labelText: AppLocalizations.of(context).translate('title'),
                   labelStyle: SizeConfig.styleFormBlack),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(30),
               ],
               validator: (val) =>
-                  formValidator.isEmptyText(val) ? 'Donnez un titre' : null,
+                  formValidator.isEmptyText(val) ? AppLocalizations.of(context).translate('give_title') : null,
               onSaved: (val) => newPost.title = val,
             ),
             Container(
@@ -144,7 +146,7 @@ class PostFormState extends State<PostForm> {
                     padding:
                         EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
                     child: Text(
-                      "Categorie",
+                      AppLocalizations.of(context).translate('category'),
                       style: SizeConfig.styleFormBlack,
                     ),
                   ),
@@ -161,7 +163,7 @@ class PostFormState extends State<PostForm> {
                         IconButton(
                           onPressed: showCategoriePage,
                           icon: Icon(Icons.arrow_forward_ios),
-                          tooltip: 'Choisir la catégorie',
+                          tooltip: AppLocalizations.of(context).translate('choose_category'),
                         )
                       ],
                     ),
@@ -181,9 +183,9 @@ class PostFormState extends State<PostForm> {
                     onFieldSubmitted: (term) {
                       _fieldFocusChange(_feeFocusNode, _cityFocusNode);
                     },
-                    decoration: const InputDecoration(
-                      hintText: 'Donnez le prix',
-                      labelText: 'Prix (FCFA)',
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context).translate('give_price'),
+                      labelText: AppLocalizations.of(context).translate('price') + ' (' + AppLocalizations.of(context).translate('fcfa') + ')',
                       labelStyle: SizeConfig.styleFormBlack,
                     ),
                     inputFormatters: [
@@ -191,7 +193,7 @@ class PostFormState extends State<PostForm> {
                     ],
                     keyboardType: TextInputType.number,
                     validator: (val) => formValidator.isEmptyText(val)
-                        ? 'Donnez un prix'
+                        ? AppLocalizations.of(context).translate('give_price')
                         : null,
                     onSaved: (val) => newPost.fee = int.parse(val),
                   ),
@@ -204,7 +206,7 @@ class PostFormState extends State<PostForm> {
                       builder: (FormFieldState state) {
                         return InputDecorator(
                           decoration: InputDecoration(
-                            labelText: 'Typ de prix',
+                            labelText: AppLocalizations.of(context).translate('price_typ'),
                             labelStyle: SizeConfig.styleFormBlack,
                             errorText: state.hasError ? state.errorText : null,
                           ),
@@ -231,7 +233,7 @@ class PostFormState extends State<PostForm> {
                         );
                       },
                       validator: (val) => formValidator.isEmptyText(val)
-                          ? 'Veuillez choisir le type de prix svp'
+                          ? AppLocalizations.of(context).translate('choose_price_typ')
                           : null,
                     ),
                   ),
@@ -251,16 +253,16 @@ class PostFormState extends State<PostForm> {
                       onFieldSubmitted: (term) {
                         _fieldFocusChange(_cityFocusNode, _quarterFocusNode);
                       },
-                      decoration: const InputDecoration(
-                        hintText: 'Donnez la ville',
-                        labelText: 'Ville',
+                      decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context).translate('give_city'),
+                        labelText: AppLocalizations.of(context).translate('city'),
                         labelStyle: SizeConfig.styleFormBlack,
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
                       ],
                       validator: (val) => formValidator.isEmptyText(val)
-                          ? 'Donnez la ville'
+                          ? AppLocalizations.of(context).translate('give_city')
                           : null,
                       onSaved: (val) => newPost.city = val,
                     ),
@@ -273,16 +275,16 @@ class PostFormState extends State<PostForm> {
                       onFieldSubmitted: (term) {
                         _fieldFocusChange(_quarterFocusNode, _phoneFocusNode);
                       },
-                      decoration: const InputDecoration(
-                        hintText: 'Donnez le quartier',
-                        labelText: 'Quartier',
+                      decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context).translate('give_neighborhood'),
+                        labelText: AppLocalizations.of(context).translate('neighborhood'),
                         labelStyle: SizeConfig.styleFormBlack,
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
                       ],
                       validator: (val) => formValidator.isEmptyText(val)
-                          ? 'Donnez le quartier'
+                          ? AppLocalizations.of(context).translate('give_neighborhood')
                           : null,
                       onSaved: (val) => newPost.quarter = val,
                     ),
@@ -297,9 +299,9 @@ class PostFormState extends State<PostForm> {
               onFieldSubmitted: (term) {
                 _fieldFocusChange(_phoneFocusNode, _descriptionFocusNode);
               },
-              decoration: const InputDecoration(
-                hintText: 'Donnez un numero de téléphone',
-                labelText: 'Numero de téléphone',
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context).translate('give_phonenumber'),
+                labelText: AppLocalizations.of(context).translate('phonenumber'),
                 labelStyle: SizeConfig.styleFormBlack,
               ),
               inputFormatters: [
@@ -316,16 +318,16 @@ class PostFormState extends State<PostForm> {
                 _submitForm();
               },
               maxLines: 4,
-              decoration: const InputDecoration(
-                hintText: 'Description de votre post',
-                labelText: 'Description',
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context).translate('advert_description'),
+                labelText: AppLocalizations.of(context).translate('description'),
                 labelStyle: SizeConfig.styleFormBlack,
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(500),
               ],
               validator: (val) => formValidator.isEmptyText(val)
-                  ? 'Donnez une description à votre post'
+                  ? AppLocalizations.of(context).translate('give_advert_description')
                   : null,
               onSaved: (val) => newPost.description = val,
             ),
@@ -337,7 +339,7 @@ class PostFormState extends State<PostForm> {
                 child: RaisedButton(
                   shape: const StadiumBorder(),
                   color: colorDeepPurple400,
-                  child: Text('Publier', style: SizeConfig.styleButtonWhite),
+                  child: Text(AppLocalizations.of(context).translate('save'), style: SizeConfig.styleButtonWhite),
                   onPressed: _submitForm,
                 ),
               ),
@@ -356,9 +358,7 @@ class PostFormState extends State<PostForm> {
         },
       ),
     );
-    setState(() {
-      print("Choosed categorie: " + _categorieTile.title);
-    });
+    setState(() {});
   }
 
   Widget buildImageListView() {
@@ -443,7 +443,7 @@ class PostFormState extends State<PostForm> {
               color: Colors.deepPurple,
             ),
             onPressed: _takePhoto,
-            tooltip: 'Take photo',
+            tooltip: AppLocalizations.of(context).translate('take_photo'),
           ),
           new IconButton(
             icon: Icon(
@@ -451,7 +451,7 @@ class PostFormState extends State<PostForm> {
               color: Colors.deepPurple,
             ),
             onPressed: _selectGalleryImage,
-            tooltip: 'Select from gallery',
+            tooltip: AppLocalizations.of(context).translate('select_from_gallery'),
           ),
         ],
       ),
@@ -474,7 +474,7 @@ class PostFormState extends State<PostForm> {
             },
           ),
           Text(
-            "Offre",
+            AppLocalizations.of(context).translate('offer'),
             style: SizeConfig.styleRadioButton,
           ),
           Radio(
@@ -487,7 +487,7 @@ class PostFormState extends State<PostForm> {
             },
           ),
           Text(
-            "Recherche",
+            AppLocalizations.of(context).translate('search'),
             style: SizeConfig.styleRadioButton,
           ),
           Radio(
@@ -500,7 +500,7 @@ class PostFormState extends State<PostForm> {
             },
           ),
           Text(
-            "Tout",
+            AppLocalizations.of(context).translate('all'),
             style: SizeConfig.styleRadioButton,
           ),
         ],
@@ -522,8 +522,8 @@ class PostFormState extends State<PostForm> {
     } else {
       MyNotification.showInfoFlushbar(
           context,
-          "Info",
-          "Vous ne pouvez que telecharger " + MAX_IMAGE.toString() + " photos",
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate('can_download_only') + ' ' + MAX_IMAGE.toString() + ' ' + AppLocalizations.of(context).translate('pictures'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -548,8 +548,8 @@ class PostFormState extends State<PostForm> {
     } else {
       MyNotification.showInfoFlushbar(
           context,
-          "Info",
-          "Vous ne pouvez que telecharger " + MAX_IMAGE.toString() + " photos",
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate('can_download_only') + ' ' + MAX_IMAGE.toString() + ' ' + AppLocalizations.of(context).translate('pictures'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -566,8 +566,8 @@ class PostFormState extends State<PostForm> {
     if (!form.validate()) {
       MyNotification.showInfoFlushbar(
           context,
-          "Info",
-          "Le formulaire contient des érreurs! Corrigez le s´il vous plait",
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate('correct_form_errors'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -575,12 +575,11 @@ class PostFormState extends State<PostForm> {
           ),
           Colors.red.shade300,
           2);
-
     } else if (_categorieTile.title.isEmpty) {
       MyNotification.showInfoFlushbar(
           context,
-          "Info",
-          "Veuillez choisir la categorie dans laquelle vous publiez votre post s´il vous plait.",
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate('choose_category_please'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -588,7 +587,6 @@ class PostFormState extends State<PostForm> {
           ),
           Colors.red.shade300,
           2);
-
     } else {
       form.save();
 
@@ -598,8 +596,8 @@ class PostFormState extends State<PostForm> {
 
       MyNotification.showInfoFlushbar(
           context,
-          "Info",
-          "Votre Post a été enregistré. Il sera controlé avant d´etre publié.",
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate('advert_save_success_message'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -616,7 +614,7 @@ class PostFormState extends State<PostForm> {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     print("User: " + user.email);
 
-    newPost.fee_typ = Post.convertStringToFeeTyp(_feeTyp);
+    newPost.fee_typ = utils.Converter.convertStringToFeeTyp(_feeTyp);
     newPost.categorieid = _categorieTile.id;
     newPost.post_typ = _postTyp;
     newPost.useremail = user.email;
@@ -667,7 +665,7 @@ class PostFormState extends State<PostForm> {
         } else {
           MyNotification.showInfoFlushbar(
               context,
-              "Info",
+              AppLocalizations.of(context).translate('info'),
               "Image failed: ${decoded['message']}",
               Icon(
                 Icons.info_outline,
@@ -684,7 +682,7 @@ class PostFormState extends State<PostForm> {
       Navigator.pop(context);
       MyNotification.showInfoFlushbar(
           context,
-          "Error",
+          AppLocalizations.of(context).translate('error'),
           "Image failed: $e",
           Icon(
             Icons.info_outline,

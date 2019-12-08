@@ -1,10 +1,10 @@
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/pages/contact/contact_page.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/global.dart';
 import 'faq_page.dart';
-import 'messaging_widget.dart';
 
 class HelpPage extends StatefulWidget {
   @override
@@ -41,7 +41,7 @@ class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
   }
 
   _buildTitle() {
-    return Text("Aide");
+    return Text(AppLocalizations.of(context).translate('how_it_works'));
   }
 
   Widget buildListTile() {
@@ -60,7 +60,7 @@ class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
               Icons.help_outline,
               color: colorDeepPurple300,
             ),
-            title: Text("Comment ça marche"),
+            title: Text(AppLocalizations.of(context).translate('how_it_works')),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: colorGrey300,
@@ -73,20 +73,7 @@ class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
               Icons.message,
               color: colorBlue,
             ),
-            title: Text("Nous contacter"),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              color: colorGrey300,
-            ),
-          ),
-          Divider(),
-          ListTile(
-            //onTap: () => showContactPage(),
-            leading: Icon(
-              Icons.message,
-              color: colorBlue,
-            ),
-            title: MessagingWidget(),
+            title: Text(AppLocalizations.of(context).translate('contact_us')),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: colorGrey300,
@@ -96,8 +83,6 @@ class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
       ),
     );
   }
-
-// This is the builder method that creates a new page
 
   showFaqPage() {
     Navigator.of(context).push(
@@ -119,30 +104,4 @@ class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
     );
   }
 
-
-// This is the builder method that creates a new page
-/*
-  showHelpPage() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) {
-          return HelpPage();
-        },
-      ),
-    );
-  }
-*/
-
-// This is the builder method that creates a new page
-/*
-  showSharePage() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) {
-          return SharePage();
-        },
-      ),
-    );
-  }
-*/
 }

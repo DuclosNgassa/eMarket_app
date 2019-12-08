@@ -1,3 +1,5 @@
+import 'package:emarket_app/localization/app_localizations.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 class DateConverter {
@@ -10,13 +12,13 @@ class DateConverter {
     }
   }
 
-  static String convertToString(DateTime dateTime) {
+  static String convertToString(DateTime dateTime, BuildContext context) {
     if (dateTime.day == DateTime.now().day &&
         dateTime.year == DateTime.now().year) {
-      return "Aujourd'hui, " + convertToHour(dateTime);
+      return AppLocalizations.of(context).translate('today') + " ," + convertToHour(dateTime);
     } else if (dateTime.day + 1 == DateTime.now().day &&
         dateTime.year == DateTime.now().year) {
-      return "Hier, " + convertToHour(dateTime);
+      return AppLocalizations.of(context).translate('yesterday') + "," + convertToHour(dateTime);
     }
 
     return dateTime.day.toString() +

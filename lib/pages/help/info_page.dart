@@ -1,3 +1,4 @@
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/pages/help/share_page.dart';
 import 'package:emarket_app/pages/login/login.dart';
@@ -42,7 +43,7 @@ class _InfoPageState extends State<InfoPage> {
                         padding: EdgeInsets.only(
                             top: SizeConfig.blockSizeVertical * 3),
                         child: new Text(
-                          "Infos",
+                          AppLocalizations.of(context).translate('infos'),
                           style: SizeConfig.styleTitleWhite,
                         ),
                       ),
@@ -82,7 +83,7 @@ class _InfoPageState extends State<InfoPage> {
               Icons.help,
               color: colorBlue,
             ),
-            title: Text("Aide"),
+            title: Text(AppLocalizations.of(context).translate('how_it_works')),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: colorGrey300,
@@ -97,7 +98,7 @@ class _InfoPageState extends State<InfoPage> {
               Icons.favorite,
               color: colorRed,
             ),
-            title: Text("Informer les amis"),
+            title: Text(AppLocalizations.of(context).translate('inform_friends')),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: colorGrey300,
@@ -112,7 +113,7 @@ class _InfoPageState extends State<InfoPage> {
               Icons.sentiment_satisfied,
               color: colorDeepPurple300,
             ),
-            title: Text("Qui sommes-nous?"),
+            title: Text(AppLocalizations.of(context).translate('who_are_we')),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: colorGrey300,

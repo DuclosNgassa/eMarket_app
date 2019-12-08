@@ -1,3 +1,4 @@
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class _SearchParameterPageState extends State<SearchParameterPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text("Parametrisation de la recherche"),
+        title: Text(AppLocalizations.of(context).translate('search')),
         backgroundColor: colorDeepPurple300,
       ),
       body: SafeArea(

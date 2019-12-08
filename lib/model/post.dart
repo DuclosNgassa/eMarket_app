@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/post_image.dart';
 import 'package:emarket_app/services/image_service.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../model/feetyp.dart';
 import '../model/posttyp.dart';
@@ -173,21 +175,21 @@ class Post {
     }
   }
 
-  static String convertPostTypToStringForDisplay(PostTyp value) {
+  static String convertPostTypToStringForDisplay(PostTyp value, BuildContext context) {
     switch (value) {
       case PostTyp.offer:
         {
-          return 'Offre';
+          return AppLocalizations.of(context).translate('offer');
         }
         break;
       case PostTyp.search:
         {
-          return 'Recherche';
+          return AppLocalizations.of(context).translate('search');
         }
         break;
       case PostTyp.all:
         {
-          return 'Tout';
+          return AppLocalizations.of(context).translate('all');
         }
         break;
     }
@@ -245,6 +247,7 @@ class Post {
   }
 
   static FeeTyp convertStringToFeeTyp(String value) {
+    value = value.toLowerCase();
     switch (value) {
       case 'negotiable':
         {

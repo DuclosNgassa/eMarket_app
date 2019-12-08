@@ -1,3 +1,4 @@
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/user_notification.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/user_notification_service.dart';
@@ -63,9 +64,9 @@ class ContactFormState extends State<ContactForm> {
               onFieldSubmitted: (term) {
                 _fieldFocusChange(_subjectFocusNode, _messageFocusNode);
               },
-              decoration: const InputDecoration(
-                hintText: 'Donnez un titre',
-                labelText: 'Titre',
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context).translate('give_title'),
+                labelText: AppLocalizations.of(context).translate('title'),
                 labelStyle: SizeConfig.styleFormBlack,
               ),
               inputFormatters: [
@@ -82,16 +83,16 @@ class ContactFormState extends State<ContactForm> {
                 _submitForm();
               },
               maxLines: 10,
-              decoration: const InputDecoration(
-                hintText: 'Donnez votre message s´il vous plait',
-                labelText: 'Message',
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context).translate('give_your_message'),
+                labelText: AppLocalizations.of(context).translate('message'),
                 labelStyle: SizeConfig.styleFormBlack,
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(500),
               ],
               validator: (val) => formValidator.isEmptyText(val)
-                  ? 'Donnez votre message s´il vous plait'
+                  ? AppLocalizations.of(context).translate('give_your_message')
                   : null,
               onSaved: (val) => _userNotification.message = val,
             ),
@@ -101,7 +102,7 @@ class ContactFormState extends State<ContactForm> {
               child: RaisedButton(
                 shape: const StadiumBorder(),
                 color: colorDeepPurple400,
-                child: Text('Envoyer', style: SizeConfig.styleButtonWhite),
+                child: Text(AppLocalizations.of(context).translate('send'), style: SizeConfig.styleButtonWhite),
                 onPressed: _submitForm,
               ),
             ),
@@ -117,20 +118,8 @@ class ContactFormState extends State<ContactForm> {
     if (!form.validate()) {
       MyNotification.showInfoFlushbar(
           context,
-          "Info",
-          "Le formulaire contient des érreurs! Corrigez le s´il vous plait",
-          Icon(
-            Icons.info_outline,
-            size: 28,
-            color: Colors.red.shade300,
-          ),
-          Colors.red.shade300,
-          2);
-    } else if (_userNotification.title.isEmpty) {
-      MyNotification.showInfoFlushbar(
-          context,
-          "Info",
-          "Veuillez choisir la categorie dans laquelle vous publiez votre post s´il vous plait.",
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate('correct_form_errors'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -143,8 +132,8 @@ class ContactFormState extends State<ContactForm> {
       UserNotification userNotification = await _saveUserNotifikation();
       MyNotification.showInfoFlushbar(
           context,
-          "Info",
-          "Merci pour votre message. Nous vous contacterons très bientôt.",
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate('thanks_for_your_message'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -160,7 +149,8 @@ class ContactFormState extends State<ContactForm> {
 
   Future<UserNotification> _saveUserNotifikation() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    print("User: " + user.email);
+
+    print("User-Firebase: " + user.email);
 
     _userNotification.created_at = DateTime.now();
     _userNotification.useremail = user.email;

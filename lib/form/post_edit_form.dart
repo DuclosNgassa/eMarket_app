@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:emarket_app/converter/utils.dart' as utils;
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
@@ -165,7 +167,7 @@ class _PostEditFormState extends State<PostEditForm> {
                             padding: EdgeInsets.only(
                                 top: SizeConfig.blockSizeVertical * 5.0),
                             child: Text(
-                              "Modification d´annonce",
+                              AppLocalizations.of(context).translate('modify_advert'),
                               style: SizeConfig.styleTitleWhite,
                             ),
                           ),
@@ -193,9 +195,9 @@ class _PostEditFormState extends State<PostEditForm> {
                             onFieldSubmitted: (term) {
                               _fieldFocusChange(_titelFocusNode, _feeFocusNode);
                             },
-                            decoration: const InputDecoration(
-                              hintText: 'Donnez le titre de votre post',
-                              labelText: 'Titre',
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context).translate('give_advert_title'),
+                              labelText: AppLocalizations.of(context).translate('title'),
                               labelStyle: SizeConfig.styleFormBlack,
                             ),
                             initialValue: _post.title,
@@ -203,7 +205,7 @@ class _PostEditFormState extends State<PostEditForm> {
                               LengthLimitingTextInputFormatter(30),
                             ],
                             validator: (val) => formValidator.isEmptyText(val)
-                                ? 'Donnez un titre'
+                                ? AppLocalizations.of(context).translate('give_title')
                                 : null,
                             onSaved: (val) => _post.title = val,
                           ),
@@ -215,7 +217,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                   padding: EdgeInsets.only(
                                       top: SizeConfig.blockSizeVertical * 2),
                                   child: Text(
-                                    "Categorie",
+                                    AppLocalizations.of(context).translate('category'),
                                     style: SizeConfig.styleFormBlack,
                                   ),
                                 ),
@@ -224,12 +226,13 @@ class _PostEditFormState extends State<PostEditForm> {
                                   child: Row(
                                     children: <Widget>[
                                       Expanded(
-                                        child: Text(_categorieTile.title, style: SizeConfig.styleFormGrey),
+                                        child: Text(_categorieTile.title,
+                                            style: SizeConfig.styleFormGrey),
                                       ),
                                       IconButton(
                                         onPressed: showCategoriePage,
                                         icon: Icon(Icons.arrow_forward_ios),
-                                        tooltip: 'Choisir la catégorie',
+                                        tooltip: AppLocalizations.of(context).translate('choose_category'),
                                       )
                                     ],
                                   ),
@@ -250,9 +253,9 @@ class _PostEditFormState extends State<PostEditForm> {
                                     _fieldFocusChange(
                                         _feeFocusNode, _cityFocusNode);
                                   },
-                                  decoration: const InputDecoration(
-                                    hintText: 'Donnez le prix',
-                                    labelText: 'Prix (FCFA)',
+                                  decoration: InputDecoration(
+                                    hintText: AppLocalizations.of(context).translate('give_price'),
+                                    labelText: AppLocalizations.of(context).translate('price') + ' (' + AppLocalizations.of(context).translate('fcfa') + ')',
                                     labelStyle: SizeConfig.styleFormBlack,
                                   ),
                                   initialValue: _post.fee.toString(),
@@ -261,7 +264,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                   ],
                                   validator: (val) =>
                                       formValidator.isEmptyText(val)
-                                          ? 'Donnez un prix'
+                                          ? AppLocalizations.of(context).translate('give_price')
                                           : null,
                                   onSaved: (val) => _post.fee = int.parse(val),
                                 ),
@@ -274,7 +277,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                     builder: (FormFieldState state) {
                                       return InputDecorator(
                                         decoration: InputDecoration(
-                                          labelText: 'Typ de prix',
+                                          labelText: AppLocalizations.of(context).translate('price_typ'),
                                           labelStyle: SizeConfig.styleFormBlack,
                                           errorText: state.hasError
                                               ? state.errorText
@@ -297,7 +300,8 @@ class _PostEditFormState extends State<PostEditForm> {
                                                 value: value,
                                                 child: Text(
                                                   value,
-                                                  style: SizeConfig.styleFormGrey,
+                                                  style:
+                                                      SizeConfig.styleFormGrey,
                                                 ),
                                               );
                                             }).toList(),
@@ -324,9 +328,9 @@ class _PostEditFormState extends State<PostEditForm> {
                                       _fieldFocusChange(
                                           _cityFocusNode, _quarterFocusNode);
                                     },
-                                    decoration: const InputDecoration(
-                                      hintText: 'Donnez la ville',
-                                      labelText: 'Ville',
+                                    decoration: InputDecoration(
+                                      hintText: AppLocalizations.of(context).translate('give_city'),
+                                      labelText: AppLocalizations.of(context).translate('city'),
                                       labelStyle: SizeConfig.styleFormBlack,
                                     ),
                                     initialValue: _post.city,
@@ -335,7 +339,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                     ],
                                     validator: (val) =>
                                         formValidator.isEmptyText(val)
-                                            ? 'Donnez la ville'
+                                            ? AppLocalizations.of(context).translate('give_city')
                                             : null,
                                     onSaved: (val) => _post.city = val,
                                   ),
@@ -349,9 +353,9 @@ class _PostEditFormState extends State<PostEditForm> {
                                       _fieldFocusChange(
                                           _quarterFocusNode, _phoneFocusNode);
                                     },
-                                    decoration: const InputDecoration(
-                                      hintText: 'Donnez le quartier',
-                                      labelText: 'Quartier',
+                                    decoration: InputDecoration(
+                                      hintText: AppLocalizations.of(context).translate('give_neighborhood'),
+                                      labelText: AppLocalizations.of(context).translate('neighborhood'),
                                       labelStyle: SizeConfig.styleFormBlack,
                                     ),
                                     initialValue: _post.quarter,
@@ -360,7 +364,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                     ],
                                     validator: (val) =>
                                         formValidator.isEmptyText(val)
-                                            ? 'Donnez le quartier'
+                                            ? AppLocalizations.of(context).translate('give_neighborhood')
                                             : null,
                                     onSaved: (val) => _post.quarter = val,
                                   ),
@@ -376,9 +380,9 @@ class _PostEditFormState extends State<PostEditForm> {
                               _fieldFocusChange(
                                   _phoneFocusNode, _descriptionFocusNode);
                             },
-                            decoration: const InputDecoration(
-                              hintText: 'Donnez un numero de téléphone',
-                              labelText: 'Numero de téléphone',
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context).translate('give_phonenumber'),
+                              labelText: AppLocalizations.of(context).translate('phonenumber'),
                               labelStyle: SizeConfig.styleFormBlack,
                             ),
                             initialValue: _post.phoneNumber,
@@ -396,9 +400,9 @@ class _PostEditFormState extends State<PostEditForm> {
                               _submitForm();
                             },
                             maxLines: 4,
-                            decoration: const InputDecoration(
-                              hintText: 'Description de votre post',
-                              labelText: 'Description',
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context).translate('advert_description'),
+                              labelText: AppLocalizations.of(context).translate('description'),
                               labelStyle: SizeConfig.styleFormBlack,
                             ),
                             initialValue: _post.description,
@@ -406,7 +410,7 @@ class _PostEditFormState extends State<PostEditForm> {
                               LengthLimitingTextInputFormatter(500),
                             ],
                             validator: (val) => formValidator.isEmptyText(val)
-                                ? 'Donnez une description à votre post'
+                                ? AppLocalizations.of(context).translate('give_advert_description')
                                 : null,
                             onSaved: (val) => _post.description = val,
                           ),
@@ -418,7 +422,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                 child: RaisedButton(
                                   shape: const StadiumBorder(),
                                   color: Colors.red,
-                                  child: Text('Annuler',
+                                  child: Text(AppLocalizations.of(context).translate('cancel'),
                                       style: SizeConfig.styleButtonWhite),
                                   onPressed: _cancelChange,
                                 ),
@@ -430,7 +434,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                 child: RaisedButton(
                                   shape: const StadiumBorder(),
                                   color: colorDeepPurple400,
-                                  child: Text('Enregistrer',
+                                  child: Text(AppLocalizations.of(context).translate('save'),
                                       style: SizeConfig.styleButtonWhite),
                                   onPressed: _submitForm,
                                 ),
@@ -458,9 +462,7 @@ class _PostEditFormState extends State<PostEditForm> {
         },
       ),
     );
-    setState(() {
-      print("Choosed categorie: " + _categorieTile.title);
-    });
+    setState(() {});
   }
 
   Widget buildOldImageGridView() {
@@ -608,7 +610,7 @@ class _PostEditFormState extends State<PostEditForm> {
               color: Colors.deepPurple,
             ),
             onPressed: _takePhoto,
-            tooltip: 'Take photo',
+            tooltip: AppLocalizations.of(context).translate('take_photo'),
           ),
           new IconButton(
             icon: Icon(
@@ -616,7 +618,7 @@ class _PostEditFormState extends State<PostEditForm> {
               color: Colors.deepPurple,
             ),
             onPressed: _selectGalleryImage,
-            tooltip: 'Select from gallery',
+            tooltip: AppLocalizations.of(context).translate('select_from_gallery'),
           ),
         ],
       ),
@@ -639,7 +641,7 @@ class _PostEditFormState extends State<PostEditForm> {
             },
           ),
           Text(
-            "Offre",
+            AppLocalizations.of(context).translate('offer'),
             style: SizeConfig.styleRadioButton,
           ),
           Radio(
@@ -653,7 +655,7 @@ class _PostEditFormState extends State<PostEditForm> {
           ),
           Expanded(
             child: Text(
-              "Recherche",
+              AppLocalizations.of(context).translate('search'),
               style: SizeConfig.styleRadioButton,
             ),
           ),
@@ -668,7 +670,7 @@ class _PostEditFormState extends State<PostEditForm> {
           ),
           Expanded(
             child: Text(
-              "Tout",
+              AppLocalizations.of(context).translate('all'),
               style: SizeConfig.styleRadioButton,
             ),
           ),
@@ -679,7 +681,6 @@ class _PostEditFormState extends State<PostEditForm> {
 
   _takePhoto() async {
     if (imageCount < MAX_IMAGE) {
-
       File picture = await ImagePicker.pickImage(
           source: ImageSource.camera, maxWidth: 800.0, maxHeight: 800.0);
 
@@ -690,12 +691,11 @@ class _PostEditFormState extends State<PostEditForm> {
           imageFile = picture;
         });
       }
-
     } else {
       MyNotification.showInfoFlushbar(
           context,
-          "Téléchargement d´images",
-          "Vous ne pouvez que telecharger " + MAX_IMAGE.toString() + " photos",
+          AppLocalizations.of(context).translate('downloading_images'),
+          AppLocalizations.of(context).translate('download_only') + ' ' + MAX_IMAGE.toString() + ' ' + AppLocalizations.of(context).translate('pictures'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -708,7 +708,6 @@ class _PostEditFormState extends State<PostEditForm> {
 
   _selectGalleryImage() async {
     if (imageCount < MAX_IMAGE) {
-
       File picture = await ImagePicker.pickImage(
           source: ImageSource.gallery, maxWidth: 800.0, maxHeight: 800.0);
 
@@ -719,12 +718,11 @@ class _PostEditFormState extends State<PostEditForm> {
           imageFile = picture;
         });
       }
-
     } else {
       MyNotification.showInfoFlushbar(
           context,
-          "Téléchargement d´images",
-          "Vous ne pouvez que telecharger " + MAX_IMAGE.toString() + " photos",
+          AppLocalizations.of(context).translate('downloading_images'),
+          AppLocalizations.of(context).translate('download_only') + ' ' + MAX_IMAGE.toString() + ' ' + AppLocalizations.of(context).translate('pictures'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -745,8 +743,8 @@ class _PostEditFormState extends State<PostEditForm> {
     if (!form.validate()) {
       MyNotification.showInfoFlushbar(
           context,
-          "Erreur",
-          "Le formulaire contient des érreurs! Corrigez les s´il vous plait",
+          AppLocalizations.of(context).translate('errors'),
+          AppLocalizations.of(context).translate('correct_form_errors'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -757,8 +755,8 @@ class _PostEditFormState extends State<PostEditForm> {
     } else if (_categorieTile.title.isEmpty) {
       MyNotification.showInfoFlushbar(
           context,
-          "Erreur",
-          "Veuillez choisir la categorie dans laquelle vous publiez votre post s´il vous pllait.",
+          AppLocalizations.of(context).translate('error'),
+          AppLocalizations.of(context).translate('choose_category_please'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -776,8 +774,8 @@ class _PostEditFormState extends State<PostEditForm> {
 
       MyNotification.showInfoFlushbar(
           context,
-          "Info",
-          "Votre Post a été modifié. Les modifications seront controlées avant d´etre publiées.",
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate('advert_changed_success_message'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -792,7 +790,7 @@ class _PostEditFormState extends State<PostEditForm> {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     print("User: " + user.email);
 
-    setFeeTyp(_feeTyp);
+    _post.fee_typ = utils.Converter.convertStringToFeeTyp(_feeTyp);
     _post.categorieid = _categorieTile.id;
     _post.post_typ = _postTyp;
     Map<String, dynamic> postParams = _post.toMapUpdate(_post);
@@ -839,7 +837,7 @@ class _PostEditFormState extends State<PostEditForm> {
         } else {
           MyNotification.showInfoFlushbar(
               context,
-              "Info",
+              AppLocalizations.of(context).translate('info'),
               "Image failed: ${decoded['message']}",
               Icon(
                 Icons.info_outline,
@@ -856,7 +854,7 @@ class _PostEditFormState extends State<PostEditForm> {
       Navigator.pop(context);
       MyNotification.showInfoFlushbar(
           context,
-          "Info",
+          AppLocalizations.of(context).translate('info'),
           "Image failed: $e",
           Icon(
             Icons.info_outline,
@@ -882,28 +880,6 @@ class _PostEditFormState extends State<PostEditForm> {
 
   Future<void> deleteByImageUrl(String url) async {
     _imageService.deleteByImageUrl(url);
-  }
-
-  void setFeeTyp(String newValue) {
-    setState(() {
-      switch (newValue) {
-        case 'Kdo':
-          {
-            _post.fee_typ = FeeTyp.gift;
-          }
-          break;
-        case 'Negociable':
-          {
-            _post.fee_typ = FeeTyp.negotiable;
-          }
-          break;
-        case 'Fixe':
-          {
-            _post.fee_typ = FeeTyp.fixed;
-          }
-          break;
-      }
-    });
   }
 
   String getFeeTyp(FeeTyp feeTyp) {

@@ -1,3 +1,4 @@
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/services/global.dart';
@@ -22,7 +23,7 @@ class _CategoriePageState extends State<CategoriePage> {
       child: Scaffold(
         appBar: AppBar(
           title: Center(
-            child: Text("Choisissez une categorie"),
+            child: Text(AppLocalizations.of(context).translate('choose_category')),
           ),
           backgroundColor: colorDeepPurple400,
         ),

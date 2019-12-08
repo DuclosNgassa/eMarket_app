@@ -1,3 +1,4 @@
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
@@ -130,7 +131,7 @@ class PostOwnerState extends State<PostOwner> {
                       child: Row(
                         children: <Widget>[
                           Text(
-                            'Utilisateur privé',
+                            AppLocalizations.of(context).translate('privat_user'),
                             style: SizeConfig.styleGreyDetail,
                           ),
                         ],
@@ -171,7 +172,7 @@ class PostOwnerState extends State<PostOwner> {
                         ),
                         IconButton(
                           icon: Icon(Icons.arrow_forward_ios),
-                          tooltip: 'Autres annonces',
+                          tooltip: AppLocalizations.of(context).translate('other_adverts'),
                           onPressed: widget.showAllUserPost,
                         ),
                       ],
@@ -226,7 +227,7 @@ class PostOwnerState extends State<PostOwner> {
             icon: Icons.sms,
             splashColor: Colors.white,
             iconColor: Colors.white,
-            text: 'Fais moi un SMS',
+            text: AppLocalizations.of(context).translate('text_me'),
             textStyle: TextStyle(
                 color: Colors.white, fontSize: SizeConfig.BUTTON_FONT_SIZE),
             onPressed: () => _sendSMS(context),
@@ -242,7 +243,7 @@ class PostOwnerState extends State<PostOwner> {
                   icon: Icons.phone_iphone,
                   splashColor: Colors.white,
                   iconColor: Colors.white,
-                  text: isLogedIn ? widget.post.phoneNumber : 'Appele moi',
+                  text: isLogedIn ? widget.post.phoneNumber : AppLocalizations.of(context).translate('call_me'),
                   textStyle: TextStyle(
                       color: Colors.white,
                       fontSize: SizeConfig.BUTTON_FONT_SIZE),
@@ -289,8 +290,8 @@ class PostOwnerState extends State<PostOwner> {
       } else {
         MyNotification.showInfoFlushbar(
             context,
-            "Info",
-            "Cette annonce vous appartient. Vous ne pouvez pas vous envoyer des messsages à vous même!",
+            AppLocalizations.of(context).translate('info'),
+            AppLocalizations.of(context).translate('cannot_send_self_message'),
             Icon(
               Icons.info_outline,
               size: 28,

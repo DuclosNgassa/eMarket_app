@@ -1,3 +1,4 @@
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user_message.dart';
@@ -95,7 +96,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   new Text(
-                    "Mes messages",
+                    AppLocalizations.of(context).translate('my') + ' ' + AppLocalizations.of(context).translate('messages'),
                     style: SizeConfig.styleTitleWhite,
                   ),
                 ],
@@ -106,7 +107,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
                   Padding(
                     padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical, right: SizeConfig.blockSizeHorizontal),
                     child: Text(
-                      'Annonce: ' + widget.userMessage.elementAt(0).post.title,
+                      AppLocalizations.of(context).translate('advert') + ' ' + widget.userMessage.elementAt(0).post.title,
                       style: SizeConfig.styleSubtitleWhite,
                     ),
                   ),
@@ -160,18 +161,18 @@ class _UserMessagePageState extends State<UserMessagePage> {
                               .messages
                               .length
                               .toString() +
-                          " Messages")
+                      ' ' + AppLocalizations.of(context).translate('messages'))
                       : Text(userMessageWithoutLoggedUser
                               .elementAt(index)
                               .messages
                               .length
                               .toString() +
-                          " Message"),
+                          ' ' + AppLocalizations.of(context).translate('message')),
                 ),
               ),
               actions: <Widget>[
                 IconSlideAction(
-                  caption: 'Ouvrir',
+                  caption: AppLocalizations.of(context).translate('open'),
                   color: colorDeepPurple300,
                   icon: Icons.visibility,
                   onTap: () =>
@@ -180,7 +181,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
               ],
               secondaryActions: <Widget>[
                 IconSlideAction(
-                  caption: 'Supprimer',
+                  caption: AppLocalizations.of(context).translate('delete'),
                   color: colorRed,
                   icon: Icons.delete,
                   onTap: null,

@@ -1,4 +1,5 @@
 import 'package:emarket_app/custom_component/custom_button.dart';
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/pages/contact/contact_page.dart';
@@ -26,9 +27,11 @@ class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Comment ça marche"),
+        title: Text(AppLocalizations.of(context).translate('how_it_works')),
         backgroundColor: colorDeepPurple400,
       ),
       body: buildListTile(),
@@ -45,12 +48,7 @@ class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
     return Column(
       children: <Widget>[
         Expanded(
-          child: ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              return _buildCategories(categoriesTiles[index]);
-            },
-            itemCount: categoriesTiles.length,
-          ),
+          child: buildListFaq(),
         ),
         Divider(
           height: SizeConfig.blockSizeVertical * 2,
@@ -63,7 +61,7 @@ class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
               fillColor: colorDeepPurple400,
               splashColor: Colors.white,
               iconColor: Colors.white,
-              text: 'Autres questions? Contactez nous',
+              text: AppLocalizations.of(context).translate('other_questions') + ' ' + AppLocalizations.of(context).translate('contact_us'),
               textStyle: SizeConfig.styleButtonWhite,
               onPressed: () => showContactPage(),
             ),
@@ -73,23 +71,99 @@ class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildCategories(CategorieTile categorie) {
-    if (categorie.children == null)
-      return new ListTile(
-          dense: true,
-          enabled: true,
-          isThreeLine: false,
-          selected: true,
-          title: new Text(categorie.title));
-
-    return new ExpansionTile(
-      key: PageStorageKey<CategorieTile>(categorie),
-      title: new Text(categorie.title),
-      leading: Icon(
-        IconData(int.parse(categorie.icon), fontFamily: 'MaterialIcons'),
-        color: Colors.deepPurple,
-      ),
-      children: categorie.children.map(_buildCategories).toList(),
+  Widget buildListFaq() {
+    return ListView(
+      children: <Widget>[
+        ExpansionTile(
+          title: Text(
+            AppLocalizations.of(context).translate('faq1'),
+            style: SizeConfig.styleTitleBlack,
+          ),
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(AppLocalizations.of(context).translate('resp1'),
+                style: SizeConfig.styleNormalBlack,
+              ),
+            ),
+          ],
+        ),
+        ExpansionTile(
+          title: Text(
+            AppLocalizations.of(context).translate('faq2'),
+            style: SizeConfig.styleTitleBlack,
+          ),
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                AppLocalizations.of(context).translate('resp2'),
+                style: SizeConfig.styleNormalBlack,
+              ),
+            ),
+          ],
+        ),
+        ExpansionTile(
+          title: Text(
+            AppLocalizations.of(context).translate('faq3'),
+            style: SizeConfig.styleTitleBlack,
+          ),
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                AppLocalizations.of(context).translate('resp3'),
+                style: SizeConfig.styleNormalBlack,
+              ),
+            ),
+          ],
+        ),
+        ExpansionTile(
+          title: Text(
+            AppLocalizations.of(context).translate('faq4'),
+            style: SizeConfig.styleTitleBlack,
+          ),
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                AppLocalizations.of(context).translate('resp4'),
+                style: SizeConfig.styleNormalBlack,
+              ),
+            ),
+          ],
+        ),
+        ExpansionTile(
+          title: Text(
+            AppLocalizations.of(context).translate('faq5'),
+            style: SizeConfig.styleTitleBlack,
+          ),
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                AppLocalizations.of(context).translate('resp5'),
+                style: SizeConfig.styleNormalBlack,
+              ),
+            ),
+          ],
+        ),
+        ExpansionTile(
+          title: Text(
+            AppLocalizations.of(context).translate('faq6'),
+            style: SizeConfig.styleTitleBlack,
+          ),
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                AppLocalizations.of(context).translate('resp6'),
+                style: SizeConfig.styleNormalBlack,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 

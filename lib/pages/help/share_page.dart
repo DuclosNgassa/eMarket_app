@@ -1,3 +1,4 @@
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class _SharePageState extends State<SharePage> {
   }
 
   _buildTitle() {
-    return Text("Partage");
+    return Text(AppLocalizations.of(context).translate('share'));
   }
 
   Widget buildListTile() {
@@ -87,7 +88,7 @@ class _SharePageState extends State<SharePage> {
               Icons.share,
               color: Colors.purple,
             ),
-            title: Text("Autres"),
+            title: Text(AppLocalizations.of(context).translate('others')),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: colorGrey400,

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/message.dart';
@@ -128,14 +129,14 @@ class _HomePageState extends State<HomePage> {
                       children: <Widget>[
                         new Expanded(
                           child: TextField(
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               fillColor: Colors.white,
                               border: OutlineInputBorder(
                                 borderRadius:
                                 BorderRadius.all(Radius.circular(10.0)),
                               ),
-                              hintText: 'Entrer votre recherche',
-                              labelText: 'Recherche',
+                              hintText: AppLocalizations.of(context).translate('give_your_search'),
+                              labelText: AppLocalizations.of(context).translate('search'),
                               labelStyle: TextStyle(color: Colors.white),
                             ),
                             onTap: () {
@@ -152,7 +153,7 @@ class _HomePageState extends State<HomePage> {
                             Icons.search,
                             color: Colors.white,
                           ),
-                          tooltip: 'rechercher',
+                          tooltip: AppLocalizations.of(context).translate('to_search'),
                           onPressed: () {
                             showSearch(
                               context: context,

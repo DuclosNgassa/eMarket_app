@@ -116,8 +116,6 @@ class CardScrollWidget extends StatelessWidget {
 
         var safeWidth = width - 2 * padding;
         var safeHeight = height - 2 * padding;
-//        var safeWidth = SizeConfig.screenWidth - 2 * padding;
-//        var safeHeight = SizeConfig.screenHeight - 2 * padding;
 
         var heightOfPrimaryCard = safeHeight;
         var widthOfPrimaryCard = heightOfPrimaryCard * cardAspectRatio;

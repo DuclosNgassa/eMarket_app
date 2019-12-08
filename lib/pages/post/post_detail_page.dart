@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/custom_component/post_owner.dart';
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
+import 'package:emarket_app/model/posttyp.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/image/images_detail.dart';
 import 'package:emarket_app/pages/post/post_user_page.dart';
@@ -78,7 +80,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 ),
                 Container(
                   margin:
-                  EdgeInsets.only(top: SizeConfig.blockSizeVertical * 10),
+                      EdgeInsets.only(top: SizeConfig.blockSizeVertical * 10),
                   constraints: BoxConstraints.expand(
                       height: SizeConfig.screenHeight * 0.9),
                   child: SingleChildScrollView(
@@ -118,7 +120,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             children: <Widget>[
                               Expanded(
                                 child: Text(
-                                  widget.post.fee.toString() + ' FCFA',
+                                  widget.post.fee.toString() +
+                                      ' ' +
+                                      AppLocalizations.of(context)
+                                          .translate('fcfa'),
                                   style: SizeConfig.stylePrice,
                                 ),
                               ),
@@ -149,13 +154,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                         Padding(
                                           padding: EdgeInsets.only(
                                             right:
-                                            SizeConfig.blockSizeHorizontal,
+                                                SizeConfig.blockSizeHorizontal,
                                           ),
                                           child: Icon(Icons.calendar_today,
                                               color: colorDeepPurple300),
                                         ),
                                         Text(DateConverter.convertToString(
-                                            widget.post.created_at)),
+                                            widget.post.created_at, context)),
                                       ],
                                     )
                                   ],
@@ -173,7 +178,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   alignment: Alignment.centerRight,
                                   child: Text(
                                     Post.convertPostTypToStringForDisplay(
-                                        widget.post.post_typ),
+                                        widget.post.post_typ, context),
                                     style: SizeConfig.styleTitleBlack,
                                   ),
                                 ),
@@ -186,7 +191,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           Row(
                             children: <Widget>[
                               Text(
-                                "Description",
+                                AppLocalizations.of(context)
+                                    .translate('description'),
                                 style: SizeConfig.styleTitleBlack,
                                 //style: titleDetailStyle,
                               ),
@@ -263,7 +269,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
           icon: Icons.file_download,
           splashColor: Colors.white,
           iconColor: Colors.white,
-          text: 'Télécharger les images',
+          text: AppLocalizations.of(context).translate('download_images'),
           textStyle: TextStyle(color: Colors.white, fontSize: 10),
           onPressed: () => _loadImages(),
         ),
@@ -276,7 +282,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       scrollDirection: Axis.horizontal,
       children: List.generate(
         postImages.length,
-            (index) {
+        (index) {
           CachedNetworkImage asset = postImages[index];
           return GestureDetector(
             onTap: () {
@@ -292,7 +298,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
             },
             child: Padding(
               padding:
-              EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
+                  EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16.0),
                 child: Container(
@@ -319,7 +325,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   Future<void> _loadImages() async {
     postImages =
-    await _imageService.fetchCachedNetworkImageByPostId(widget.post.id);
+        await _imageService.fetchCachedNetworkImageByPostId(widget.post.id);
     setState(() {});
   }
 
@@ -327,7 +333,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
     posts = await _postService.fetchPostByUserEmail(widget.post.useremail);
     setState(() {});
   }
-
 
   Future<void> _loadMyFavorits() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -337,18 +342,18 @@ class _PostDetailPageState extends State<PostDetailPage> {
     setState(() {});
   }
 
-Future<void> _getUserByEmail() async {
-  _postOwner = await _userService.fetchUserByEmail(widget.post.useremail);
-  setState(() {});
+  Future<void> _getUserByEmail() async {
+    _postOwner = await _userService.fetchUserByEmail(widget.post.useremail);
+    setState(() {});
+  }
+
+  Future<Post> _updatePostView() async {
+    Post post = widget.post;
+    post.count_view++;
+
+    Map<String, dynamic> postParams = post.toMapUpdate(post);
+    Post updatedPost = await _postService.update(postParams);
+
+    return updatedPost;
+  }
 }
-
-
-Future<Post> _updatePostView() async {
-  Post post = widget.post;
-  post.count_view++;
-
-  Map<String, dynamic> postParams = post.toMapUpdate(post);
-  Post updatedPost = await _postService.update(postParams);
-
-  return updatedPost;
-}}

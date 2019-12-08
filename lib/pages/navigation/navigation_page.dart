@@ -80,7 +80,7 @@ class _NavigationPageState extends State<NavigationPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
-            title: Text(AppLocalizations.of(context).translate('add_post')),
+            title: Text(AppLocalizations.of(context).translate('add_advert')),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),

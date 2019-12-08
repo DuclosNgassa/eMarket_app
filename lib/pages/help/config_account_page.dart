@@ -1,3 +1,4 @@
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/size_config.dart';
@@ -62,6 +63,6 @@ class _ConfigAccountPageState extends State<ConfigAccountPage> with TickerProvid
   }
 
   _buildTitle() {
-    return Text("Title");
+    return Text(AppLocalizations.of(context).translate('title'));
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:emarket_app/converter/date_converter.dart';
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user.dart';
@@ -167,9 +168,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               subtitle: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Expanded(child: Text("Moi")),
+                  Expanded(child: Text(AppLocalizations.of(context).translate('me'))),
                   Text(DateConverter.convertToString(
-                      _messages.elementAt(index).created_at)),
+                      _messages.elementAt(index).created_at, context)),
                 ],
               ),
             ),
@@ -193,7 +194,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                 children: <Widget>[
                   Expanded(
                     child: Text(DateConverter.convertToString(
-                        _messages.elementAt(index).created_at)),
+                        _messages.elementAt(index).created_at, context)),
                   ),
                   Text(receiver.name),
                 ],
@@ -216,7 +217,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               child: new TextField(
                 controller: _textEditingController,
                 decoration: new InputDecoration.collapsed(
-                  hintText: "Envoyez un message",
+                  hintText: AppLocalizations.of(context).translate('send_message'),
                 ),
               ),
             ),
@@ -282,7 +283,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                 children: <Widget>[
                   Expanded(
                     child: new Text(
-                      "Chat",
+                      AppLocalizations.of(context).translate('chat'),
                       style: SizeConfig.styleTitleWhite,
                     ),
                   ),
@@ -290,7 +291,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                     padding:
                         EdgeInsets.only(right: SizeConfig.blockSizeHorizontal),
                     child: new Text(
-                      "Annonce: " + widget.post.title,
+                      AppLocalizations.of(context).translate('advert') + ' ' + widget.post.title,
                       style: SizeConfig.styleSubtitleWhite,
                     ),
                   ),
@@ -344,7 +345,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           'notification': <String, dynamic>{
             'body': _message.body,
             'title':
-                "Nouveau message concernant l´annonce: " + widget.post.title
+                userName + ' ' + AppLocalizations.of(context).translate('wrote') + ' ' + AppLocalizations.of(context).translate('advert') + ': ' + widget.post.title
           },
           'priority': 'high',
           'data': <String, dynamic>{
@@ -353,7 +354,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             'status': 'done',
             'body': _message.body,
             'title':
-            "Nouveau message concernant l´annonce: " + widget.post.title
+            userName + ' ' + AppLocalizations.of(context).translate('wrote') +' '+ AppLocalizations.of(context).translate('advert')+ ': ' + widget.post.title
           },
           'to': receiver.device_token,
         },

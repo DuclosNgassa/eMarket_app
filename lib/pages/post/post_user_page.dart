@@ -1,4 +1,5 @@
 import 'package:emarket_app/custom_component/home_card.dart';
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/services/global.dart';
@@ -90,7 +91,7 @@ class _PostUserPageState extends State<PostUserPage> {
               children: <Widget>[
                 Expanded(
                   child: new Text(
-                    "List des annonces de " +
+                    AppLocalizations.of(context).translate('advert_list') +
                         widget.userName,
                     style: SizeConfig.styleTitleWhite,
                   ),

@@ -1,4 +1,6 @@
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
+import 'package:emarket_app/model/posttyp.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/notification.dart';
@@ -114,8 +116,8 @@ class _HomeCardState extends State<HomeCard> {
     } else {
       MyNotification.showInfoFlushbar(
           context,
-          "Info",
-          "Connectez vous pour enregistrer les annonces qui vous interessent",
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate('connect_to_save_advert'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -280,12 +282,12 @@ class _HomeCardState extends State<HomeCard> {
             children: <Widget>[
               Expanded(
                 child: Text(
-                  widget.post.fee.toString() + ' FCFA',
+                  widget.post.fee.toString() + ' ' + AppLocalizations.of(context).translate('fcfa'),
                   style: SizeConfig.stylePriceCard,
                 ),
               ),
               Text(
-                Post.convertPostTypToStringForDisplay(widget.post.post_typ),
+                Post.convertPostTypToStringForDisplay(widget.post.post_typ, context),
                 style: SizeConfig.styleNormalBlackCard,
               ),
             ],

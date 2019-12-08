@@ -1,4 +1,5 @@
 import 'package:emarket_app/custom_component/home_card.dart';
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
@@ -19,7 +20,12 @@ class DataSearch extends SearchDelegate<Post> {
   List<int> childCategories;
 
   @override
-  String get searchFieldLabel => 'Recherche';
+  String get searchFieldLabel => getSearch();
+
+  String getSearch(){
+    return "Search";
+    //AppLocalizations.of(context).translate('search');
+  }
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -83,7 +89,7 @@ class DataSearch extends SearchDelegate<Post> {
         child: Padding(
           padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 2),
           child: Text(
-            "Aucun resultat n´a été trouvé pour votre recherche",
+            AppLocalizations.of(context).translate('no_result_found'),
             style: SizeConfig.styleTitleBlack,
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user.dart';
@@ -119,7 +120,7 @@ class _LoginState extends State<Login> {
                           ),
                           SizedBox(width: SizeConfig.blockSizeHorizontal * 3),
                           Text(
-                            'S´enregistrer avec Google',
+                            AppLocalizations.of(context).translate('log_in_with_google'),
                             style: SizeConfig.styleButtonWhite,
                           ),
                         ],

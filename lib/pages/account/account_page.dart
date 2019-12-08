@@ -1,6 +1,7 @@
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/form/post_edit_form.dart';
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/post.dart';
@@ -35,7 +36,7 @@ class _AccountState extends State<AccountPage>
   TabController controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
-  String userName = 'Utilisateur-eMarket';
+  String userName = 'eMarket';
   String userEmail = 'eMarket@softsolutions.de';
   List<Post> myPosts = new List();
   List<Post> myPostFavorits = new List();
@@ -104,8 +105,8 @@ class _AccountState extends State<AccountPage>
                         //isScrollable: true,
                         indicatorColor: colorDeepPurple500,
                         tabs: [
-                          Tab(text: 'MES POSTS'),
-                          Tab(text: 'MES FAVORITS'),
+                          Tab(text: AppLocalizations.of(context).translate('my_adverts')),
+                          Tab(text: AppLocalizations.of(context).translate('my_favorits')),
                         ],
                         controller: controller,
                       ),
@@ -138,8 +139,9 @@ class _AccountState extends State<AccountPage>
             Expanded(
               child: Center(
                 child: Text(
-                  "Vous n´avez pas encore vendu ou recherché d´objects. "
-                  "\n\nTransformez les choses que vous n´utilisez tres peu ou jamais en argent!",
+                  AppLocalizations.of(context).translate('no_sell_item1') +
+            "\n\n" +
+                  AppLocalizations.of(context).translate('no_sell_item2'),
                   style: SizeConfig.styleTitleBlack,
                 ),
               ),
@@ -165,18 +167,18 @@ class _AccountState extends State<AccountPage>
                   ),
                   title: Text(myPosts.elementAt(index).title),
                   subtitle: Text(DateConverter.convertToString(
-                      myPosts.elementAt(index).created_at)),
+                      myPosts.elementAt(index).created_at, context)),
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      Text(myPosts.elementAt(index).fee.toString() + " FCFA"),
+                      Text(myPosts.elementAt(index).fee.toString() + ' ' + AppLocalizations.of(context).translate('fcfa')),
                       SizedBox(
                         height: SizeConfig.blockSizeVertical,
                       ),
                       if (isPostArchivated(index))
                         Text(
-                          'Vendu',
+                          AppLocalizations.of(context).translate('sold'),
                           style: SizeConfig.styleFormGrey,
                         ),
                     ],
@@ -186,14 +188,14 @@ class _AccountState extends State<AccountPage>
               actions: <Widget>[
                 if (isPostActive(index))
                   IconSlideAction(
-                    caption: 'Vendu',
+                    caption: AppLocalizations.of(context).translate('sold'),
                     color: Colors.green,
                     icon: Icons.done,
                     onTap: () => archivatePost(myPosts.elementAt(index), index),
                   ),
                 if (isPostActive(index))
                   IconSlideAction(
-                    caption: 'Modifier',
+                    caption: AppLocalizations.of(context).translate('change'),
                     color: colorBlue,
                     icon: Icons.edit,
                     onTap: () => showPostEditForm(myPosts.elementAt(index)),
@@ -201,7 +203,7 @@ class _AccountState extends State<AccountPage>
               ],
               secondaryActions: <Widget>[
                 IconSlideAction(
-                  caption: 'Supprimer',
+                  caption: AppLocalizations.of(context).translate('delete'),
                   color: colorRed,
                   icon: Icons.delete,
                   onTap: () =>
@@ -229,8 +231,9 @@ class _AccountState extends State<AccountPage>
               horizontal: SizeConfig.blockSizeHorizontal * 2,
               vertical: SizeConfig.blockSizeVertical),
           child: Text(
-            "Vous n´avez pas encore de favorits. "
-            "\n\n Marquez un post avec l´étoile pour l´enregister dans vos favorits!",
+            AppLocalizations.of(context).translate('no_favorit') +
+            "\n\n" +
+                AppLocalizations.of(context).translate('mark_favorit'),
             style: SizeConfig.styleTitleBlack,
           ),
         ),
@@ -253,14 +256,14 @@ class _AccountState extends State<AccountPage>
                   ),
                   title: Text(myPostFavorits.elementAt(index).title),
                   subtitle: Text(DateConverter.convertToString(
-                      myPostFavorits.elementAt(index).created_at)),
+                      myPostFavorits.elementAt(index).created_at, context)),
                   trailing: Text(
-                      myPostFavorits.elementAt(index).fee.toString() + " FCFA"),
+                      myPostFavorits.elementAt(index).fee.toString() +' ' + AppLocalizations.of(context).translate('fcfa')),
                 ),
               ),
               secondaryActions: <Widget>[
                 IconSlideAction(
-                  caption: 'Supprimer',
+                  caption: AppLocalizations.of(context).translate('delete'),
                   color: colorRed,
                   icon: Icons.delete,
                   onTap: () => _showDeleteFavoritDialog(
@@ -294,8 +297,8 @@ class _AccountState extends State<AccountPage>
   Future<void> _showDeleteFavoritDialog(int id, int index) async {
     return MyNotification.showConfirmationDialog(
         context,
-        'Confirmation',
-        'Voulez vous vraiment supprimer ce favorit?',
+        AppLocalizations.of(context).translate('confirmation'),
+        AppLocalizations.of(context).translate('confirm_delete'),
         () => {deleteFavoritPost(id, index), Navigator.of(context).pop()},
         () => Navigator.of(context).pop());
   }
@@ -303,8 +306,8 @@ class _AccountState extends State<AccountPage>
   Future<void> _showDeletePostDialog(Post post, int index) async {
     return MyNotification.showConfirmationDialog(
         context,
-        'Confirmation',
-        'Voulez vous vraiment supprimer cette annonce?',
+        AppLocalizations.of(context).translate('confirmation'),
+        AppLocalizations.of(context).translate('confirm_delete'),
         () => {deletePost(post, index), Navigator.of(context).pop()},
         () => Navigator.of(context).pop());
   }
@@ -382,7 +385,7 @@ class _AccountState extends State<AccountPage>
                 //icon: Icons.directions_run,
                 splashColor: Colors.white,
                 iconColor: Colors.white,
-                text: 'Se deconnecter',
+                text: AppLocalizations.of(context).translate('logout'),
                 textStyle: TextStyle(
                     color: Colors.white, fontSize: SizeConfig.BUTTON_FONT_SIZE),
                 onPressed: () => _logOut(),

@@ -1,4 +1,5 @@
 import 'package:emarket_app/form/contact_form.dart';
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class _ContactPageState extends State<ContactPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text("Contactez nous"),
+        title: Text(AppLocalizations.of(context).translate('contact_us')),
         backgroundColor: colorDeepPurple300,
       ),
       body: SafeArea(

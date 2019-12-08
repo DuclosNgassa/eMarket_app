@@ -1,3 +1,4 @@
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
@@ -58,9 +59,12 @@ class _MessagePageState extends State<MessagePage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 3),
+                        padding: EdgeInsets.only(
+                            top: SizeConfig.blockSizeVertical * 3),
                         child: new Text(
-                          "Mes messages",
+                          AppLocalizations.of(context).translate('my') + ' ' +
+                              AppLocalizations.of(context)
+                                  .translate('messages'),
                           style: SizeConfig.styleTitleWhite,
                         ),
                       ),
@@ -88,11 +92,14 @@ class _MessagePageState extends State<MessagePage> {
     if (messages.isEmpty) {
       return new Center(
         child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: SizeConfig.blockSizeHorizontal * 3,
-              vertical: SizeConfig.blockSizeVertical * 2,
-            ),
-            child: Text("Vous n´avez pas encore de messages")),
+          padding: EdgeInsets.symmetric(
+            horizontal: SizeConfig.blockSizeHorizontal * 3,
+            vertical: SizeConfig.blockSizeVertical * 2,
+          ),
+          child: Text(
+            AppLocalizations.of(context).translate('no_messages'),
+          ),
+        ),
       );
     }
 
@@ -103,7 +110,8 @@ class _MessagePageState extends State<MessagePage> {
               child: Container(
                 color: colorWhite,
                 child: ListTile(
-                  onTap: () => openUserMessage(postMessages.elementAt(index), postMessages.elementAt(index).post.title),
+                  onTap: () => openUserMessage(postMessages.elementAt(index),
+                      postMessages.elementAt(index).post.title),
                   leading: CircleAvatar(
                     backgroundColor: colorDeepPurple300,
                     child: Text((index + 1).toString()),
@@ -111,18 +119,25 @@ class _MessagePageState extends State<MessagePage> {
                   ),
                   title: Text(postMessages.elementAt(index).post.title),
                   subtitle: postMessages.elementAt(index).messages.length > 1
-                      ? Text(postMessages
-                              .elementAt(index)
-                              .messages
-                              .length
-                              .toString() +
-                          " Messages")
-                      : Text(postMessages
-                              .elementAt(index)
-                              .messages
-                              .length
-                              .toString() +
-                          " Message"),
+                      ? Text(
+                          postMessages
+                                  .elementAt(index)
+                                  .messages
+                                  .length
+                                  .toString() +
+                              " " +
+                              AppLocalizations.of(context)
+                                  .translate('messages'),
+                        )
+                      : Text(
+                          postMessages
+                                  .elementAt(index)
+                                  .messages
+                                  .length
+                                  .toString() +
+                              " " +
+                              AppLocalizations.of(context).translate('message'),
+                        ),
                 ),
               ),
             ),
@@ -210,7 +225,6 @@ class _MessagePageState extends State<MessagePage> {
     }
   }
 
-
   Future<List<UserMessage>> _mapPostMessageToUserMessage(
       PostMessage postMessage) async {
     List<UserMessage> userMessages = new List();
@@ -236,5 +250,4 @@ class _MessagePageState extends State<MessagePage> {
 
     return userMessages;
   }
-
 }
