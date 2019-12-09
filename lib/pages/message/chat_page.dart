@@ -81,18 +81,17 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     super.initState();
   }
 
-  void insertFirebaseMessagingInMessages(notification, Map<String, dynamic> message) {
-
+  void insertFirebaseMessagingInMessages(
+      notification, Map<String, dynamic> message) {
     final Completer<Map<String, dynamic>> completer =
-    Completer<Map<String, dynamic>>();
+        Completer<Map<String, dynamic>>();
 
     setState(() {
       Message fireBaseMessage = new Message(
           body: notification["body"],
           created_at: DateTime.now().subtract(Duration(hours: 2)),
-          postid: widget.post != null
-              ? widget.post.id
-              : widget.messages[0].postid,
+          postid:
+              widget.post != null ? widget.post.id : widget.messages[0].postid,
           receiver: userName,
           sender: receiver.email);
 
@@ -168,7 +167,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               subtitle: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Expanded(child: Text(AppLocalizations.of(context).translate('me'))),
+                  Expanded(
+                      child:
+                          Text(AppLocalizations.of(context).translate('me'))),
                   Text(DateConverter.convertToString(
                       _messages.elementAt(index).created_at, context)),
                 ],
@@ -217,7 +218,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               child: new TextField(
                 controller: _textEditingController,
                 decoration: new InputDecoration.collapsed(
-                  hintText: AppLocalizations.of(context).translate('send_message'),
+                  hintText:
+                      AppLocalizations.of(context).translate('send_message'),
                 ),
               ),
             ),
@@ -291,7 +293,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                     padding:
                         EdgeInsets.only(right: SizeConfig.blockSizeHorizontal),
                     child: new Text(
-                      AppLocalizations.of(context).translate('advert') + ' ' + widget.post.title,
+                      AppLocalizations.of(context).translate('advert') +
+                          ' ' +
+                          widget.post.title,
                       style: SizeConfig.styleSubtitleWhite,
                     ),
                   ),
@@ -344,8 +348,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         <String, dynamic>{
           'notification': <String, dynamic>{
             'body': _message.body,
-            'title':
-                userName + ' ' + AppLocalizations.of(context).translate('wrote') + ' ' + AppLocalizations.of(context).translate('advert') + ': ' + widget.post.title
+            'title': 'Message: ' +
+                userName +
+                ': ' +
+                widget.post.title
           },
           'priority': 'high',
           'data': <String, dynamic>{
@@ -353,8 +359,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             'id': '1',
             'status': 'done',
             'body': _message.body,
-            'title':
-            userName + ' ' + AppLocalizations.of(context).translate('wrote') +' '+ AppLocalizations.of(context).translate('advert')+ ': ' + widget.post.title
+            'title': 'Message: ' +
+                userName +
+                ': ' +
+                widget.post.title
           },
           'to': receiver.device_token,
         },
