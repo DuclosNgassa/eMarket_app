@@ -13,7 +13,7 @@ class CustomIconMessage extends StatelessWidget {
     SizeConfig().init(context);
 
     return ClipRRect(
-      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+      borderRadius: BorderRadius.all(Radius.circular(50.0)),
       child: Container(
         color: colorRed,
         height: SizeConfig.blockSizeVertical * 3,
