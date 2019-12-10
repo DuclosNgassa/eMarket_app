@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:emarket_app/custom_component/custom_icon_message.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
-import 'package:emarket_app/model/message.dart';
+import 'package:emarket_app/model/message.dart' as myMessage;
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/pages/account/account_page.dart';
 import 'package:emarket_app/pages/help/info_page.dart';
 import 'package:emarket_app/pages/home/home_page.dart';
 import 'package:emarket_app/pages/message/chat_page.dart';
+import 'package:emarket_app/pages/message/message_page.dart';
 import 'package:emarket_app/pages/post/post_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/message_service.dart';
@@ -15,8 +16,7 @@ import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-
-import '../message/message_page.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NavigationPage extends StatefulWidget {
   int _selectedIndex = 0;
@@ -32,9 +32,10 @@ class _NavigationPageState extends State<NavigationPage> {
   static bool isLogedIn = false;
   int _incomingMessage = 0;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  List<Message> allConversation = new List<Message>();
+  List<myMessage.Message> allConversation = new List<myMessage.Message>();
   final PostService _postService = new PostService();
   final MessageService _messageService = new MessageService();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   @override
   void initState() {
@@ -42,10 +43,28 @@ class _NavigationPageState extends State<NavigationPage> {
     if (_localSelectedIndex > 0) {
       isLogedIn = true;
     }
+
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var iOS = new IOSInitializationSettings();
+    var initSetttings = new InitializationSettings(android, iOS);
+    flutterLocalNotificationsPlugin.initialize(initSetttings,
+        onSelectNotification: onSelectNotification);
+
     super.initState();
     _fireBaseCloudMessagingListeners();
   }
 
+  Future onSelectNotification(String payload) {
+    debugPrint("payload : $payload");
+    showDialog(
+      context: context,
+      builder: (_) => new AlertDialog(
+        title: new Text('Notification'),
+        content: new Text('$payload'),
+      ),
+    );
+  }
 
   void _fireBaseCloudMessagingListeners() {
     if (Platform.isIOS) iOS_Permission();
@@ -59,6 +78,7 @@ class _NavigationPageState extends State<NavigationPage> {
         print("onMessage-Navigation-Page: $message");
         setState(() {
           _incomingMessage++;
+          showNotification();
         });
       },
       //onBackgroundMessage: myBackgroundMessageHandler,
@@ -120,10 +140,10 @@ class _NavigationPageState extends State<NavigationPage> {
 
   Future<void> _getMessageByPostIdAndUserEmail(int postId, String sender, String receiver) async {
 
-    List<Message> messageByPostIds =  await _messageService.fetchMessageByPostId(postId);
+    List<myMessage.Message> messageByPostIds =  await _messageService.fetchMessageByPostId(postId);
 
     // get all conversation between sender and receiver
-    for (Message message in messageByPostIds) {
+    for (myMessage.Message message in messageByPostIds) {
       if ((message.sender == sender && message.receiver == receiver) || (message.sender == receiver && message.receiver == sender)) {
         allConversation.add(message);
       }
@@ -234,6 +254,18 @@ class _NavigationPageState extends State<NavigationPage> {
       );
     }
     return Icon(Icons.message);
+  }
+
+  showNotification() async {
+    var android = new AndroidNotificationDetails(
+        'channel id', 'channel NAME', 'CHANNEL DESCRIPTION',
+        priority: Priority.High,importance: Importance.Max
+    );
+    var iOS = new IOSNotificationDetails();
+    var platform = new NotificationDetails(android, iOS);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'Neue Nachricht', 'Flutter Local Notification', platform,
+        payload: 'Sie haben eine neue Nachricht');
   }
 
   List<Widget> _widgetOptions = <Widget>[
