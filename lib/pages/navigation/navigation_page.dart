@@ -30,7 +30,7 @@ class NavigationPage extends StatefulWidget {
 class _NavigationPageState extends State<NavigationPage> {
   int _localSelectedIndex = 0;
   static bool isLogedIn = false;
-  bool _incomingMessage = false;
+  int _incomingMessage = 0;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   List<Message> allConversation = new List<Message>();
   final PostService _postService = new PostService();
@@ -57,6 +57,9 @@ class _NavigationPageState extends State<NavigationPage> {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage-Navigation-Page: $message");
+        setState(() {
+          _incomingMessage++;
+        });
       },
       //onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
@@ -206,13 +209,16 @@ class _NavigationPageState extends State<NavigationPage> {
   }
 
   void _onItemTapped(int index) {
+    if(index == MESSAGEPAGE){
+      _incomingMessage = 0;
+    }
     setState(() {
       _localSelectedIndex = index;
     });
   }
 
   Widget buildNewMessageIcon() {
-    if (_incomingMessage && _localSelectedIndex != MESSAGEPAGE) {
+    if (_incomingMessage > 0 && _localSelectedIndex != MESSAGEPAGE) {
 
       return Stack(
         children: <Widget>[
@@ -223,7 +229,7 @@ class _NavigationPageState extends State<NavigationPage> {
               margin: EdgeInsets.only(
                   top: SizeConfig.blockSizeVertical * 2,
                   left: SizeConfig.blockSizeHorizontal * 3),
-              child: CustomIconMessage(countNewMessage: 1)),
+              child: CustomIconMessage(countNewMessage: _incomingMessage)),
         ],
       );
     }
