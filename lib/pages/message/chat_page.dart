@@ -54,6 +54,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         if (message.containsKey('notification')) {
+          await setNewIncomingMessage();
           final dynamic notification = message['notification'];
           // Handle notification message
           insertFirebaseMessagingInMessages(notification, message);
@@ -62,7 +63,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
         if (message.containsKey('notification')) {
+          await setNewIncomingMessage();
           final dynamic notification = message['data'];
+
           // Handle notification message
           insertFirebaseMessagingInMessages(notification, message);
         }
@@ -71,6 +74,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         print("onResume: $message");
 
         if (message.containsKey('notification')) {
+          await setNewIncomingMessage();
+
           final dynamic notification = message['data'];
           // Handle notification message
           insertFirebaseMessagingInMessages(notification, message);
@@ -79,6 +84,11 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
 
     super.initState();
+  }
+
+  Future setNewIncomingMessage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool(NEW_MESSAGE, true);
   }
 
   void insertFirebaseMessagingInMessages(
@@ -358,6 +368,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             'click_action': 'FLUTTER_NOTIFICATION_CLICK',
             'id': '1',
             'status': 'done',
+            'postId': widget.post.id,
+            'sender': userEmail,
+            'receiver': receiver.email,
             'body': _message.body,
             'title': 'Message: ' +
                 userName +

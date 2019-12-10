@@ -1,10 +1,19 @@
+import 'dart:io';
+
+import 'package:emarket_app/custom_component/custom_icon_message.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
+import 'package:emarket_app/model/message.dart';
+import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/pages/account/account_page.dart';
 import 'package:emarket_app/pages/help/info_page.dart';
 import 'package:emarket_app/pages/home/home_page.dart';
+import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/pages/post/post_page.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/services/message_service.dart';
+import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/util/size_config.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import '../message/message_page.dart';
@@ -19,9 +28,13 @@ class NavigationPage extends StatefulWidget {
 }
 
 class _NavigationPageState extends State<NavigationPage> {
-
   int _localSelectedIndex = 0;
   static bool isLogedIn = false;
+  bool _incomingMessage = false;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  List<Message> allConversation = new List<Message>();
+  final PostService _postService = new PostService();
+  final MessageService _messageService = new MessageService();
 
   @override
   void initState() {
@@ -30,6 +43,90 @@ class _NavigationPageState extends State<NavigationPage> {
       isLogedIn = true;
     }
     super.initState();
+    _fireBaseCloudMessagingListeners();
+  }
+
+
+  void _fireBaseCloudMessagingListeners() {
+    if (Platform.isIOS) iOS_Permission();
+
+    _firebaseMessaging.getToken().then((token) {
+      print(token);
+    });
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage-Navigation-Page: $message");
+      },
+      //onBackgroundMessage: myBackgroundMessageHandler,
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch-Navigation-Page: $message");
+
+        if (message.containsKey('notification')) {
+          final dynamic notification = message['data'];
+
+          // Handle notification message
+          _navigateToChat(notification);
+        }
+
+      },
+      onResume: (Map<String, dynamic> message) async {
+        if (message.containsKey('notification')) {
+          // Handle notification message
+          final dynamic notification = message['data'];
+
+          // Handle notification message
+          _navigateToChat(notification);
+
+        }
+
+        print("onResume-Navigation-Page: $message");
+      },
+    );
+  }
+
+  void iOS_Permission() {
+    _firebaseMessaging.requestNotificationPermissions(
+        IosNotificationSettings(sound: true, badge: true, alert: true)
+    );
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    });
+  }
+
+
+  void _navigateToChat(dynamic notification) async{
+    int postId = int.parse(notification['postId']);
+    String sender = notification['sender'];
+    String receiver = notification['receiver'];
+
+    await _getMessageByPostIdAndUserEmail(postId, sender, receiver);
+    Post post = await _postService.fetchPostById(postId);
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return ChatPage(
+              messages: allConversation, post: post);
+        },
+      ),
+    );
+  }
+
+
+  Future<void> _getMessageByPostIdAndUserEmail(int postId, String sender, String receiver) async {
+
+    List<Message> messageByPostIds =  await _messageService.fetchMessageByPostId(postId);
+
+    // get all conversation between sender and receiver
+    for (Message message in messageByPostIds) {
+      if ((message.sender == sender && message.receiver == receiver) || (message.sender == receiver && message.receiver == sender)) {
+        allConversation.add(message);
+      }
+    }
+
+    setState(() {});
   }
 
   @override
@@ -44,9 +141,12 @@ class _NavigationPageState extends State<NavigationPage> {
               Stack(
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 10, top: SizeConfig.blockSizeVertical * 25),
+                    padding: EdgeInsets.only(
+                        left: SizeConfig.blockSizeHorizontal * 10,
+                        top: SizeConfig.blockSizeVertical * 25),
                     //padding: EdgeInsets.only(left: 10, top: 25),
-                    constraints: BoxConstraints.expand(height: SizeConfig.screenHeight / 5),
+                    constraints: BoxConstraints.expand(
+                        height: SizeConfig.screenHeight / 5),
                     decoration: BoxDecoration(
                       gradient: new LinearGradient(
                           colors: [colorDeepPurple400, colorDeepPurple300],
@@ -61,9 +161,10 @@ class _NavigationPageState extends State<NavigationPage> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: SizeConfig.safeBlockVertical * 7),
-                    constraints:
-                        BoxConstraints.expand(height: SizeConfig.safeBlockVertical * 90),
+                    margin:
+                        EdgeInsets.only(top: SizeConfig.safeBlockVertical * 7),
+                    constraints: BoxConstraints.expand(
+                        height: SizeConfig.safeBlockVertical * 90),
                     child: _widgetOptions.elementAt(_localSelectedIndex),
                   ),
                 ],
@@ -76,7 +177,8 @@ class _NavigationPageState extends State<NavigationPage> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            title: Text(AppLocalizations.of(context).translate('home')),//Text('Home'),
+            title: Text(
+                AppLocalizations.of(context).translate('home')), //Text('Home'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
@@ -87,7 +189,7 @@ class _NavigationPageState extends State<NavigationPage> {
             title: Text(AppLocalizations.of(context).translate('account')),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.message),
+            icon: buildNewMessageIcon(),
             title: Text(AppLocalizations.of(context).translate('messages')),
           ),
           BottomNavigationBarItem(
@@ -109,6 +211,25 @@ class _NavigationPageState extends State<NavigationPage> {
     });
   }
 
+  Widget buildNewMessageIcon() {
+    if (_incomingMessage && _localSelectedIndex != MESSAGEPAGE) {
+
+      return Stack(
+        children: <Widget>[
+          Container(
+            child: Icon(Icons.message),
+          ),
+          Container(
+              margin: EdgeInsets.only(
+                  top: SizeConfig.blockSizeVertical * 2,
+                  left: SizeConfig.blockSizeHorizontal * 3),
+              child: CustomIconMessage(countNewMessage: 1)),
+        ],
+      );
+    }
+    return Icon(Icons.message);
+  }
+
   List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     PostPage(),
@@ -116,5 +237,4 @@ class _NavigationPageState extends State<NavigationPage> {
     MessagePage(),
     InfoPage(),
   ];
-
 }

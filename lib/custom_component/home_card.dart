@@ -41,7 +41,6 @@ class _HomeCardState extends State<HomeCard> {
   void initState() {
     super.initState();
     setFavoritIcon();
-    renderPostPic();
   }
 
   @override
@@ -160,81 +159,6 @@ class _HomeCardState extends State<HomeCard> {
 
   Future<void> deleteFavorit(Favorit favorit) async {
     await _favoritService.delete(favorit.id);
-  }
-
-  Widget get postImage {
-    var postAvatar;
-    if (renderUrl == null) {
-      postAvatar = Hero(
-        child: Container(),
-        tag: post,
-      );
-    } else {
-      postAvatar = Hero(
-        tag: post,
-        child: Container(
-          height: widget.height,
-          width: widget.width,
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(15.0),
-            image: DecorationImage(
-              image: NetworkImage(renderUrl),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-      );
-    }
-
-    // Placeholder is a static container the same size as the dog image
-    var placeholder = Container(
-      height: widget.height,
-      width: widget.width,
-      decoration: BoxDecoration(
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(15.0),
-          gradient: LinearGradient(
-            colors: [Colors.black54, Colors.black, Colors.blueGrey[600]],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          )),
-      alignment: Alignment.center,
-      child: Text(
-        'POSTS',
-        textAlign: TextAlign.center,
-      ),
-    );
-
-    // This is an animated widget build into Flutter
-    return AnimatedCrossFade(
-      // You pass it the starting widget and the ending widget.
-      firstChild: placeholder,
-      secondChild: postAvatar,
-      //Then, you pass it a ternary that should be passed on your state
-      //If the renderUrl is null tell the widget to use the placeholder,
-      //otherwise use the postAvatar.
-      crossFadeState: renderUrl == null
-          ? CrossFadeState.showFirst
-          : CrossFadeState.showSecond,
-      //Finally, pass in the amount of time the fade should take.
-      duration: Duration(milliseconds: 5000),
-    );
-  }
-
-// IRL, we'd want the Dog class itself to get the image
-// but this is a simpler way to explain Flutter basics
-  void renderPostPic() async {
-    // this makes the service call
-    await post.getImageUrl();
-    // setState tells Flutter to rerender anything that's been changed.
-    // setState cannot be async, so we use a variable that can be overwritten
-    if (mounted) {
-      // Avoid calling `setState` if the widget is no longer in the widget tree.
-      setState(() {
-        renderUrl = post.imageUrl;
-      });
-    }
   }
 
   Widget _buildHomeCard(BuildContext context, double height, double width) {

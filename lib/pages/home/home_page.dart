@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
@@ -10,6 +9,7 @@ import 'package:emarket_app/pages/search/datasearch.dart';
 import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -32,6 +32,9 @@ class _HomePageState extends State<HomePage> {
   final FavoritService _favoritService = new FavoritService();
   final CategorieService _categorieService = new CategorieService();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final MessageService _messageService = new MessageService();
+  List<Message> allConversation = new List<Message>();
+
   String _deviceToken = "";
 
   final List<Message> fireBaseMessages = [];
@@ -53,56 +56,6 @@ class _HomePageState extends State<HomePage> {
     _firebaseMessaging.onTokenRefresh.listen(setDeviceToken);
     _firebaseMessaging.getToken();
 
-    //_firebaseMessaging.subscribeToTopic("test");
-
-    _fireBaseCloudMessagingListeners();
-  }
-
-  void _fireBaseCloudMessagingListeners() {
-    if (Platform.isIOS) iOS_Permission();
-
-    _firebaseMessaging.getToken().then((token) {
-      print(token);
-    });
-
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-      },
-      //onBackgroundMessage: myBackgroundMessageHandler,
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-      },
-      onResume: (Map<String, dynamic> message) async {
-        if (message.containsKey('notification')) {
-          // Handle notification message
-          final dynamic notification = message['notification'];
-
-          Message fireBaseMessage = new Message();
-          fireBaseMessage.created_at = DateTime.now();
-          fireBaseMessage.id = 1;
-          fireBaseMessage.sender = "Sender";
-          fireBaseMessage.receiver = "Receiver";
-          fireBaseMessage.body = notification["body"];
-
-          fireBaseMessages.add(fireBaseMessage);
-
-          print("Message: " + notification["body"]);
-        }
-
-        print("onResume: $message");
-      },
-    );
-  }
-
-  void iOS_Permission() {
-    _firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true)
-    );
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
-    });
   }
 
   @override
@@ -281,35 +234,6 @@ class _HomePageState extends State<HomePage> {
       parentCategories.add(categorie);
     });
   }
-/*
-  static Future<dynamic> myBackgroundMessageHandler(
-      Map<String, dynamic> message) {
-    if (message.containsKey('data')) {
-      // Handle data message
-      final dynamic data = message['data'];
-    }
-
-    if (message.containsKey('notification')) {
-      // Handle notification message
-      final dynamic notification = message['notification'];
-
-      //setState(() {
-      //final notification = message["notification"];
-      Message fireBaseMessage = new Message();
-      fireBaseMessage.created_at = DateTime.now();
-      fireBaseMessage.id = 1;
-      fireBaseMessage.sender = "Sender";
-      fireBaseMessage.receiver = "Receiver";
-      fireBaseMessage.body = notification["body"];
-
-      fireBaseMessages.add(fireBaseMessage);
-
-      print("Message: " + notification["body"]);
-      //});
-    }
-    // Or do other work.
-  }
-*/
 
   void setDeviceToken(String event) async {
     _deviceToken = event;
@@ -319,4 +243,5 @@ class _HomePageState extends State<HomePage> {
     }
     print('Device-Token: $event');
   }
+
 }

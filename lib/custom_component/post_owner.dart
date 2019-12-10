@@ -7,7 +7,6 @@ import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/message_service.dart';
-import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,13 +39,10 @@ class PostOwner extends StatefulWidget {
 }
 
 class PostOwnerState extends State<PostOwner> {
-  final UserService _userService = new UserService();
   final MessageService _messageService = new MessageService();
   bool isLogedIn = false; //TODO save login as sharedPreferencies
-  //User _postOwner = new User();
   List<Message> messagesSentOrReceived = new List<Message>();
   String _userEmail;
-  String _userName;
 
   @override
   void initState() {
@@ -131,7 +127,8 @@ class PostOwnerState extends State<PostOwner> {
                       child: Row(
                         children: <Widget>[
                           Text(
-                            AppLocalizations.of(context).translate('privat_user'),
+                            AppLocalizations.of(context)
+                                .translate('privat_user'),
                             style: SizeConfig.styleGreyDetail,
                           ),
                         ],
@@ -172,7 +169,8 @@ class PostOwnerState extends State<PostOwner> {
                         ),
                         IconButton(
                           icon: Icon(Icons.arrow_forward_ios),
-                          tooltip: AppLocalizations.of(context).translate('other_adverts'),
+                          tooltip: AppLocalizations.of(context)
+                              .translate('other_adverts'),
                           onPressed: widget.showAllUserPost,
                         ),
                       ],
@@ -243,7 +241,9 @@ class PostOwnerState extends State<PostOwner> {
                   icon: Icons.phone_iphone,
                   splashColor: Colors.white,
                   iconColor: Colors.white,
-                  text: isLogedIn ? widget.post.phoneNumber : AppLocalizations.of(context).translate('call_me'),
+                  text: isLogedIn
+                      ? widget.post.phoneNumber
+                      : AppLocalizations.of(context).translate('call_me'),
                   textStyle: TextStyle(
                       color: Colors.white,
                       fontSize: SizeConfig.BUTTON_FONT_SIZE),
@@ -265,12 +265,10 @@ class PostOwnerState extends State<PostOwner> {
   _callSaler(BuildContext context) {
     if (isLogedIn) {
       launch("tel:" + widget.post.phoneNumber);
-      print("Calling the saler......");
     } else {
       Navigator.of(context).pushReplacement(
         new MaterialPageRoute(
-          builder: (context) => new Login(LoginSource.ownerPage,
-              widget.post), //new ProfileScreen(detailsUser: details),
+          builder: (context) => new Login(LoginSource.ownerPage, widget.post),
         ),
       );
     }
@@ -303,8 +301,7 @@ class PostOwnerState extends State<PostOwner> {
     } else {
       Navigator.of(context).pushReplacement(
         new MaterialPageRoute(
-          builder: (context) => new Login(LoginSource.ownerPage,
-              widget.post), //new ProfileScreen(detailsUser: details),
+          builder: (context) => new Login(LoginSource.ownerPage, widget.post),
         ),
       );
     }
