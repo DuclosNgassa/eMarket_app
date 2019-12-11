@@ -82,7 +82,7 @@
   "advert_description": "Publication´s description",
   "give_advert_description": "Give a description to your publication",
   "cancel": "Cancel",
-  "save": "Save",
+  "save": "Publish",
   "take_photo": "Take a picture",
   "select_from_gallery": "Select picture from gallery",
   "offer": "Offer",
@@ -106,5 +106,7 @@
   "call_me": "Call me",
   "fcfa": "FCFA",
   "chat": "Chat",
-  "cannot_send_self_message": "This publication belongs to your. You cannot send messages to yourself!"
+  "cannot_send_self_message": "This publication belongs to your. You cannot send messages to yourself!",
+  "new_message": "You have a new message from",
+  "about_advert": "about the publication"
 }

@@ -78,8 +78,12 @@ class _NavigationPageState extends State<NavigationPage> {
         print("onMessage-Navigation-Page: $message");
         setState(() {
           _incomingMessage++;
-          showNotification();
         });
+
+        if (message.containsKey('notification')) {
+          final dynamic notification = message['data'];
+          showNotification(notification);
+        }
       },
       //onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
@@ -91,7 +95,6 @@ class _NavigationPageState extends State<NavigationPage> {
           // Handle notification message
           _navigateToChat(notification);
         }
-
       },
       onResume: (Map<String, dynamic> message) async {
         if (message.containsKey('notification')) {
@@ -100,7 +103,6 @@ class _NavigationPageState extends State<NavigationPage> {
 
           // Handle notification message
           _navigateToChat(notification);
-
         }
 
         print("onResume-Navigation-Page: $message");
@@ -110,16 +112,14 @@ class _NavigationPageState extends State<NavigationPage> {
 
   void iOS_Permission() {
     _firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true)
-    );
+        IosNotificationSettings(sound: true, badge: true, alert: true));
     _firebaseMessaging.onIosSettingsRegistered
         .listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
   }
 
-
-  void _navigateToChat(dynamic notification) async{
+  void _navigateToChat(dynamic notification) async {
     int postId = int.parse(notification['postId']);
     String sender = notification['sender'];
     String receiver = notification['receiver'];
@@ -130,21 +130,21 @@ class _NavigationPageState extends State<NavigationPage> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return ChatPage(
-              messages: allConversation, post: post);
+          return ChatPage(messages: allConversation, post: post);
         },
       ),
     );
   }
 
-
-  Future<void> _getMessageByPostIdAndUserEmail(int postId, String sender, String receiver) async {
-
-    List<myMessage.Message> messageByPostIds =  await _messageService.fetchMessageByPostId(postId);
+  Future<void> _getMessageByPostIdAndUserEmail(
+      int postId, String sender, String receiver) async {
+    List<myMessage.Message> messageByPostIds =
+        await _messageService.fetchMessageByPostId(postId);
 
     // get all conversation between sender and receiver
     for (myMessage.Message message in messageByPostIds) {
-      if ((message.sender == sender && message.receiver == receiver) || (message.sender == receiver && message.receiver == sender)) {
+      if ((message.sender == sender && message.receiver == receiver) ||
+          (message.sender == receiver && message.receiver == sender)) {
         allConversation.add(message);
       }
     }
@@ -229,7 +229,7 @@ class _NavigationPageState extends State<NavigationPage> {
   }
 
   void _onItemTapped(int index) {
-    if(index == MESSAGEPAGE){
+    if (index == MESSAGEPAGE) {
       _incomingMessage = 0;
     }
     setState(() {
@@ -239,7 +239,6 @@ class _NavigationPageState extends State<NavigationPage> {
 
   Widget buildNewMessageIcon() {
     if (_incomingMessage > 0 && _localSelectedIndex != MESSAGEPAGE) {
-
       return Stack(
         children: <Widget>[
           Container(
@@ -256,16 +255,20 @@ class _NavigationPageState extends State<NavigationPage> {
     return Icon(Icons.message);
   }
 
-  showNotification() async {
+  showNotification(dynamic notification) async {
+    String title = notification['title'];
+    String post_title = notification['post_title'];
+    String sender_name = notification['sender_name'];
+    String body = notification['body'];
+
     var android = new AndroidNotificationDetails(
         'channel id', 'channel NAME', 'CHANNEL DESCRIPTION',
-        priority: Priority.High,importance: Importance.Max
-    );
+        priority: Priority.High, importance: Importance.Max);
     var iOS = new IOSNotificationDetails();
     var platform = new NotificationDetails(android, iOS);
     await flutterLocalNotificationsPlugin.show(
-        0, 'Neue Nachricht', 'Flutter Local Notification', platform,
-        payload: 'Sie haben eine neue Nachricht');
+        0, title, body, platform,
+        payload: AppLocalizations.of(context).translate('new_message') + " " + sender_name +" "+ AppLocalizations.of(context).translate('about_advert') + " " + post_title);
   }
 
   List<Widget> _widgetOptions = <Widget>[

@@ -82,7 +82,7 @@
   "advert_description": "Description de votre annonce",
   "give_advert_description": "Donnez une description à votre annonce",
   "cancel": "Annuler",
-  "save": "Enregistrer",
+  "save": "Publier",
   "take_photo": "Prendre une photo",
   "select_from_gallery": "Sélectionner de votre téléphone",
   "offer": "Offre",
@@ -106,5 +106,7 @@
   "call_me": "Appelle moi",
   "fcfa": "FCFA",
   "chat": "Chat",
-  "cannot_send_self_message": "Cette annonce vous appartient. Vous ne pouvez pas vous envoyer des messsages à vous même!"
+  "cannot_send_self_message": "Cette annonce vous appartient. Vous ne pouvez pas vous envoyer des messsages à vous même!",
+  "new_message": "Vous avez un nouveau message de",
+  "about_advert": "concernant l´annonce"
 }

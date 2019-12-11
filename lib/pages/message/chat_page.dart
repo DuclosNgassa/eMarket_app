@@ -376,7 +376,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             'status': 'done',
             'postId': widget.post.id,
             'sender': userEmail,
+            'sender_name': userName,
             'receiver': receiver.email,
+            'post_title': widget.post.title,
             'body': _message.body,
             'title': 'Message: ' +
                 userName +
