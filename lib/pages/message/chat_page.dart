@@ -55,9 +55,11 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       onMessage: (Map<String, dynamic> message) async {
         if (message.containsKey('notification')) {
           await setNewIncomingMessage();
-          final dynamic notification = message['notification'];
+          final dynamic notification = message['data'];
           // Handle notification message
-          insertFirebaseMessagingInMessages(notification, message);
+          if(notification['postId'] == widget.post.id.toString() && notification['sender'] == receiver.email) {
+            insertFirebaseMessagingInMessages(notification, message);
+          }
         }
       },
       onLaunch: (Map<String, dynamic> message) async {
@@ -67,7 +69,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           final dynamic notification = message['data'];
 
           // Handle notification message
-          insertFirebaseMessagingInMessages(notification, message);
+          if(notification['postId'] == widget.post.id && notification['receiver'] == userEmail) {
+            insertFirebaseMessagingInMessages(notification, message);
+          }
         }
       },
       onResume: (Map<String, dynamic> message) async {
@@ -78,7 +82,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
           final dynamic notification = message['data'];
           // Handle notification message
-          insertFirebaseMessagingInMessages(notification, message);
+          if(notification['postId'] == widget.post.id && notification['receiver'] == userEmail) {
+            insertFirebaseMessagingInMessages(notification, message);
+          }
         }
       },
     );
