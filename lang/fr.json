@@ -111,5 +111,8 @@
   "new_message": "Vous avez un nouveau message de",
   "about_advert": "concernant l´annonce",
   "show_advert": "Regarde l´annonce",
-  "interested": "Elle pourrai t´interesser"
+  "interested": "Elle pourrai t´interesser",
+  "about_us": "À propos de nous",
+  "about_us_text": "eMarket est developpé par Softdesign, une entreprise de conseil et de developpement de solutions logicielles.",
+  "visit_us": "Visitez notre site web pour plus d´informations."
 }

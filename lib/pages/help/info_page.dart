@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/global.dart';
+import 'about_us_page.dart';
 import 'config_account_page.dart';
 import 'help_page.dart';
 
@@ -108,7 +109,7 @@ class _InfoPageState extends State<InfoPage> {
             height: SizeConfig.blockSizeVertical,
           ),
           ListTile(
-            onTap: () => showSharePage(),
+            onTap: () => showAboutUsPage(),
             leading: Icon(
               Icons.sentiment_satisfied,
               color: colorDeepPurple300,
@@ -153,6 +154,16 @@ class _InfoPageState extends State<InfoPage> {
       MaterialPageRoute(
         builder: (context) {
           return SharePage();
+        },
+      ),
+    );
+  }
+
+  showAboutUsPage() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return AboutUsPage();
         },
       ),
     );

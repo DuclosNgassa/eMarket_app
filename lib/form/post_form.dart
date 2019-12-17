@@ -523,7 +523,7 @@ class PostFormState extends State<PostForm> {
       MyNotification.showInfoFlushbar(
           context,
           AppLocalizations.of(context).translate('info'),
-          AppLocalizations.of(context).translate('can_download_only') + ' ' + MAX_IMAGE.toString() + ' ' + AppLocalizations.of(context).translate('pictures'),
+          AppLocalizations.of(context).translate('download_only') + ' ' + MAX_IMAGE.toString() + ' ' + AppLocalizations.of(context).translate('pictures'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -549,7 +549,7 @@ class PostFormState extends State<PostForm> {
       MyNotification.showInfoFlushbar(
           context,
           AppLocalizations.of(context).translate('info'),
-          AppLocalizations.of(context).translate('can_download_only') + ' ' + MAX_IMAGE.toString() + ' ' + AppLocalizations.of(context).translate('pictures'),
+          AppLocalizations.of(context).translate('download_only') + ' ' + MAX_IMAGE.toString() + ' ' + AppLocalizations.of(context).translate('pictures'),
           Icon(
             Icons.info_outline,
             size: 28,

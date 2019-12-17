@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/custom_component/post_owner.dart';
+import 'package:emarket_app/form/post_edit_form.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post_image.dart';
@@ -37,12 +38,15 @@ class _PostDetailPageState extends State<PostDetailPage> {
   final PostService _postService = new PostService();
   final UserService _userService = new UserService();
   final FavoritService _favoritService = new FavoritService();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  String userEmail;
 
   User _postOwner;
 
   @override
   void initState() {
     super.initState();
+    _loadUser();
     _loadPosts();
     _loadMyFavorits();
     _getUserByEmail();
@@ -82,7 +86,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 ),
                 Container(
                   margin:
-                      EdgeInsets.only(top: SizeConfig.blockSizeVertical * 10),
+                      EdgeInsets.only(top: SizeConfig.blockSizeVertical * 5),
                   constraints: BoxConstraints.expand(
                       height: SizeConfig.screenHeight * 0.9),
                   child: SingleChildScrollView(
@@ -93,6 +97,21 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
+                          _isPostOwner()
+                              ? Container(
+                                  alignment: Alignment.topRight,
+                                  child: IconButton(
+                                    icon: new Icon(
+                                      Icons.edit,
+                                      color: colorWhite,
+                                    ),
+                                    tooltip: AppLocalizations.of(context)
+                                        .translate('change'),
+                                    onPressed: () =>
+                                        showPostEditForm(widget.post),
+                                  ),
+                                )
+                              : new Container(),
                           Container(
                             height: SizeConfig.blockSizeVertical * 20,
                             //height: 125.0,
@@ -236,6 +255,26 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
   }
 
+  showPostEditForm(Post post) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return PostEditForm(post, _scaffoldKey);
+        },
+      ),
+    );
+    setState(() {});
+  }
+
+  Future<void> _loadUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String _userEmail = prefs.getString(USER_EMAIL);
+    if (_userEmail != null) {
+      userEmail = _userEmail;
+      setState(() {});
+    }
+  }
+
   showPostUserPage() {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -377,5 +416,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
     Post updatedPost = await _postService.update(postParams);
 
     return updatedPost;
+  }
+
+  bool _isPostOwner() {
+    return userEmail == widget.post.useremail;
   }
 }

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 const APP_URL = "https://play.google.com/store/apps/details?id=com.softsolution.emarket_app"; // Server
+const SITE_WEB = "https://kmersoftdesign.wordpress.com/"; // Server
 
 const SERVER_URL = "http://144.91.105.5:3000"; // Server
 //const SERVER_URL = "http://192.168.2.120:3000"; // Local at home

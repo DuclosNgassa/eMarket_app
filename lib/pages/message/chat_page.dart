@@ -293,18 +293,17 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       child: RawMaterialButton(
         onPressed: () => _showPostDetailPage(widget.post),
         child: Padding(
-          padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
+          padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Text(
+                AppLocalizations.of(context).translate('chat'),
+                style: SizeConfig.styleTitleWhite,
+              ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  Expanded(
-                    child: new Text(
-                      AppLocalizations.of(context).translate('chat'),
-                      style: SizeConfig.styleTitleWhite,
-                    ),
-                  ),
                   Padding(
                     padding:
                         EdgeInsets.only(right: SizeConfig.blockSizeHorizontal),
