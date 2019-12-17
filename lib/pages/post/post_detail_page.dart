@@ -4,6 +4,7 @@ import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/custom_component/post_owner.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
+import 'package:emarket_app/model/post_image.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/image/images_detail.dart';
 import 'package:emarket_app/pages/post/post_user_page.dart';
@@ -28,7 +29,8 @@ class PostDetailPage extends StatefulWidget {
 }
 
 class _PostDetailPageState extends State<PostDetailPage> {
-  List<CachedNetworkImage> postImages = new List();
+  List<CachedNetworkImage> cachedNetworkImages = new List();
+  List<PostImage> postImages = new List();
   ImageService _imageService = new ImageService();
   List<Post> posts = new List();
   List<Favorit> myFavorits = new List();
@@ -45,6 +47,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     _loadMyFavorits();
     _getUserByEmail();
     _updatePostView();
+    _loadPostImages();
   }
 
   @override
@@ -260,7 +263,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 
   Widget buildImageGridView() {
-    if (postImages.isEmpty) {
+    if (cachedNetworkImages.isEmpty && postImages.isNotEmpty) {
       return Container(
         height: 15.0,
         child: CustomButton(
@@ -274,22 +277,36 @@ class _PostDetailPageState extends State<PostDetailPage> {
         ),
       );
     }
+    if (postImages.isEmpty) {
+      return Container(
+        height: 15.0,
+        child: CustomButton(
+          fillColor: colorDeepPurple400,
+          icon: Icons.sentiment_satisfied,
+          splashColor: Colors.white,
+          iconColor: Colors.white,
+          text: AppLocalizations.of(context).translate('no_images'),
+          textStyle: TextStyle(color: Colors.white, fontSize: 10),
+          onPressed: null,
+        ),
+      );
+    }
     return GridView.count(
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
       crossAxisCount: 1,
       scrollDirection: Axis.horizontal,
       children: List.generate(
-        postImages.length,
+        cachedNetworkImages.length,
         (index) {
-          CachedNetworkImage asset = postImages[index];
+          CachedNetworkImage asset = cachedNetworkImages[index];
           return GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute<Null>(
                   builder: (BuildContext context) {
-                    return ImageDetailPage(null, postImages);
+                    return ImageDetailPage(null, cachedNetworkImages);
                   },
                   fullscreenDialog: true,
                 ),
@@ -322,8 +339,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
   }
 
+  Future<void> _loadPostImages() async {
+    postImages = await _imageService.fetchImagesByPostID(widget.post.id);
+
+    setState(() {});
+  }
+
   Future<void> _loadImages() async {
-    postImages =
+    cachedNetworkImages =
         await _imageService.fetchCachedNetworkImageByPostId(widget.post.id);
     setState(() {});
   }

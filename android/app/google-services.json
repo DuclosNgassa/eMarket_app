@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "949478649704-j4r2omcq2kjvm7rq6uc4baeqd7te0nii.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softsolution.emarket_app",
+            "certificate_hash": "1eb78c599a6ea1673f2b5b71f7724fdd6baf039f"
+          }
+        },
+        {
           "client_id": "949478649704-vfb9mpf86nkh0o43ht06c1ncem6neo1g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

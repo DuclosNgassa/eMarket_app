@@ -52,6 +52,7 @@
   "open": "Ouvrir",
   "description": "Description",
   "download_images": "Télécharger les images",
+  "no_images": "Annonce sans images",
   "advert_list": "Annonces de",
   "no_result_found": "Aucun resultat n´a été trouvé pour votre recherche",
   "no": "Non",
@@ -108,5 +109,7 @@
   "chat": "Chat",
   "cannot_send_self_message": "Cette annonce vous appartient. Vous ne pouvez pas vous envoyer des messsages à vous même!",
   "new_message": "Vous avez un nouveau message de",
-  "about_advert": "concernant l´annonce"
+  "about_advert": "concernant l´annonce",
+  "show_advert": "Regarde l´annonce",
+  "interested": "Elle pourrai t´interesser"
 }

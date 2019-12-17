@@ -52,6 +52,7 @@
   "open": "Open",
   "description": "Description",
   "download_images": "Download the pictures",
+  "no_images": "publication without images",
   "advert_list": "Publications of",
   "no_result_found": "No results were found for your search.",
   "no": "No",
@@ -108,5 +109,7 @@
   "chat": "Chat",
   "cannot_send_self_message": "This publication belongs to your. You cannot send messages to yourself!",
   "new_message": "You have a new message from",
-  "about_advert": "about the publication"
+  "about_advert": "about the publication",
+  "show_advert": "Take a look at publication",
+  "interested": "It can be interesting for you"
 }

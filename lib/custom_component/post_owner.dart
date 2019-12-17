@@ -11,6 +11,7 @@ import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -254,12 +255,23 @@ class PostOwnerState extends State<PostOwner> {
         SizedBox(
           width: SizeConfig.blockSizeHorizontal * 2,
         ),
-        Icon(
-          Icons.share,
-          color: colorDeepPurple300,
+        IconButton(
+          onPressed: shareToSystem,
+          icon: Icon(
+            Icons.share,
+            color: colorDeepPurple300,
+          ),
+          tooltip: AppLocalizations.of(context).translate('share'),
         ),
       ],
     );
+  }
+
+  Future<void> shareToSystem() async {
+    var response = await FlutterShareMe().shareToSystem(msg: AppLocalizations.of(context).translate('show_advert') + ' *' + widget.post.title + '* . ' + AppLocalizations.of(context).translate('interested') + '. \n' + APP_URL);
+    if (response == 'success') {
+      print('navigate success');
+    }
   }
 
   _callSaler(BuildContext context) {

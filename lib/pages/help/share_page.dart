@@ -101,16 +101,16 @@ class _SharePageState extends State<SharePage> {
 
   Future<void> shareToWhatsapp() {
     FlutterShareMe().shareToWhatsApp(
-        base64ImageUrl: "http://www.whatsapp.de", msg: "shareToWhatsapp");
+        base64ImageUrl: "http://www.whatsapp.de", msg: APP_URL);
   }
 
   Future<void> shareToFacebook() {
     FlutterShareMe().shareToFacebook(
-        url: 'https://github.com/lizhuoyuan', msg: "shareToFacebook");
+        url: APP_URL, msg: "shareToFacebook");
   }
 
   Future<void> shareToSystem() async {
-    var response = await FlutterShareMe().shareToSystem(msg: "shareToSystem");
+    var response = await FlutterShareMe().shareToSystem(msg: APP_URL);
     if (response == 'success') {
       print('navigate success');
     }
@@ -118,7 +118,7 @@ class _SharePageState extends State<SharePage> {
 
   Future<void> shareToTwitter() async {
     var response = await FlutterShareMe().shareToTwitter(
-        url: 'https://github.com/lizhuoyuan', msg: "shareToTwitter");
+        url: APP_URL , msg: "shareToTwitter");
     if (response == 'success') {
       print('navigate success');
     }
