@@ -1,7 +1,7 @@
 {
   "home": "Home",
   "add_advert": "Insert",
-  "account": "Account",
+  "account": "My eMarket",
   "messages": "Messages",
   "message": "Message",
   "infos": "Infos",
@@ -114,6 +114,7 @@
   "interested": "It can be interesting for you",
   "about_us": "About us",
   "about_us_text": "eMarket is developed by Softdesign, a software solutions consultancy and development company.",
-  "visit_us": "Visit our site for more informations"
+  "visit_us": "Visit our site for more informations",
+  "privacy_policy": "Privacy Policy"
 
 }

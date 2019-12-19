@@ -5,6 +5,7 @@ import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../services/global.dart';
 import 'about_us_page.dart';
@@ -73,7 +74,7 @@ class _InfoPageState extends State<InfoPage> {
       child: ListView(
         children: <Widget>[
           Container(
-            height: SizeConfig.screenHeight * 0.36,
+            height: SizeConfig.screenHeight * 0.30,
             child: Image.asset(
               "images/info.gif",
             ),
@@ -115,6 +116,19 @@ class _InfoPageState extends State<InfoPage> {
               color: colorDeepPurple300,
             ),
             title: Text(AppLocalizations.of(context).translate('who_are_we')),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              color: colorGrey300,
+            ),
+          ),
+          Divider(),
+          ListTile(
+            onTap: () => launch(PRIVACY_POLICY_URL),
+            leading: Icon(
+              Icons.account_balance,
+              color: colorDeepPurple300,
+            ),
+            title: Text(AppLocalizations.of(context).translate('privacy_policy')),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: colorGrey300,
