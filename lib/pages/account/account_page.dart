@@ -105,8 +105,12 @@ class _AccountState extends State<AccountPage>
                         //isScrollable: true,
                         indicatorColor: colorDeepPurple500,
                         tabs: [
-                          Tab(text: AppLocalizations.of(context).translate('my_adverts')),
-                          Tab(text: AppLocalizations.of(context).translate('my_favorits')),
+                          Tab(
+                              text: AppLocalizations.of(context)
+                                  .translate('my_adverts')),
+                          Tab(
+                              text: AppLocalizations.of(context)
+                                  .translate('my_favorits')),
                         ],
                         controller: controller,
                       ),
@@ -140,8 +144,8 @@ class _AccountState extends State<AccountPage>
               child: Center(
                 child: Text(
                   AppLocalizations.of(context).translate('no_sell_item1') +
-            "\n\n" +
-                  AppLocalizations.of(context).translate('no_sell_item2'),
+                      "\n\n" +
+                      AppLocalizations.of(context).translate('no_sell_item2'),
                   style: SizeConfig.styleTitleBlack,
                 ),
               ),
@@ -159,7 +163,7 @@ class _AccountState extends State<AccountPage>
                 child: ListTile(
                   onTap: () => showPostDetailPage(myPosts.elementAt(index)),
                   leading: CircleAvatar(
-                    backgroundColor: isPostArchivated(index)
+                    backgroundColor: isPostArchivated(myPosts.elementAt(index))
                         ? colorGrey400
                         : colorDeepPurple300,
                     child: Text((index + 1).toString()),
@@ -172,11 +176,13 @@ class _AccountState extends State<AccountPage>
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      Text(myPosts.elementAt(index).fee.toString() + ' ' + AppLocalizations.of(context).translate('fcfa')),
+                      Text(myPosts.elementAt(index).fee.toString() +
+                          ' ' +
+                          AppLocalizations.of(context).translate('fcfa')),
                       SizedBox(
                         height: SizeConfig.blockSizeVertical,
                       ),
-                      if (isPostArchivated(index))
+                      if (isPostArchivated(myPosts.elementAt(index)))
                         Text(
                           AppLocalizations.of(context).translate('sold'),
                           style: SizeConfig.styleFormGrey,
@@ -186,14 +192,14 @@ class _AccountState extends State<AccountPage>
                 ),
               ),
               actions: <Widget>[
-                if (isPostActive(index))
+                if (isPostActive(myPosts.elementAt(index)))
                   IconSlideAction(
                     caption: AppLocalizations.of(context).translate('sold'),
                     color: Colors.green,
                     icon: Icons.done,
                     onTap: () => archivatePost(myPosts.elementAt(index), index),
                   ),
-                if (isPostActive(index))
+                if (isPostActive(myPosts.elementAt(index)))
                   IconSlideAction(
                     caption: AppLocalizations.of(context).translate('change'),
                     color: colorBlue,
@@ -215,12 +221,12 @@ class _AccountState extends State<AccountPage>
         itemCount: myPosts.length);
   }
 
-  bool isPostActive(int index) {
-    return myPosts.elementAt(index).status == Status.active;
+  bool isPostActive(Post post) {
+    return post.status == Status.active;
   }
 
-  bool isPostArchivated(int index) {
-    return myPosts.elementAt(index).status == Status.archivated;
+  bool isPostArchivated(Post post) {
+    return post.status == Status.archivated;
   }
 
   Widget buildMyFavoritPostListView() {
@@ -232,7 +238,7 @@ class _AccountState extends State<AccountPage>
               vertical: SizeConfig.blockSizeVertical),
           child: Text(
             AppLocalizations.of(context).translate('no_favorit') +
-            "\n\n" +
+                "\n\n" +
                 AppLocalizations.of(context).translate('mark_favorit'),
             style: SizeConfig.styleTitleBlack,
           ),
@@ -250,7 +256,10 @@ class _AccountState extends State<AccountPage>
                   onTap: () =>
                       showPostDetailPage(myPostFavorits.elementAt(index)),
                   leading: CircleAvatar(
-                    backgroundColor: colorDeepPurple300,
+                    backgroundColor:
+                        isPostActive(myPostFavorits.elementAt(index))
+                            ? colorDeepPurple300
+                            : colorGrey400,
                     child: Text((index + 1).toString()),
                     foregroundColor: colorWhite,
                   ),
@@ -258,7 +267,9 @@ class _AccountState extends State<AccountPage>
                   subtitle: Text(DateConverter.convertToString(
                       myPostFavorits.elementAt(index).created_at, context)),
                   trailing: Text(
-                      myPostFavorits.elementAt(index).fee.toString() +' ' + AppLocalizations.of(context).translate('fcfa')),
+                      myPostFavorits.elementAt(index).fee.toString() +
+                          ' ' +
+                          AppLocalizations.of(context).translate('fcfa')),
                 ),
               ),
               secondaryActions: <Widget>[
@@ -285,13 +296,27 @@ class _AccountState extends State<AccountPage>
   }
 
   showPostDetailPage(Post post) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) {
-          return PostDetailPage(post);
-        },
-      ),
-    );
+    if (isPostActive(post)) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return PostDetailPage(post);
+          },
+        ),
+      );
+    } else {
+      MyNotification.showInfoFlushbar(
+          context,
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate('item_sold'),
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.blue.shade300,
+          ),
+          Colors.blue.shade300,
+          2);
+    }
   }
 
   Future<void> _showDeleteFavoritDialog(int id, int index) async {
