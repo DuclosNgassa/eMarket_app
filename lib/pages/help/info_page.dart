@@ -1,5 +1,6 @@
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/login_source.dart';
+import 'package:emarket_app/pages/help/privacy_policy_page.dart';
 import 'package:emarket_app/pages/help/share_page.dart';
 import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/util/size_config.dart';
@@ -74,7 +75,7 @@ class _InfoPageState extends State<InfoPage> {
       child: ListView(
         children: <Widget>[
           Container(
-            height: SizeConfig.screenHeight * 0.30,
+            height: SizeConfig.screenHeight * 0.25,
             child: Image.asset(
               "images/info.gif",
             ),
@@ -123,7 +124,7 @@ class _InfoPageState extends State<InfoPage> {
           ),
           Divider(),
           ListTile(
-            onTap: () => launch(PRIVACY_POLICY_URL),
+            onTap: () => showPrivacyPolicyPage(),
             leading: Icon(
               Icons.account_balance,
               color: colorDeepPurple300,
@@ -178,6 +179,16 @@ class _InfoPageState extends State<InfoPage> {
       MaterialPageRoute(
         builder: (context) {
           return AboutUsPage();
+        },
+      ),
+    );
+  }
+
+  showPrivacyPolicyPage() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return PrivacyPolicyPage();
         },
       ),
     );
