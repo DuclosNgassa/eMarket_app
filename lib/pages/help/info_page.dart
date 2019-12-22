@@ -77,7 +77,7 @@ class _InfoPageState extends State<InfoPage> {
           Container(
             height: SizeConfig.screenHeight * 0.25,
             child: Image.asset(
-              "images/info.gif",
+              "gif/info.gif",
             ),
           ),
           ListTile(

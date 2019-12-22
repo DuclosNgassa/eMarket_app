@@ -127,8 +127,7 @@ class Post {
       if (imageList.length > 0) {
         imageUrl = imageList.elementAt(0).image_url;
       } else {
-        imageUrl =
-            "http://192.168.2.120:3000/images/scaled_image_picker7760936399678163578-1567804687023.jpg";
+        imageUrl ="";
       }
     } catch (exception) {
       print(exception);

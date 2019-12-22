@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
+import 'package:emarket_app/custom_component/home_card_picture.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/favorit.dart';
@@ -34,6 +35,7 @@ class _HomePageState extends State<HomePage> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final MessageService _messageService = new MessageService();
   List<Message> allConversation = new List<Message>();
+  bool isSwitched = false;
 
   String _deviceToken = "";
 
@@ -55,7 +57,6 @@ class _HomePageState extends State<HomePage> {
 
     _firebaseMessaging.onTokenRefresh.listen(setDeviceToken);
     _firebaseMessaging.getToken();
-
   }
 
   @override
@@ -86,10 +87,12 @@ class _HomePageState extends State<HomePage> {
                               fillColor: Colors.white,
                               border: OutlineInputBorder(
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
+                                    BorderRadius.all(Radius.circular(10.0)),
                               ),
-                              hintText: AppLocalizations.of(context).translate('give_your_search'),
-                              labelText: AppLocalizations.of(context).translate('search'),
+                              hintText: AppLocalizations.of(context)
+                                  .translate('give_your_search'),
+                              labelText: AppLocalizations.of(context)
+                                  .translate('search'),
                               labelStyle: TextStyle(color: Colors.white),
                             ),
                             onTap: () {
@@ -106,15 +109,44 @@ class _HomePageState extends State<HomePage> {
                             Icons.search,
                             color: Colors.white,
                           ),
-                          tooltip: AppLocalizations.of(context).translate('to_search'),
+                          tooltip: AppLocalizations.of(context)
+                              .translate('to_search'),
                           onPressed: () {
                             showSearch(
                               context: context,
                               delegate:
-                              DataSearch(postList, myFavorits, null, null),
+                                  DataSearch(postList, myFavorits, null, null),
                             );
                           },
-                        )
+                        ),
+                        SizedBox(
+                          width: SizeConfig.blockSizeHorizontal * 2,
+                        ),
+
+//this goes in as one of the children in our column
+                        Padding(
+                          padding: EdgeInsets.only(
+                              right: SizeConfig.blockSizeHorizontal),
+                          child: Column(
+                            children: <Widget>[
+                              Switch(
+                                value: isSwitched,
+                                onChanged: (value) {
+                                  setState(() {
+                                    isSwitched = value;
+                                  });
+                                },
+                                activeTrackColor: Colors.lightGreenAccent,
+                                activeColor: Colors.green,
+                              ),
+                              Text(
+                                AppLocalizations.of(context)
+                                    .translate('pictures'),
+                                style: SizeConfig.styleNormalWhite,
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -134,19 +166,19 @@ class _HomePageState extends State<HomePage> {
               crossAxisCount: 2,
               mainAxisSpacing: 0,
               crossAxisSpacing: 0,
-              childAspectRatio: 1.5,
+              childAspectRatio: 1,
             ),
             delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
+              (BuildContext context, int index) {
                 return Padding(
                   padding: EdgeInsets.only(
                       left: index % 2 == 0
                           ? SizeConfig.blockSizeHorizontal * 2
                           : 0),
-                  child: HomeCard(
+                  child: HomeCardPicture(
                       postList.elementAt(index),
                       myFavorits,
-                      SizeConfig.blockSizeVertical * 20,
+                      SizeConfig.blockSizeVertical * 40,
                       SizeConfig.screenWidth * 0.5 - 10),
                 );
               },
@@ -243,5 +275,4 @@ class _HomePageState extends State<HomePage> {
     }
     print('Device-Token: $event');
   }
-
 }

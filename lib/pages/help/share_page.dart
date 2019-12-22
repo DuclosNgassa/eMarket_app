@@ -53,7 +53,7 @@ class _SharePageState extends State<SharePage> {
           Container(
             height: SizeConfig.screenHeight * 0.54,
             child: Image.asset(
-              "images/sharesocial.gif",
+              "gif/sharesocial.gif",
             ),
           ),
           ListTile(

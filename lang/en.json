@@ -51,7 +51,7 @@
   "no_messages": "You don't have any messages yet.",
   "open": "Open",
   "description": "Description",
-  "download_images": "Download the pictures",
+  "download_images": "Load pictures",
   "no_images": "publication without images",
   "advert_list": "Publications of",
   "no_result_found": "No results were found for your search.",
@@ -88,7 +88,7 @@
   "select_from_gallery": "Select picture from gallery",
   "offer": "Offer",
   "all": "All",
-  "downloading_images": "Download images",
+  "downloading_images": "Download pictures",
   "download_only": "You can only download ",
   "pictures": "pictures",
   "error": "Error",
@@ -116,6 +116,7 @@
   "about_us_text": "eMarket is developed by Softdesign, a software solutions consultancy and development company.",
   "visit_us": "Visit our site for more informations",
   "privacy_policy": "Privacy Policy",
-  "item_sold": "Sorry, this item has already been sold."
+  "item_sold": "Sorry, this item has already been sold.",
+  "pictures": "Pictures"
 
 }

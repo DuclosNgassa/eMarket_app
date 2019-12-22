@@ -311,7 +311,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
           splashColor: Colors.white,
           iconColor: Colors.white,
           text: AppLocalizations.of(context).translate('download_images'),
-          textStyle: TextStyle(color: Colors.white, fontSize: 10),
+          textStyle: SizeConfig.styleNormalWhite,
           onPressed: () => _loadImages(),
         ),
       );
@@ -325,7 +325,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
           splashColor: Colors.white,
           iconColor: Colors.white,
           text: AppLocalizations.of(context).translate('no_images'),
-          textStyle: TextStyle(color: Colors.white, fontSize: 10),
+          textStyle: SizeConfig.styleNormalWhite,
           onPressed: null,
         ),
       );
