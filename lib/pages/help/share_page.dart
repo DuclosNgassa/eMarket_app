@@ -14,14 +14,9 @@ class SharePage extends StatefulWidget {
 
 class _SharePageState extends State<SharePage> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  final TextEditingController _textEditingController =
-      new TextEditingController();
 
   String userEmail;
   String userName;
-
-  final TextEditingController _textController = new TextEditingController();
-  UserService _userService = new UserService();
 
   @override
   void initState() {
@@ -106,7 +101,7 @@ class _SharePageState extends State<SharePage> {
 
   Future<void> shareToFacebook() {
     FlutterShareMe().shareToFacebook(
-        url: APP_URL, msg: "shareToFacebook");
+        url: APP_URL, msg: "eMarket app");
   }
 
   Future<void> shareToSystem() async {
@@ -118,7 +113,7 @@ class _SharePageState extends State<SharePage> {
 
   Future<void> shareToTwitter() async {
     var response = await FlutterShareMe().shareToTwitter(
-        url: APP_URL , msg: "shareToTwitter");
+        url: APP_URL , msg: "eMarket app");
     if (response == 'success') {
       print('navigate success');
     }

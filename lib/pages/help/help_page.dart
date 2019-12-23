@@ -13,13 +13,9 @@ class HelpPage extends StatefulWidget {
 
 class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  final TextEditingController _textEditingController =
-      new TextEditingController();
 
   String userEmail;
   String userName;
-
-  final TextEditingController _textController = new TextEditingController();
 
   @override
   void initState() {

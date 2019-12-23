@@ -161,33 +161,65 @@ class _HomePageState extends State<HomePage> {
             ),
             delegate: SliverChildListDelegate([_buildCategorieGridView()]),
           ),
-          SliverGrid(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 0,
-              crossAxisSpacing: 0,
-              childAspectRatio: 1,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Padding(
-                  padding: EdgeInsets.only(
-                      left: index % 2 == 0
-                          ? SizeConfig.blockSizeHorizontal * 2
-                          : 0),
-                  child: HomeCardPicture(
-                      postList.elementAt(index),
-                      myFavorits,
-                      SizeConfig.blockSizeVertical * 40,
-                      SizeConfig.screenWidth * 0.5 - 10),
-                );
-              },
-              childCount: postList.length,
-            ),
-          ),
+          _buildSliverGrid(isSwitched),
         ],
       ),
     );
+  }
+
+  SliverGrid _buildSliverGrid(bool withImage){
+    if(withImage){
+      return SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 0,
+          crossAxisSpacing: 0,
+          childAspectRatio: 1,
+        ),
+        delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+            return Padding(
+              padding: EdgeInsets.only(
+                  left: index % 2 == 0
+                      ? SizeConfig.blockSizeHorizontal * 2
+                      : 0),
+              child: HomeCardPicture(
+                  postList.elementAt(index),
+                  myFavorits,
+                  SizeConfig.blockSizeVertical * 40,
+                  SizeConfig.screenWidth * 0.5 - 10),
+            );
+          },
+          childCount: postList.length,
+        ),
+      );
+    }
+    else{
+      return SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 0,
+          crossAxisSpacing: 0,
+          childAspectRatio: 1.5,
+        ),
+        delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+            return Padding(
+              padding: EdgeInsets.only(
+                  left: index % 2 == 0
+                      ? SizeConfig.blockSizeHorizontal * 2
+                      : 0),
+              child: HomeCard(
+                  postList.elementAt(index),
+                  myFavorits,
+                  SizeConfig.blockSizeVertical * 20,
+                  SizeConfig.screenWidth * 0.5 - 10),
+            );
+          },
+          childCount: postList.length,
+        ),
+      );
+    }
   }
 
   Widget _buildCategorieGridView() {

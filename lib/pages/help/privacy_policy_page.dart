@@ -12,10 +12,6 @@ class PrivacyPolicyPage extends StatefulWidget {
 
 class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  final TextEditingController _textEditingController =
-      new TextEditingController();
-
-  final TextEditingController _textController = new TextEditingController();
 
   @override
   void initState() {

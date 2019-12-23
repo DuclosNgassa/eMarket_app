@@ -6,11 +6,9 @@ import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../services/global.dart';
 import 'about_us_page.dart';
-import 'config_account_page.dart';
 import 'help_page.dart';
 
 class InfoPage extends StatefulWidget {
@@ -137,17 +135,6 @@ class _InfoPageState extends State<InfoPage> {
           ),
           Divider(),
         ],
-      ),
-    );
-  }
-
-  // This is the builder method that creates a new page
-  showConfigAccountPage() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) {
-          return ConfigAccountPage();
-        },
       ),
     );
   }

@@ -16,10 +16,6 @@ class FaqPage extends StatefulWidget {
 
 class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  final TextEditingController _textEditingController =
-      new TextEditingController();
-
-  final TextEditingController _textController = new TextEditingController();
 
   CategorieService _categorieService = new CategorieService();
   List<Categorie> categories = new List();

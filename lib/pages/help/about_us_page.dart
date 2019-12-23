@@ -1,9 +1,6 @@
 import 'package:emarket_app/localization/app_localizations.dart';
-import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_share_me/flutter_share_me.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../services/global.dart';
@@ -15,10 +12,6 @@ class AboutUsPage extends StatefulWidget {
 
 class _AboutUsPageState extends State<AboutUsPage> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  final TextEditingController _textEditingController =
-      new TextEditingController();
-
-  final TextEditingController _textController = new TextEditingController();
 
   @override
   void initState() {
@@ -45,7 +38,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
 
   Widget buildListTile() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
