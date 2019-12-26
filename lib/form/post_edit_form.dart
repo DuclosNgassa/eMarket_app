@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/converter/utils.dart' as utils;
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
@@ -64,11 +63,13 @@ class _PostEditFormState extends State<PostEditForm> {
   File imageFile;
 
   List<File> newPostImages = List<File>();
-  List<CachedNetworkImage> oldPostImages = new List();
+  List<MyImage.PostImage> oldPostImages = new List();
 
-  List<CachedNetworkImage> imageToRemove = new List();
+  List<MyImage.PostImage> imageToRemove = new List();
 
   List<String> _imageUrls = List<String>();
+
+  bool isSaved = false;
 
   FocusNode _titelFocusNode;
   FocusNode _feeFocusNode;
@@ -428,7 +429,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                 ),
                               ),
                               Expanded(child: SizedBox()),
-                              Container(
+                              isSaved ? new Container() : Container(
                                 padding: EdgeInsets.only(
                                     top: SizeConfig.blockSizeVertical * 2),
                                 child: RaisedButton(
@@ -506,7 +507,7 @@ class _PostEditFormState extends State<PostEditForm> {
                           child: AspectRatio(
                             aspectRatio: 0.5,
                             child: oldPostImages[index] != null
-                                ? oldPostImages[index]
+                                ? Image.network(oldPostImages[index].image_url, fit: BoxFit.fill,)
                                 : null,
                           ),
                         ),
@@ -740,49 +741,53 @@ class _PostEditFormState extends State<PostEditForm> {
   void _submitForm() async {
     final FormState form = _formKey.currentState;
 
-    if (!form.validate()) {
-      MyNotification.showInfoFlushbar(
-          context,
-          AppLocalizations.of(context).translate('errors'),
-          AppLocalizations.of(context).translate('correct_form_errors'),
-          Icon(
-            Icons.info_outline,
-            size: 28,
-            color: Colors.red.shade300,
-          ),
-          Colors.red.shade300,
-          3);
-    } else if (_categorieTile.title.isEmpty) {
-      MyNotification.showInfoFlushbar(
-          context,
-          AppLocalizations.of(context).translate('error'),
-          AppLocalizations.of(context).translate('choose_category_please'),
-          Icon(
-            Icons.info_outline,
-            size: 28,
-            color: Colors.red.shade300,
-          ),
-          Colors.red.shade300,
-          3);
-    } else {
-      form.save();
+    if(!isSaved) {
+      if (!form.validate()) {
+        MyNotification.showInfoFlushbar(
+            context,
+            AppLocalizations.of(context).translate('errors'),
+            AppLocalizations.of(context).translate('correct_form_errors'),
+            Icon(
+              Icons.info_outline,
+              size: 28,
+              color: Colors.red.shade300,
+            ),
+            Colors.red.shade300,
+            3);
+      } else if (_categorieTile.title.isEmpty) {
+        MyNotification.showInfoFlushbar(
+            context,
+            AppLocalizations.of(context).translate('error'),
+            AppLocalizations.of(context).translate('choose_category_please'),
+            Icon(
+              Icons.info_outline,
+              size: 28,
+              color: Colors.red.shade300,
+            ),
+            Colors.red.shade300,
+            3);
+      } else {
+        form.save();
 
-      Post updatedPost = await _updatePost();
-      await _uploadImageToServer();
-      await _saveImages(updatedPost);
-      await imageToRemove.forEach((item) => deleteByImageUrl(item.imageUrl));
-
-      MyNotification.showInfoFlushbar(
-          context,
-          AppLocalizations.of(context).translate('info'),
-          AppLocalizations.of(context).translate('advert_changed_success_message'),
-          Icon(
-            Icons.info_outline,
-            size: 28,
-            color: Colors.blue.shade300,
-          ),
-          Colors.blue.shade300,
-          3);
+        Post updatedPost = await _updatePost();
+        await _uploadImageToServer();
+        await _saveImages(updatedPost);
+        await imageToRemove.forEach((item) => deleteByImageUrl(item.image_url));
+        isSaved = true;
+        MyNotification.showInfoFlushbar(
+            context,
+            AppLocalizations.of(context).translate('info'),
+            AppLocalizations.of(context).translate(
+                'advert_changed_success_message'),
+            Icon(
+              Icons.info_outline,
+              size: 28,
+              color: Colors.blue.shade300,
+            ),
+            Colors.blue.shade300,
+            3);
+        setState(() {});
+      }
     }
   }
 
@@ -906,7 +911,7 @@ class _PostEditFormState extends State<PostEditForm> {
     _feeTyp = getFeeTyp(widget.post.fee_typ);
     _postTyp = widget.post.post_typ;
     oldPostImages =
-        await _imageService.fetchCachedNetworkImageByPostId(widget.post.id);
+        await _imageService.fetchImagesByPostID(widget.post.id);
     imageCount = oldPostImages.length;
 
     Categorie _categorie =

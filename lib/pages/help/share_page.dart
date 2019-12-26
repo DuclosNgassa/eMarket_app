@@ -1,5 +1,4 @@
 import 'package:emarket_app/localization/app_localizations.dart';
-import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';

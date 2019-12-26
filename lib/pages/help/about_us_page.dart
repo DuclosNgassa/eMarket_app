@@ -48,10 +48,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
               "images/softdesign.png",
             ),
           ),
-          SizedBox(
-            height: SizeConfig.blockSizeVertical * 2,
-          ),
-          Center(
+          Padding(
+            padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 3),
             child: Text(
               AppLocalizations.of(context).translate('about_us_text'),
               style: SizeConfig.styleNormalBlack,

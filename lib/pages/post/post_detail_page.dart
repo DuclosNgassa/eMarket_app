@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/custom_component/post_owner.dart';
@@ -30,7 +29,6 @@ class PostDetailPage extends StatefulWidget {
 }
 
 class _PostDetailPageState extends State<PostDetailPage> {
-  List<CachedNetworkImage> cachedNetworkImages = new List();
   List<PostImage> postImages = new List();
   ImageService _imageService = new ImageService();
   List<Post> posts = new List();
@@ -40,7 +38,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   final FavoritService _favoritService = new FavoritService();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
   String userEmail;
-
+  bool _isDownloaded = false;
   User _postOwner;
 
   @override
@@ -302,7 +300,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 
   Widget buildImageGridView() {
-    if (cachedNetworkImages.isEmpty && postImages.isNotEmpty) {
+    if (postImages.isNotEmpty && !_isDownloaded) {
       return Container(
         height: 15.0,
         child: CustomButton(
@@ -312,7 +310,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
           iconColor: Colors.white,
           text: AppLocalizations.of(context).translate('download_images'),
           textStyle: SizeConfig.styleNormalWhite,
-          onPressed: () => _loadImages(),
+          onPressed: () => _downloadPictures(),
         ),
       );
     }
@@ -336,16 +334,16 @@ class _PostDetailPageState extends State<PostDetailPage> {
       crossAxisCount: 1,
       scrollDirection: Axis.horizontal,
       children: List.generate(
-        cachedNetworkImages.length,
+        postImages.length,
         (index) {
-          CachedNetworkImage asset = cachedNetworkImages[index];
+          PostImage asset = postImages[index];
           return GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute<Null>(
                   builder: (BuildContext context) {
-                    return ImageDetailPage(null, cachedNetworkImages);
+                    return ImageDetailPage(null, postImages);
                   },
                   fullscreenDialog: true,
                 ),
@@ -367,7 +365,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ]),
                   child: AspectRatio(
                     aspectRatio: 0.5,
-                    child: asset != null ? asset : null,
+                    child: asset != null
+                        ? Image.network(
+                            asset.image_url,
+                            fit: BoxFit.fill,
+                          )
+                        : null,
                   ),
                 ),
               ),
@@ -384,10 +387,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
     setState(() {});
   }
 
-  Future<void> _loadImages() async {
-    cachedNetworkImages =
-        await _imageService.fetchCachedNetworkImageByPostId(widget.post.id);
-    setState(() {});
+  void _downloadPictures(){
+    setState(() {
+      _isDownloaded = true;
+    });
   }
 
   Future<void> _loadPosts() async {
