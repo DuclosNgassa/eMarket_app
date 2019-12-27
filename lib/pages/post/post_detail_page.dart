@@ -260,8 +260,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
           return PostEditForm(post, _scaffoldKey);
         },
       ),
-    );
-    setState(() {});
+    ).then((value) {
+      _loadPostImages();
+      setState(() {});
+    });
   }
 
   Future<void> _loadUser() async {
@@ -387,7 +389,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     setState(() {});
   }
 
-  void _downloadPictures(){
+  void _downloadPictures() {
     setState(() {
       _isDownloaded = true;
     });
