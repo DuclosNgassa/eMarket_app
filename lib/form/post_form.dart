@@ -189,7 +189,7 @@ class PostFormState extends State<PostForm> {
                       labelStyle: SizeConfig.styleFormBlack,
                     ),
                     inputFormatters: [
-                      LengthLimitingTextInputFormatter(30),
+                      WhitelistingTextInputFormatter.digitsOnly,
                     ],
                     keyboardType: TextInputType.number,
                     validator: (val) => formValidator.isEmptyText(val)
@@ -304,8 +304,10 @@ class PostFormState extends State<PostForm> {
                 labelText: AppLocalizations.of(context).translate('phonenumber'),
                 labelStyle: SizeConfig.styleFormBlack,
               ),
+              keyboardType: TextInputType.number,
               inputFormatters: [
                 LengthLimitingTextInputFormatter(30),
+                WhitelistingTextInputFormatter.digitsOnly,
               ],
               onSaved: (val) => newPost.phoneNumber = val,
             ),

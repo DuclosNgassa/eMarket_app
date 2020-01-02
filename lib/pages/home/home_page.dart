@@ -10,12 +10,12 @@ import 'package:emarket_app/pages/search/datasearch.dart';
 import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
-import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../custom_component/home_card.dart';
 import '../../model/post.dart';
@@ -28,12 +28,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final globalKey = new GlobalKey<ScaffoldState>();
-  final TextEditingController _controller = new TextEditingController();
   final PostService _postService = new PostService();
   final FavoritService _favoritService = new FavoritService();
   final CategorieService _categorieService = new CategorieService();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  final MessageService _messageService = new MessageService();
   List<Message> allConversation = new List<Message>();
   bool isSwitched = false;
 
@@ -43,10 +41,16 @@ class _HomePageState extends State<HomePage> {
 
   List<Post> searchResult = new List();
   List<Post> postList = new List();
+  List<Post> postListItems = new List();
   List<Favorit> myFavorits = new List();
   List<Categorie> categories = new List();
 
   List<Categorie> parentCategories = new List();
+
+  int perPage = 10;
+  int present = 0;
+
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -57,6 +61,13 @@ class _HomePageState extends State<HomePage> {
 
     _firebaseMessaging.onTokenRefresh.listen(setDeviceToken);
     _firebaseMessaging.getToken();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        loadMorePost();
+      }
+    });
   }
 
   @override
@@ -65,7 +76,7 @@ class _HomePageState extends State<HomePage> {
 
     return Container(
       height: SizeConfig.screenHeight,
-      child: CustomScrollView(
+      child: CustomScrollView(controller: _scrollController,
         slivers: <Widget>[
           SliverAppBar(
             backgroundColor: Colors.transparent,
@@ -167,8 +178,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  SliverGrid _buildSliverGrid(bool withImage){
-    if(withImage){
+  SliverGrid _buildSliverGrid(bool showImages) {
+    if (showImages) {
       return SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -177,24 +188,25 @@ class _HomePageState extends State<HomePage> {
           childAspectRatio: 1,
         ),
         delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
+          (BuildContext context, int index) {
+            if(index == postListItems.length){
+              return CupertinoActivityIndicator();
+            }
             return Padding(
               padding: EdgeInsets.only(
-                  left: index % 2 == 0
-                      ? SizeConfig.blockSizeHorizontal * 2
-                      : 0),
+                  left:
+                      index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
               child: HomeCardPicture(
-                  postList.elementAt(index),
+                  postListItems.elementAt(index),
                   myFavorits,
                   SizeConfig.blockSizeVertical * 40,
                   SizeConfig.screenWidth * 0.5 - 10),
             );
           },
-          childCount: postList.length,
+          childCount: postListItems.length,
         ),
       );
-    }
-    else{
+    } else {
       return SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -203,20 +215,22 @@ class _HomePageState extends State<HomePage> {
           childAspectRatio: 1.5,
         ),
         delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
+          (BuildContext context, int index) {
+            if(index == postListItems.length){
+              return CupertinoActivityIndicator();
+            }
             return Padding(
               padding: EdgeInsets.only(
-                  left: index % 2 == 0
-                      ? SizeConfig.blockSizeHorizontal * 2
-                      : 0),
+                  left:
+                      index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
               child: HomeCard(
-                  postList.elementAt(index),
+                  postListItems.elementAt(index),
                   myFavorits,
                   SizeConfig.blockSizeVertical * 20,
                   SizeConfig.screenWidth * 0.5 - 10),
             );
           },
-          childCount: postList.length,
+          childCount: postListItems.length,
         ),
       );
     }
@@ -252,6 +266,19 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void loadMorePost() {
+    print("Load more posts");
+    setState(() {
+      if ((present + perPage) > postList.length) {
+        postListItems.addAll(postList.getRange(present, postList.length));
+        present = postList.length;
+      } else {
+        postListItems.addAll(postList.getRange(present, present + perPage));
+        present = present + perPage;
+      }
+    });
+  }
+
   void showSearchWithParentCategorie(int parentCategorie) async {
     List<int> childCategories = new List();
 
@@ -268,10 +295,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _loadPost() async {
+    List<Post> tempList = new List();
     postList = await _postService.fetchActivePosts();
+
+    tempList.addAll(postList);
+    tempList.addAll(postList);
+    tempList.addAll(postList);
+
+    postList.addAll(tempList);
+
     for (var post in postList) {
       await post.getImageUrl();
     }
+
+    loadMorePost();
+
     setState(() {});
   }
 

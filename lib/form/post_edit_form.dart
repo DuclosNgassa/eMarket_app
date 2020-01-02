@@ -260,8 +260,10 @@ class _PostEditFormState extends State<PostEditForm> {
                                     labelStyle: SizeConfig.styleFormBlack,
                                   ),
                                   initialValue: _post.fee.toString(),
+                                  keyboardType: TextInputType.number,
                                   inputFormatters: [
                                     LengthLimitingTextInputFormatter(30),
+                                    WhitelistingTextInputFormatter.digitsOnly,
                                   ],
                                   validator: (val) =>
                                       formValidator.isEmptyText(val)
@@ -389,7 +391,9 @@ class _PostEditFormState extends State<PostEditForm> {
                             initialValue: _post.phoneNumber,
                             inputFormatters: [
                               LengthLimitingTextInputFormatter(30),
+                              WhitelistingTextInputFormatter.digitsOnly,
                             ],
+                            keyboardType: TextInputType.number,
                             onSaved: (val) => _post.phoneNumber = val,
                           ),
                           TextFormField(
