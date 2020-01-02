@@ -267,16 +267,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   void loadMorePost() {
-    print("Load more posts");
-    setState(() {
-      if ((present + perPage) > postList.length) {
-        postListItems.addAll(postList.getRange(present, postList.length));
-        present = postList.length;
-      } else {
-        postListItems.addAll(postList.getRange(present, present + perPage));
-        present = present + perPage;
-      }
-    });
+    if(present < postList.length) {
+      setState(() {
+        if ((present + perPage) > postList.length) {
+          postListItems.addAll(postList.getRange(present, postList.length));
+          present = postList.length;
+        } else {
+          postListItems.addAll(postList.getRange(present, present + perPage));
+          present = present + perPage;
+        }
+      });
+    }
   }
 
   void showSearchWithParentCategorie(int parentCategorie) async {
@@ -295,14 +296,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _loadPost() async {
-    List<Post> tempList = new List();
     postList = await _postService.fetchActivePosts();
-
-    tempList.addAll(postList);
-    tempList.addAll(postList);
-    tempList.addAll(postList);
-
-    postList.addAll(tempList);
 
     for (var post in postList) {
       await post.getImageUrl();
