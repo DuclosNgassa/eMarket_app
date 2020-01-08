@@ -6,8 +6,12 @@ import 'package:http/http.dart' as http;
 
 import '../model/post.dart';
 import '../services/global.dart';
+import 'authentication_service.dart';
 
 class PostService {
+
+  AuthenticationService _authenticationService = new AuthenticationService();
+
   Future<Post> save(Map<String, dynamic> params) async {
     final response = await http.post(Uri.encodeFull(URL_POSTS), body: params);
     if (response.statusCode == HttpStatus.ok) {
@@ -87,8 +91,11 @@ class PostService {
   }
 
   Future<Post> update(Map<String, dynamic> params) async {
-    final response =
-        await http.Client().put('$URL_POSTS/${params["id"]}', body: params);
+    Map<String, String> headers = Map();
+    headers['auth-token'] = await _authenticationService.getAuthenticationToken();
+
+    final response = await http.Client()
+        .put('$URL_POSTS/${params["id"]}', headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToPostUpdate(responseBody);

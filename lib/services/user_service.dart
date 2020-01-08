@@ -3,11 +3,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:emarket_app/model/user.dart';
+import 'package:emarket_app/services/authentication_service.dart';
 import 'package:http/http.dart' as http;
 
 import '../services/global.dart';
 
 class UserService {
+
+  AuthenticationService _authenticationService = new AuthenticationService();
 
   Future<User> saveUser(Map<String, dynamic> params) async {
     final response = await http.post(Uri.encodeFull(URL_USERS), body: params);

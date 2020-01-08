@@ -31,7 +31,6 @@ class _AccountState extends State<AccountPage>
     with SingleTickerProviderStateMixin {
   final PostService _postService = new PostService();
   final FavoritService _favoritService = new FavoritService();
-  final ImageService _imageService = new ImageService();
   final GoogleSignIn _gSignIn = GoogleSignIn();
   TabController controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();

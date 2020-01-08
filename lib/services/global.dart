@@ -51,6 +51,7 @@ const CONFIGURATIONPAGE = 4;
 const String USER_EMAIL = "userEmail";
 const String USER_NAME = "userName";
 const String DEVICE_TOKEN = "deviceToken";
+const String AUTHENTICATION_TOKEN = "auth-token";
 const String NEW_MESSAGE = "newMessage";
 
 Color colorDeepPurple300 = Colors.deepPurple[300]; //Color(0xFF95E08E);
