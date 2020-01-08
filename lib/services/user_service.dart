@@ -67,10 +67,11 @@ class UserService {
     }
   }
 
-  User convertResponseToUser(Map<String, dynamic> json) {
+  Future<User> convertResponseToUser(Map<String, dynamic> json) async {
     if(json["data"] == null){
       return null;
     }
+    await _authenticationService.saveAuthenticationToken(json["token"]);
     return User(
       id: json["data"]["id"],
       name: json["data"]["name"],
@@ -83,10 +84,12 @@ class UserService {
     );
   }
 
-  User convertResponseToUserUpdate(Map<String, dynamic> json) {
+  Future<User> convertResponseToUserUpdate(Map<String, dynamic> json) async {
     if(json["data"] == null){
       return null;
     }
+    await _authenticationService.saveAuthenticationToken(json["token"]);
+
     return User(
       id: json["data"]["id"],
       name: json["data"]["name"],

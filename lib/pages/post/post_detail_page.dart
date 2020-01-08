@@ -417,8 +417,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     Post post = widget.post;
     post.count_view++;
 
-    Map<String, dynamic> postParams = post.toMapUpdate(post);
-    Post updatedPost = await _postService.update(postParams);
+    Post updatedPost = await _postService.updateView(widget.post.id);
 
     return updatedPost;
   }

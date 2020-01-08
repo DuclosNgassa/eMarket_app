@@ -6,8 +6,8 @@ const APP_URL = "https://play.google.com/store/apps/details?id=com.softsolution.
 const SITE_WEB = "https://kmersoftdesign.wordpress.com/";
 const PRIVACY_POLICY_URL = "https://kmersoftdesign.wordpress.com/datenschutzerklarung/";
 
-const SERVER_URL = "http://144.91.105.5:3000"; // Server
-//const SERVER_URL = "http://192.168.2.120:3000"; // Local at home
+//const SERVER_URL = "http://144.91.105.5:3000"; // Server
+const SERVER_URL = "http://192.168.2.120:3000"; // Local at home
 //const SERVER_URL = "https://emarket-server.herokuapp.com"; //on Heroku
 //const SERVER_URL = "http://172.20.10.5:3000";
 //const SERVER_URL = "http://10.0.2.2:3000";
@@ -15,6 +15,7 @@ const SERVER_URL = "http://144.91.105.5:3000"; // Server
 const URL_POSTS = SERVER_URL + "/posts";
 const URL_POST_BY_ID = URL_POSTS + "/";
 const URL_POST_ACTIVE = URL_POSTS + "/active";
+const URL_POST_VIEW = URL_POSTS + "/view/";
 const URL_POST_BY_USEREMAIL = URL_POSTS + "/user/";
 
 const URL_USERS = SERVER_URL + "/users";

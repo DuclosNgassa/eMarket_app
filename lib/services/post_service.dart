@@ -104,6 +104,16 @@ class PostService {
     }
   }
 
+  Future<Post> updateView(int id) async {
+    final response = await http.Client().put('$URL_POST_VIEW$id');
+    if (response.statusCode == HttpStatus.ok) {
+      final responseBody = await json.decode(response.body);
+      return convertResponseToPostUpdateView(responseBody);
+    } else {
+      throw Exception('Failed to update a Post. Error: ${response.toString()}');
+    }
+  }
+
   Future<bool> delete(int id) async {
     final response = await http.Client().delete('$URL_POSTS/$id');
     if (response.statusCode == HttpStatus.ok) {
@@ -117,6 +127,31 @@ class PostService {
   }
 
   Post convertResponseToPost(Map<String, dynamic> json) {
+    if (json["data"] == null) {
+      return null;
+    }
+
+    return Post(
+      id: json["data"]["id"],
+      title: json["data"]["title"],
+      created_at: DateTime.parse(json["data"]["created_at"]),
+      updated_at: DateTime.parse(json["data"]["updated_at"]),
+      post_typ: Post.convertStringToPostTyp(json["data"]["post_typ"]),
+      description: json["data"]["description"],
+      fee: int.parse(json["data"]["fee"]),
+      fee_typ: Post.convertStringToFeeTyp(json["data"]["fee_typ"]),
+      city: json["data"]["city"],
+      quarter: json["data"]["quartier"],
+      status: Post.convertStringToStatus(json["data"]["status"]),
+      rating: json["data"]["rating"],
+      useremail: json["data"]["useremail"],
+      phoneNumber: json["data"]["phone_number"],
+      categorieid: json["data"]["categorieid"],
+      count_view: json["data"]["count_view"],
+    );
+  }
+
+  Post convertResponseToPostUpdateView(Map<String, dynamic> json) {
     if (json["data"] == null) {
       return null;
     }
