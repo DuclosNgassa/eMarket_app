@@ -9,7 +9,6 @@ import 'package:http/http.dart' as http;
 import '../services/global.dart';
 
 class UserService {
-
   AuthenticationService _authenticationService = new AuthenticationService();
 
   Future<User> saveUser(Map<String, dynamic> params) async {
@@ -23,7 +22,9 @@ class UserService {
   }
 
   Future<List<User>> fetchUsers() async {
-    final response = await http.Client().get(URL_USERS);
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().get(URL_USERS, headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -57,8 +58,10 @@ class UserService {
   }
 
   Future<User> update(Map<String, dynamic> params) async {
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
     final response =
-    await http.Client().put('$URL_USERS/${params["id"]}', body: params);
+        await http.Client().put('$URL_USERS/${params["id"]}', headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToUserUpdate(responseBody);
@@ -68,10 +71,12 @@ class UserService {
   }
 
   Future<User> convertResponseToUser(Map<String, dynamic> json) async {
-    if(json["data"] == null){
+    if (json["data"] == null) {
       return null;
     }
-    await _authenticationService.saveAuthenticationToken(json["token"]);
+
+    _authenticationService.saveAuthenticationToken(json["token"]);
+
     return User(
       id: json["data"]["id"],
       name: json["data"]["name"],
@@ -85,10 +90,11 @@ class UserService {
   }
 
   Future<User> convertResponseToUserUpdate(Map<String, dynamic> json) async {
-    if(json["data"] == null){
+    if (json["data"] == null) {
       return null;
     }
-    await _authenticationService.saveAuthenticationToken(json["token"]);
+
+    _authenticationService.saveAuthenticationToken(json["token"]);
 
     return User(
       id: json["data"]["id"],
@@ -101,5 +107,4 @@ class UserService {
       rating: int.parse(json["data"]["rating"]),
     );
   }
-
 }

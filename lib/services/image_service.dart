@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:emarket_app/services/authentication_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,8 +12,12 @@ import '../services/global.dart';
 
 class ImageService{
 
+  AuthenticationService _authenticationService = new AuthenticationService();
+
   Future<PostImage> saveImage(Map<String, dynamic> params) async {
-    final response = await http.post(URL_IMAGES, body: params);
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.post(URL_IMAGES, headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToImage(responseBody);
@@ -81,7 +86,9 @@ class ImageService{
   }
 
   Future<bool> deleteByPostID(int postId) async {
-    final response = await http.Client().delete('$URL_IMAGES_BY_POSTID$postId');
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().delete('$URL_IMAGES_BY_POSTID$postId', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       if (responseBody["result"] == "ok") {
@@ -93,8 +100,9 @@ class ImageService{
   }
 
   Future<bool> deleteByImageUrl(String url) async {
+    Map<String, String> headers = await _authenticationService.getHeaders();
     String urlToremove = url.split("images/")[1];
-    final response = await http.Client().delete('$URL_IMAGES_BY_IMAGE_URL$urlToremove');
+    final response = await http.Client().delete('$URL_IMAGES_BY_IMAGE_URL$urlToremove', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       if (responseBody["result"] == "ok") {
@@ -106,7 +114,9 @@ class ImageService{
   }
 
   Future<bool> delete(int id) async {
-    final response = await http.Client().delete('$URL_IMAGES_BY_ID$id');
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().delete('$URL_IMAGES_BY_ID$id', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       if (responseBody["result"] == "ok") {

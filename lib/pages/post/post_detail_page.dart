@@ -50,6 +50,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     _getUserByEmail();
     _updatePostView();
     _loadPostImages();
+
   }
 
   @override

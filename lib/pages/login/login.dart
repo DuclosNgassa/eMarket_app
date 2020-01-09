@@ -220,7 +220,7 @@ class _LoginState extends State<Login> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString(DEVICE_TOKEN, _deviceToken);
     }
-    print('Device-Token: $fcmToken');
+    print('Device-Token-Login: $fcmToken');
   }
 }
 

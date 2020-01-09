@@ -9,6 +9,7 @@ import '../model/categorie_tile.dart';
 import '../services/global.dart';
 
 class CategorieService {
+
   Future<List<Categorie>> fetchCategories() async {
     final response = await http.Client().get(URL_CATEGORIES);
     if (response.statusCode == HttpStatus.ok) {

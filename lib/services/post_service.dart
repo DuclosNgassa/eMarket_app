@@ -13,7 +13,9 @@ class PostService {
   AuthenticationService _authenticationService = new AuthenticationService();
 
   Future<Post> save(Map<String, dynamic> params) async {
-    final response = await http.post(Uri.encodeFull(URL_POSTS), body: params);
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.post(Uri.encodeFull(URL_POSTS), headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToPost(responseBody);
@@ -23,7 +25,9 @@ class PostService {
   }
 
   Future<List<Post>> fetchPosts() async {
-    final response = await http.Client().get(URL_POSTS);
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().get(URL_POSTS, headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -91,8 +95,7 @@ class PostService {
   }
 
   Future<Post> update(Map<String, dynamic> params) async {
-    Map<String, String> headers = Map();
-    headers['auth-token'] = await _authenticationService.getAuthenticationToken();
+    Map<String, String> headers = await _authenticationService.getHeaders();
 
     final response = await http.Client()
         .put('$URL_POSTS/${params["id"]}', headers: headers, body: params);
@@ -115,7 +118,9 @@ class PostService {
   }
 
   Future<bool> delete(int id) async {
-    final response = await http.Client().delete('$URL_POSTS/$id');
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().delete('$URL_POSTS/$id', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       if (responseBody["result"] == "ok") {

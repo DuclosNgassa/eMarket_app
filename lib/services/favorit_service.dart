@@ -3,14 +3,20 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:emarket_app/model/favorit.dart';
+import 'package:emarket_app/services/authentication_service.dart';
 import 'package:http/http.dart' as http;
 
 import '../services/global.dart';
 
 class FavoritService {
+
+  AuthenticationService _authenticationService = new AuthenticationService();
+
   Future<Favorit> save(Map<String, dynamic> params) async {
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
     final response =
-        await http.post(Uri.encodeFull(URL_FAVORITS), body: params);
+        await http.post(Uri.encodeFull(URL_FAVORITS), headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToFavorit(responseBody);
@@ -59,8 +65,10 @@ class FavoritService {
   }
 
   Future<Favorit> update(Map<String, dynamic> params) async {
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
     final response =
-        await http.Client().put('$URL_FAVORITS/${params["id"]}', body: params);
+        await http.Client().put('$URL_FAVORITS/${params["id"]}', headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToFavorit(responseBody);
@@ -71,7 +79,9 @@ class FavoritService {
   }
 
   Future<bool> delete(int id) async {
-    final response = await http.Client().delete('$URL_FAVORITS/$id');
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().delete('$URL_FAVORITS/$id', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       if (responseBody["result"] == "ok") {

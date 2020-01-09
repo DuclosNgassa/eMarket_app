@@ -3,14 +3,19 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:emarket_app/model/user_notification.dart';
+import 'package:emarket_app/services/authentication_service.dart';
 import 'package:http/http.dart' as http;
 
 import '../services/global.dart';
 
 class UserNotificationService {
+  AuthenticationService _authenticationService = new AuthenticationService();
+
   Future<UserNotification> save(Map<String, dynamic> params) async {
-    final response =
-        await http.post(Uri.encodeFull(URL_USER_NOTIFICATION), body: params);
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.post(Uri.encodeFull(URL_USER_NOTIFICATION),
+        headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToUserNotification(responseBody);
@@ -21,7 +26,10 @@ class UserNotificationService {
   }
 
   Future<List<UserNotification>> fetchUserNotifications() async {
-    final response = await http.Client().get(URL_USER_NOTIFICATION);
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response =
+        await http.Client().get(URL_USER_NOTIFICATION, headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -38,8 +46,12 @@ class UserNotificationService {
     }
   }
 
-  Future<List<UserNotification>> fetchUserNotificationByUserEmail(String email) async {
-    final response = await http.Client().get('$URL_USER_NOTIFICATION_BY_EMAIL$email');
+  Future<List<UserNotification>> fetchUserNotificationByUserEmail(
+      String email) async {
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client()
+        .get('$URL_USER_NOTIFICATION_BY_EMAIL$email', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -59,8 +71,12 @@ class UserNotificationService {
   }
 
   Future<UserNotification> update(Map<String, dynamic> params) async {
-    final response =
-        await http.Client().put('$URL_USER_NOTIFICATION/${params["id"]}', body: params);
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().put(
+        '$URL_USER_NOTIFICATION/${params["id"]}',
+        headers: headers,
+        body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToUserNotification(responseBody);
@@ -71,7 +87,9 @@ class UserNotificationService {
   }
 
   Future<bool> delete(int id) async {
-    final response = await http.Client().delete('$URL_USER_NOTIFICATION/$id');
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().delete('$URL_USER_NOTIFICATION/$id', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       if (responseBody["result"] == "ok") {
@@ -83,7 +101,8 @@ class UserNotificationService {
     }
   }
 
-  UserNotification convertResponseToUserNotification(Map<String, dynamic> json) {
+  UserNotification convertResponseToUserNotification(
+      Map<String, dynamic> json) {
     if (json["data"] == null) {
       return null;
     }

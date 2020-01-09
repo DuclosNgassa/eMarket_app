@@ -3,14 +3,19 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:emarket_app/model/message.dart';
+import 'package:emarket_app/services/authentication_service.dart';
 import 'package:http/http.dart' as http;
 
 import '../services/global.dart';
 
 class MessageService {
 
+  AuthenticationService _authenticationService = new AuthenticationService();
+
   Future<Message> saveMessage(Map<String, dynamic> params) async {
-    final response = await http.post(Uri.encodeFull(URL_MESSAGES), body: params);
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.post(Uri.encodeFull(URL_MESSAGES), headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToMessage(responseBody);
@@ -20,7 +25,9 @@ class MessageService {
   }
 
   Future<List<Message>> fetchMessages() async {
-    final response = await http.Client().get(URL_MESSAGES);
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().get(URL_MESSAGES, headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -38,7 +45,9 @@ class MessageService {
   }
 
   Future<List<Message>> fetchMessageByEmail(String email) async {
-    final response = await http.Client().get('$URL_MESSAGES_BY_EMAIL$email');
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().get('$URL_MESSAGES_BY_EMAIL$email', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -56,7 +65,9 @@ class MessageService {
   }
 
   Future<List<Message>> fetchMessageByPostId(int postId) async {
-    final response = await http.Client().get('$URL_MESSAGES_BY_POSTID$postId');
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().get('$URL_MESSAGES_BY_POSTID$postId', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -74,7 +85,9 @@ class MessageService {
   }
 
   Future<List<Message>> fetchMessageBySender(String sender) async {
-    final response = await http.Client().get('$URL_MESSAGES_BY_SENDER$sender');
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().get('$URL_MESSAGES_BY_SENDER$sender', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -92,7 +105,9 @@ class MessageService {
   }
 
   Future<List<Message>> fetchMessageByReceiver(String receiver) async {
-    final response = await http.Client().get('$URL_MESSAGES_BY_RECEIVER$receiver');
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().get('$URL_MESSAGES_BY_RECEIVER$receiver', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -110,7 +125,9 @@ class MessageService {
   }
 
   Future<Message> update(Map<String, dynamic> params) async {
-    final response = await http.Client().put('$URL_MESSAGES/${params["id"]}', body: params);
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().put('$URL_MESSAGES/${params["id"]}', headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToMessage(responseBody);
@@ -120,7 +137,9 @@ class MessageService {
   }
 
   Future<bool> delete(int id) async {
-    final response = await http.Client().delete('$URL_MESSAGES/$id');
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().delete('$URL_MESSAGES/$id', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       if(responseBody["result"] == "ok"){

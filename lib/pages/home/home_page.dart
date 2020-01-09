@@ -322,12 +322,13 @@ class _HomePageState extends State<HomePage> {
         parentCategories.add(_categorie);
       }
     }
+    parentCategories.sort((a, b) => a.title.compareTo(b.title));
+    Categorie categorie = parentCategories
+        .firstWhere((categorie) => categorie.title == 'Autres');
+    parentCategories.removeWhere((categorie) => categorie.title == 'Autres');
+    parentCategories.add(categorie);
+
     setState(() {
-      parentCategories.sort((a, b) => a.title.compareTo(b.title));
-      Categorie categorie = parentCategories
-          .firstWhere((categorie) => categorie.title == 'Autres');
-      parentCategories.removeWhere((categorie) => categorie.title == 'Autres');
-      parentCategories.add(categorie);
     });
   }
 
@@ -337,6 +338,6 @@ class _HomePageState extends State<HomePage> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString(DEVICE_TOKEN, _deviceToken);
     }
-    print('Device-Token: $event');
+    print('Device-Token-Home: $event');
   }
 }
