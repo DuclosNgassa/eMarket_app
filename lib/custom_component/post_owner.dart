@@ -323,7 +323,7 @@ class PostOwnerState extends State<PostOwner> {
     await setUserDaten();
 
     //der eingelogte User ist nicht der Besitzer der Post, dann kann er eine Nachricht an den Bezitzer der Post senden
-    if (_userEmail != widget.post.useremail) {
+    if (_isUserLoggedIn() && _userEmail != widget.post.useremail) {
       List<Message> messages =
           await _messageService.fetchMessageByPostId(widget.post.id);
 
@@ -344,5 +344,9 @@ class PostOwnerState extends State<PostOwner> {
     _userEmail = prefs.getString(USER_EMAIL);
 
     setState(() {});
+  }
+
+  bool _isUserLoggedIn(){
+    return _userEmail != null;
   }
 }
