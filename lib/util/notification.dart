@@ -11,7 +11,7 @@ class MyNotification {
       message: message,
       icon: icon,
       leftBarIndicatorColor: leftBarIndicatorColor,
-      duration: Duration(seconds: 2),
+      duration: Duration(seconds: duration),
     )..show(context);
   }
 

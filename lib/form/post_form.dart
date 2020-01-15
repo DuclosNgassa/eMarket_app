@@ -15,10 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
-import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
 
 import '../model/post.dart';
 import '../model/post_image.dart' as MyImage;
@@ -641,25 +638,8 @@ class PostFormState extends State<PostForm> {
     );
 
     try {
-      final url = Uri.parse(URL_IMAGES_UPLOAD);
-      //BEGIN LOOP
       for (var file in images) {
-        var fileName = path.basename(file.path);
-
-        img.Image image_temp = img.decodeImage(file.readAsBytesSync());
-        img.Image resized_img = img.copyResize(image_temp, width: 480);
-
-        var request = http.MultipartRequest('POST', url)
-          ..files.add(
-            new http.MultipartFile.fromBytes(
-              'image',
-              img.encodeJpg(resized_img),
-              filename: fileName,
-              contentType: MediaType.parse('image/jpeg'),
-            ),
-          );
-
-        var response = await request.send();
+        http.StreamedResponse response = await _imageService.uploadImage(file);
         var decoded = await response.stream.bytesToString().then(json.decode);
 
         if (response.statusCode == HttpStatus.ok) {
@@ -679,7 +659,6 @@ class PostFormState extends State<PostForm> {
         }
       }
       Navigator.pop(context); //TODO Check this
-      //END LOOP
     } catch (e) {
       Navigator.pop(context);
       MyNotification.showInfoFlushbar(

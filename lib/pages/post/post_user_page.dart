@@ -10,8 +10,9 @@ class PostUserPage extends StatefulWidget {
   final List<Post> posts;
   final List<Favorit> myFavorits;
   final String userName;
+  final String userEmail;
 
-  PostUserPage(this.posts, this.userName, this.myFavorits);
+  PostUserPage(this.posts, this.userName, this.userEmail, this.myFavorits);
 
   @override
   _PostUserPageState createState() => _PostUserPageState();
@@ -119,6 +120,7 @@ class _PostUserPageState extends State<PostUserPage> {
           child: HomeCard(
             widget.posts.elementAt(index),
             widget.myFavorits,
+            widget.userEmail,
             SizeConfig.blockSizeVertical * 18,
             SizeConfig.screenWidth * 0.5 - 10,
           ),

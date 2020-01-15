@@ -15,10 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
-import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
 
 import '../model/feetyp.dart';
 import '../model/post.dart';
@@ -707,7 +704,7 @@ class _PostEditFormState extends State<PostEditForm> {
             color: Colors.red.shade300,
           ),
           Colors.red.shade300,
-          3);
+          2);
     }
   }
 
@@ -757,7 +754,7 @@ class _PostEditFormState extends State<PostEditForm> {
               color: Colors.red.shade300,
             ),
             Colors.red.shade300,
-            3);
+            2);
       } else if (_categorieTile.title.isEmpty) {
         MyNotification.showInfoFlushbar(
             context,
@@ -769,7 +766,7 @@ class _PostEditFormState extends State<PostEditForm> {
               color: Colors.red.shade300,
             ),
             Colors.red.shade300,
-            3);
+            2);
       } else {
         form.save();
 
@@ -789,7 +786,7 @@ class _PostEditFormState extends State<PostEditForm> {
               color: Colors.blue.shade300,
             ),
             Colors.blue.shade300,
-            3);
+            2);
         setState(() {});
       }
     }
@@ -820,25 +817,8 @@ class _PostEditFormState extends State<PostEditForm> {
     );
 
     try {
-      final url = Uri.parse(URL_IMAGES_UPLOAD);
-      //BEGIN LOOP
       for (var file in newPostImages) {
-        var fileName = path.basename(file.path);
-
-        img.Image image_temp = img.decodeImage(file.readAsBytesSync());
-        img.Image resized_img = img.copyResize(image_temp, width: 480);
-
-        var request = http.MultipartRequest('POST', url)
-          ..files.add(
-            new http.MultipartFile.fromBytes(
-              'image',
-              img.encodeJpg(resized_img),
-              filename: fileName,
-              contentType: MediaType.parse('image/jpeg'),
-            ),
-          );
-
-        var response = await request.send();
+        http.StreamedResponse response = await _imageService.uploadImage(file);
         var decoded = await response.stream.bytesToString().then(json.decode);
 
         if (response.statusCode == HttpStatus.ok) {
@@ -854,11 +834,10 @@ class _PostEditFormState extends State<PostEditForm> {
                 color: Colors.red.shade300,
               ),
               Colors.red.shade300,
-              3);
+              2);
         }
       }
       Navigator.pop(context); //TODO Check this
-      //END LOOP
     } catch (e) {
       Navigator.pop(context);
       MyNotification.showInfoFlushbar(
@@ -871,9 +850,31 @@ class _PostEditFormState extends State<PostEditForm> {
             color: Colors.red.shade300,
           ),
           Colors.red.shade300,
-          3);
+          2);
     }
   }
+
+/*
+  Future<http.StreamedResponse> uploadImage(File file, Uri url) async {
+    var fileName = path.basename(file.path);
+
+    img.Image image_temp = img.decodeImage(file.readAsBytesSync());
+    img.Image resized_img = img.copyResize(image_temp, width: 480);
+
+    var request = http.MultipartRequest('POST', url)
+      ..files.add(
+        new http.MultipartFile.fromBytes(
+          'image',
+          img.encodeJpg(resized_img),
+          filename: fileName,
+          contentType: MediaType.parse('image/jpeg'),
+        ),
+      );
+
+    var response = await request.send();
+    return response;
+  }
+*/
 
   Future<void> _saveImages(Post updatedPost) async {
     MyImage.PostImage newImage = new MyImage.PostImage();

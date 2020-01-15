@@ -27,7 +27,9 @@ class FavoritService {
   }
 
   Future<List<Favorit>> fetchFavorits() async {
-    final response = await http.Client().get(URL_FAVORITS);
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.Client().get(URL_FAVORITS, headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -45,7 +47,9 @@ class FavoritService {
   }
 
   Future<List<Favorit>> fetchFavoritByUserEmail(String email) async {
-    final response = await http.Client().get('$URL_FAVORITS_BY_EMAIL$email');
+    Map<String, String> headers = await _authenticationService.getHeaders();
+
+    final response = await http.get('$URL_FAVORITS_BY_EMAIL$email', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {

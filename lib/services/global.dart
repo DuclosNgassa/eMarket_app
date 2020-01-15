@@ -3,11 +3,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 const APP_URL = "https://play.google.com/store/apps/details?id=com.softsolution.emarket_app";
-const SITE_WEB = "https://kmersoftdesign.wordpress.com/";
+//const SITE_WEB = "https://kmersoftdesign.wordpress.com/";
+const SITE_WEB = "http://www.kmerconsulting.com/";
 const PRIVACY_POLICY_URL = "https://kmersoftdesign.wordpress.com/datenschutzerklarung/";
 
 const SERVER_URL = "https://emarket.kmerconsulting.com"; // Server
-//const SERVER_URL = "http://192.168.2.120:3000"; // Local at home
+//const SERVER_URL = "http://192.168.2.120:3000"; // Local
+//const SERVER_URL = "http://10.2.17.228:3000"; // Office
 //const SERVER_URL = "https://emarket-server.herokuapp.com"; //on Heroku
 //const SERVER_URL = "http://172.20.10.5:3000";
 //const SERVER_URL = "http://10.0.2.2:3000";

@@ -45,7 +45,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
           Container(
             height: SizeConfig.screenHeight * 0.54,
             child: Image.asset(
-              "images/softdesign.png",
+              "images/kmerconsulting.png",
             ),
           ),
           Padding(

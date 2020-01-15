@@ -308,7 +308,7 @@ class PostOwnerState extends State<PostOwner> {
               color: Colors.blue.shade300,
             ),
             Colors.blue.shade300,
-            8);
+            2);
       }
     } else {
       Navigator.of(context).pushReplacement(

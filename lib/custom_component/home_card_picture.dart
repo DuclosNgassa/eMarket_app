@@ -4,7 +4,6 @@ import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../model/post.dart';
@@ -13,10 +12,11 @@ import '../pages/post/post_detail_page.dart';
 class HomeCardPicture extends StatefulWidget {
   final Post post;
   final List<Favorit> myFavorits;
+  final String userEmail;
   final double width;
   final double height;
 
-  HomeCardPicture(this.post, this.myFavorits, this.height, this.width);
+  HomeCardPicture(this.post, this.myFavorits, this.userEmail, this.height, this.width);
 
   @override
   _HomeCardPictureState createState() =>
@@ -90,11 +90,11 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
   }
 
   Future<void> updateIconFavorit() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    if (user != null) {
+    //FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    if (widget.userEmail != null && widget.userEmail.isNotEmpty) {
       if (favoritIcon.icon == Icons.favorite) {
         myFavorits.forEach((item) => {
-              if (item.useremail == user.email && item.postid == post.id)
+              if (item.useremail == widget.userEmail && item.postid == post.id)
                 {myFavoritToRemove = item}
             });
 
@@ -102,10 +102,10 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
       } else {
         Favorit favorit = new Favorit();
         favorit.postid = post.id;
-        favorit.useremail = user.email;
+        favorit.useremail = widget.userEmail;
         favorit.created_at = DateTime.now();
         myFavorits.forEach((item) => {
-              if (!(item.useremail == user.email && item.postid == post.id))
+              if (!(item.useremail == widget.userEmail && item.postid == post.id))
                 {myFavoritToAdd = favorit}
             });
 
@@ -123,7 +123,7 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
             color: Colors.blue.shade300,
           ),
           Colors.blue.shade300,
-          8);
+          2);
     }
   }
 
@@ -311,7 +311,7 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
         child: AspectRatio(
           aspectRatio: 0.5,
           child: Image.asset(
-            "images/softdesign.png",
+            "images/kmerconsulting.png",
           ),
         ),
       ),
@@ -319,10 +319,10 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
   }
 
   Future<void> setFavoritIcon() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    if (user != null) {
+    //FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    if (widget.userEmail != null && widget.userEmail.isNotEmpty) {
       myFavorits.forEach((item) => {
-            if (item.useremail == user.email && item.postid == post.id)
+            if (item.useremail == widget.userEmail && item.postid == post.id)
               {addFavorit(null)}
           });
     }

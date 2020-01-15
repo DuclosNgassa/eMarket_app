@@ -50,7 +50,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
     _getUserByEmail();
     _updatePostView();
     _loadPostImages();
-
   }
 
   @override
@@ -270,7 +269,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Future<void> _loadUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String _userEmail = prefs.getString(USER_EMAIL);
-    if (_userEmail != null) {
+    if (_userEmail != null && _userEmail.isNotEmpty) {
       userEmail = _userEmail;
       setState(() {});
     }
@@ -280,7 +279,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return PostUserPage(posts, _postOwner.name, myFavorits);
+          return PostUserPage(posts, _postOwner.name, _postOwner.email, myFavorits);
         },
       ),
     );
@@ -404,9 +403,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Future<void> _loadMyFavorits() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String _userEmail = prefs.getString(USER_EMAIL);
-    myFavorits = await _favoritService.fetchFavoritByUserEmail(_userEmail);
-
-    setState(() {});
+    if (_userEmail != null && _userEmail.isNotEmpty) {
+      myFavorits = await _favoritService.fetchFavoritByUserEmail(_userEmail);
+      setState(() {});
+    }
   }
 
   Future<void> _getUserByEmail() async {

@@ -11,11 +11,10 @@ import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/cupertino.dart';
 
 import '../../custom_component/home_card.dart';
 import '../../model/post.dart';
@@ -36,6 +35,7 @@ class _HomePageState extends State<HomePage> {
   bool isSwitched = false;
 
   String _deviceToken = "";
+  String _userEmail = "";
 
   final List<Message> fireBaseMessages = [];
 
@@ -55,8 +55,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _loadPost();
     _loadMyFavorits();
+    _loadPost();
     _loadMyCategories();
 
     _firebaseMessaging.onTokenRefresh.listen(setDeviceToken);
@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                               showSearch(
                                 context: context,
                                 delegate: DataSearch(
-                                    postList, myFavorits, null, null),
+                                    postList, myFavorits, _userEmail, null, null),
                               );
                             },
                           ),
@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                             showSearch(
                               context: context,
                               delegate:
-                                  DataSearch(postList, myFavorits, null, null),
+                                  DataSearch(postList, myFavorits, _userEmail, null, null),
                             );
                           },
                         ),
@@ -199,6 +199,7 @@ class _HomePageState extends State<HomePage> {
               child: HomeCardPicture(
                   postListItems.elementAt(index),
                   myFavorits,
+                  _userEmail,
                   SizeConfig.blockSizeVertical * 40,
                   SizeConfig.screenWidth * 0.5 - 10),
             );
@@ -226,6 +227,7 @@ class _HomePageState extends State<HomePage> {
               child: HomeCard(
                   postListItems.elementAt(index),
                   myFavorits,
+                  _userEmail,
                   SizeConfig.blockSizeVertical * 20,
                   SizeConfig.screenWidth * 0.5 - 10),
             );
@@ -291,7 +293,7 @@ class _HomePageState extends State<HomePage> {
 
     showSearch(
       context: context,
-      delegate: DataSearch(postList, myFavorits, null, childCategories),
+      delegate: DataSearch(postList, myFavorits, _userEmail, null, childCategories),
     );
   }
 
@@ -308,9 +310,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadMyFavorits() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    if (user != null) {
-      myFavorits = await _favoritService.fetchFavoritByUserEmail(user.email);
+    //FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _userEmail = prefs.getString(USER_EMAIL);
+
+    if (_userEmail != null && _userEmail.isNotEmpty) {
+      myFavorits = await _favoritService.fetchFavoritByUserEmail(_userEmail);
       setState(() {});
     }
   }

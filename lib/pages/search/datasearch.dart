@@ -11,13 +11,15 @@ import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 class DataSearch extends SearchDelegate<Post> {
-  DataSearch(this.postList, this.myFavorits, this.searchParameter,
-      this.childCategories);
 
   final List<Post> postList;
   final List<Favorit> myFavorits;
+  final String userEmail;
   SearchParameter searchParameter;
   List<int> childCategories;
+
+  DataSearch(this.postList, this.myFavorits, this.userEmail, this.searchParameter,
+      this.childCategories);
 
   @override
   String get searchFieldLabel => getSearch();
@@ -111,6 +113,7 @@ class DataSearch extends SearchDelegate<Post> {
           child: HomeCard(
             resultList[index],
             myFavorits,
+            userEmail,
             SizeConfig.blockSizeVertical * 18,
             SizeConfig.screenWidth * 0.5 - 10,
           ),
