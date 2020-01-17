@@ -15,10 +15,10 @@ class DateConverter {
   static String convertToString(DateTime dateTime, BuildContext context) {
     if (dateTime.day == DateTime.now().day &&
         dateTime.year == DateTime.now().year) {
-      return AppLocalizations.of(context).translate('today') + " ," + convertToHour(dateTime);
+      return AppLocalizations.of(context).translate('today') + ", " + convertToHour(dateTime);
     } else if (dateTime.day + 1 == DateTime.now().day &&
         dateTime.year == DateTime.now().year) {
-      return AppLocalizations.of(context).translate('yesterday') + "," + convertToHour(dateTime);
+      return AppLocalizations.of(context).translate('yesterday') + ", " + convertToHour(dateTime);
     }
 
     return dateTime.day.toString() +
