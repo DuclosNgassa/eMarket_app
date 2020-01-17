@@ -76,7 +76,8 @@ class _HomePageState extends State<HomePage> {
 
     return Container(
       height: SizeConfig.screenHeight,
-      child: CustomScrollView(controller: _scrollController,
+      child: CustomScrollView(
+        controller: _scrollController,
         slivers: <Widget>[
           SliverAppBar(
             backgroundColor: Colors.transparent,
@@ -109,8 +110,8 @@ class _HomePageState extends State<HomePage> {
                             onTap: () {
                               showSearch(
                                 context: context,
-                                delegate: DataSearch(
-                                    postList, myFavorits, _userEmail, null, null),
+                                delegate: DataSearch(postList, myFavorits,
+                                    _userEmail, null, null),
                               );
                             },
                           ),
@@ -125,8 +126,8 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () {
                             showSearch(
                               context: context,
-                              delegate:
-                                  DataSearch(postList, myFavorits, _userEmail, null, null),
+                              delegate: DataSearch(
+                                  postList, myFavorits, _userEmail, null, null),
                             );
                           },
                         ),
@@ -189,7 +190,7 @@ class _HomePageState extends State<HomePage> {
         ),
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
-            if(index == postListItems.length){
+            if (index == postListItems.length) {
               return CupertinoActivityIndicator();
             }
             return Padding(
@@ -217,7 +218,7 @@ class _HomePageState extends State<HomePage> {
         ),
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
-            if(index == postListItems.length){
+            if (index == postListItems.length) {
               return CupertinoActivityIndicator();
             }
             return Padding(
@@ -269,7 +270,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void loadMorePost() {
-    if(present < postList.length) {
+    if (present < postList.length) {
       setState(() {
         if ((present + perPage) > postList.length) {
           postListItems.addAll(postList.getRange(present, postList.length));
@@ -293,7 +294,8 @@ class _HomePageState extends State<HomePage> {
 
     showSearch(
       context: context,
-      delegate: DataSearch(postList, myFavorits, _userEmail, null, childCategories),
+      delegate:
+          DataSearch(postList, myFavorits, _userEmail, null, childCategories),
     );
   }
 
@@ -310,7 +312,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadMyFavorits() async {
-    //FirebaseUser user = await FirebaseAuth.instance.currentUser();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _userEmail = prefs.getString(USER_EMAIL);
 
@@ -322,19 +323,23 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadMyCategories() async {
     categories = await _categorieService.fetchCategories();
-    for (var _categorie in categories) {
+    List<Categorie> translatedcategories =
+        _categorieService.translateCategories(categories, context);
+
+    for (var _categorie in translatedcategories) {
       if (_categorie.parentid == null) {
         parentCategories.add(_categorie);
       }
     }
-    parentCategories.sort((a, b) => a.title.compareTo(b.title));
-    Categorie categorie = parentCategories
-        .firstWhere((categorie) => categorie.title == 'Autres');
-    parentCategories.removeWhere((categorie) => categorie.title == 'Autres');
-    parentCategories.add(categorie);
 
-    setState(() {
-    });
+    parentCategories.sort((a, b) => a.title.compareTo(b.title));
+    Categorie categorieTemp = parentCategories.firstWhere((categorie) =>
+        categorie.title == 'Other categories' || categorie.title == 'Autre categories');
+    parentCategories.removeWhere((categorie) =>
+        categorie.title == 'Other categories' || categorie.title == 'Autre categories');
+    parentCategories.add(categorieTemp);
+
+    setState(() {});
   }
 
   void setDeviceToken(String event) async {

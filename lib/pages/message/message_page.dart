@@ -89,6 +89,9 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   Widget buildMyMessageListView() {
+    if(messages.isEmpty){
+      return CircularProgressIndicator();
+    }
     if (messages.isEmpty) {
       return new Center(
         child: Padding(
@@ -104,7 +107,8 @@ class _MessagePageState extends State<MessagePage> {
     }
 
     return ListView.separated(
-        itemBuilder: (context, index) => Slidable(
+        itemBuilder: (context, index){
+          return Slidable(
               actionPane: SlidableBehindActionPane(),
               actionExtentRatio: 0.25,
               child: Container(
@@ -140,7 +144,8 @@ class _MessagePageState extends State<MessagePage> {
                         ),
                 ),
               ),
-            ),
+            );
+        },
         separatorBuilder: (context, index) => Divider(),
         itemCount: postMessages.length);
   }
@@ -173,8 +178,9 @@ class _MessagePageState extends State<MessagePage> {
           }
         }
 
+        messageList.sort((m1, m2) => m1.created_at.isAfter(m2.created_at) ? 0 : 1);
         PostMessage postMessage =
-            new PostMessage(messages: messageList, post: post);
+            new PostMessage(messages: messageList, post: post, recentMessageDate: messageList.elementAt(0).created_at);
         _postMessageList.add(postMessage);
       }
 
@@ -185,6 +191,7 @@ class _MessagePageState extends State<MessagePage> {
 
   Future<void> _loadMessages() async {
     postMessages = await _loadMessageByEmail();
+    postMessages.sort((postMessage1, postMessage2) => postMessage1.recentMessageDate.isAfter(postMessage2.recentMessageDate) ? 0 : 1);
     setState(() {});
   }
 

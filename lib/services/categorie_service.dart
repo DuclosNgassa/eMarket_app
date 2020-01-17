@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:emarket_app/localization/app_localizations.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/categorie.dart';
@@ -9,7 +11,6 @@ import '../model/categorie_tile.dart';
 import '../services/global.dart';
 
 class CategorieService {
-
   Future<List<Categorie>> fetchCategories() async {
     final response = await http.Client().get(URL_CATEGORIES);
     if (response.statusCode == HttpStatus.ok) {
@@ -51,8 +52,12 @@ class CategorieService {
         }
       }
 
+      parentTile.children
+          .sort((child1, child2) => child1.title.compareTo(child2.title));
+
       categorieTiles.add(parentTile);
     }
+
     return categorieTiles;
   }
 
@@ -78,5 +83,21 @@ class CategorieService {
       parentid: json["data"]["parentid"],
       icon: json["data"]["icon"],
     );
+  }
+
+  Categorie translateCategory(Categorie categorie, BuildContext context) {
+    Categorie translatedcategorie = categorie;
+    translatedcategorie.title =
+        AppLocalizations.of(context).translate(categorie.title);
+    return translatedcategorie;
+  }
+
+  List<Categorie> translateCategories(
+      List<Categorie> categories, BuildContext context) {
+    List<Categorie> translatedcategories = new List();
+    categories.forEach((categorie) =>
+        translatedcategories.add(translateCategory(categorie, context)));
+
+    return translatedcategories;
   }
 }

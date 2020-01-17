@@ -23,7 +23,8 @@ class _CategoriePageState extends State<CategoriePage> {
       child: Scaffold(
         appBar: AppBar(
           title: Center(
-            child: Text(AppLocalizations.of(context).translate('choose_category')),
+            child:
+                Text(AppLocalizations.of(context).translate('choose_category')),
           ),
           backgroundColor: colorDeepPurple400,
         ),
@@ -75,8 +76,18 @@ class _CategoriePageState extends State<CategoriePage> {
 
   Future<void> _loadCategorie() async {
     categories = await _categorieService.fetchCategories();
-    categoriesTiles =
-        await _categorieService.mapCategorieToCategorieTile(categories);
+    List<Categorie> translatedcategories = _categorieService.translateCategories(categories, context);
+
+    translatedcategories.sort((a, b) => a.title.compareTo(b.title));
+
+    //put other category at the end of the list
+    Categorie categorieTemp = translatedcategories
+        .firstWhere((categorie) => categorie.title == 'Other categories' || categorie.title == 'Autre categories');
+    translatedcategories.removeWhere((categorie) => categorie.title == 'Other categories' || categorie.title == 'Autre categories');
+    translatedcategories.add(categorieTemp);
+
+    categoriesTiles = await _categorieService
+        .mapCategorieToCategorieTile(translatedcategories);
     setState(() {});
   }
 }
