@@ -5,6 +5,7 @@ class Message {
   DateTime created_at;
   int postid;
   String body;
+  int read;
 
   Message(
       {this.id,
@@ -12,7 +13,8 @@ class Message {
       this.receiver,
       this.created_at,
       this.postid,
-      this.body});
+      this.body,
+      this.read});
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
@@ -22,6 +24,7 @@ class Message {
       created_at: DateTime.parse(json["created_at"]),
       postid: json["postid"],
       body: json["body"],
+      read: json["read"],
     );
   }
 
@@ -32,6 +35,14 @@ class Message {
     params["receiver"] = message.receiver;
     params["postid"] = message.postid.toString();
     params["body"] = message.body;
+    params["read"] = message.read.toString();
+
+    return params;
+  }
+
+  Map<String, dynamic> toMapUpdate(Message message) {
+    Map<String, dynamic> params = toMap(message);
+    params["id"] = message.id.toString();
 
     return params;
   }

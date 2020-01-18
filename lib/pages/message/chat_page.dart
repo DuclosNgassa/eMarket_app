@@ -41,7 +41,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   User receiver;
 
   List<Message> _messages = new List(); // new
-  final TextEditingController _textController = new TextEditingController();
   MessageService messageService = new MessageService();
   UserService _userService = new UserService();
 
@@ -50,6 +49,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   @override
   void initState() {
     initChatMessage();
+    updateMessageRead(widget.messages, widget.post.useremail);
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -403,5 +403,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   Future<void> _getReceiverByEmail(String email) async {
     receiver = await _userService.fetchUserByEmail(email);
     setState(() {});
+  }
+
+  void updateMessageRead(List<Message> messages, String useremail) {
+     messageService.updateMessageRead(messages, useremail);
   }
 }

@@ -5,6 +5,7 @@ import 'package:emarket_app/model/user_message.dart';
 import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -21,6 +22,8 @@ class UserMessagePage extends StatefulWidget {
 }
 
 class _UserMessagePageState extends State<UserMessagePage> {
+  MessageService _messageService = new MessageService();
+
   String loggedUseremail;
   List<UserMessage> userMessageWithoutLoggedUser = new List();
   List<Message> allSentMessages = new List();
@@ -42,8 +45,12 @@ class _UserMessagePageState extends State<UserMessagePage> {
             Stack(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 5, top: SizeConfig.blockSizeVertical * 5,),
-                  constraints: BoxConstraints.expand(height: SizeConfig.screenHeight / 6),
+                  padding: EdgeInsets.only(
+                    left: SizeConfig.blockSizeHorizontal * 5,
+                    top: SizeConfig.blockSizeVertical * 5,
+                  ),
+                  constraints: BoxConstraints.expand(
+                      height: SizeConfig.screenHeight / 6),
                   decoration: BoxDecoration(
                       gradient: new LinearGradient(
                           colors: [colorDeepPurple400, colorDeepPurple300],
@@ -57,8 +64,9 @@ class _UserMessagePageState extends State<UserMessagePage> {
                   child: _buildTitle(),
                 ),
                 Container(
-                    margin: EdgeInsets.only(top: SizeConfig.screenHeight * 0.125),
-                  constraints: BoxConstraints.expand(height: SizeConfig.safeBlockVertical * 85),
+                  margin: EdgeInsets.only(top: SizeConfig.screenHeight * 0.125),
+                  constraints: BoxConstraints.expand(
+                      height: SizeConfig.safeBlockVertical * 85),
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -86,7 +94,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
   Container _buildTitle() {
     return Container(
       child: new RawMaterialButton(
-          onPressed: () => _showPostDetailPage(widget.post),
+        onPressed: () => _showPostDetailPage(widget.post),
         child: Padding(
           padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical),
           child: Column(
@@ -96,7 +104,9 @@ class _UserMessagePageState extends State<UserMessagePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   new Text(
-                    AppLocalizations.of(context).translate('my') + ' ' + AppLocalizations.of(context).translate('messages'),
+                    AppLocalizations.of(context).translate('my') +
+                        ' ' +
+                        AppLocalizations.of(context).translate('messages'),
                     style: SizeConfig.styleTitleWhite,
                   ),
                 ],
@@ -105,15 +115,23 @@ class _UserMessagePageState extends State<UserMessagePage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical, right: SizeConfig.blockSizeHorizontal),
+                    padding: EdgeInsets.only(
+                        top: SizeConfig.blockSizeVertical,
+                        right: SizeConfig.blockSizeHorizontal),
                     child: Text(
-                      AppLocalizations.of(context).translate('advert') + ' ' + widget.userMessage.elementAt(0).post.title,
+                      AppLocalizations.of(context).translate('advert') +
+                          ' ' +
+                          widget.userMessage.elementAt(0).post.title,
                       style: SizeConfig.styleSubtitleWhite,
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(right: SizeConfig.blockSizeHorizontal),
-                    child: Icon(Icons.arrow_forward_ios, color: colorWhite,),
+                    padding:
+                        EdgeInsets.only(right: SizeConfig.blockSizeHorizontal),
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: colorWhite,
+                    ),
                   ),
                 ],
               ),
@@ -151,23 +169,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
                   ),
                   title: Text(
                       userMessageWithoutLoggedUser.elementAt(index).user.name),
-                  subtitle: userMessageWithoutLoggedUser
-                              .elementAt(index)
-                              .messages
-                              .length >
-                          1
-                      ? Text(userMessageWithoutLoggedUser
-                              .elementAt(index)
-                              .messages
-                              .length
-                              .toString() +
-                      ' ' + AppLocalizations.of(context).translate('messages'))
-                      : Text(userMessageWithoutLoggedUser
-                              .elementAt(index)
-                              .messages
-                              .length
-                              .toString() +
-                          ' ' + AppLocalizations.of(context).translate('message')),
+                  subtitle: buildSubtitle(index, context),
                 ),
               ),
               actions: <Widget>[
@@ -190,6 +192,36 @@ class _UserMessagePageState extends State<UserMessagePage> {
             ),
         separatorBuilder: (context, index) => Divider(),
         itemCount: userMessageWithoutLoggedUser.length);
+  }
+
+  Widget buildSubtitle(int index, BuildContext context) {
+    int newMessage = _messageService.countNewMessage(
+        userMessageWithoutLoggedUser.elementAt(index).messages,
+        widget.post.useremail);
+
+    return newMessage > 1
+        ? Text(
+            newMessage.toString() +
+                ' ' +
+                AppLocalizations.of(context).translate('new_plural') +
+                " " +
+                AppLocalizations.of(context)
+                    .translate('messages')
+                    .toLowerCase(),
+            style: SizeConfig.styleSubtitleBlueAccent,
+          )
+        : newMessage == 1
+            ? Text(
+                newMessage.toString() +
+                    ' ' +
+                    AppLocalizations.of(context).translate('new') +
+                    " " +
+                    AppLocalizations.of(context)
+                        .translate('message')
+                        .toLowerCase(),
+                style: SizeConfig.styleSubtitleBlueAccent,
+              )
+            : null;
   }
 
   bool isLoggedUser(int index) =>

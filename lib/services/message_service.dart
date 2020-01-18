@@ -130,7 +130,7 @@ class MessageService {
     final response = await http.Client().put('$URL_MESSAGES/${params["id"]}', headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
-      return convertResponseToMessage(responseBody);
+      return convertResponseToMessageUpdate(responseBody);
     } else {
       throw Exception('Failed to update a Message. Error: ${response.toString()}');
     }
@@ -161,7 +161,66 @@ class MessageService {
       created_at: DateTime.parse(json["data"]["created_at"]),
       postid: json["data"]["postid"],
       body: json["data"]["body"],
+      read: json["data"]["read"],
     );
+  }
+
+  Message convertResponseToMessageUpdate(Map<String, dynamic> json) {
+    if(json["data"] == null){
+      return null;
+    }
+    return Message(
+      id: json["data"]["id"],
+      sender: json["data"]["sender"],
+      receiver: json["data"]["receiver"],
+      created_at: DateTime.parse(json["data"]["created_at"]),
+      postid: int.parse(json["data"]["postid"]),
+      body: json["data"]["body"],
+      read: int.parse(json["data"]["read"]),
+    );
+  }
+
+  int countNewMessage(List<Message> messages, String userEmail) {
+    int numberOfNewMessage = 0;
+
+    messages.forEach((message) =>
+    message.read == 0 && message.receiver == userEmail
+        ? numberOfNewMessage++
+        : numberOfNewMessage = numberOfNewMessage);
+
+    return numberOfNewMessage;
+  }
+
+
+  bool isMessageRead(Message message, String userEmail){
+    return message.receiver == userEmail && message.read == 0;
+  }
+
+  Message updateMessageAsRead(Message message){
+    Message updatedMessage = message;
+    updatedMessage.read = 1;
+    return updatedMessage;
+  }
+
+  List<Message> getMessageRead(List<Message> messages, String userEmail){
+    List<Message> messageReads = new List();
+    for(Message message in messages) {
+      if(isMessageRead(message, userEmail)){
+        messageReads.add(updateMessageAsRead(message));
+      }
+    }
+
+    return messageReads;
+  }
+
+  void updateMessageRead(List<Message> messages, String userEmail) async {
+    List<Message> messageToUpdate = new List();
+    messageToUpdate = getMessageRead(messages, userEmail);
+
+    for(Message message in messageToUpdate){
+      Map<String, dynamic> messageParams = message.toMapUpdate(message);
+      await update(messageParams);
+    }
   }
 
 }

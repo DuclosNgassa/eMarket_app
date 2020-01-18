@@ -36,6 +36,7 @@ class SizeConfig {
   static TextStyle styleRadioButton;
   static TextStyle styleGreyDetail;
   static TextStyle styleSubtitleWhite;
+  static TextStyle styleSubtitleBlueAccent;
   static TextStyle styleSubtitleBlack;
 
   void init(BuildContext context) {
@@ -134,6 +135,12 @@ class SizeConfig {
       color: Colors.black,
       fontStyle: FontStyle.italic,
       fontSize: SizeConfig.safeBlockHorizontal * 4,
+    );
+
+    styleSubtitleBlueAccent = new TextStyle(
+      color: Colors.blueAccent,
+      fontStyle: FontStyle.italic,
+      fontSize: SizeConfig.safeBlockHorizontal * 3,
     );
   }
 }
