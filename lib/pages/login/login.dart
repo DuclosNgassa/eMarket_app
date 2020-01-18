@@ -70,12 +70,6 @@ class _LoginState extends State<Login> {
 
     await setSharedPreferences(userDetails);
 
-    Navigator.of(context).pushReplacement(
-      new MaterialPageRoute(
-        builder: (context) =>
-            navigate(), //new ProfileScreen(detailsUser: details),
-      ),
-    );
     return userDetails;
   }
 
@@ -120,7 +114,8 @@ class _LoginState extends State<Login> {
                           ),
                           SizedBox(width: SizeConfig.blockSizeHorizontal * 3),
                           Text(
-                            AppLocalizations.of(context).translate('log_in_with_google'),
+                            AppLocalizations.of(context)
+                                .translate('log_in_with_google'),
                             style: SizeConfig.styleButtonWhite,
                           ),
                         ],
@@ -189,6 +184,14 @@ class _LoginState extends State<Login> {
           return updatedUser;
         }
       }
+
+      Navigator.of(context).pushReplacement(
+        new MaterialPageRoute(
+          builder: (context) =>
+              navigate(),
+        ),
+      );
+
       return existsUser;
     } else {
       User user = new User();
@@ -196,6 +199,13 @@ class _LoginState extends State<Login> {
 
       Map<String, dynamic> userParams = user.toMap(user);
       User savedUser = await _userService.saveUser(userParams);
+
+      Navigator.of(context).pushReplacement(
+        new MaterialPageRoute(
+          builder: (context) =>
+              navigate(),
+        ),
+      );
 
       return savedUser;
     }

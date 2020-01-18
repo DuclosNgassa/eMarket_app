@@ -17,6 +17,7 @@ import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NavigationPage extends StatefulWidget {
   int _selectedIndex = 0;
@@ -30,6 +31,7 @@ class NavigationPage extends StatefulWidget {
 class _NavigationPageState extends State<NavigationPage> {
   int _localSelectedIndex = 0;
   static bool isLogedIn = false;
+  String userEmail;
   int _incomingMessage = 0;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   List<myMessage.Message> allConversation = new List<myMessage.Message>();
@@ -44,6 +46,8 @@ class _NavigationPageState extends State<NavigationPage> {
       isLogedIn = true;
     }
 
+    countUnreadMessage();
+
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
     var iOS = new IOSInitializationSettings();
@@ -54,6 +58,7 @@ class _NavigationPageState extends State<NavigationPage> {
     super.initState();
     _fireBaseCloudMessagingListeners();
   }
+
 
   Future onSelectNotification(String payload) {
     debugPrint("payload : $payload");
@@ -232,6 +237,8 @@ class _NavigationPageState extends State<NavigationPage> {
     if (index == MESSAGEPAGE) {
       _incomingMessage = 0;
     }
+    countUnreadMessage();
+
     setState(() {
       _localSelectedIndex = index;
     });
@@ -269,6 +276,24 @@ class _NavigationPageState extends State<NavigationPage> {
     await flutterLocalNotificationsPlugin.show(
         0, title, body, platform,
         payload: AppLocalizations.of(context).translate('new_message') + " " + sender_name +" "+ AppLocalizations.of(context).translate('about_advert') + " " + post_title);
+  }
+
+  countUnreadMessage() async {
+    await _loadUser();
+
+    List<myMessage.Message> messages = await _messageService.fetchMessageByReceiver(userEmail);
+    _incomingMessage = _messageService.countNewMessage(messages, userEmail);
+    setState(() {
+    });
+  }
+
+  Future<void> _loadUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String _userEmail = prefs.getString(USER_EMAIL);
+    if (_userEmail != null && _userEmail.isNotEmpty) {
+      userEmail = _userEmail;
+      setState(() {});
+    }
   }
 
   List<Widget> _widgetOptions = <Widget>[

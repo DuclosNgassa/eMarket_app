@@ -75,7 +75,7 @@ class UserService {
       return null;
     }
 
-    _authenticationService.saveAuthenticationToken(json["token"]);
+    await _authenticationService.saveAuthenticationToken(json["token"]);
 
     return User(
       id: json["data"]["id"],
@@ -94,7 +94,7 @@ class UserService {
       return null;
     }
 
-    _authenticationService.saveAuthenticationToken(json["token"]);
+    await _authenticationService.saveAuthenticationToken(json["token"]);
 
     return User(
       id: json["data"]["id"],

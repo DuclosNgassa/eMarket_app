@@ -1,8 +1,6 @@
 import 'package:emarket_app/localization/app_localizations.dart';
-import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/pages/help/privacy_policy_page.dart';
 import 'package:emarket_app/pages/help/share_page.dart';
-import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -24,48 +22,34 @@ class _InfoPageState extends State<InfoPage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    return FutureBuilder<FirebaseUser>(
-        future: FirebaseAuth.instance.currentUser(),
-        builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
-          if (snapshot.hasData) {
-            firebaseUser = snapshot.data;
-            // this is your user instance
-            /// is because there is user already logged
-            return Column(
-              children: <Widget>[
-                Padding(
-                  padding:
-                      EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 5),
-                  child: new Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: SizeConfig.blockSizeVertical * 3),
-                        child: new Text(
-                          AppLocalizations.of(context).translate('infos'),
-                          style: SizeConfig.styleTitleWhite,
-                        ),
-                      ),
-                    ],
-                  ),
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 5),
+          child: new Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 3),
+                child: new Text(
+                  AppLocalizations.of(context).translate('infos'),
+                  style: SizeConfig.styleTitleWhite,
                 ),
-                Padding(
-                  padding:
-                      EdgeInsets.only(top: SizeConfig.blockSizeHorizontal * 8),
-                  child: new Container(
-                    constraints: BoxConstraints.expand(
-                        height: SizeConfig.screenHeight * 0.70),
-                    child: buildListTile(),
-                  ),
-                ),
-              ],
-            );
-          }
-          // other way there is no user logged.
-          return new Login(LoginSource.configurationPage, null);
-        });
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: SizeConfig.blockSizeHorizontal * 8),
+          child: new Container(
+            constraints:
+                BoxConstraints.expand(height: SizeConfig.screenHeight * 0.70),
+            child: buildListTile(),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget buildListTile() {
@@ -99,7 +83,8 @@ class _InfoPageState extends State<InfoPage> {
               Icons.favorite,
               color: colorRed,
             ),
-            title: Text(AppLocalizations.of(context).translate('inform_friends')),
+            title:
+                Text(AppLocalizations.of(context).translate('inform_friends')),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: colorGrey300,
@@ -127,7 +112,8 @@ class _InfoPageState extends State<InfoPage> {
               Icons.account_balance,
               color: colorDeepPurple300,
             ),
-            title: Text(AppLocalizations.of(context).translate('privacy_policy')),
+            title:
+                Text(AppLocalizations.of(context).translate('privacy_policy')),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: colorGrey300,
@@ -180,5 +166,4 @@ class _InfoPageState extends State<InfoPage> {
       ),
     );
   }
-
 }

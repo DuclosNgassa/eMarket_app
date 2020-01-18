@@ -14,7 +14,7 @@ class Message {
       this.created_at,
       this.postid,
       this.body,
-      this.read});
+      this.read = 0});
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(

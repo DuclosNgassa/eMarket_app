@@ -15,6 +15,7 @@ import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/global.dart';
 
@@ -31,11 +32,12 @@ class _MessagePageState extends State<MessagePage> {
   PostService _postService = new PostService();
   UserService _userService = new UserService();
   FirebaseUser firebaseUser = null;
+  String userEmail;
 
   @override
   void initState() {
-    super.initState();
     _loadMessages();
+    super.initState();
   }
 
   @override
@@ -131,7 +133,7 @@ class _MessagePageState extends State<MessagePage> {
 
   Widget buildSubtitle(int index, BuildContext context) {
     int newMessage = _messageService.countNewMessage(
-        postMessages.elementAt(index).messages, firebaseUser.email);
+        postMessages.elementAt(index).messages, userEmail);
 
     return newMessage > 1
         ? Text(
@@ -158,11 +160,10 @@ class _MessagePageState extends State<MessagePage> {
             : null;
   }
 
-  Future<List<PostMessage>> _loadMessageByEmail() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    if (user != null) {
+  Future<List<PostMessage>> _loadMessageByEmail(String userEmail) async {
+    if (userEmail != null && userEmail.isNotEmpty) {
       List<PostMessage> _postMessageList = new List();
-      messages = await _messageService.fetchMessageByEmail(user.email);
+      messages = await _messageService.fetchMessageByEmail(userEmail);
 
       Set<int> postIds = new Set();
 
@@ -201,17 +202,20 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   Future<void> _loadMessages() async {
-    postMessages = await _loadMessageByEmail();
-    postMessages.sort((postMessage1, postMessage2) =>
-        postMessage1.recentMessageDate.isAfter(postMessage2.recentMessageDate)
-            ? 0
-            : 1);
-    setState(() {});
+    await _loadUser();
+    if (userEmail != null && userEmail.isNotEmpty) {
+      postMessages = await _loadMessageByEmail(userEmail);
+      postMessages.sort((postMessage1, postMessage2) =>
+          postMessage1.recentMessageDate.isAfter(postMessage2.recentMessageDate)
+              ? 0
+              : 1);
+      setState(() {});
+    }
   }
 
   void openUserMessage(PostMessage postMessage, String userName) async {
     //Aktueller User ist Bezitzer des Post, dann kann er alle Nachrichten zu dieser Post sehen
-    if (firebaseUser.email == postMessage.post.useremail) {
+    if (userEmail == postMessage.post.useremail) {
       List<UserMessage> userMessage =
           await _mapPostMessageToUserMessage(postMessage);
       Navigator.of(context).push(
@@ -224,8 +228,8 @@ class _MessagePageState extends State<MessagePage> {
     } else {
       List<Message> messagesSentOrReceived = new List<Message>();
       for (Message message in postMessage.messages) {
-        if (message.sender == firebaseUser.email ||
-            message.receiver == firebaseUser.email) {
+        if (message.sender == userEmail ||
+            message.receiver == userEmail) {
           messagesSentOrReceived.add(message);
         }
       }
@@ -271,4 +275,14 @@ class _MessagePageState extends State<MessagePage> {
 
     return userMessages;
   }
+
+  Future<void> _loadUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String _userEmail = prefs.getString(USER_EMAIL);
+    if (_userEmail != null && _userEmail.isNotEmpty) {
+      userEmail = _userEmail;
+      setState(() {});
+    }
+  }
+
 }

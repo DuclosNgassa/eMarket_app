@@ -49,7 +49,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   @override
   void initState() {
     initChatMessage();
-    updateMessageRead(widget.messages, widget.post.useremail);
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -284,6 +283,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         }
       }
     }
+
+    updateMessageRead(widget.messages, userEmail);
 
     setState(() {});
   }

@@ -31,8 +31,8 @@ class MessageService {
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
-        final users = mapResponse["data"].cast<Map<String, dynamic>>();
-        final messageList = await users.map<Message>((json) {
+        final messages = mapResponse["data"].cast<Map<String, dynamic>>();
+        final messageList = await messages.map<Message>((json) {
           return Message.fromJson(json);
         }).toList();
         return messageList;
