@@ -13,11 +13,13 @@ import 'package:emarket_app/pages/post/post_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/post_service.dart';
+import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity/connectivity.dart';
 
 class NavigationPage extends StatefulWidget {
   int _selectedIndex = 0;
@@ -45,7 +47,6 @@ class _NavigationPageState extends State<NavigationPage> {
     if (_localSelectedIndex > 0) {
       isLogedIn = true;
     }
-
     countUnreadMessage();
 
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
@@ -160,6 +161,7 @@ class _NavigationPageState extends State<NavigationPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    checkConnectivity();
 
     return new Scaffold(
       body: Center(
@@ -281,10 +283,12 @@ class _NavigationPageState extends State<NavigationPage> {
   countUnreadMessage() async {
     await _loadUser();
 
-    List<myMessage.Message> messages = await _messageService.fetchMessageByReceiver(userEmail);
-    _incomingMessage = _messageService.countNewMessage(messages, userEmail);
-    setState(() {
-    });
+    if (userEmail != null && userEmail.isNotEmpty) {
+      List<myMessage.Message> messages = await _messageService
+          .fetchMessageByReceiver(userEmail);
+      _incomingMessage = _messageService.countNewMessage(messages, userEmail);
+      setState(() {});
+    }
   }
 
   Future<void> _loadUser() async {
@@ -293,6 +297,28 @@ class _NavigationPageState extends State<NavigationPage> {
     if (_userEmail != null && _userEmail.isNotEmpty) {
       userEmail = _userEmail;
       setState(() {});
+    }
+  }
+
+  void checkConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      // I am connected to a mobile network.
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      // I am connected to a wifi network.
+    } else{
+      MyNotification.showInfoFlushbar(
+          context,
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate(
+              'no_internet'),
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.redAccent,
+          ),
+          Colors.redAccent,
+          2);
     }
   }
 

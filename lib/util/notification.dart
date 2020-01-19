@@ -7,7 +7,7 @@ class MyNotification {
 
   static void showInfoFlushbar(BuildContext context, String title, String message, Icon icon, Color leftBarIndicatorColor, int duration) {
     Flushbar(
-      title: 'Info',
+      title: title,
       message: message,
       icon: icon,
       leftBarIndicatorColor: leftBarIndicatorColor,

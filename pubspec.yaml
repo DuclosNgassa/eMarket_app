@@ -40,6 +40,7 @@ dependencies:
   firebase_messaging: ^6.0.2
   flutter_local_notifications:
   webview_flutter: ^0.3.18+1
+  connectivity: ^0.4.6+2
 
   flutter_localizations:
     sdk: flutter

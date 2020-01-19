@@ -94,6 +94,7 @@
   "download_only": "You can only download ",
   "pictures": "pictures",
   "error": "Error",
+  "no_internet": "Check your internet connection please!",
   "choose_category_please": "Please choose a category of your publication.",
   "advert_changed_success_message": "Your publication has been modified. Changes will be checked before they can be published.",
   "advert_save_success_message": "Your publication has been saved. It will be checked before it can be published",
