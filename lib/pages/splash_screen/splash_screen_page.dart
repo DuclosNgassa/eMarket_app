@@ -47,8 +47,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
             Shimmer.fromColors(
               period: Duration(milliseconds: 1500),
               baseColor: Colors.white,
-              //baseColor: Color(0xff7f00ff),
-
               highlightColor: Colors.deepPurple,
               child: Container(
                 padding:
