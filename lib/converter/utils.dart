@@ -19,5 +19,6 @@ class Converter {
         }
         break;
     }
+    return FeeTyp.negotiable;
   }
 }

@@ -39,7 +39,7 @@ class PostFormState extends State<PostForm> {
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  final int MAX_IMAGE = 4;
+  static const int MAX_IMAGE = 4;
 
   FormValidator formValidator = new FormValidator();
 
@@ -683,7 +683,7 @@ class PostFormState extends State<PostForm> {
     for (var item in _imageUrls) {
       newImage.image_url = item;
       Map<String, dynamic> imageParams = _imageService.toMap(newImage);
-      MyImage.PostImage savedImage = await _imageService.saveImage(imageParams);
+      await _imageService.saveImage(imageParams);
     }
   }
 

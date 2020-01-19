@@ -47,7 +47,7 @@ class _SharePageState extends State<SharePage> {
           Container(
             height: SizeConfig.screenHeight * 0.54,
             child: Image.asset(
-              "gif/sharesocial.gif",
+              "assets/gif/sharesocial.gif",
             ),
           ),
           ListTile(
@@ -62,6 +62,7 @@ class _SharePageState extends State<SharePage> {
               color: colorGrey400,
             ),
           ),
+/*
           Divider(),
           ListTile(
             onTap: () => shareToFacebook(),
@@ -75,6 +76,7 @@ class _SharePageState extends State<SharePage> {
               color: colorGrey400,
             ),
           ),
+*/
           Divider(),
           ListTile(
             onTap: () => shareToSystem(),
@@ -93,24 +95,24 @@ class _SharePageState extends State<SharePage> {
     );
   }
 
-  Future<void> shareToWhatsapp() {
+  void shareToWhatsapp() {
     FlutterShareMe().shareToWhatsApp(
         base64ImageUrl: "http://www.whatsapp.de", msg: APP_URL);
   }
 
-  Future<void> shareToFacebook() {
+  void shareToFacebook() {
     FlutterShareMe().shareToFacebook(
         url: APP_URL, msg: "eMarket app");
   }
 
-  Future<void> shareToSystem() async {
+  void shareToSystem() async {
     var response = await FlutterShareMe().shareToSystem(msg: APP_URL);
     if (response == 'success') {
       print('navigate success');
     }
   }
 
-  Future<void> shareToTwitter() async {
+  void shareToTwitter() async {
     var response = await FlutterShareMe().shareToTwitter(
         url: APP_URL , msg: "eMarket app");
     if (response == 'success') {

@@ -66,6 +66,7 @@ class User {
         }
         break;
     }
+    return 'blocked';
   }
 
   static UserStatus convertStringToStatus(String value) {
@@ -81,5 +82,6 @@ class User {
         }
         break;
     }
+    return UserStatus.blocked;
   }
 }

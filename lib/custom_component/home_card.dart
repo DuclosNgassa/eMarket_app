@@ -25,8 +25,8 @@ class HomeCard extends StatefulWidget {
 class _HomeCardState extends State<HomeCard> {
   Post post;
   List<Favorit> myFavorits;
-  Favorit myFavoritToAdd = null;
-  Favorit myFavoritToRemove = null;
+  Favorit myFavoritToAdd;
+  Favorit myFavoritToRemove;
   String renderUrl;
   Icon favoritIcon = Icon(
     Icons.favorite_border,
@@ -89,24 +89,25 @@ class _HomeCardState extends State<HomeCard> {
   }
 
   Future<void> updateIconFavorit() async {
-    //FirebaseUser user = await FirebaseAuth.instance.currentUser();
     if (widget.userEmail != null) {
       if (favoritIcon.icon == Icons.favorite) {
-        myFavorits.forEach((item) => {
-              if (item.useremail == widget.userEmail && item.postid == post.id)
-                {myFavoritToRemove = item}
-            });
-
+        for (Favorit item in myFavorits) {
+          if (item.useremail == widget.userEmail && item.postid == post.id) {
+            myFavoritToRemove = item;
+          }
+        }
         removeFavorit();
       } else {
         Favorit favorit = new Favorit();
         favorit.postid = post.id;
         favorit.useremail = widget.userEmail;
         favorit.created_at = DateTime.now();
-        myFavorits.forEach((item) => {
-              if (!(item.useremail == widget.userEmail && item.postid == post.id))
-                {myFavoritToAdd = favorit}
-            });
+
+        for (Favorit item in myFavorits) {
+          if (!(item.useremail == widget.userEmail && item.postid == post.id)) {
+            myFavoritToAdd = favorit;
+          }
+        }
 
         addFavorit(favorit);
       }
@@ -205,12 +206,15 @@ class _HomeCardState extends State<HomeCard> {
             children: <Widget>[
               Expanded(
                 child: Text(
-                  widget.post.fee.toString() + ' ' + AppLocalizations.of(context).translate('fcfa'),
+                  widget.post.fee.toString() +
+                      ' ' +
+                      AppLocalizations.of(context).translate('fcfa'),
                   style: SizeConfig.stylePriceCard,
                 ),
               ),
               Text(
-                Post.convertPostTypToStringForDisplay(widget.post.post_typ, context),
+                Post.convertPostTypToStringForDisplay(
+                    widget.post.post_typ, context),
                 style: SizeConfig.styleNormalBlackCard,
               ),
             ],
@@ -259,12 +263,12 @@ class _HomeCardState extends State<HomeCard> {
   }
 
   Future<void> setFavoritIcon() async {
-    //FirebaseUser user = await FirebaseAuth.instance.currentUser();
     if (widget.userEmail != null) {
-      myFavorits.forEach((item) => {
-            if (item.useremail == widget.userEmail && item.postid == post.id)
-              {addFavorit(null)}
-          });
+      for (Favorit item in myFavorits) {
+        if (item.useremail == widget.userEmail && item.postid == post.id) {
+          addFavorit(null);
+        }
+      }
     }
   }
 }

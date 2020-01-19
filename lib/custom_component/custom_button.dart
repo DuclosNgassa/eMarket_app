@@ -6,7 +6,7 @@ class CustomButton extends StatelessWidget {
       {@required this.onPressed,
       @required this.fillColor,
       @required this.splashColor,
-      @required this.icon,
+      this.icon,
       @required this.iconColor,
       @required this.text,
       @required this.textStyle});

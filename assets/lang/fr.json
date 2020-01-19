@@ -201,6 +201,16 @@
   "games_hobbies": "Jeux & Loisirs",
   "hobbies": "Loisirs",
   "games": "Jeux",
+  "food": "Alimentation",
+  "tomato": "Tomate",
+  "plantin": "Plantin",
+  "cassava": "Manioc",
+  "peanut": "Arachide",
+  "oil": "Huile",
+  "honey": "Miel",
+  "chicken": "Poulet",
+  "betail": "Betail",
+  "corn": "Mais",
   "other_category": "Autre categories",
   "other": "Autre"
 }

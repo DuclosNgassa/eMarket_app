@@ -152,6 +152,7 @@ class Post {
         }
         break;
     }
+    return PostTyp.offer;
   }
 
   static String convertPostTypToString(PostTyp value) {
@@ -172,6 +173,7 @@ class Post {
         }
         break;
     }
+    return 'offer';
   }
 
   static String convertPostTypToStringForDisplay(PostTyp value, BuildContext context) {
@@ -192,6 +194,7 @@ class Post {
         }
         break;
     }
+    return AppLocalizations.of(context).translate('offer');
   }
 
   static Status convertStringToStatus(String value) {
@@ -217,6 +220,7 @@ class Post {
         }
         break;
     }
+    return Status.created;
   }
 
   static String convertStatusToString(Status value) {
@@ -241,8 +245,8 @@ class Post {
           return 'deleted';
         }
         break;
-
     }
+    return 'created';
   }
 
   static FeeTyp convertStringToFeeTyp(String value) {
@@ -264,6 +268,7 @@ class Post {
         }
         break;
     }
+    return FeeTyp.negotiable;
   }
 
   static String convertFeeTypToString(FeeTyp value) {
@@ -284,6 +289,7 @@ class Post {
         }
         break;
     }
+    return 'negotiable';
   }
 
   static String convertFeeTypToDisplay(FeeTyp value) {
@@ -304,5 +310,6 @@ class Post {
         }
         break;
     }
+    return 'Prix négociable';
   }
 }

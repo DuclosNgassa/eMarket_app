@@ -129,7 +129,7 @@ class ContactFormState extends State<ContactForm> {
           2);
     } else {
       form.save();
-      UserNotification userNotification = await _saveUserNotifikation();
+      await _saveUserNotifikation();
       MyNotification.showInfoFlushbar(
           context,
           AppLocalizations.of(context).translate('info'),

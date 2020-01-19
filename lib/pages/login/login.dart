@@ -41,6 +41,7 @@ class _LoginState extends State<Login> {
 
     _firebaseMessaging.onTokenRefresh.listen(setDeviceToken);
     _firebaseMessaging.getToken();
+    super.initState();
   }
 
   Future<FirebaseUser> _signIn(BuildContext context) async {
@@ -60,6 +61,7 @@ class _LoginState extends State<Login> {
     List<ProviderDetails> providerData = new List<ProviderDetails>();
     providerData.add(providerInfo);
 
+/*
     UserDetails details = new UserDetails(
       userDetails.providerId,
       userDetails.displayName,
@@ -67,6 +69,7 @@ class _LoginState extends State<Login> {
       userDetails.email,
       providerData,
     );
+*/
 
     await setSharedPreferences(userDetails);
 

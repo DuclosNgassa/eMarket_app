@@ -16,7 +16,7 @@ class InfoPage extends StatefulWidget {
 
 class _InfoPageState extends State<InfoPage> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  FirebaseUser firebaseUser = null;
+  FirebaseUser firebaseUser;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class _InfoPageState extends State<InfoPage> {
           Container(
             height: SizeConfig.screenHeight * 0.25,
             child: Image.asset(
-              "gif/info.gif",
+              "assets/gif/info.gif",
             ),
           ),
           ListTile(

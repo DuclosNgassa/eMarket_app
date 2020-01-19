@@ -1,4 +1,5 @@
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
+import 'package:emarket_app/pages/splash_screen/splash_screen_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,7 +41,8 @@ void main() {
           return supportedLocales.first;
         },
 
-        home: NavigationPage(HOMEPAGE),
+        home: SplashScreenPage(),
+        //home: NavigationPage(HOMEPAGE),
       ),
     );
   });

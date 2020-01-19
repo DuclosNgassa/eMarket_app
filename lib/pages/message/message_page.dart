@@ -31,7 +31,7 @@ class _MessagePageState extends State<MessagePage> {
   MessageService _messageService = new MessageService();
   PostService _postService = new PostService();
   UserService _userService = new UserService();
-  FirebaseUser firebaseUser = null;
+  FirebaseUser firebaseUser;
   String userEmail;
 
   @override

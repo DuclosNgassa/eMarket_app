@@ -26,8 +26,8 @@ class HomeCardPicture extends StatefulWidget {
 class _HomeCardPictureState extends State<HomeCardPicture> {
   Post post;
   List<Favorit> myFavorits;
-  Favorit myFavoritToAdd = null;
-  Favorit myFavoritToRemove = null;
+  Favorit myFavoritToAdd;
+  Favorit myFavoritToRemove;
   String renderUrl;
   Icon favoritIcon = Icon(
     Icons.favorite_border,
@@ -90,13 +90,14 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
   }
 
   Future<void> updateIconFavorit() async {
-    //FirebaseUser user = await FirebaseAuth.instance.currentUser();
     if (widget.userEmail != null && widget.userEmail.isNotEmpty) {
       if (favoritIcon.icon == Icons.favorite) {
-        myFavorits.forEach((item) => {
-              if (item.useremail == widget.userEmail && item.postid == post.id)
-                {myFavoritToRemove = item}
-            });
+
+        for (Favorit item in myFavorits) {
+          if (item.useremail == widget.userEmail && item.postid == post.id) {
+            myFavoritToRemove = item;
+          }
+        }
 
         removeFavorit();
       } else {
@@ -104,10 +105,11 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
         favorit.postid = post.id;
         favorit.useremail = widget.userEmail;
         favorit.created_at = DateTime.now();
-        myFavorits.forEach((item) => {
-              if (!(item.useremail == widget.userEmail && item.postid == post.id))
-                {myFavoritToAdd = favorit}
-            });
+        for (Favorit item in myFavorits) {
+          if (!(item.useremail == widget.userEmail && item.postid == post.id)) {
+            myFavoritToAdd = favorit;
+          }
+        }
 
         addFavorit(favorit);
       }
@@ -236,7 +238,6 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
               ],
             ),
           ),
-
         ],
       ),
     );
@@ -289,7 +290,7 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
               child: AspectRatio(
                 aspectRatio: 1.7,
                 child: FadeInImage.assetNetwork(
-                  placeholder: 'gif/loading-world.gif',
+                  placeholder: 'assets/gif/loading-world.gif',
                   image: imageUrl,
                   fit: BoxFit.fitWidth,
                 ),
@@ -311,7 +312,7 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
         child: AspectRatio(
           aspectRatio: 0.5,
           child: Image.asset(
-            "images/kmerconsulting.png",
+            "assets/images/kmerconsulting.png",
           ),
         ),
       ),
@@ -319,12 +320,12 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
   }
 
   Future<void> setFavoritIcon() async {
-    //FirebaseUser user = await FirebaseAuth.instance.currentUser();
     if (widget.userEmail != null && widget.userEmail.isNotEmpty) {
-      myFavorits.forEach((item) => {
-            if (item.useremail == widget.userEmail && item.postid == post.id)
-              {addFavorit(null)}
-          });
+      for (Favorit item in myFavorits) {
+        if (item.useremail == widget.userEmail && item.postid == post.id) {
+          addFavorit(null);
+        }
+      }
     }
   }
 }

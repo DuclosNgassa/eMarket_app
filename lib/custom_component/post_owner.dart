@@ -60,13 +60,12 @@ class PostOwnerState extends State<PostOwner> {
         builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
           if (snapshot.hasData) {
             isLogedIn = true;
-            FirebaseUser user = snapshot.data; // this is your user instance
+            //FirebaseUser user = snapshot.data; // this is your user instance
             // is because there is user already logged
             return new Container(
               child: buildUserInformation(context),
             );
           }
-
           // other way there is no user logged.
           return new Container(
             child: buildUserInformation(context),

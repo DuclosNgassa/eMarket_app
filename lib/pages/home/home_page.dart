@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage> {
         }
         return Center(
           child: Image.asset(
-            "gif/loading.gif",
+            "assets/gif/loading.gif",
           ),
         );
       },

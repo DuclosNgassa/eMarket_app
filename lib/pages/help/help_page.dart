@@ -47,7 +47,7 @@ class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
           Container(
             height: SizeConfig.screenHeight * 0.6,
             child: Image.asset(
-              "gif/help.gif",
+              "assets/gif/help.gif",
             ),
           ),
           ListTile(

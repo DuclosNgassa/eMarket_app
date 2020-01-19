@@ -55,7 +55,7 @@ class _PostEditFormState extends State<PostEditForm> {
   CategorieTile _categorieTile = new CategorieTile('', 0);
 
   int imageCount = 0;
-  final int MAX_IMAGE = 4;
+  static const int MAX_IMAGE = 4;
 
   File imageFile;
 
@@ -910,6 +910,7 @@ class _PostEditFormState extends State<PostEditForm> {
         }
         break;
     }
+    return 'Negociable';
   }
 
   Future<void> _loadImages() async {
