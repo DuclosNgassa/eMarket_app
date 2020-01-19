@@ -53,6 +53,7 @@ class PostService {
         final postList = await posts.map<Post>((json) {
           return Post.fromJson(json);
         }).toList();
+
         return postList;
       } else {
         return [];
@@ -129,6 +130,12 @@ class PostService {
     } else {
       throw Exception('Failed to delete a Post. Error: ${response.toString()}');
     }
+  }
+
+  List<Post> sortDescending(List<Post> posts){
+    posts.sort((post1, post2) => post1.updated_at.isAfter(post2.updated_at) ? 0 : 1);
+
+    return posts;
   }
 
   Post convertResponseToPost(Map<String, dynamic> json) {

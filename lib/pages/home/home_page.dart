@@ -56,7 +56,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadMyFavorits();
-    _loadPost();
     _loadMyCategories();
 
     _firebaseMessaging.onTokenRefresh.listen(setDeviceToken);
@@ -65,7 +64,9 @@ class _HomePageState extends State<HomePage> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        loadMorePost();
+        loadMorePost(postList);
+        setState(() {
+        });
       }
     });
   }
@@ -74,87 +75,95 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    return Container(
-      height: SizeConfig.screenHeight,
-      child: CustomScrollView(
-        controller: _scrollController,
-        slivers: <Widget>[
-          SliverAppBar(
-            backgroundColor: Colors.transparent,
-            expandedHeight: SizeConfig.blockSizeVertical * 10,
-            floating: true,
-            snap: false,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: SizeConfig.blockSizeHorizontal * 2),
-                    child: Row(
+    return FutureBuilder(
+      future: _loadPost(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          loadMorePost(snapshot.data);
+          return Container(
+            height: SizeConfig.screenHeight,
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: <Widget>[
+                SliverAppBar(
+                  backgroundColor: Colors.transparent,
+                  expandedHeight: SizeConfig.blockSizeVertical * 10,
+                  floating: true,
+                  snap: false,
+                  pinned: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Column(
                       children: <Widget>[
-                        new Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                              ),
-                              hintText: AppLocalizations.of(context)
-                                  .translate('give_your_search'),
-                              labelText: AppLocalizations.of(context)
-                                  .translate('search'),
-                              labelStyle: TextStyle(color: Colors.white),
-                            ),
-                            onTap: () {
-                              showSearch(
-                                context: context,
-                                delegate: DataSearch(postList, myFavorits,
-                                    _userEmail, null, null),
-                              );
-                            },
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.search,
-                            color: Colors.white,
-                          ),
-                          tooltip: AppLocalizations.of(context)
-                              .translate('to_search'),
-                          onPressed: () {
-                            showSearch(
-                              context: context,
-                              delegate: DataSearch(
-                                  postList, myFavorits, _userEmail, null, null),
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          width: SizeConfig.blockSizeHorizontal * 2,
-                        ),
-
-//this goes in as one of the children in our column
                         Padding(
                           padding: EdgeInsets.only(
-                              right: SizeConfig.blockSizeHorizontal),
-                          child: Column(
+                              left: SizeConfig.blockSizeHorizontal * 2),
+                          child: Row(
                             children: <Widget>[
-                              Switch(
-                                value: isSwitched,
-                                onChanged: (value) {
-                                  setState(() {
-                                    isSwitched = value;
-                                  });
-                                },
-                                activeTrackColor: Colors.lightGreenAccent,
-                                activeColor: Colors.green,
+                              new Expanded(
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0)),
+                                    ),
+                                    hintText: AppLocalizations.of(context)
+                                        .translate('give_your_search'),
+                                    labelText: AppLocalizations.of(context)
+                                        .translate('search'),
+                                    labelStyle: TextStyle(color: Colors.white),
+                                  ),
+                                  onTap: () {
+                                    showSearch(
+                                      context: context,
+                                      delegate: DataSearch(postList, myFavorits,
+                                          _userEmail, null, null),
+                                    );
+                                  },
+                                ),
                               ),
-                              Text(
-                                AppLocalizations.of(context)
-                                    .translate('pictures'),
-                                style: SizeConfig.styleNormalWhite,
+                              IconButton(
+                                icon: Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                ),
+                                tooltip: AppLocalizations.of(context)
+                                    .translate('to_search'),
+                                onPressed: () {
+                                  showSearch(
+                                    context: context,
+                                    delegate: DataSearch(postList, myFavorits,
+                                        _userEmail, null, null),
+                                  );
+                                },
+                              ),
+                              SizedBox(
+                                width: SizeConfig.blockSizeHorizontal * 2,
+                              ),
+
+//this goes in as one of the children in our column
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    right: SizeConfig.blockSizeHorizontal),
+                                child: Column(
+                                  children: <Widget>[
+                                    Switch(
+                                      value: isSwitched,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          isSwitched = value;
+                                        });
+                                      },
+                                      activeTrackColor: Colors.lightGreenAccent,
+                                      activeColor: Colors.green,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)
+                                          .translate('pictures'),
+                                      style: SizeConfig.styleNormalWhite,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -162,20 +171,26 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    childAspectRatio: 5,
+                  ),
+                  delegate:
+                      SliverChildListDelegate([_buildCategorieGridView()]),
+                ),
+                _buildSliverGrid(isSwitched),
+              ],
             ),
+          );
+        }
+        return Center(
+          child: Image.asset(
+            "gif/loading.gif",
           ),
-          SliverGrid(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1,
-              childAspectRatio: 5,
-            ),
-            delegate: SliverChildListDelegate([_buildCategorieGridView()]),
-          ),
-          _buildSliverGrid(isSwitched),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -219,7 +234,9 @@ class _HomePageState extends State<HomePage> {
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
             if (index == postListItems.length) {
-              return CupertinoActivityIndicator();
+              return CupertinoActivityIndicator(
+                radius: SizeConfig.blockSizeHorizontal * 10,
+              );
             }
             return Padding(
               padding: EdgeInsets.only(
@@ -269,17 +286,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void loadMorePost() {
-    if (present < postList.length) {
-      setState(() {
-        if ((present + perPage) > postList.length) {
-          postListItems.addAll(postList.getRange(present, postList.length));
-          present = postList.length;
+  void loadMorePost(List<Post> _postList) {
+    if (present < _postList.length) {
+        if ((present + perPage) > _postList.length) {
+          postListItems.addAll(_postList.getRange(present, _postList.length));
+          present = _postList.length;
         } else {
-          postListItems.addAll(postList.getRange(present, present + perPage));
+          postListItems.addAll(_postList.getRange(present, present + perPage));
           present = present + perPage;
         }
-      });
     }
   }
 
@@ -299,16 +314,16 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _loadPost() async {
-    postList = await _postService.fetchActivePosts();
+  Future<List<Post>> _loadPost() async {
+    List<Post> _postList = await _postService.fetchActivePosts();
 
-    for (var post in postList) {
+    for (var post in _postList) {
       await post.getImageUrl();
     }
 
-    loadMorePost();
+    postList = _postService.sortDescending(_postList);
 
-    setState(() {});
+    return postList;
   }
 
   Future<void> _loadMyFavorits() async {
@@ -317,7 +332,7 @@ class _HomePageState extends State<HomePage> {
 
     if (_userEmail != null && _userEmail.isNotEmpty) {
       myFavorits = await _favoritService.fetchFavoritByUserEmail(_userEmail);
-      setState(() {});
+      //setState(() {});
     }
   }
 
@@ -334,12 +349,14 @@ class _HomePageState extends State<HomePage> {
 
     parentCategories.sort((a, b) => a.title.compareTo(b.title));
     Categorie categorieTemp = parentCategories.firstWhere((categorie) =>
-        categorie.title == 'Other categories' || categorie.title == 'Autre categories');
+        categorie.title == 'Other categories' ||
+        categorie.title == 'Autre categories');
     parentCategories.removeWhere((categorie) =>
-        categorie.title == 'Other categories' || categorie.title == 'Autre categories');
+        categorie.title == 'Other categories' ||
+        categorie.title == 'Autre categories');
     parentCategories.add(categorieTemp);
 
-    setState(() {});
+    //setState(() {});
   }
 
   void setDeviceToken(String event) async {
