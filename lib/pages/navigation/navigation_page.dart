@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:emarket_app/custom_component/custom_icon_message.dart';
+import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/message.dart' as myMessage;
 import 'package:emarket_app/model/post.dart';
@@ -59,7 +60,6 @@ class _NavigationPageState extends State<NavigationPage> {
     super.initState();
     _fireBaseCloudMessagingListeners();
   }
-
 
   Future onSelectNotification(String payload) {
     debugPrint("payload : $payload");
@@ -170,23 +170,17 @@ class _NavigationPageState extends State<NavigationPage> {
             children: <Widget>[
               Stack(
                 children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(
-                        left: SizeConfig.blockSizeHorizontal * 10,
-                        top: SizeConfig.blockSizeVertical * 25),
-                    //padding: EdgeInsets.only(left: 10, top: 25),
-                    constraints: BoxConstraints.expand(
-                        height: SizeConfig.screenHeight / 5),
-                    decoration: BoxDecoration(
-                      gradient: new LinearGradient(
-                          colors: [colorDeepPurple400, colorDeepPurple300],
-                          begin: const FractionalOffset(1.0, 1.0),
-                          end: const FractionalOffset(0.2, 0.2),
-                          stops: [0.0, 1.0],
-                          tileMode: TileMode.clamp),
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
+                  ClipPath(
+                    clipper: CustomShapeClipper(),
+                    child: Container(
+                      height: SizeConfig.screenHeight / 2.5,
+                      decoration: BoxDecoration(
+                        gradient: new LinearGradient(
+                            colors: [colorDeepPurple400, colorDeepPurple300],
+                            begin: const FractionalOffset(1.0, 1.0),
+                            end: const FractionalOffset(0.2, 0.2),
+                            stops: [0.0, 1.0],
+                            tileMode: TileMode.clamp),
                       ),
                     ),
                   ),
@@ -275,17 +269,22 @@ class _NavigationPageState extends State<NavigationPage> {
         priority: Priority.High, importance: Importance.Max);
     var iOS = new IOSNotificationDetails();
     var platform = new NotificationDetails(android, iOS);
-    await flutterLocalNotificationsPlugin.show(
-        0, title, body, platform,
-        payload: AppLocalizations.of(context).translate('new_message') + " " + sender_name +" "+ AppLocalizations.of(context).translate('about_advert') + " " + post_title);
+    await flutterLocalNotificationsPlugin.show(0, title, body, platform,
+        payload: AppLocalizations.of(context).translate('new_message') +
+            " " +
+            sender_name +
+            " " +
+            AppLocalizations.of(context).translate('about_advert') +
+            " " +
+            post_title);
   }
 
   countUnreadMessage() async {
     await _loadUser();
 
     if (userEmail != null && userEmail.isNotEmpty) {
-      List<myMessage.Message> messages = await _messageService
-          .fetchMessageByReceiver(userEmail);
+      List<myMessage.Message> messages =
+          await _messageService.fetchMessageByReceiver(userEmail);
       _incomingMessage = _messageService.countNewMessage(messages, userEmail);
       setState(() {});
     }
@@ -306,12 +305,11 @@ class _NavigationPageState extends State<NavigationPage> {
       // I am connected to a mobile network.
     } else if (connectivityResult == ConnectivityResult.wifi) {
       // I am connected to a wifi network.
-    } else{
+    } else {
       MyNotification.showInfoFlushbar(
           context,
           AppLocalizations.of(context).translate('info'),
-          AppLocalizations.of(context).translate(
-              'no_internet'),
+          AppLocalizations.of(context).translate('no_internet'),
           Icon(
             Icons.info_outline,
             size: 28,

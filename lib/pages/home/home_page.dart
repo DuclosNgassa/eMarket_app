@@ -186,8 +186,15 @@ class _HomePageState extends State<HomePage> {
           );
         }
         return Center(
-          child: Image.asset(
-            "assets/gif/loading.gif",
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image.asset(
+                "assets/gif/loading.gif",
+              ),
+              Text(AppLocalizations.of(context)
+                  .translate('loading'),)
+            ],
           ),
         );
       },
@@ -258,7 +265,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildCategorieGridView() {
     TextStyle _myTextStyle = TextStyle(
-      color: Colors.black87,
+      color: Colors.white,
       fontSize: SizeConfig.safeBlockHorizontal * 2.6,
     );
 
@@ -272,11 +279,11 @@ class _HomePageState extends State<HomePage> {
         return CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 32,
           height: heightCustomCategorieButton,
-          fillColor: colorDeepPurple400,
+          fillColor: colorWhite,
           icon: IconData(int.parse(parentCategories[index].icon),
               fontFamily: 'MaterialIcons'),
-          splashColor: Colors.white,
-          iconColor: Colors.white,
+          splashColor: colorDeepPurple400,
+          iconColor: colorDeepPurple400,
           text: parentCategories[index].title,
           textStyle: _myTextStyle,
           onPressed: () =>

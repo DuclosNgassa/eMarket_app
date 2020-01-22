@@ -49,6 +49,7 @@ class _MessagePageState extends State<MessagePage> {
         builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
           if (snapshot.hasData) {
             firebaseUser = snapshot.data;
+
             // this is your user instance
             /// is because there is user already logged
             return Column(
@@ -112,7 +113,7 @@ class _MessagePageState extends State<MessagePage> {
             actionPane: SlidableBehindActionPane(),
             actionExtentRatio: 0.25,
             child: Container(
-              color: colorWhite,
+              color: Colors.transparent,
               child: ListTile(
                 onTap: () => openUserMessage(postMessages.elementAt(index),
                     postMessages.elementAt(index).post.title),

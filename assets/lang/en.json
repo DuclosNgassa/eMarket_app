@@ -94,6 +94,7 @@
   "download_only": "You can only download ",
   "pictures": "pictures",
   "error": "Error",
+  "error_loading": "Error while loading data. Please try again or contact our support",
   "no_internet": "Check your internet connection please!",
   "choose_category_please": "Please choose a category of your publication.",
   "advert_changed_success_message": "Your publication has been modified. Changes will be checked before they can be published.",
@@ -212,5 +213,6 @@
   "betail": "Betail",
   "corn": "Corn",
   "other_category": "Other categories",
-  "other": "Other"
+  "other": "Other",
+  "loading": "Loading..."
 }

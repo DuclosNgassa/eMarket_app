@@ -44,44 +44,6 @@ class _LoginState extends State<Login> {
     super.initState();
   }
 
-  Future<FirebaseUser> _signIn(BuildContext context) async {
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      idToken: googleAuth.idToken,
-      accessToken: googleAuth.accessToken,
-    );
-
-    FirebaseUser userDetails =
-        (await _firebaseAuth.signInWithCredential(credential)).user;
-    ProviderDetails providerInfo = new ProviderDetails(userDetails.providerId);
-
-    List<ProviderDetails> providerData = new List<ProviderDetails>();
-    providerData.add(providerInfo);
-
-/*
-    UserDetails details = new UserDetails(
-      userDetails.providerId,
-      userDetails.displayName,
-      userDetails.photoUrl,
-      userDetails.email,
-      providerData,
-    );
-*/
-
-    await setSharedPreferences(userDetails);
-
-    return userDetails;
-  }
-
-  Future setSharedPreferences(FirebaseUser userDetails) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(USER_EMAIL, userDetails.email);
-    prefs.setString(USER_NAME, userDetails.displayName);
-  }
-
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -123,9 +85,12 @@ class _LoginState extends State<Login> {
                           ),
                         ],
                       ),
+                      onPressed: () => _signIn(context),
+/*
                       onPressed: () => _signIn(context)
                           .then((FirebaseUser user) => _saveUser(user))
                           .catchError((e) => print(e)),
+*/
                     ),
                   ),
                 ),
@@ -154,11 +119,6 @@ class _LoginState extends State<Login> {
           return new NavigationPage(MESSAGEPAGE);
         }
         break;
-      case LoginSource.configurationPage:
-        {
-          return new NavigationPage(CONFIGURATIONPAGE);
-        }
-        break;
       case LoginSource.ownerPage:
         {
           return new PostDetailPage(widget._post);
@@ -167,11 +127,41 @@ class _LoginState extends State<Login> {
     }
   }
 
-  Future<User> _saveUser(FirebaseUser firebaseUser) async {
+  Future<void> _signIn(BuildContext context) async {
+    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth =
+    await googleUser.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      idToken: googleAuth.idToken,
+      accessToken: googleAuth.accessToken,
+    );
+
+    FirebaseUser userDetails =
+        (await _firebaseAuth.signInWithCredential(credential)).user;
+
+    await setSharedPreferences(userDetails);
+
+    await _saveUser(userDetails);
+
+
+    Navigator.of(context).pushReplacement(
+      new MaterialPageRoute(
+        builder: (context) =>
+            navigate(),
+      ),
+    );
+  }
+
+  Future<void> setSharedPreferences(FirebaseUser userDetails) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(USER_EMAIL, userDetails.email);
+    prefs.setString(USER_NAME, userDetails.displayName);
+  }
+
+  Future<void> _saveUser(FirebaseUser firebaseUser) async {
     User existsUser = await _userService.fetchUserByEmail(firebaseUser.email);
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    await setSharedPreferences(firebaseUser);
 
     _deviceToken = await prefs.getString(DEVICE_TOKEN);
 
@@ -187,14 +177,6 @@ class _LoginState extends State<Login> {
           return updatedUser;
         }
       }
-
-      Navigator.of(context).pushReplacement(
-        new MaterialPageRoute(
-          builder: (context) =>
-              navigate(),
-        ),
-      );
-
       return existsUser;
     } else {
       User user = new User();
@@ -202,13 +184,6 @@ class _LoginState extends State<Login> {
 
       Map<String, dynamic> userParams = user.toMap(user);
       User savedUser = await _userService.saveUser(userParams);
-
-      Navigator.of(context).pushReplacement(
-        new MaterialPageRoute(
-          builder: (context) =>
-              navigate(),
-        ),
-      );
 
       return savedUser;
     }
@@ -235,21 +210,4 @@ class _LoginState extends State<Login> {
     }
     print('Device-Token-Login: $fcmToken');
   }
-}
-
-class UserDetails {
-  final String providerDetails;
-  final String userName;
-  final String photoUrl;
-  final String userEmail;
-  final List<ProviderDetails> providerData;
-
-  UserDetails(this.providerDetails, this.userName, this.photoUrl,
-      this.userEmail, this.providerData);
-}
-
-class ProviderDetails {
-  ProviderDetails(this.providerDetails);
-
-  final String providerDetails;
 }

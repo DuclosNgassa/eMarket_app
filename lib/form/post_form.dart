@@ -115,7 +115,6 @@ class PostFormState extends State<PostForm> {
                 ],
               ),
             ),
-            Divider(),
             _buildRadioButtons(),
             TextFormField(
               style: SizeConfig.styleFormGrey,
@@ -125,14 +124,16 @@ class PostFormState extends State<PostForm> {
                 _fieldFocusChange(_titelFocusNode, _feeFocusNode);
               },
               decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context).translate('give_title'),
+                  hintText:
+                      AppLocalizations.of(context).translate('give_title'),
                   labelText: AppLocalizations.of(context).translate('title'),
                   labelStyle: SizeConfig.styleFormBlack),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(30),
               ],
-              validator: (val) =>
-                  formValidator.isEmptyText(val) ? AppLocalizations.of(context).translate('give_title') : null,
+              validator: (val) => formValidator.isEmptyText(val)
+                  ? AppLocalizations.of(context).translate('give_title')
+                  : null,
               onSaved: (val) => newPost.title = val,
             ),
             Container(
@@ -160,7 +161,8 @@ class PostFormState extends State<PostForm> {
                         IconButton(
                           onPressed: showCategoriePage,
                           icon: Icon(Icons.arrow_forward_ios),
-                          tooltip: AppLocalizations.of(context).translate('choose_category'),
+                          tooltip: AppLocalizations.of(context)
+                              .translate('choose_category'),
                         )
                       ],
                     ),
@@ -181,8 +183,13 @@ class PostFormState extends State<PostForm> {
                       _fieldFocusChange(_feeFocusNode, _cityFocusNode);
                     },
                     decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context).translate('give_price'),
-                      labelText: AppLocalizations.of(context).translate('price') + ' (' + AppLocalizations.of(context).translate('fcfa') + ')',
+                      hintText:
+                          AppLocalizations.of(context).translate('give_price'),
+                      labelText:
+                          AppLocalizations.of(context).translate('price') +
+                              ' (' +
+                              AppLocalizations.of(context).translate('fcfa') +
+                              ')',
                       labelStyle: SizeConfig.styleFormBlack,
                     ),
                     inputFormatters: [
@@ -203,7 +210,8 @@ class PostFormState extends State<PostForm> {
                       builder: (FormFieldState state) {
                         return InputDecorator(
                           decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context).translate('price_typ'),
+                            labelText: AppLocalizations.of(context)
+                                .translate('price_typ'),
                             labelStyle: SizeConfig.styleFormBlack,
                             errorText: state.hasError ? state.errorText : null,
                           ),
@@ -230,7 +238,8 @@ class PostFormState extends State<PostForm> {
                         );
                       },
                       validator: (val) => formValidator.isEmptyText(val)
-                          ? AppLocalizations.of(context).translate('choose_price_typ')
+                          ? AppLocalizations.of(context)
+                              .translate('choose_price_typ')
                           : null,
                     ),
                   ),
@@ -251,8 +260,10 @@ class PostFormState extends State<PostForm> {
                         _fieldFocusChange(_cityFocusNode, _quarterFocusNode);
                       },
                       decoration: InputDecoration(
-                        hintText: AppLocalizations.of(context).translate('give_city'),
-                        labelText: AppLocalizations.of(context).translate('city'),
+                        hintText:
+                            AppLocalizations.of(context).translate('give_city'),
+                        labelText:
+                            AppLocalizations.of(context).translate('city'),
                         labelStyle: SizeConfig.styleFormBlack,
                       ),
                       inputFormatters: [
@@ -273,15 +284,18 @@ class PostFormState extends State<PostForm> {
                         _fieldFocusChange(_quarterFocusNode, _phoneFocusNode);
                       },
                       decoration: InputDecoration(
-                        hintText: AppLocalizations.of(context).translate('give_neighborhood'),
-                        labelText: AppLocalizations.of(context).translate('neighborhood'),
+                        hintText: AppLocalizations.of(context)
+                            .translate('give_neighborhood'),
+                        labelText: AppLocalizations.of(context)
+                            .translate('neighborhood'),
                         labelStyle: SizeConfig.styleFormBlack,
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
                       ],
                       validator: (val) => formValidator.isEmptyText(val)
-                          ? AppLocalizations.of(context).translate('give_neighborhood')
+                          ? AppLocalizations.of(context)
+                              .translate('give_neighborhood')
                           : null,
                       onSaved: (val) => newPost.quarter = val,
                     ),
@@ -297,8 +311,10 @@ class PostFormState extends State<PostForm> {
                 _fieldFocusChange(_phoneFocusNode, _descriptionFocusNode);
               },
               decoration: InputDecoration(
-                hintText: AppLocalizations.of(context).translate('give_phonenumber'),
-                labelText: AppLocalizations.of(context).translate('phonenumber'),
+                hintText:
+                    AppLocalizations.of(context).translate('give_phonenumber'),
+                labelText:
+                    AppLocalizations.of(context).translate('phonenumber'),
                 labelStyle: SizeConfig.styleFormBlack,
               ),
               keyboardType: TextInputType.number,
@@ -318,15 +334,18 @@ class PostFormState extends State<PostForm> {
               },
               maxLines: 4,
               decoration: InputDecoration(
-                hintText: AppLocalizations.of(context).translate('advert_description'),
-                labelText: AppLocalizations.of(context).translate('description'),
+                hintText: AppLocalizations.of(context)
+                    .translate('advert_description'),
+                labelText:
+                    AppLocalizations.of(context).translate('description'),
                 labelStyle: SizeConfig.styleFormBlack,
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(500),
               ],
               validator: (val) => formValidator.isEmptyText(val)
-                  ? AppLocalizations.of(context).translate('give_advert_description')
+                  ? AppLocalizations.of(context)
+                      .translate('give_advert_description')
                   : null,
               onSaved: (val) => newPost.description = val,
             ),
@@ -338,7 +357,8 @@ class PostFormState extends State<PostForm> {
                 child: RaisedButton(
                   shape: const StadiumBorder(),
                   color: colorDeepPurple400,
-                  child: Text(AppLocalizations.of(context).translate('save'), style: SizeConfig.styleButtonWhite),
+                  child: Text(AppLocalizations.of(context).translate('save'),
+                      style: SizeConfig.styleButtonWhite),
                   onPressed: _submitForm,
                 ),
               ),
@@ -439,7 +459,7 @@ class PostFormState extends State<PostForm> {
           new IconButton(
             icon: Icon(
               Icons.add_a_photo,
-              color: Colors.deepPurple,
+              color: Colors.white,
             ),
             onPressed: _takePhoto,
             tooltip: AppLocalizations.of(context).translate('take_photo'),
@@ -447,10 +467,11 @@ class PostFormState extends State<PostForm> {
           new IconButton(
             icon: Icon(
               Icons.image,
-              color: Colors.deepPurple,
+              color: Colors.white,
             ),
             onPressed: _selectGalleryImage,
-            tooltip: AppLocalizations.of(context).translate('select_from_gallery'),
+            tooltip:
+                AppLocalizations.of(context).translate('select_from_gallery'),
           ),
         ],
       ),
@@ -464,6 +485,7 @@ class PostFormState extends State<PostForm> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Radio(
+            //activeColor: Colors.black,
             value: PostTyp.offer,
             groupValue: _postTyp,
             onChanged: (PostTyp value) {
@@ -477,6 +499,7 @@ class PostFormState extends State<PostForm> {
             style: SizeConfig.styleRadioButton,
           ),
           Radio(
+            //activeColor: Colors.black,
             value: PostTyp.search,
             groupValue: _postTyp,
             onChanged: (PostTyp value) {
@@ -490,6 +513,7 @@ class PostFormState extends State<PostForm> {
             style: SizeConfig.styleRadioButton,
           ),
           Radio(
+            //activeColor: Colors.black,
             value: PostTyp.all,
             groupValue: _postTyp,
             onChanged: (PostTyp value) {
@@ -522,7 +546,11 @@ class PostFormState extends State<PostForm> {
       MyNotification.showInfoFlushbar(
           context,
           AppLocalizations.of(context).translate('info'),
-          AppLocalizations.of(context).translate('download_only') + ' ' + MAX_IMAGE.toString() + ' ' + AppLocalizations.of(context).translate('pictures'),
+          AppLocalizations.of(context).translate('download_only') +
+              ' ' +
+              MAX_IMAGE.toString() +
+              ' ' +
+              AppLocalizations.of(context).translate('pictures'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -548,7 +576,11 @@ class PostFormState extends State<PostForm> {
       MyNotification.showInfoFlushbar(
           context,
           AppLocalizations.of(context).translate('info'),
-          AppLocalizations.of(context).translate('download_only') + ' ' + MAX_IMAGE.toString() + ' ' + AppLocalizations.of(context).translate('pictures'),
+          AppLocalizations.of(context).translate('download_only') +
+              ' ' +
+              MAX_IMAGE.toString() +
+              ' ' +
+              AppLocalizations.of(context).translate('pictures'),
           Icon(
             Icons.info_outline,
             size: 28,

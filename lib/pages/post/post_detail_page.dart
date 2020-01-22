@@ -1,5 +1,6 @@
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
+import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/custom_component/post_owner.dart';
 import 'package:emarket_app/form/post_edit_form.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
@@ -62,23 +63,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
           children: <Widget>[
             Stack(
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(
-                      left: SizeConfig.blockSizeHorizontal * 10,
-                      top: SizeConfig.blockSizeVertical * 25),
-                  //constraints: BoxConstraints.expand(height: itemHeight / 5),
-                  constraints: BoxConstraints.expand(
-                      height: SizeConfig.screenHeight / 5),
-                  decoration: BoxDecoration(
-                    gradient: new LinearGradient(
-                        colors: [colorDeepPurple400, colorDeepPurple300],
-                        begin: const FractionalOffset(1.0, 1.0),
-                        end: const FractionalOffset(0.2, 0.2),
-                        stops: [0.0, 1.0],
-                        tileMode: TileMode.clamp),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30),
+                ClipPath(
+                  clipper: CustomShapeClipper(),
+                  child: Container(
+                    height: SizeConfig.screenHeight / 3,
+                    decoration: BoxDecoration(
+                      gradient: new LinearGradient(
+                          colors: [colorDeepPurple400, colorDeepPurple300],
+                          begin: const FractionalOffset(1.0, 1.0),
+                          end: const FractionalOffset(0.2, 0.2),
+                          stops: [0.0, 1.0],
+                          tileMode: TileMode.clamp),
                     ),
                   ),
                 ),

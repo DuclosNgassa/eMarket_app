@@ -94,6 +94,7 @@
   "download_only": "Vous ne pouvez que telecharger",
   "pictures": "photos",
   "error": "Erreur",
+  "error_loading": "Erreur lors du chargement de données. Veuillez réessayer ou contactez notre service client. ",
   "no_internet": "Verifiez votre connexion internet s´il vous plait!",
   "choose_category_please": "Veuillez choisir la categorie de votre annonce s´il vous plaît.",
   "advert_changed_success_message": "Votre Post a été modifié. Les modifications seront controlées avant d´etre publiées.",
@@ -212,5 +213,6 @@
   "betail": "Betail",
   "corn": "Mais",
   "other_category": "Autre categories",
-  "other": "Autre"
+  "other": "Autre",
+  "loading": "Chargement..."
 }

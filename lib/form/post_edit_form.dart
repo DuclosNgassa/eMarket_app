@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:emarket_app/converter/utils.dart' as utils;
+import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
@@ -113,19 +114,17 @@ class _PostEditFormState extends State<PostEditForm> {
             children: <Widget>[
               Stack(
                 children: <Widget>[
-                  Container(
-                    constraints: BoxConstraints.expand(
-                        height: SizeConfig.screenHeight / 5),
-                    decoration: BoxDecoration(
-                      gradient: new LinearGradient(
-                          colors: [colorDeepPurple400, colorDeepPurple300],
-                          begin: const FractionalOffset(1.0, 1.0),
-                          end: const FractionalOffset(0.2, 0.2),
-                          stops: [0.0, 1.0],
-                          tileMode: TileMode.clamp),
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
+                  ClipPath(
+                    clipper: CustomShapeClipper(),
+                    child: Container(
+                      height: SizeConfig.screenHeight / 2,
+                      decoration: BoxDecoration(
+                        gradient: new LinearGradient(
+                            colors: [colorDeepPurple400, colorDeepPurple300],
+                            begin: const FractionalOffset(1.0, 1.0),
+                            end: const FractionalOffset(0.2, 0.2),
+                            stops: [0.0, 1.0],
+                            tileMode: TileMode.clamp),
                       ),
                     ),
                   ),

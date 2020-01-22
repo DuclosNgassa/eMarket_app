@@ -15,6 +15,7 @@ import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -36,15 +37,13 @@ class _AccountState extends State<AccountPage>
 
   String userName = 'eMarket';
   String userEmail = 'eMarket@softsolutions.de';
-  List<Post> myPosts = new List();
-  List<Post> myPostFavorits = new List();
-  List<Favorit> myFavorits = new List();
+  List<Post> _myPosts = new List();
+  List<Post> _myFavoritPosts = new List();
+  List<Favorit> _myFavorits = new List();
 
   @override
   void initState() {
     super.initState();
-    _loadMyPosts();
-    _loadMyFavorits();
     controller = TabController(length: 2, vsync: this);
   }
 
@@ -63,7 +62,7 @@ class _AccountState extends State<AccountPage>
                   return [
                     SliverAppBar(
                       pinned: false,
-                      backgroundColor: colorDeepPurple300,
+                      backgroundColor: Colors.transparent,
                       flexibleSpace: FlexibleSpaceBar(
                         collapseMode: CollapseMode.pin,
                         background: Column(
@@ -101,7 +100,7 @@ class _AccountState extends State<AccountPage>
                       bottom: TabBar(
                         labelStyle: SizeConfig.styleNormalWhite,
                         //isScrollable: true,
-                        indicatorColor: colorDeepPurple500,
+                        indicatorColor: Colors.white,
                         tabs: [
                           Tab(
                               text: AppLocalizations.of(context)
@@ -130,93 +129,129 @@ class _AccountState extends State<AccountPage>
   }
 
   Widget buildMyPostListView() {
-    if (myPosts.isEmpty) {
-      return Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: SizeConfig.blockSizeHorizontal * 2,
-            vertical: SizeConfig.blockSizeVertical),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: Center(
-                child: Text(
-                  AppLocalizations.of(context).translate('no_sell_item1') +
-                      "\n\n" +
-                      AppLocalizations.of(context).translate('no_sell_item2'),
-                  style: SizeConfig.styleTitleBlack,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    return ListView.separated(
-        itemBuilder: (context, index) => Slidable(
-              actionPane: SlidableBehindActionPane(),
-              actionExtentRatio: 0.25,
-              child: Container(
-                color: colorWhite,
-                child: ListTile(
-                  onTap: () => showPostDetailPage(myPosts.elementAt(index)),
-                  leading: CircleAvatar(
-                    backgroundColor: isPostArchivated(myPosts.elementAt(index))
-                        ? colorGrey400
-                        : colorDeepPurple300,
-                    child: Text((index + 1).toString()),
-                    foregroundColor: colorWhite,
-                  ),
-                  title: Text(myPosts.elementAt(index).title),
-                  subtitle: Text(DateConverter.convertToString(
-                      myPosts.elementAt(index).created_at, context)),
-                  trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Text(myPosts.elementAt(index).fee.toString() +
-                          ' ' +
-                          AppLocalizations.of(context).translate('fcfa')),
-                      SizedBox(
-                        height: SizeConfig.blockSizeVertical,
-                      ),
-                      if (isPostArchivated(myPosts.elementAt(index)))
-                        Text(
-                          AppLocalizations.of(context).translate('sold'),
-                          style: SizeConfig.styleFormGrey,
+    return FutureBuilder(
+      future: _loadMyPosts(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          if (snapshot.data.length > 0) {
+            return ListView.separated(
+                itemBuilder: (context, index) => Slidable(
+                      actionPane: SlidableBehindActionPane(),
+                      actionExtentRatio: 0.25,
+                      child: Container(
+                        color: Colors.transparent,
+                        child: ListTile(
+                          onTap: () =>
+                              showPostDetailPage(_myPosts.elementAt(index)),
+                          leading: CircleAvatar(
+                            backgroundColor:
+                                isPostArchivated(_myPosts.elementAt(index))
+                                    ? colorGrey400
+                                    : colorDeepPurple300,
+                            child: Text((index + 1).toString()),
+                            foregroundColor: colorWhite,
+                          ),
+                          title: Text(_myPosts.elementAt(index).title),
+                          subtitle: Text(DateConverter.convertToString(
+                              _myPosts.elementAt(index).created_at, context)),
+                          trailing: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              Text(_myPosts.elementAt(index).fee.toString() +
+                                  ' ' +
+                                  AppLocalizations.of(context)
+                                      .translate('fcfa')),
+                              SizedBox(
+                                height: SizeConfig.blockSizeVertical,
+                              ),
+                              if (isPostArchivated(_myPosts.elementAt(index)))
+                                Text(
+                                  AppLocalizations.of(context)
+                                      .translate('sold'),
+                                  style: SizeConfig.styleFormGrey,
+                                ),
+                            ],
+                          ),
                         ),
-                    ],
+                      ),
+                      actions: <Widget>[
+                        if (isPostActive(_myPosts.elementAt(index)))
+                          IconSlideAction(
+                            caption:
+                                AppLocalizations.of(context).translate('sold'),
+                            color: Colors.green,
+                            icon: Icons.done,
+                            onTap: () =>
+                                archivatePost(_myPosts.elementAt(index), index),
+                          ),
+                        if (isPostActive(_myPosts.elementAt(index)))
+                          IconSlideAction(
+                            caption: AppLocalizations.of(context)
+                                .translate('change'),
+                            color: colorBlue,
+                            icon: Icons.edit,
+                            onTap: () =>
+                                showPostEditForm(_myPosts.elementAt(index)),
+                          ),
+                      ],
+                      secondaryActions: <Widget>[
+                        IconSlideAction(
+                          caption:
+                              AppLocalizations.of(context).translate('delete'),
+                          color: colorRed,
+                          icon: Icons.delete,
+                          onTap: () => _showDeletePostDialog(
+                              _myPosts.elementAt(index), index),
+                        ),
+                      ],
+                    ),
+                separatorBuilder: (context, index) => Divider(),
+                itemCount: _myPosts.length);
+          } else {
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: SizeConfig.blockSizeHorizontal * 2,
+                  vertical: SizeConfig.blockSizeVertical),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        AppLocalizations.of(context)
+                                .translate('no_sell_item1') +
+                            "\n\n" +
+                            AppLocalizations.of(context)
+                                .translate('no_sell_item2'),
+                        style: SizeConfig.styleTitleBlack,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-              actions: <Widget>[
-                if (isPostActive(myPosts.elementAt(index)))
-                  IconSlideAction(
-                    caption: AppLocalizations.of(context).translate('sold'),
-                    color: Colors.green,
-                    icon: Icons.done,
-                    onTap: () => archivatePost(myPosts.elementAt(index), index),
-                  ),
-                if (isPostActive(myPosts.elementAt(index)))
-                  IconSlideAction(
-                    caption: AppLocalizations.of(context).translate('change'),
-                    color: colorBlue,
-                    icon: Icons.edit,
-                    onTap: () => showPostEditForm(myPosts.elementAt(index)),
-                  ),
-              ],
-              secondaryActions: <Widget>[
-                IconSlideAction(
-                  caption: AppLocalizations.of(context).translate('delete'),
-                  color: colorRed,
-                  icon: Icons.delete,
-                  onTap: () =>
-                      _showDeletePostDialog(myPosts.elementAt(index), index),
-                ),
-              ],
-            ),
-        separatorBuilder: (context, index) => Divider(),
-        itemCount: myPosts.length);
+            );
+          }
+        } else if (snapshot.hasError) {
+          MyNotification.showInfoFlushbar(
+              context,
+              AppLocalizations.of(context).translate('erro'),
+              AppLocalizations.of(context).translate('error_loading'),
+              Icon(
+                Icons.info_outline,
+                size: 28,
+                color: Colors.redAccent,
+              ),
+              Colors.redAccent,
+              4);
+        }
+        return Center(
+          child: CupertinoActivityIndicator(
+            radius: SizeConfig.blockSizeHorizontal * 5,
+          ),
+        );
+      },
+    );
   }
 
   bool isPostActive(Post post) {
@@ -228,68 +263,96 @@ class _AccountState extends State<AccountPage>
   }
 
   Widget buildMyFavoritPostListView() {
-    if (myPostFavorits.isEmpty) {
-      return new Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: SizeConfig.blockSizeHorizontal * 2,
-              vertical: SizeConfig.blockSizeVertical),
-          child: Text(
-            AppLocalizations.of(context).translate('no_favorit') +
-                "\n\n" +
-                AppLocalizations.of(context).translate('mark_favorit'),
-            style: SizeConfig.styleTitleBlack,
-          ),
-        ),
-      );
-    }
-
-    return ListView.separated(
-        itemBuilder: (context, index) => Slidable(
-              actionPane: SlidableBehindActionPane(),
-              actionExtentRatio: 0.25,
-              child: Container(
-                color: colorWhite,
-                child: ListTile(
-                  onTap: () =>
-                      showPostDetailPage(myPostFavorits.elementAt(index)),
-                  leading: CircleAvatar(
-                    backgroundColor:
-                        isPostActive(myPostFavorits.elementAt(index))
-                            ? colorDeepPurple300
-                            : colorGrey400,
-                    child: Text((index + 1).toString()),
-                    foregroundColor: colorWhite,
-                  ),
-                  title: Text(myPostFavorits.elementAt(index).title),
-                  subtitle: Text(DateConverter.convertToString(
-                      myPostFavorits.elementAt(index).created_at, context)),
-                  trailing: Text(
-                      myPostFavorits.elementAt(index).fee.toString() +
-                          ' ' +
-                          AppLocalizations.of(context).translate('fcfa')),
+    return FutureBuilder(
+      future: _loadMyFavorits(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          if (snapshot.data.length > 0) {
+            return ListView.separated(
+                itemBuilder: (context, index) => Slidable(
+                      actionPane: SlidableBehindActionPane(),
+                      actionExtentRatio: 0.25,
+                      child: Container(
+                        color: Colors.transparent,
+                        child: ListTile(
+                          onTap: () => showPostDetailPage(
+                              _myFavoritPosts.elementAt(index)),
+                          leading: CircleAvatar(
+                            backgroundColor:
+                                isPostActive(_myFavoritPosts.elementAt(index))
+                                    ? colorDeepPurple300
+                                    : colorGrey400,
+                            child: Text((index + 1).toString()),
+                            foregroundColor: colorWhite,
+                          ),
+                          title: Text(_myFavoritPosts.elementAt(index).title),
+                          subtitle: Text(DateConverter.convertToString(
+                              _myFavoritPosts.elementAt(index).created_at,
+                              context)),
+                          trailing: Text(_myFavoritPosts
+                                  .elementAt(index)
+                                  .fee
+                                  .toString() +
+                              ' ' +
+                              AppLocalizations.of(context).translate('fcfa')),
+                        ),
+                      ),
+                      secondaryActions: <Widget>[
+                        IconSlideAction(
+                          caption:
+                              AppLocalizations.of(context).translate('delete'),
+                          color: colorRed,
+                          icon: Icons.delete,
+                          onTap: () => _showDeleteFavoritDialog(
+                              _myFavoritPosts.elementAt(index).id, index),
+                        ),
+                      ],
+                    ),
+                separatorBuilder: (context, index) => Divider(),
+                itemCount: _myFavoritPosts.length);
+          } else {
+            return new Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: SizeConfig.blockSizeHorizontal * 2,
+                    vertical: SizeConfig.blockSizeVertical),
+                child: Text(
+                  AppLocalizations.of(context).translate('no_favorit') +
+                      "\n\n" +
+                      AppLocalizations.of(context).translate('mark_favorit'),
+                  style: SizeConfig.styleTitleBlack,
                 ),
               ),
-              secondaryActions: <Widget>[
-                IconSlideAction(
-                  caption: AppLocalizations.of(context).translate('delete'),
-                  color: colorRed,
-                  icon: Icons.delete,
-                  onTap: () => _showDeleteFavoritDialog(
-                      myPostFavorits.elementAt(index).id, index),
-                ),
-              ],
-            ),
-        separatorBuilder: (context, index) => Divider(),
-        itemCount: myPostFavorits.length);
+            );
+          }
+        } else if (snapshot.hasError) {
+          MyNotification.showInfoFlushbar(
+              context,
+              AppLocalizations.of(context).translate('erro'),
+              AppLocalizations.of(context).translate('error_loading'),
+              Icon(
+                Icons.info_outline,
+                size: 28,
+                color: Colors.redAccent,
+              ),
+              Colors.redAccent,
+              4);
+        }
+        return Center(
+          child: CupertinoActivityIndicator(
+            radius: SizeConfig.blockSizeHorizontal * 5,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> archivatePost(Post post, int index) async {
     post.status = Status.archivated;
     Map<String, dynamic> postParams = post.toMapUpdate(post);
     Post updatedPost = await _postService.update(postParams);
-    myPosts.removeAt(index);
-    myPosts.insert(index, updatedPost);
+    _myPosts.removeAt(index);
+    _myPosts.insert(index, updatedPost);
     setState(() {});
   }
 
@@ -341,16 +404,16 @@ class _AccountState extends State<AccountPage>
 
     Map<String, dynamic> postParams = post.toMapUpdate(post);
     await _postService.update(postParams);
-    myPosts.removeAt(index);
+    _myPosts.removeAt(index);
 
     setState(() {});
   }
 
   Future<void> deleteFavoritPost(int postId, int index) async {
-    for (int i = 0; i < myFavorits.length; i++) {
-      if (myFavorits[i].postid == postId) {
-        await _favoritService.delete(myFavorits[i].id);
-        myPostFavorits.removeAt(index);
+    for (int i = 0; i < _myFavorits.length; i++) {
+      if (_myFavorits[i].postid == postId) {
+        await _favoritService.delete(_myFavorits[i].id);
+        _myFavoritPosts.removeAt(index);
         break;
       }
     }
@@ -371,25 +434,31 @@ class _AccountState extends State<AccountPage>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String _userEmail = prefs.getString(USER_EMAIL);
     String _userName = prefs.getString(USER_NAME);
-    if (_userEmail != null) {
+    if (_userEmail != null && _myPosts.isEmpty) {
       userEmail = _userEmail;
       userName = _userName == null ? userName : _userName;
-      myPosts = await _postService.fetchPostByUserEmail(userEmail);
+      _myPosts = await _postService.fetchPostByUserEmail(userEmail);
       setState(() {});
     }
+    return _myPosts;
   }
 
   Future<void> _loadMyFavorits() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    if (user != null) {
-      myFavorits = await _favoritService.fetchFavoritByUserEmail(user.email);
+    if(userEmail == null || userEmail.isEmpty) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      userEmail = prefs.getString(USER_EMAIL);
+    }
 
-      for (var i = 0; i < myFavorits.length; i++) {
-        Post post = await _postService.fetchPostById(myFavorits[i].postid);
-        myPostFavorits.add(post);
+    if (userEmail != null && userEmail.isNotEmpty && _myFavoritPosts.isEmpty) {
+      _myFavorits = await _favoritService.fetchFavoritByUserEmail(userEmail);
+
+      for (var i = 0; i < _myFavorits.length; i++) {
+        Post post = await _postService.fetchPostById(_myFavorits[i].postid);
+        _myFavoritPosts.add(post);
       }
       setState(() {});
     }
+    return _myFavoritPosts;
   }
 
   Widget showLogout() {
@@ -417,7 +486,9 @@ class _AccountState extends State<AccountPage>
           }
 
           /// other way there is no user logged.
-          return new Container();
+          return new CupertinoActivityIndicator(
+            radius: SizeConfig.safeBlockHorizontal * 10,
+          );
         });
   }
 
