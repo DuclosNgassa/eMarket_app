@@ -11,8 +11,10 @@ import 'package:emarket_app/pages/message/user_message_page.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/user_service.dart';
+import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,7 +29,7 @@ class MessagePage extends StatefulWidget {
 class _MessagePageState extends State<MessagePage> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   List<Message> messages = new List();
-  List<PostMessage> postMessages = new List();
+  List<PostMessage> _postMessages = new List();
   MessageService _messageService = new MessageService();
   PostService _postService = new PostService();
   UserService _userService = new UserService();
@@ -36,7 +38,6 @@ class _MessagePageState extends State<MessagePage> {
 
   @override
   void initState() {
-    _loadMessages();
     super.initState();
   }
 
@@ -93,48 +94,73 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   Widget buildMyMessageListView() {
-    if (messages.isEmpty) {
-      return new Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: SizeConfig.blockSizeHorizontal * 3,
-            vertical: SizeConfig.blockSizeVertical * 2,
-          ),
-          child: Text(
-            AppLocalizations.of(context).translate('no_messages'),
-          ),
-        ),
-      );
-    }
-
-    return ListView.separated(
-        itemBuilder: (context, index) {
-          return Slidable(
-            actionPane: SlidableBehindActionPane(),
-            actionExtentRatio: 0.25,
-            child: Container(
-              color: Colors.transparent,
-              child: ListTile(
-                onTap: () => openUserMessage(postMessages.elementAt(index),
-                    postMessages.elementAt(index).post.title),
-                leading: CircleAvatar(
-                  backgroundColor: colorDeepPurple300,
-                  child: Text((index + 1).toString()),
-                  foregroundColor: colorWhite,
+    return FutureBuilder(
+      future: _loadMessages(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          if (snapshot.data.length > 0) {
+            return ListView.separated(
+                itemBuilder: (context, index) {
+                  return Slidable(
+                    actionPane: SlidableBehindActionPane(),
+                    actionExtentRatio: 0.25,
+                    child: Container(
+                      color: Colors.transparent,
+                      child: ListTile(
+                        onTap: () => openUserMessage(
+                            _postMessages.elementAt(index),
+                            _postMessages.elementAt(index).post.title),
+                        leading: CircleAvatar(
+                          backgroundColor: colorDeepPurple300,
+                          child: Text((index + 1).toString()),
+                          foregroundColor: colorWhite,
+                        ),
+                        title: Text(_postMessages.elementAt(index).post.title),
+                        subtitle: buildSubtitle(index, context),
+                      ),
+                    ),
+                  );
+                },
+                separatorBuilder: (context, index) => Divider(),
+                itemCount: _postMessages.length);
+          } else {
+            return new Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: SizeConfig.blockSizeHorizontal * 3,
+                  vertical: SizeConfig.blockSizeVertical * 2,
                 ),
-                title: Text(postMessages.elementAt(index).post.title),
-                subtitle: buildSubtitle(index, context),
+                child: Text(
+                  AppLocalizations.of(context).translate('no_messages'),
+                ),
               ),
-            ),
-          );
-        },
-        separatorBuilder: (context, index) => Divider(),
-        itemCount: postMessages.length);
+            );
+          }
+        } else if (snapshot.hasError) {
+          MyNotification.showInfoFlushbar(
+              context,
+              AppLocalizations.of(context).translate('erro'),
+              AppLocalizations.of(context).translate('error_loading'),
+              Icon(
+                Icons.info_outline,
+                size: 28,
+                color: Colors.redAccent,
+              ),
+              Colors.redAccent,
+              4);
+        }
+        return Center(
+          child: CupertinoActivityIndicator(
+            radius: SizeConfig.blockSizeHorizontal * 5,
+          ),
+        );
+      },
+    );
   }
 
   Widget buildSubtitle(int index, BuildContext context) {
     int newMessage = _messageService.countNewMessage(
-        postMessages.elementAt(index).messages, userEmail);
+        _postMessages.elementAt(index).messages, userEmail);
 
     return newMessage > 1
         ? Text(
@@ -199,19 +225,19 @@ class _MessagePageState extends State<MessagePage> {
 
       return _postMessageList;
     }
-    return null;
+    return <PostMessage>[];
   }
 
-  Future<void> _loadMessages() async {
+  Future<List<PostMessage>> _loadMessages() async {
     await _loadUser();
     if (userEmail != null && userEmail.isNotEmpty) {
-      postMessages = await _loadMessageByEmail(userEmail);
-      postMessages.sort((postMessage1, postMessage2) =>
+      _postMessages = await _loadMessageByEmail(userEmail);
+      _postMessages.sort((postMessage1, postMessage2) =>
           postMessage1.recentMessageDate.isAfter(postMessage2.recentMessageDate)
               ? 0
               : 1);
-      setState(() {});
     }
+    return _postMessages;
   }
 
   void openUserMessage(PostMessage postMessage, String userName) async {
@@ -229,8 +255,7 @@ class _MessagePageState extends State<MessagePage> {
     } else {
       List<Message> messagesSentOrReceived = new List<Message>();
       for (Message message in postMessage.messages) {
-        if (message.sender == userEmail ||
-            message.receiver == userEmail) {
+        if (message.sender == userEmail || message.receiver == userEmail) {
           messagesSentOrReceived.add(message);
         }
       }
@@ -278,12 +303,13 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   Future<void> _loadUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String _userEmail = prefs.getString(USER_EMAIL);
-    if (_userEmail != null && _userEmail.isNotEmpty) {
-      userEmail = _userEmail;
-      setState(() {});
+    if (userEmail == null || userEmail.isEmpty) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String _userEmail = prefs.getString(USER_EMAIL);
+      if (_userEmail != null && _userEmail.isNotEmpty) {
+        userEmail = _userEmail;
+        setState(() {});
+      }
     }
   }
-
 }

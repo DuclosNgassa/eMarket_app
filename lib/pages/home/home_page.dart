@@ -10,6 +10,7 @@ import 'package:emarket_app/pages/search/datasearch.dart';
 import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -79,41 +80,58 @@ class _HomePageState extends State<HomePage> {
       future: _loadPost(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          loadMorePost(snapshot.data);
-          return Container(
-            height: SizeConfig.screenHeight,
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: <Widget>[
-                SliverAppBar(
-                  backgroundColor: Colors.transparent,
-                  expandedHeight: SizeConfig.blockSizeVertical * 10,
-                  floating: true,
-                  snap: false,
-                  pinned: true,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: SizeConfig.blockSizeHorizontal * 2),
-                          child: Row(
-                            children: <Widget>[
-                              new Expanded(
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    fillColor: Colors.white,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10.0)),
+          if(snapshot.data.length > 0){
+            loadMorePost(snapshot.data);
+            return Container(
+              height: SizeConfig.screenHeight,
+              child: CustomScrollView(
+                controller: _scrollController,
+                slivers: <Widget>[
+                  SliverAppBar(
+                    backgroundColor: Colors.transparent,
+                    expandedHeight: SizeConfig.blockSizeVertical * 10,
+                    floating: true,
+                    snap: false,
+                    pinned: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: SizeConfig.blockSizeHorizontal * 2),
+                            child: Row(
+                              children: <Widget>[
+                                new Expanded(
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                      fillColor: Colors.white,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10.0)),
+                                      ),
+                                      hintText: AppLocalizations.of(context)
+                                          .translate('give_your_search'),
+                                      labelText: AppLocalizations.of(context)
+                                          .translate('search'),
+                                      labelStyle: TextStyle(color: Colors.white),
                                     ),
-                                    hintText: AppLocalizations.of(context)
-                                        .translate('give_your_search'),
-                                    labelText: AppLocalizations.of(context)
-                                        .translate('search'),
-                                    labelStyle: TextStyle(color: Colors.white),
+                                    onTap: () {
+                                      showSearch(
+                                        context: context,
+                                        delegate: DataSearch(postList, myFavorits,
+                                            _userEmail, null, null),
+                                      );
+                                    },
                                   ),
-                                  onTap: () {
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.search,
+                                    color: Colors.white,
+                                  ),
+                                  tooltip: AppLocalizations.of(context)
+                                      .translate('to_search'),
+                                  onPressed: () {
                                     showSearch(
                                       context: context,
                                       delegate: DataSearch(postList, myFavorits,
@@ -121,69 +139,79 @@ class _HomePageState extends State<HomePage> {
                                     );
                                   },
                                 ),
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.search,
-                                  color: Colors.white,
+                                SizedBox(
+                                  width: SizeConfig.blockSizeHorizontal * 2,
                                 ),
-                                tooltip: AppLocalizations.of(context)
-                                    .translate('to_search'),
-                                onPressed: () {
-                                  showSearch(
-                                    context: context,
-                                    delegate: DataSearch(postList, myFavorits,
-                                        _userEmail, null, null),
-                                  );
-                                },
-                              ),
-                              SizedBox(
-                                width: SizeConfig.blockSizeHorizontal * 2,
-                              ),
 
 //this goes in as one of the children in our column
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    right: SizeConfig.blockSizeHorizontal),
-                                child: Column(
-                                  children: <Widget>[
-                                    Switch(
-                                      value: isSwitched,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          isSwitched = value;
-                                        });
-                                      },
-                                      activeTrackColor: Colors.lightGreenAccent,
-                                      activeColor: Colors.green,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)
-                                          .translate('pictures'),
-                                      style: SizeConfig.styleNormalWhite,
-                                    ),
-                                  ],
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      right: SizeConfig.blockSizeHorizontal),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Switch(
+                                        value: isSwitched,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            isSwitched = value;
+                                          });
+                                        },
+                                        activeTrackColor: Colors.lightGreenAccent,
+                                        activeColor: Colors.green,
+                                      ),
+                                      Text(
+                                        AppLocalizations.of(context)
+                                            .translate('pictures'),
+                                        style: SizeConfig.styleNormalWhite,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    childAspectRatio: 5,
+                  SliverGrid(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1,
+                      childAspectRatio: 5,
+                    ),
+                    delegate:
+                    SliverChildListDelegate([_buildCategorieGridView()]),
                   ),
-                  delegate:
-                      SliverChildListDelegate([_buildCategorieGridView()]),
+                  _buildSliverGrid(isSwitched),
+                ],
+              ),
+            );
+          } else{
+            return new Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: SizeConfig.blockSizeHorizontal * 3,
+                  vertical: SizeConfig.blockSizeVertical * 2,
                 ),
-                _buildSliverGrid(isSwitched),
-              ],
-            ),
-          );
+                child: Text(
+                  AppLocalizations.of(context).translate('no_post_found'),
+                ),
+              ),
+            );
+          }
+        }
+        else if (snapshot.hasError) {
+          MyNotification.showInfoFlushbar(
+              context,
+              AppLocalizations.of(context).translate('erro'),
+              AppLocalizations.of(context).translate('error_loading'),
+              Icon(
+                Icons.info_outline,
+                size: 28,
+                color: Colors.redAccent,
+              ),
+              Colors.redAccent,
+              4);
         }
         return Center(
           child: Column(

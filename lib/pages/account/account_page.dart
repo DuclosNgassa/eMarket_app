@@ -43,6 +43,7 @@ class _AccountState extends State<AccountPage>
 
   @override
   void initState() {
+    loadUser();
     super.initState();
     controller = TabController(length: 2, vsync: this);
   }
@@ -263,88 +264,60 @@ class _AccountState extends State<AccountPage>
   }
 
   Widget buildMyFavoritPostListView() {
-    return FutureBuilder(
-      future: _loadMyFavorits(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data.length > 0) {
-            return ListView.separated(
-                itemBuilder: (context, index) => Slidable(
-                      actionPane: SlidableBehindActionPane(),
-                      actionExtentRatio: 0.25,
-                      child: Container(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          onTap: () => showPostDetailPage(
-                              _myFavoritPosts.elementAt(index)),
-                          leading: CircleAvatar(
-                            backgroundColor:
-                                isPostActive(_myFavoritPosts.elementAt(index))
-                                    ? colorDeepPurple300
-                                    : colorGrey400,
-                            child: Text((index + 1).toString()),
-                            foregroundColor: colorWhite,
-                          ),
-                          title: Text(_myFavoritPosts.elementAt(index).title),
-                          subtitle: Text(DateConverter.convertToString(
-                              _myFavoritPosts.elementAt(index).created_at,
-                              context)),
-                          trailing: Text(_myFavoritPosts
-                                  .elementAt(index)
-                                  .fee
-                                  .toString() +
-                              ' ' +
-                              AppLocalizations.of(context).translate('fcfa')),
-                        ),
-                      ),
-                      secondaryActions: <Widget>[
-                        IconSlideAction(
-                          caption:
-                              AppLocalizations.of(context).translate('delete'),
-                          color: colorRed,
-                          icon: Icons.delete,
-                          onTap: () => _showDeleteFavoritDialog(
-                              _myFavoritPosts.elementAt(index).id, index),
-                        ),
-                      ],
+    if (_myFavoritPosts.length > 0) {
+      return ListView.separated(
+          itemBuilder: (context, index) => Slidable(
+                actionPane: SlidableBehindActionPane(),
+                actionExtentRatio: 0.25,
+                child: Container(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    onTap: () =>
+                        showPostDetailPage(_myFavoritPosts.elementAt(index)),
+                    leading: CircleAvatar(
+                      backgroundColor:
+                          isPostActive(_myFavoritPosts.elementAt(index))
+                              ? colorDeepPurple300
+                              : colorGrey400,
+                      child: Text((index + 1).toString()),
+                      foregroundColor: colorWhite,
                     ),
-                separatorBuilder: (context, index) => Divider(),
-                itemCount: _myFavoritPosts.length);
-          } else {
-            return new Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: SizeConfig.blockSizeHorizontal * 2,
-                    vertical: SizeConfig.blockSizeVertical),
-                child: Text(
-                  AppLocalizations.of(context).translate('no_favorit') +
-                      "\n\n" +
-                      AppLocalizations.of(context).translate('mark_favorit'),
-                  style: SizeConfig.styleTitleBlack,
+                    title: Text(_myFavoritPosts.elementAt(index).title),
+                    subtitle: Text(DateConverter.convertToString(
+                        _myFavoritPosts.elementAt(index).created_at, context)),
+                    trailing: Text(
+                        _myFavoritPosts.elementAt(index).fee.toString() +
+                            ' ' +
+                            AppLocalizations.of(context).translate('fcfa')),
+                  ),
                 ),
+                secondaryActions: <Widget>[
+                  IconSlideAction(
+                    caption: AppLocalizations.of(context).translate('delete'),
+                    color: colorRed,
+                    icon: Icons.delete,
+                    onTap: () => _showDeleteFavoritDialog(
+                        _myFavoritPosts.elementAt(index).id, index),
+                  ),
+                ],
               ),
-            );
-          }
-        } else if (snapshot.hasError) {
-          MyNotification.showInfoFlushbar(
-              context,
-              AppLocalizations.of(context).translate('erro'),
-              AppLocalizations.of(context).translate('error_loading'),
-              Icon(
-                Icons.info_outline,
-                size: 28,
-                color: Colors.redAccent,
-              ),
-              Colors.redAccent,
-              4);
-        }
-        return Center(
-          child: CupertinoActivityIndicator(
-            radius: SizeConfig.blockSizeHorizontal * 5,
+          separatorBuilder: (context, index) => Divider(),
+          itemCount: _myFavoritPosts.length);
+    } else {
+      return new Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: SizeConfig.blockSizeHorizontal * 2,
+              vertical: SizeConfig.blockSizeVertical),
+          child: Text(
+            AppLocalizations.of(context).translate('no_favorit') +
+                "\n\n" +
+                AppLocalizations.of(context).translate('mark_favorit'),
+            style: SizeConfig.styleTitleBlack,
           ),
-        );
-      },
-    );
+        ),
+      );
+    }
   }
 
   Future<void> archivatePost(Post post, int index) async {
@@ -430,35 +403,39 @@ class _AccountState extends State<AccountPage>
     );
   }
 
-  Future<void> _loadMyPosts() async {
+  Future<void> loadUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String _userEmail = prefs.getString(USER_EMAIL);
     String _userName = prefs.getString(USER_NAME);
-    if (_userEmail != null && _myPosts.isEmpty) {
+    if (_userEmail != null && _userEmail.isNotEmpty) {
       userEmail = _userEmail;
       userName = _userName == null ? userName : _userName;
-      _myPosts = await _postService.fetchPostByUserEmail(userEmail);
+      _loadMyFavorits();
       setState(() {});
     }
+  }
+
+  Future<List<Post>> _loadMyPosts() async {
+    if (userEmail != null && _myPosts.isEmpty) {
+      _myPosts = await _postService.fetchPostByUserEmail(userEmail);
+    }
+
     return _myPosts;
   }
 
   Future<void> _loadMyFavorits() async {
-    if(userEmail == null || userEmail.isEmpty) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      userEmail = prefs.getString(USER_EMAIL);
-    }
-
-    if (userEmail != null && userEmail.isNotEmpty && _myFavoritPosts.isEmpty) {
+    if (userEmail != null &&
+        userEmail.isNotEmpty &&
+        _myFavorits.isEmpty &&
+        _myFavoritPosts.isEmpty) {
       _myFavorits = await _favoritService.fetchFavoritByUserEmail(userEmail);
-
-      for (var i = 0; i < _myFavorits.length; i++) {
-        Post post = await _postService.fetchPostById(_myFavorits[i].postid);
+      _myFavoritPosts.clear();
+      for (Favorit favorit in _myFavorits) {
+        Post post = await _postService.fetchPostById(favorit.postid);
         _myFavoritPosts.add(post);
       }
-      setState(() {});
     }
-    return _myFavoritPosts;
+    setState(() {});
   }
 
   Widget showLogout() {
@@ -500,7 +477,7 @@ class _AccountState extends State<AccountPage>
     Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
         builder: (context) =>
-            new NavigationPage(0), //new ProfileScreen(detailsUser: details),
+            new NavigationPage(HOMEPAGE), //new ProfileScreen(detailsUser: details),
       ),
     );
   }
