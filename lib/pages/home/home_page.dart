@@ -83,6 +83,7 @@ class _HomePageState extends State<HomePage> {
           if(snapshot.data.length > 0){
             loadMorePost(snapshot.data);
             return Container(
+              margin: EdgeInsets.only(bottom: 20),
               height: SizeConfig.screenHeight,
               child: CustomScrollView(
                 controller: _scrollController,
@@ -162,8 +163,9 @@ class _HomePageState extends State<HomePage> {
                                       Text(
                                         AppLocalizations.of(context)
                                             .translate('pictures'),
-                                        style: SizeConfig.styleNormalWhite,
+                                        style: SizeConfig.styleNormalBlack,
                                       ),
+                                      //Icon(Icons.photo_camera, size: SizeConfig.blockSizeHorizontal * 7, color: Colors.black,)
                                     ],
                                   ),
                                 ),
@@ -293,7 +295,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildCategorieGridView() {
     TextStyle _myTextStyle = TextStyle(
-      color: Colors.white,
+      color: Colors.black,
       fontSize: SizeConfig.safeBlockHorizontal * 2.6,
     );
 
@@ -307,11 +309,11 @@ class _HomePageState extends State<HomePage> {
         return CustomCategorieButton(
           width: SizeConfig.blockSizeHorizontal * 32,
           height: heightCustomCategorieButton,
-          fillColor: colorWhite,
+          fillColor: colorDeepPurple400,
           icon: IconData(int.parse(parentCategories[index].icon),
               fontFamily: 'MaterialIcons'),
-          splashColor: colorDeepPurple400,
-          iconColor: colorDeepPurple400,
+          splashColor: colorWhite,
+          iconColor: colorWhite,
           text: parentCategories[index].title,
           textStyle: _myTextStyle,
           onPressed: () =>

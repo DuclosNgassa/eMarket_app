@@ -173,7 +173,7 @@ class _NavigationPageState extends State<NavigationPage> {
                   ClipPath(
                     clipper: CustomShapeClipper(),
                     child: Container(
-                      height: SizeConfig.screenHeight / 2.5,
+                      height: SizeConfig.screenHeight / 4,
                       decoration: BoxDecoration(
                         gradient: new LinearGradient(
                             colors: [colorDeepPurple400, colorDeepPurple300],

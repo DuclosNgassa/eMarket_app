@@ -459,7 +459,7 @@ class PostFormState extends State<PostForm> {
           new IconButton(
             icon: Icon(
               Icons.add_a_photo,
-              color: Colors.white,
+              color: colorDeepPurple400,
             ),
             onPressed: _takePhoto,
             tooltip: AppLocalizations.of(context).translate('take_photo'),
@@ -467,7 +467,7 @@ class PostFormState extends State<PostForm> {
           new IconButton(
             icon: Icon(
               Icons.image,
-              color: Colors.white,
+              color: colorDeepPurple400,
             ),
             onPressed: _selectGalleryImage,
             tooltip:

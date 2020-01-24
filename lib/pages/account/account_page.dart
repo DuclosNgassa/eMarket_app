@@ -99,9 +99,10 @@ class _AccountState extends State<AccountPage>
                       ),
                       expandedHeight: SizeConfig.screenHeight * 0.19,
                       bottom: TabBar(
-                        labelStyle: SizeConfig.styleNormalWhite,
+                        labelColor: Colors.black,
+                        labelStyle: SizeConfig.styleNormalBlack,
                         //isScrollable: true,
-                        indicatorColor: Colors.white,
+                        indicatorColor: colorDeepPurple400,
                         tabs: [
                           Tab(
                               text: AppLocalizations.of(context)

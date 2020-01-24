@@ -66,7 +66,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 ClipPath(
                   clipper: CustomShapeClipper(),
                   child: Container(
-                    height: SizeConfig.screenHeight / 3,
+                      height: SizeConfig.screenHeight / 4,
                     decoration: BoxDecoration(
                       gradient: new LinearGradient(
                           colors: [colorDeepPurple400, colorDeepPurple300],
@@ -224,7 +224,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             ],
                           ),
                           Divider(
-                            height: SizeConfig.blockSizeVertical * 4,
+                            height: SizeConfig.blockSizeVertical * 5,
                           ),
                           PostOwner(
                             postCount: posts.length,
@@ -319,7 +319,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
           icon: Icons.sentiment_satisfied,
           splashColor: Colors.white,
           iconColor: Colors.white,
-          text: AppLocalizations.of(context).translate('no_images'),
+          text: AppLocalizations.of(context).translate('post_without_images'),
           textStyle: SizeConfig.styleNormalWhite,
           onPressed: null,
         ),

@@ -181,7 +181,7 @@ class PostOwnerState extends State<PostOwner> {
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
+            padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 3),
             child: buildContactInformation(context),
           ),
         ],
@@ -218,17 +218,14 @@ class PostOwnerState extends State<PostOwner> {
 
   Row buildContactInformation(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Expanded(
-          child: CustomButton(
-            fillColor: colorDeepPurple400,
-            icon: Icons.sms,
-            splashColor: Colors.white,
-            iconColor: Colors.white,
-            text: AppLocalizations.of(context).translate('text_me'),
-            textStyle: TextStyle(
-                color: Colors.white, fontSize: SizeConfig.BUTTON_FONT_SIZE),
-            onPressed: () => _sendSMS(context),
+        IconButton(
+          onPressed: _sendSMS,
+          icon: Icon(
+            Icons.textsms,
+            size: SizeConfig.blockSizeHorizontal * 10,
+            color: colorDeepPurple400,
           ),
         ),
         SizedBox(
@@ -247,18 +244,32 @@ class PostOwnerState extends State<PostOwner> {
                   textStyle: TextStyle(
                       color: Colors.white,
                       fontSize: SizeConfig.BUTTON_FONT_SIZE),
-                  onPressed: () => _callSaler(context),
+                  onPressed: () => _callSaler,
                 ),
               )
             : Container(),
+/*
         SizedBox(
           width: SizeConfig.blockSizeHorizontal * 2,
+        ),
+        IconButton(
+          onPressed: _makeTransfert,
+          icon: Icon(
+            Icons.monetization_on,
+            size: SizeConfig.blockSizeHorizontal * 10,
+            color: colorDeepPurple400,
+          ),
+        ),
+*/
+        SizedBox(
+          width: SizeConfig.blockSizeHorizontal,
         ),
         IconButton(
           onPressed: shareToSystem,
           icon: Icon(
             Icons.share,
-            color: colorDeepPurple300,
+            size: SizeConfig.blockSizeHorizontal * 10,
+            color: colorDeepPurple400,
           ),
           tooltip: AppLocalizations.of(context).translate('share'),
         ),
@@ -267,13 +278,20 @@ class PostOwnerState extends State<PostOwner> {
   }
 
   Future<void> shareToSystem() async {
-    var response = await FlutterShareMe().shareToSystem(msg: AppLocalizations.of(context).translate('show_advert') + ' *' + widget.post.title + '* . ' + AppLocalizations.of(context).translate('interested') + '. \n' + APP_URL);
+    var response = await FlutterShareMe().shareToSystem(
+        msg: AppLocalizations.of(context).translate('show_advert') +
+            ' *' +
+            widget.post.title +
+            '* . ' +
+            AppLocalizations.of(context).translate('interested') +
+            '. \n' +
+            APP_URL);
     if (response == 'success') {
       print('navigate success');
     }
   }
 
-  _callSaler(BuildContext context) {
+  _callSaler() {
     if (isLogedIn) {
       launch("tel:" + widget.post.phoneNumber);
     } else {
@@ -285,7 +303,40 @@ class PostOwnerState extends State<PostOwner> {
     }
   }
 
-  _sendSMS(BuildContext context) {
+  _sendSMS() {
+    if (isLogedIn) {
+      if (_userEmail != widget.post.useremail) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return ChatPage(
+                  messages: messagesSentOrReceived, post: widget.post);
+            },
+          ),
+        );
+      } else {
+        MyNotification.showInfoFlushbar(
+            context,
+            AppLocalizations.of(context).translate('info'),
+            AppLocalizations.of(context).translate('cannot_send_self_message'),
+            Icon(
+              Icons.info_outline,
+              size: 28,
+              color: Colors.blue.shade300,
+            ),
+            Colors.blue.shade300,
+            2);
+      }
+    } else {
+      Navigator.of(context).pushReplacement(
+        new MaterialPageRoute(
+          builder: (context) => new Login(LoginSource.ownerPage, widget.post),
+        ),
+      );
+    }
+  }
+
+  _makeTransfert() {
     if (isLogedIn) {
       if (_userEmail != widget.post.useremail) {
         Navigator.of(context).push(
@@ -345,7 +396,7 @@ class PostOwnerState extends State<PostOwner> {
     setState(() {});
   }
 
-  bool _isUserLoggedIn(){
+  bool _isUserLoggedIn() {
     return _userEmail != null;
   }
 }

@@ -117,7 +117,7 @@ class _PostEditFormState extends State<PostEditForm> {
                   ClipPath(
                     clipper: CustomShapeClipper(),
                     child: Container(
-                      height: SizeConfig.screenHeight / 2,
+                      height: SizeConfig.screenHeight / 4,
                       decoration: BoxDecoration(
                         gradient: new LinearGradient(
                             colors: [colorDeepPurple400, colorDeepPurple300],
