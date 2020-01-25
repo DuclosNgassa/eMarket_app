@@ -1,3 +1,4 @@
+import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
@@ -44,6 +45,20 @@ class _UserMessagePageState extends State<UserMessagePage> {
           children: <Widget>[
             Stack(
               children: <Widget>[
+                ClipPath(
+                  clipper: CustomShapeClipper(),
+                  child: Container(
+                    height: SizeConfig.screenHeight / 4,
+                    decoration: BoxDecoration(
+                      gradient: new LinearGradient(
+                          colors: [colorDeepPurple400, colorDeepPurple300],
+                          begin: const FractionalOffset(1.0, 1.0),
+                          end: const FractionalOffset(0.2, 0.2),
+                          stops: [0.0, 1.0],
+                          tileMode: TileMode.clamp),
+                    ),
+                  ),
+                ),
                 Container(
                   padding: EdgeInsets.only(
                     left: SizeConfig.blockSizeHorizontal * 5,
@@ -51,16 +66,6 @@ class _UserMessagePageState extends State<UserMessagePage> {
                   ),
                   constraints: BoxConstraints.expand(
                       height: SizeConfig.screenHeight / 6),
-                  decoration: BoxDecoration(
-                      gradient: new LinearGradient(
-                          colors: [colorDeepPurple400, colorDeepPurple300],
-                          begin: const FractionalOffset(1.0, 1.0),
-                          end: const FractionalOffset(0.2, 0.2),
-                          stops: [0.0, 1.0],
-                          tileMode: TileMode.clamp),
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30))),
                   child: _buildTitle(),
                 ),
                 Container(
@@ -74,6 +79,8 @@ class _UserMessagePageState extends State<UserMessagePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           new Container(
+                            padding: EdgeInsets.only(
+                                top: SizeConfig.blockSizeVertical * 2),
                             constraints: BoxConstraints.expand(
                                 height: SizeConfig.screenHeight * 0.845),
                             child: buildMyMessageListView(),
@@ -158,7 +165,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
               actionPane: SlidableBehindActionPane(),
               actionExtentRatio: 0.25,
               child: Container(
-                color: colorWhite,
+                color: colorTransparent,
                 child: ListTile(
                   onTap: () =>
                       openChat(userMessageWithoutLoggedUser.elementAt(index)),

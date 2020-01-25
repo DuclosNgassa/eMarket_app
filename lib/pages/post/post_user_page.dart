@@ -1,3 +1,4 @@
+import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/custom_component/home_card.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
@@ -34,22 +35,26 @@ class _PostUserPageState extends State<PostUserPage> {
           children: <Widget>[
             Stack(
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(
-                      left: SizeConfig.blockSizeHorizontal * 5,
-                      top: SizeConfig.blockSizeVertical * 5),
-                  constraints: BoxConstraints.expand(
-                      height: SizeConfig.screenHeight / 6),
-                  decoration: BoxDecoration(
+                ClipPath(
+                  clipper: CustomShapeClipper(),
+                  child: Container(
+                    height: SizeConfig.screenHeight / 4,
+                    decoration: BoxDecoration(
                       gradient: new LinearGradient(
                           colors: [colorDeepPurple400, colorDeepPurple300],
                           begin: const FractionalOffset(1.0, 1.0),
                           end: const FractionalOffset(0.2, 0.2),
                           stops: [0.0, 1.0],
                           tileMode: TileMode.clamp),
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30))),
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                      left: SizeConfig.blockSizeHorizontal * 5,
+                      top: SizeConfig.blockSizeVertical * 5),
+                  constraints: BoxConstraints.expand(
+                      height: SizeConfig.screenHeight / 6),
                   child: _buildTitle(),
                 ),
                 Container(
@@ -92,7 +97,7 @@ class _PostUserPageState extends State<PostUserPage> {
               children: <Widget>[
                 Expanded(
                   child: new Text(
-                    AppLocalizations.of(context).translate('advert_list') +
+                    AppLocalizations.of(context).translate('advert_list') + ' ' +
                         widget.userName,
                     style: SizeConfig.styleTitleWhite,
                   ),

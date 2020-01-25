@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:emarket_app/converter/date_converter.dart';
+import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
@@ -56,7 +57,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           await setNewIncomingMessage();
           final dynamic notification = message['data'];
           // Handle notification message
-          if(notification['postId'] == widget.post.id.toString() && notification['sender'] == receiver.email) {
+          if (notification['postId'] == widget.post.id.toString() &&
+              notification['sender'] == receiver.email) {
             insertFirebaseMessagingInMessages(notification, message);
           }
         }
@@ -68,7 +70,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           final dynamic notification = message['data'];
 
           // Handle notification message
-          if(notification['postId'] == widget.post.id && notification['receiver'] == userEmail) {
+          if (notification['postId'] == widget.post.id &&
+              notification['receiver'] == userEmail) {
             insertFirebaseMessagingInMessages(notification, message);
           }
         }
@@ -81,7 +84,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
           final dynamic notification = message['data'];
           // Handle notification message
-          if(notification['postId'] == widget.post.id && notification['receiver'] == userEmail) {
+          if (notification['postId'] == widget.post.id &&
+              notification['receiver'] == userEmail) {
             insertFirebaseMessagingInMessages(notification, message);
           }
         }
@@ -129,24 +133,68 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    return new Scaffold(
-      appBar: new AppBar(
-        backgroundColor: colorDeepPurple300,
-        title: _buildTitle(widget.post),
-        automaticallyImplyLeading: false,
-      ),
-      body: new Column(
-        //modified
-        children: <Widget>[
-          new Flexible(
-            child: buildChatListView(),
+    return Container(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Stack(
+                children: <Widget>[
+                  ClipPath(
+                    clipper: CustomShapeClipper(),
+                    child: Container(
+                      height: SizeConfig.screenHeight / 4,
+                      decoration: BoxDecoration(
+                        gradient: new LinearGradient(
+                            colors: [colorDeepPurple400, colorDeepPurple300],
+                            begin: const FractionalOffset(1.0, 1.0),
+                            end: const FractionalOffset(0.2, 0.2),
+                            stops: [0.0, 1.0],
+                            tileMode: TileMode.clamp),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                      left: SizeConfig.blockSizeHorizontal * 5,
+                      top: SizeConfig.blockSizeVertical * 5,
+                    ),
+                    constraints: BoxConstraints.expand(
+                        height: SizeConfig.screenHeight / 6),
+                    child: _buildTitle(widget.post),
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(
+                            top: SizeConfig.blockSizeVertical * 10.5),
+                        constraints: BoxConstraints.expand(
+                            height: SizeConfig.safeBlockVertical * 85),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              new Flexible(
+                                child: buildChatListView(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      new Container(
+                        decoration: new BoxDecoration(
+                            color: Theme.of(context).cardColor),
+                        child: _buildTextComposer(), //modified
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
           ),
-          new Divider(height: SizeConfig.blockSizeVertical),
-          new Container(
-            decoration: new BoxDecoration(color: Theme.of(context).cardColor),
-            child: _buildTextComposer(), //modified
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -364,10 +412,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         <String, dynamic>{
           'notification': <String, dynamic>{
             'body': _message.body,
-            'title': 'Message: ' +
-                userName +
-                ': ' +
-                widget.post.title
+            'title': 'Message: ' + userName + ': ' + widget.post.title
           },
           'priority': 'high',
           'data': <String, dynamic>{
@@ -380,10 +425,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             'receiver': receiver.email,
             'post_title': widget.post.title,
             'body': _message.body,
-            'title': 'Message: ' +
-                userName +
-                ': ' +
-                widget.post.title
+            'title': 'Message: ' + userName + ': ' + widget.post.title
           },
           'to': receiver.device_token,
         },
@@ -407,6 +449,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   void updateMessageRead(List<Message> messages, String useremail) {
-     messageService.updateMessageRead(messages, useremail);
+    messageService.updateMessageRead(messages, useremail);
   }
 }

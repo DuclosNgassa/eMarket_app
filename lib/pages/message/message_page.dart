@@ -1,3 +1,4 @@
+import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/message.dart';
@@ -53,40 +54,56 @@ class _MessagePageState extends State<MessagePage> {
 
             // this is your user instance
             /// is because there is user already logged
-            return Column(
-              children: <Widget>[
-                Padding(
-                  padding:
-                      EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 5),
-                  child: new Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: SizeConfig.blockSizeVertical * 3),
-                        child: new Text(
-                          AppLocalizations.of(context).translate('my') +
-                              ' ' +
-                              AppLocalizations.of(context)
-                                  .translate('messages'),
-                          style: SizeConfig.styleTitleWhite,
-                        ),
+            return Column(children: <Widget>[
+              Stack(
+                children: <Widget>[
+                  ClipPath(
+                    clipper: CustomShapeClipper(),
+                    child: Container(
+                      height: SizeConfig.screenHeight / 6,
+                      decoration: BoxDecoration(
+                        gradient: new LinearGradient(
+                            colors: [colorDeepPurple400, colorDeepPurple300],
+                            begin: const FractionalOffset(1.0, 1.0),
+                            end: const FractionalOffset(0.2, 0.2),
+                            stops: [0.0, 1.0],
+                            tileMode: TileMode.clamp),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding:
-                      EdgeInsets.only(top: SizeConfig.blockSizeHorizontal * 8),
-                  child: new Container(
-                    constraints: BoxConstraints.expand(
-                        height: SizeConfig.screenHeight * 0.70),
-                    child: buildMyMessageListView(),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: SizeConfig.blockSizeHorizontal * 5),
+                    child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: SizeConfig.blockSizeVertical * 3),
+                          child: new Text(
+                            AppLocalizations.of(context).translate('my') +
+                                ' ' +
+                                AppLocalizations.of(context)
+                                    .translate('messages'),
+                            style: SizeConfig.styleTitleWhite,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            );
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: SizeConfig.blockSizeHorizontal * 8),
+                    child: new Container(
+                      constraints: BoxConstraints.expand(
+                          height: SizeConfig.screenHeight * 0.70),
+                      child: buildMyMessageListView(),
+                    ),
+                  ),
+                ],
+              )
+            ]);
           }
           // other way there is no user logged.
           return new Login(LoginSource.messagePage, null);
