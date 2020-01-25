@@ -97,7 +97,7 @@ class _MessagePageState extends State<MessagePage> {
                         top: SizeConfig.blockSizeHorizontal * 8),
                     child: new Container(
                       constraints: BoxConstraints.expand(
-                          height: SizeConfig.screenHeight * 0.70),
+                          height: SizeConfig.screenHeight * 0.80),
                       child: buildMyMessageListView(),
                     ),
                   ),
