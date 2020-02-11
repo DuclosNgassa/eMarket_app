@@ -244,7 +244,7 @@ class PostOwnerState extends State<PostOwner> {
                   textStyle: TextStyle(
                       color: Colors.white,
                       fontSize: SizeConfig.BUTTON_FONT_SIZE),
-                  onPressed: () => _callSaler,
+                  onPressed: _callSaler,
                 ),
               )
             : Container(),
@@ -304,39 +304,6 @@ class PostOwnerState extends State<PostOwner> {
   }
 
   _sendSMS() {
-    if (isLogedIn) {
-      if (_userEmail != widget.post.useremail) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) {
-              return ChatPage(
-                  messages: messagesSentOrReceived, post: widget.post);
-            },
-          ),
-        );
-      } else {
-        MyNotification.showInfoFlushbar(
-            context,
-            AppLocalizations.of(context).translate('info'),
-            AppLocalizations.of(context).translate('cannot_send_self_message'),
-            Icon(
-              Icons.info_outline,
-              size: 28,
-              color: Colors.blue.shade300,
-            ),
-            Colors.blue.shade300,
-            2);
-      }
-    } else {
-      Navigator.of(context).pushReplacement(
-        new MaterialPageRoute(
-          builder: (context) => new Login(LoginSource.ownerPage, widget.post),
-        ),
-      );
-    }
-  }
-
-  _makeTransfert() {
     if (isLogedIn) {
       if (_userEmail != widget.post.useremail) {
         Navigator.of(context).push(

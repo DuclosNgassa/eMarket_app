@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
           if(snapshot.data.length > 0){
             loadMorePost(snapshot.data);
             return Container(
-              margin: EdgeInsets.only(bottom: 20),
+              margin: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 3),
               height: SizeConfig.screenHeight,
               child: CustomScrollView(
                 controller: _scrollController,

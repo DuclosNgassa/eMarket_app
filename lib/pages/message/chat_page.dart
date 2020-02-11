@@ -95,40 +95,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     super.initState();
   }
 
-  Future setNewIncomingMessage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool(NEW_MESSAGE, true);
-  }
-
-  void insertFirebaseMessagingInMessages(
-      notification, Map<String, dynamic> message) {
-    final Completer<Map<String, dynamic>> completer =
-        Completer<Map<String, dynamic>>();
-
-    setState(() {
-      Message fireBaseMessage = new Message(
-          body: notification["body"],
-          created_at: DateTime.now().subtract(Duration(hours: 2)),
-          postid:
-              widget.post != null ? widget.post.id : widget.messages[0].postid,
-          receiver: userName,
-          sender: receiver.email);
-
-      _messages.insert(0, fireBaseMessage);
-    });
-
-    completer.complete(message);
-  }
-
-  void iOS_Permission() {
-    _firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true));
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -172,7 +138,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                         constraints: BoxConstraints.expand(
                             height: SizeConfig.safeBlockVertical * 85),
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.only(top:SizeConfig.blockSizeVertical * 4),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -197,6 +163,40 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  Future setNewIncomingMessage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool(NEW_MESSAGE, true);
+  }
+
+  void insertFirebaseMessagingInMessages(
+      notification, Map<String, dynamic> message) {
+    final Completer<Map<String, dynamic>> completer =
+    Completer<Map<String, dynamic>>();
+
+    setState(() {
+      Message fireBaseMessage = new Message(
+          body: notification["body"],
+          created_at: DateTime.now().subtract(Duration(hours: 2)),
+          postid:
+          widget.post != null ? widget.post.id : widget.messages[0].postid,
+          receiver: userName,
+          sender: receiver.email);
+
+      _messages.insert(0, fireBaseMessage);
+    });
+
+    completer.complete(message);
+  }
+
+  void iOS_Permission() {
+    _firebaseMessaging.requestNotificationPermissions(
+        IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    });
   }
 
   ListView buildChatListView() {

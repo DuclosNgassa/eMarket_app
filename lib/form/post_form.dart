@@ -350,7 +350,7 @@ class PostFormState extends State<PostForm> {
               onSaved: (val) => newPost.description = val,
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 6),
               child: Container(
                 width: SizeConfig.screenWidth * 0.9,
                 padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),

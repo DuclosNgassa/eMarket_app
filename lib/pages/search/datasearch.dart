@@ -2,7 +2,9 @@ import 'package:emarket_app/custom_component/home_card.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/model/favorit.dart';
+import 'package:emarket_app/model/feetyp.dart';
 import 'package:emarket_app/model/post.dart';
+import 'package:emarket_app/model/posttyp.dart';
 import 'package:emarket_app/model/searchparameter.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/search/searchparameter.dart';
@@ -131,46 +133,82 @@ class DataSearch extends SearchDelegate<Post> {
       return post.title.toLowerCase().contains(query.toLowerCase());
     }
 
-    return _compareString(post.title, searchParameter.title) ||
-        _compareInt(post.categorieid, searchParameter.category) ||
-        _compareFee(post) ||
-        _compareString(post.city, searchParameter.city) ||
-        post.post_typ == searchParameter.postTyp ||
-        post.fee_typ == searchParameter.feeTyp;
+    return _compareString(post.title, searchParameter.title) &&
+        _compareInt(post.categorieid, searchParameter.category) &&
+        _compareFee(post.fee, searchParameter.feeMin, searchParameter.feeMax) &&
+        _compareFeeTyp(post.fee_typ, searchParameter.feeTyp) &&
+        _comparePostTyp(post.post_typ, searchParameter.postTyp) &&
+        _compareString(post.city, searchParameter.city);
   }
 
-  bool _compareString(String value1, String value2) {
-    if ((value1 == null && value2 == null) ||
-        (value1.isEmpty && value2.isEmpty))
-      return true; // both are null or empty
-    if (value1 == null || value2 == null || value1.isEmpty || value2.isEmpty)
+  ///  This method compare a string value of a post with the corresponding string value of the searchparameter
+  ///  @param valuePost a string value of a post
+  ///  @param valueSearchParam a string value of the searchparameter
+  ///  Please don´t change parameter´s order!!!
+  bool _compareString(String valuePost, String valueSearchParam) { // Please don´t change parameter´s order!!!
+    if(valueSearchParam == null || valueSearchParam.isEmpty)
+      return true;
+    if (valuePost == null || valuePost.isEmpty)
       return false;
 
-    return value1.toLowerCase().contains(value2.toLowerCase());
+    return valuePost.toLowerCase().contains(valueSearchParam.toLowerCase());
   }
 
-  bool _compareInt(int value1, int value2) {
-    if (value1 == null && value2 == null) return true; // all are null
-    if (value1 == null || value2 == null) return false; // only one are null
+  ///  This method compare a int value of a post with the corresponding int value of the searchparameter
+  ///  @param valuePost a int value of a post
+  ///  @param valueSearchParam a int value of the searchparameter
+  ///  Please don´t change parameter´s order!!!
+  bool _compareInt(int valuePost, int valueSearchParam) {
+    if (valueSearchParam == null) return true;
+    if (valuePost == null) return false;
 
-    return value1 == value2;
+    return valuePost == valueSearchParam;
   }
 
-  bool _compareFee(Post post) {
-    if (searchParameter.feeMax == null && searchParameter.feeMin != null) {
-      return post.fee >= searchParameter.feeMin;
+  ///  This method compare the postfee value of a post with the corresponding postfee value of the searchparameter
+  ///  @param postFee
+  ///  @param feeMinSearchParam
+  ///  @param feeMaxSearchParam
+  ///  Please don´t change parameter´s order!!!
+  bool _compareFee(int postFee, int feeMinSearchParam, int feeMaxSearchParam) {
+    if(feeMinSearchParam == null && feeMaxSearchParam == null)
+      return true;
+    if (feeMaxSearchParam == null && feeMinSearchParam != null) {
+      return postFee >= feeMinSearchParam;
     }
 
-    if (searchParameter.feeMax != null && searchParameter.feeMin == null) {
-      return post.fee <= searchParameter.feeMax;
+    if (feeMaxSearchParam != null && feeMinSearchParam == null) {
+      return postFee <= feeMaxSearchParam;
     }
 
-    if (searchParameter.feeMax != null && searchParameter.feeMin != null) {
-      return post.fee >= searchParameter.feeMin &&
-          post.fee <= searchParameter.feeMax;
+    if (feeMaxSearchParam != null && feeMinSearchParam != null) {
+      return postFee >= feeMinSearchParam &&
+          postFee <= feeMaxSearchParam;
     }
 
     return false;
+  }
+
+  ///  This method compare the postFeeTyp value of a post with the corresponding postFeeTyp value of the searchparameter
+  ///  @param postFeeTyp
+  ///  @param searchParamFeeTyp
+  ///  Please don´t change parameter´s order!!!
+  bool _compareFeeTyp(FeeTyp postFeeTyp, FeeTyp searchParamFeeTyp) {
+    if(searchParamFeeTyp == null)
+      return true;
+
+    return postFeeTyp == searchParamFeeTyp;
+  }
+
+  ///  This method compare the postTyp value of a post with the corresponding postTyp value of the searchparameter
+  ///  @param postTyp
+  ///  @param searchParamPostTyp
+  ///  Please don´t change parameter´s order!!!
+  bool _comparePostTyp(PostTyp postTyp, PostTyp searchParamPostTyp) {
+    if(searchParamPostTyp == null || searchParamPostTyp == PostTyp.all)
+      return true;
+
+    return postTyp == searchParamPostTyp;
   }
 
   Future showCategoriePage(BuildContext context) async {
@@ -195,8 +233,6 @@ class DataSearch extends SearchDelegate<Post> {
       print('Ville: ${searchParameter.city}');
     }
 
-    var _searchParameter = searchParameter;
-    print("Searchparameter Categorie: " + _searchParameter.category.toString());
   }
 
   void _clearFormSearch() {

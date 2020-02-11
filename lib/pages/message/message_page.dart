@@ -80,7 +80,7 @@ class _MessagePageState extends State<MessagePage> {
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.only(
-                              top: SizeConfig.blockSizeVertical * 3),
+                              top: SizeConfig.blockSizeVertical),
                           child: new Text(
                             AppLocalizations.of(context).translate('my') +
                                 ' ' +
@@ -94,10 +94,10 @@ class _MessagePageState extends State<MessagePage> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                        top: SizeConfig.blockSizeHorizontal * 8),
+                        top: SizeConfig.blockSizeVertical * 8),
                     child: new Container(
                       constraints: BoxConstraints.expand(
-                          height: SizeConfig.screenHeight * 0.80),
+                          height: SizeConfig.screenHeight * 0.77),
                       child: buildMyMessageListView(),
                     ),
                   ),

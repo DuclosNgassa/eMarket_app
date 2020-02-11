@@ -22,9 +22,9 @@ class SearchParameterFormState extends State<SearchParameterForm> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   String _categorie = '';
   int _categorieId;
-  PostTyp _postTyp = PostTyp.offer;
-  List<String> _feeTyps = <String>['Kdo', 'Negociable', 'Fixe'];
-  String _feeTyp = 'Kdo';
+  PostTyp _postTyp = PostTyp.all;
+  List<String> _feeTyps = <String>['Kdo', 'Negociable', 'Fixe', 'All'];
+  String _feeTyp = 'All';
 
   FormValidator formValidator = new FormValidator();
   SearchParameter searchParameter = new SearchParameter();
@@ -302,7 +302,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
     form.save();
     searchParameter.category = _categorieId;
     searchParameter.postTyp = _postTyp;
-    searchParameter.feeTyp = Converter.convertStringToFeeTyp (_feeTyp);
+    searchParameter.feeTyp = _feeTyp == 'All' ? null : Converter.convertStringToFeeTyp (_feeTyp);
 
     Navigator.of(context).pop(searchParameter);
   }
