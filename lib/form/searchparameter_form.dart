@@ -12,7 +12,8 @@ import '../model/searchparameter.dart';
 import '../validator/form_validator.dart';
 
 class SearchParameterForm extends StatefulWidget {
-  SearchParameterForm(BuildContext context);
+  final String allTranslated;
+  SearchParameterForm(BuildContext context, this.allTranslated);
 
   @override
   SearchParameterFormState createState() => new SearchParameterFormState();
@@ -23,14 +24,20 @@ class SearchParameterFormState extends State<SearchParameterForm> {
   String _categorie = '';
   int _categorieId;
   PostTyp _postTyp = PostTyp.all;
-  List<String> _feeTyps = <String>['Kdo', 'Negociable', 'Fixe', 'All'];
-  String _feeTyp = 'All';
-
+  String _feeTyp = "";
   FormValidator formValidator = new FormValidator();
   SearchParameter searchParameter = new SearchParameter();
 
+
+  @override
+  void initState() {
+    _feeTyp = widget.allTranslated;
+  }
+
   @override
   Widget build(BuildContext context) {
+    List<String> _feeTyps = <String>[AppLocalizations.of(context).translate('gift'), AppLocalizations.of(context).translate('negotiable'), AppLocalizations.of(context).translate('fixed'), AppLocalizations.of(context).translate('all')];
+
     SizeConfig().init(context);
 
     return Container(

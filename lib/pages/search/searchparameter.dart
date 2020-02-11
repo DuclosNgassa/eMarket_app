@@ -16,6 +16,7 @@ class _SearchParameterPageState extends State<SearchParameterPage> {
 
   @override
   Widget build(BuildContext context) {
+    String allTranslated = AppLocalizations.of(context).translate('all');
     SizeConfig().init(context);
 
     return Scaffold(
@@ -34,7 +35,7 @@ class _SearchParameterPageState extends State<SearchParameterPage> {
             slivers: <Widget>[
               SliverList(
                 delegate: SliverChildListDelegate(
-                  [SearchParameterForm(context)],
+                  [SearchParameterForm(context, allTranslated)],
                 ),
               ),
             ],

@@ -229,10 +229,9 @@ class DataSearch extends SearchDelegate<Post> {
         builder: (context) => SearchParameterPage(),
       ),
     );
-    if (searchParameter.city != null) {
+    if (searchParameter != null && searchParameter.city != null) {
       print('Ville: ${searchParameter.city}');
     }
-
   }
 
   void _clearFormSearch() {
