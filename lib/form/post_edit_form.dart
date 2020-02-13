@@ -53,7 +53,7 @@ class _PostEditFormState extends State<PostEditForm> {
   List<String> _feeTyps = <String>['Kdo', 'Negociable', 'Fixe'];
   String _feeTyp = 'Kdo';
 
-  CategorieTile _categorieTile = new CategorieTile('', 0);
+  CategorieTile _categorieTile = new CategorieTile('Categorie', 0);
 
   int imageCount = 0;
   static const int MAX_IMAGE = 4;
@@ -394,7 +394,8 @@ class _PostEditFormState extends State<PostEditForm> {
                           ),
                           TextFormField(
                             style: SizeConfig.styleFormGrey,
-                            textInputAction: TextInputAction.done,
+                            textInputAction: TextInputAction.newline,
+                            keyboardType: TextInputType.multiline,
                             focusNode: _descriptionFocusNode,
                             onFieldSubmitted: (value) {
                               _descriptionFocusNode.unfocus();
@@ -921,7 +922,9 @@ class _PostEditFormState extends State<PostEditForm> {
 
     Categorie _categorie =
         await _categorieService.fetchCategorieByID(widget.post.categorieid);
-    _categorieTile = new CategorieTile(_categorie.title, _categorie.id);
+    String translatedCategory = AppLocalizations.of(context).translate(_categorie.title);
+
+    _categorieTile = new CategorieTile(translatedCategory == null ? _categorieTile.title : translatedCategory, _categorie.id);
     setState(() {});
   }
 

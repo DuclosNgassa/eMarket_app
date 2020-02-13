@@ -14,6 +14,7 @@ import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/image_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/user_service.dart';
+import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,6 +42,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
   String userEmail;
   bool _isDownloaded = false;
   User _postOwner;
+  Favorit myFavoritToAdd;
+  Favorit myFavoritToRemove;
+
+  Icon favoritIcon = Icon(
+    Icons.favorite_border,
+    size: 30,
+    color: colorGrey400,
+  );
 
   @override
   void initState() {
@@ -51,6 +60,19 @@ class _PostDetailPageState extends State<PostDetailPage> {
     _getUserByEmail();
     _updatePostView();
     _loadPostImages();
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+
+    if (myFavoritToAdd != null) {
+      saveFavorit(myFavoritToAdd);
+    }
+
+    if (myFavoritToRemove != null) {
+      deleteFavorit(myFavoritToRemove);
+    }
   }
 
   @override
@@ -125,6 +147,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   widget.post.title,
                                   style: SizeConfig.styleTitleBlack,
                                   //style: titleDetailStyle,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () => updateIconFavorit(),
+                                child: CircleAvatar(
+                                  backgroundColor: colorGrey100,
+                                  child: favoritIcon,
                                 ),
                               ),
                             ],
@@ -274,7 +303,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return PostUserPage(posts, _postOwner.name, _postOwner.email, myFavorits);
+          return PostUserPage(posts, _postOwner.name, _postOwner.email, myFavorits, userEmail);
         },
       ),
     );
@@ -396,12 +425,18 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 
   Future<void> _loadMyFavorits() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String _userEmail = prefs.getString(USER_EMAIL);
-    if (_userEmail != null && _userEmail.isNotEmpty) {
-      myFavorits = await _favoritService.fetchFavoritByUserEmail(_userEmail);
+    if(userEmail == null || userEmail.isEmpty) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      userEmail = prefs.getString(USER_EMAIL);
+    }
+    if (userEmail != null && userEmail.isNotEmpty) {
+      myFavorits = await _favoritService.fetchFavoritByUserEmail(userEmail);
+
+      setFavoritIcon();
+
       setState(() {});
     }
+
   }
 
   Future<void> _getUserByEmail() async {
@@ -421,4 +456,89 @@ class _PostDetailPageState extends State<PostDetailPage> {
   bool _isPostOwner() {
     return userEmail == widget.post.useremail;
   }
+
+  Future<void> updateIconFavorit() async {
+    if (userEmail != null) {
+      if (favoritIcon.icon == Icons.favorite) {
+        for (Favorit item in myFavorits) {
+          if (item.useremail == userEmail && item.postid == widget.post.id) {
+            myFavoritToRemove = item;
+          }
+        }
+        removeFavorit();
+      } else {
+        Favorit favorit = new Favorit();
+        favorit.postid = widget.post.id;
+        favorit.useremail = userEmail;
+        favorit.created_at = DateTime.now();
+
+        for (Favorit item in myFavorits) {
+          if (!(item.useremail == userEmail && item.postid == widget.post.id)) {
+            myFavoritToAdd = favorit;
+          }
+        }
+
+        addFavorit(favorit);
+      }
+      setState(() {});
+    } else {
+      MyNotification.showInfoFlushbar(
+          context,
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate('connect_to_save_advert'),
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.blue.shade300,
+          ),
+          Colors.blue.shade300,
+          2);
+    }
+  }
+
+  void removeFavorit() {
+    if (myFavoritToAdd != null) {
+      myFavoritToAdd = null;
+    }
+
+    favoritIcon = Icon(
+      Icons.favorite_border,
+      size: 30,
+      color: colorGrey400,
+    );
+  }
+
+  void addFavorit(Favorit favorit) {
+    if (myFavorits.isEmpty) {
+      myFavoritToAdd = favorit;
+    }
+
+    favoritIcon = Icon(
+      Icons.favorite,
+      color: Colors.redAccent,
+      size: 30,
+    );
+  }
+
+  Future<Favorit> saveFavorit(Favorit favorit) async {
+    Map<String, dynamic> favoritParams = favorit.toMap(favorit);
+    Favorit savedFavorit = await _favoritService.save(favoritParams);
+
+    return savedFavorit;
+  }
+
+  Future<void> deleteFavorit(Favorit favorit) async {
+    await _favoritService.delete(favorit.id);
+  }
+
+  Future<void> setFavoritIcon() async {
+    if (userEmail != null) {
+      for (Favorit item in myFavorits) {
+        if (item.useremail == userEmail && item.postid == widget.post.id) {
+          addFavorit(null);
+        }
+      }
+    }
+  }
+
 }

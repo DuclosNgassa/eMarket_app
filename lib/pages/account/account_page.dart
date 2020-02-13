@@ -380,6 +380,15 @@ class _AccountState extends State<AccountPage>
     await _postService.update(postParams);
     _myPosts.removeAt(index);
 
+    //Find if favoritList contains deleted post
+    int indexFavoritToUpdate =
+        _myFavoritPosts.indexWhere((item) => item.id == _post.id);
+    if (indexFavoritToUpdate >= 0) {
+      Post postFavoriteToUpdate =
+          _myFavoritPosts.removeAt(indexFavoritToUpdate);
+      postFavoriteToUpdate.status = Status.deleted;
+      _myFavoritPosts.insert(indexFavoritToUpdate, postFavoriteToUpdate);
+    }
     setState(() {});
   }
 
@@ -477,8 +486,8 @@ class _AccountState extends State<AccountPage>
 
     Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
-        builder: (context) =>
-            new NavigationPage(HOMEPAGE), //new ProfileScreen(detailsUser: details),
+        builder: (context) => new NavigationPage(
+            HOMEPAGE), //new ProfileScreen(detailsUser: details),
       ),
     );
   }

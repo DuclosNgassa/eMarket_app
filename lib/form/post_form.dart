@@ -326,12 +326,9 @@ class PostFormState extends State<PostForm> {
             ),
             TextFormField(
               style: SizeConfig.styleFormGrey,
-              textInputAction: TextInputAction.done,
               focusNode: _descriptionFocusNode,
-              onFieldSubmitted: (value) {
-                _descriptionFocusNode.unfocus();
-                _submitForm();
-              },
+              textInputAction: TextInputAction.newline,
+              keyboardType: TextInputType.multiline,
               maxLines: 4,
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context)

@@ -10,10 +10,11 @@ import 'package:flutter/material.dart';
 class PostUserPage extends StatefulWidget {
   final List<Post> posts;
   final List<Favorit> myFavorits;
-  final String userName;
+  final String postOwnerName;
+  final String postOwnerEmail;
   final String userEmail;
 
-  PostUserPage(this.posts, this.userName, this.userEmail, this.myFavorits);
+  PostUserPage(this.posts, this.postOwnerName, this.postOwnerEmail, this.myFavorits, this.userEmail);
 
   @override
   _PostUserPageState createState() => _PostUserPageState();
@@ -98,7 +99,7 @@ class _PostUserPageState extends State<PostUserPage> {
                 Expanded(
                   child: new Text(
                     AppLocalizations.of(context).translate('advert_list') + ' ' +
-                        widget.userName,
+                        widget.postOwnerName,
                     style: SizeConfig.styleTitleWhite,
                   ),
                 ),
