@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   final CategorieService _categorieService = new CategorieService();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   List<Message> allConversation = new List<Message>();
-  bool isSwitched = false;
+  bool showPictures = false;
 
   String _deviceToken = "";
   String _userEmail = "";
@@ -151,10 +151,10 @@ class _HomePageState extends State<HomePage> {
                                   child: Column(
                                     children: <Widget>[
                                       Switch(
-                                        value: isSwitched,
+                                        value: showPictures,
                                         onChanged: (value) {
                                           setState(() {
-                                            isSwitched = value;
+                                            showPictures = value;
                                           });
                                         },
                                         activeTrackColor: Colors.lightGreenAccent,
@@ -184,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                     delegate:
                     SliverChildListDelegate([_buildCategorieGridView()]),
                   ),
-                  _buildSliverGrid(isSwitched),
+                  _buildSliverGrid(showPictures),
                 ],
               ),
             );
@@ -231,8 +231,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  SliverGrid _buildSliverGrid(bool showImages) {
-    if (showImages) {
+  SliverGrid _buildSliverGrid(bool showPictures) {
+    if (showPictures) {
       return SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -354,6 +354,7 @@ class _HomePageState extends State<HomePage> {
   Future<List<Post>> _loadPost() async {
     List<Post> _postList = await _postService.fetchActivePosts();
 
+    //fetch image to display
     for (var post in _postList) {
       await post.getImageUrl();
     }

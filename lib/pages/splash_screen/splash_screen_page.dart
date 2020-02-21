@@ -1,10 +1,10 @@
+import 'dart:async';
+
 import 'package:emarket_app/custom_component/custom_linear_gradient.dart';
-import 'package:emarket_app/pages/home/home_page.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:shimmer/shimmer.dart';
 
 class SplashScreenPage extends StatefulWidget {
@@ -23,7 +23,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   }
 
   Future<bool> _mockCheckForSession() async {
-    await Future.delayed(Duration(milliseconds: 6000), () {});
+    await Future.delayed(Duration(milliseconds: 2500), () {});
 
     return true;
   }

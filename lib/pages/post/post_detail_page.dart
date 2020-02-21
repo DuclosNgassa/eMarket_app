@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
@@ -88,7 +89,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 ClipPath(
                   clipper: CustomShapeClipper(),
                   child: Container(
-                      height: SizeConfig.screenHeight / 4,
+                    height: SizeConfig.screenHeight / 4,
                     decoration: BoxDecoration(
                       gradient: new LinearGradient(
                           colors: [colorDeepPurple400, colorDeepPurple300],
@@ -303,7 +304,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return PostUserPage(posts, _postOwner.name, _postOwner.email, myFavorits, userEmail);
+          return PostUserPage(
+              posts, _postOwner.name, _postOwner.email, myFavorits, userEmail);
         },
       ),
     );
@@ -392,11 +394,18 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   child: AspectRatio(
                     aspectRatio: 0.5,
                     child: asset != null
-                        ? Image.network(
-                            asset.image_url,
+                        ? CachedNetworkImage(
+                            placeholder: (context, url) =>
+                                Image.asset("assets/gif/loading-world.gif"),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                            imageUrl: asset.image_url,
                             fit: BoxFit.fill,
                           )
-                        : null,
+                        : new Container(
+                            width: 0.0,
+                            height: 0.0,
+                          ),
                   ),
                 ),
               ),
@@ -421,11 +430,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   Future<void> _loadPosts() async {
     posts = await _postService.fetchPostByUserEmail(widget.post.useremail);
+
+    //fetch image to display
+    for (var post in posts) {
+      await post.getImageUrl();
+    }
+
     setState(() {});
   }
 
   Future<void> _loadMyFavorits() async {
-    if(userEmail == null || userEmail.isEmpty) {
+    if (userEmail == null || userEmail.isEmpty) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       userEmail = prefs.getString(USER_EMAIL);
     }
@@ -436,7 +451,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
       setState(() {});
     }
-
   }
 
   Future<void> _getUserByEmail() async {
@@ -540,5 +554,4 @@ class _PostDetailPageState extends State<PostDetailPage> {
       }
     }
   }
-
 }

@@ -76,7 +76,8 @@ class ContactFormState extends State<ContactForm> {
             ),
             TextFormField(
               style: SizeConfig.styleFormGrey,
-              textInputAction: TextInputAction.done,
+              textInputAction: TextInputAction.newline,
+              keyboardType: TextInputType.multiline,
               focusNode: _messageFocusNode,
               onFieldSubmitted: (value) {
                 _messageFocusNode.unfocus();

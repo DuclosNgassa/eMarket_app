@@ -1,5 +1,6 @@
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/custom_component/home_card.dart';
+import 'package:emarket_app/custom_component/home_card_picture.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
@@ -14,13 +15,16 @@ class PostUserPage extends StatefulWidget {
   final String postOwnerEmail;
   final String userEmail;
 
-  PostUserPage(this.posts, this.postOwnerName, this.postOwnerEmail, this.myFavorits, this.userEmail);
+  PostUserPage(this.posts, this.postOwnerName, this.postOwnerEmail,
+      this.myFavorits, this.userEmail);
 
   @override
   _PostUserPageState createState() => _PostUserPageState();
 }
 
 class _PostUserPageState extends State<PostUserPage> {
+  bool showPictures = false;
+
   @override
   void initState() {
     super.initState();
@@ -69,9 +73,10 @@ class _PostUserPageState extends State<PostUserPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           new Container(
+                            padding: EdgeInsets.only(top: 10),
                             constraints: BoxConstraints.expand(
                                 height: SizeConfig.screenHeight * 0.845),
-                            child: buildMyPostListView(),
+                            child: buildMyPostListView(showPictures),
                           ),
                         ],
                       ),
@@ -89,7 +94,9 @@ class _PostUserPageState extends State<PostUserPage> {
   Container _buildTitle() {
     return Container(
       child: Padding(
-        padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2, left: SizeConfig.blockSizeHorizontal * 2),
+        padding: EdgeInsets.only(
+            left: SizeConfig.blockSizeHorizontal * 2,
+            right: SizeConfig.blockSizeHorizontal),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -98,9 +105,32 @@ class _PostUserPageState extends State<PostUserPage> {
               children: <Widget>[
                 Expanded(
                   child: new Text(
-                    AppLocalizations.of(context).translate('advert_list') + ' ' +
+                    AppLocalizations.of(context).translate('advert_list') +
+                        ' ' +
                         widget.postOwnerName,
                     style: SizeConfig.styleTitleWhite,
+                  ),
+                ),
+                Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Switch(
+                        value: showPictures,
+                        onChanged: (value) {
+                          setState(() {
+                            showPictures = value;
+                          });
+                        },
+                        activeTrackColor: Colors.lightGreenAccent,
+                        activeColor: Colors.green,
+                      ),
+                      Text(
+                        AppLocalizations.of(context).translate('pictures'),
+                        style: SizeConfig.styleNormalBlack,
+                      ),
+                      //Icon(Icons.photo_camera, size: SizeConfig.blockSizeHorizontal * 7, color: Colors.black,)
+                    ],
                   ),
                 ),
               ],
@@ -111,27 +141,47 @@ class _PostUserPageState extends State<PostUserPage> {
     );
   }
 
-  Widget buildMyPostListView() {
-
-    return GridView.count(
-      crossAxisCount: 2,
-      mainAxisSpacing: 0,
-      crossAxisSpacing: 0,
-      childAspectRatio: 1.5,
-
-      children: List.generate(widget.posts.length, (index) {
-        return Padding(
-          padding: EdgeInsets.only(
-              left: index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
-          child: HomeCard(
-            widget.posts.elementAt(index),
-            widget.myFavorits,
-            widget.userEmail,
-            SizeConfig.blockSizeVertical * 18,
-            SizeConfig.screenWidth * 0.5 - 10,
-          ),
-        );
-      }),
-    );
+  Widget buildMyPostListView(bool showPictures) {
+    if (showPictures) {
+      return GridView.count(
+        crossAxisCount: 2,
+        mainAxisSpacing: 0,
+        crossAxisSpacing: 0,
+        childAspectRatio: 1,
+        children: List.generate(widget.posts.length, (index) {
+          return Padding(
+            padding: EdgeInsets.only(
+                left: index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
+            child: HomeCardPicture(
+              widget.posts.elementAt(index),
+              widget.myFavorits,
+              widget.userEmail,
+              SizeConfig.blockSizeVertical * 60,
+              SizeConfig.screenWidth * 0.5 - 10,
+            ),
+          );
+        }),
+      );
+    } else {
+      return GridView.count(
+        crossAxisCount: 2,
+        mainAxisSpacing: 0,
+        crossAxisSpacing: 0,
+        childAspectRatio: 1.5,
+        children: List.generate(widget.posts.length, (index) {
+          return Padding(
+            padding: EdgeInsets.only(
+                left: index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
+            child: HomeCard(
+              widget.posts.elementAt(index),
+              widget.myFavorits,
+              widget.userEmail,
+              SizeConfig.blockSizeVertical * 20,
+              SizeConfig.screenWidth * 0.5 - 10,
+            ),
+          );
+        }),
+      );
+    }
   }
 }

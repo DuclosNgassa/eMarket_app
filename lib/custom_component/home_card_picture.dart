@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/services/favorit_service.dart';
@@ -5,7 +6,7 @@ import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter/widgets.dart';
 import '../model/post.dart';
 import '../pages/post/post_detail_page.dart';
 
@@ -288,10 +289,33 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
                     blurRadius: 10.0)
               ]),
               child: AspectRatio(
+
                 aspectRatio: 1.7,
-                child: FadeInImage.assetNetwork(
-                  placeholder: 'assets/gif/loading-world.gif',
-                  image: imageUrl,
+                child:
+/*
+
+                ExtendedImage.network(
+                  imageUrl,
+
+                  //width: ScreenUtil.instance.setWidth(400),
+                  //height: ScreenUtil.instance.setWidth(400),
+                  fit: BoxFit.fitWidth,
+                  cache: true,
+                  //border: Border.all(color: Colors.red, width: 1.0),
+                  //shape: boxShape,
+                  //borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                  //cancelToken: cancellationToken,
+                ),
+*/
+
+
+
+
+
+                CachedNetworkImage(
+                  placeholder: (context, url) => Image.asset("assets/gif/loading-world.gif"),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  imageUrl: imageUrl,
                   fit: BoxFit.fitWidth,
                 ),
               ),

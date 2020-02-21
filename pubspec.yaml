@@ -42,6 +42,8 @@ dependencies:
   webview_flutter: ^0.3.18+1
   connectivity: ^0.4.6+2
   shimmer: ^1.0.1
+  extended_image: ^0.7.1
+  #cached_network_image: ^2.0.0
 
   flutter_localizations:
     sdk: flutter
