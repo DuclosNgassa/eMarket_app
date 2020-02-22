@@ -33,7 +33,8 @@ class _HomePageState extends State<HomePage> {
   final FavoritService _favoritService = new FavoritService();
   final CategorieService _categorieService = new CategorieService();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+  SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
 
   List<Message> allConversation = new List<Message>();
   bool showPictures = false;
@@ -123,8 +124,13 @@ class _HomePageState extends State<HomePage> {
                                     onTap: () {
                                       showSearch(
                                         context: context,
-                                        delegate: DataSearch(postList,
-                                            myFavorits, _userEmail, _searchLabel, null, null),
+                                        delegate: DataSearch(
+                                            postList,
+                                            myFavorits,
+                                            _userEmail,
+                                            _searchLabel,
+                                            null,
+                                            null),
                                       );
                                     },
                                   ),
@@ -351,20 +357,32 @@ class _HomePageState extends State<HomePage> {
 
     showSearch(
       context: context,
-      delegate:
-          DataSearch(postList, myFavorits, _userEmail, _searchLabel, null, childCategories),
+      delegate: DataSearch(postList, myFavorits, _userEmail, _searchLabel, null,
+          childCategories),
     );
   }
 
   Future<List<Post>> _loadPost() async {
-    List<Post> _postList = await _postService.fetchActivePosts();
+    List<Post> _postList = new List();
 
-    //fetch image to display
-    for (var post in _postList) {
-      await post.getImageUrl();
+    String listPostFromSharePrefs =
+        await _sharedPreferenceService.read(POST_LIST);
+    if (listPostFromSharePrefs != null) {
+      Iterable iterablePost = jsonDecode(listPostFromSharePrefs);
+      postList = await iterablePost.map<Post>((post) {
+        return Post.fromJsonPref(post);
+      }).toList();
+    } else {
+      _postList = await _postService.fetchActivePosts();
+      //fetch image to display
+      for (var post in _postList) {
+        await post.getImageUrl();
+      }
+      postList = _postService.sortDescending(_postList);
+      //Cache posts
+      String jsonPosts = jsonEncode(postList);
+      _sharedPreferenceService.save(POST_LIST, jsonPosts);
     }
-
-    postList = _postService.sortDescending(_postList);
 
     return postList;
   }
@@ -378,27 +396,52 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadMyCategories() async {
-    categories = await _categorieService.fetchCategories();
-    String jsonCategorie = jsonEncode(categories);
-    print("Category: " + jsonCategorie);
-    List<Categorie> translatedcategories =
-        _categorieService.translateCategories(categories, context);
+    String listCategoryFromSharePrefs =
+        await _sharedPreferenceService.read(CATEGORIE_LIST);
+    String listParentCategoryFromSharePrefs =
+        await _sharedPreferenceService.read(PARENT_CATEGORIE_LIST);
 
-    for (var _categorie in translatedcategories) {
-      if (_categorie.parentid == null) {
-        parentCategories.add(_categorie);
+    if (listCategoryFromSharePrefs != null &&
+        listParentCategoryFromSharePrefs != null) {
+      Iterable iterableCategories = jsonDecode(listCategoryFromSharePrefs);
+      categories = await iterableCategories.map<Categorie>((category) {
+        return Categorie.fromJsonPref(category);
+      }).toList();
+
+      Iterable iterableParentCategories =
+          jsonDecode(listParentCategoryFromSharePrefs);
+      parentCategories =
+          await iterableParentCategories.map<Categorie>((category) {
+        return Categorie.fromJsonPref(category);
+      }).toList();
+    } else {
+      categories = await _categorieService.fetchCategories();
+
+      List<Categorie> translatedcategories =
+          _categorieService.translateCategories(categories, context);
+      for (var _categorie in translatedcategories) {
+        if (_categorie.parentid == null) {
+          parentCategories.add(_categorie);
+        }
       }
+
+      parentCategories.sort((a, b) => a.title.compareTo(b.title));
+      Categorie categorieTemp = parentCategories.firstWhere((categorie) =>
+          categorie.title == 'Other categories' ||
+          categorie.title == 'Autre categories');
+      parentCategories.removeWhere((categorie) =>
+          categorie.title == 'Other categories' ||
+          categorie.title == 'Autre categories');
+      parentCategories.add(categorieTemp);
+      //Cache translated categories
+      String jsonCategorie = jsonEncode(translatedcategories);
+      _sharedPreferenceService.save(CATEGORIE_LIST, jsonCategorie);
+      print("Category: " + jsonCategorie);
+      //Cache parent categories
+      String jsonParentCategorie = jsonEncode(parentCategories);
+      _sharedPreferenceService.save(PARENT_CATEGORIE_LIST, jsonParentCategorie);
+      print("Parent-Category: " + jsonParentCategorie);
     }
-
-    parentCategories.sort((a, b) => a.title.compareTo(b.title));
-    Categorie categorieTemp = parentCategories.firstWhere((categorie) =>
-        categorie.title == 'Other categories' ||
-        categorie.title == 'Autre categories');
-    parentCategories.removeWhere((categorie) =>
-        categorie.title == 'Other categories' ||
-        categorie.title == 'Autre categories');
-    parentCategories.add(categorieTemp);
-
   }
 
   void setDeviceToken(String event) async {

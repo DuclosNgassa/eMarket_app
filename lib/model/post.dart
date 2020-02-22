@@ -44,7 +44,8 @@ class Post {
       this.useremail,
       this.categorieid,
       this.phoneNumber,
-      this.count_view});
+      this.count_view,
+      this.imageUrl});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     Post post = Post(
@@ -64,6 +65,31 @@ class Post {
       categorieid: json["categorieid"],
       phoneNumber: json["phone_number"],
       count_view: json["count_view"],
+    );
+
+    return post;
+  }
+
+  //To use when retrieving post from sharedpreference
+  factory Post.fromJsonPref(Map<String, dynamic> json) {
+    Post post = Post(
+      id: int.parse(json["id"]),
+      title: json["title"],
+      created_at: DateTime.parse(json["created_at"]),
+      updated_at: DateTime.parse(json["updated_at"]),
+      post_typ: Post.convertStringToPostTyp(json["post_typ"]),
+      description: json["description"],
+      fee: int.parse(json["fee"]),
+      fee_typ: Post.convertStringToFeeTyp(json["fee_typ"]),
+      city: json["city"],
+      quarter: json["quartier"],
+      status: Post.convertStringToStatus(json["status"]),
+      rating: int.parse(json["rating"]),
+      useremail: json["useremail"],
+      categorieid: int.parse(json["categorieid"]),
+      phoneNumber: json["phone_number"],
+      count_view: int.parse(json["count_view"]),
+      imageUrl: json["imageUrl"],
     );
 
     return post;
@@ -114,6 +140,7 @@ class Post {
         'categorieid': categorieid.toString(),
         'phone_number': phoneNumber,
         'count_view': count_view.toString(),
+        'imageUrl': imageUrl,
       };
 
   Future getImageUrl() async {

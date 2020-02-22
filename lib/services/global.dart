@@ -52,11 +52,14 @@ const ACCOUNTPAGE = 2;
 const MESSAGEPAGE = 3;
 const CONFIGURATIONPAGE = 4;
 
-const String USER_EMAIL = "userEmail";
-const String USER_NAME = "userName";
-const String DEVICE_TOKEN = "deviceToken";
+const String USER_EMAIL = "USER_EMAIL";
+const String USER_NAME = "USER_NAME";
+const String DEVICE_TOKEN = "DEVICE_TOKEN";
 const String AUTHENTICATION_TOKEN = "auth-token";
-const String NEW_MESSAGE = "newMessage";
+const String NEW_MESSAGE = "NEW_MESSAGE";
+const String POST_LIST = "POST_LIST";
+const String CATEGORIE_LIST = "CATEGORIE_LIST";
+const String PARENT_CATEGORIE_LIST = "PARENT_CATEGORIE_LIST";
 
 Color colorDeepPurple300 = Colors.deepPurple[300]; //Color(0xFF95E08E);
 Color colorDeepPurple400 = Colors.deepPurple[400]; //Color(0xFF33BBB5);
