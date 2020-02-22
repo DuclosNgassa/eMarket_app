@@ -1,5 +1,5 @@
 import 'package:emarket_app/localization/app_localizations.dart';
-import 'package:emarket_app/model/login_source.dart';
+import 'package:emarket_app/model/enumeration/login_source.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user.dart';
@@ -7,12 +7,12 @@ import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/message_service.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'custom_button.dart';
@@ -41,6 +41,7 @@ class PostOwner extends StatefulWidget {
 
 class PostOwnerState extends State<PostOwner> {
   final MessageService _messageService = new MessageService();
+  final SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
   bool isLogedIn = false; //TODO save login as sharedPreferencies
   List<Message> messagesSentOrReceived = new List<Message>();
   String _userEmail;
@@ -392,8 +393,7 @@ class PostOwnerState extends State<PostOwner> {
   }
 
   void setUserDaten() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _userEmail = prefs.getString(USER_EMAIL);
+    _userEmail = _sharedPreferenceService.read(USER_EMAIL);
 
     setState(() {});
   }

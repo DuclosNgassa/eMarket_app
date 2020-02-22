@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
 import 'package:emarket_app/custom_component/home_card_picture.dart';
@@ -10,12 +11,12 @@ import 'package:emarket_app/pages/search/datasearch.dart';
 import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../custom_component/home_card.dart';
 import '../../model/post.dart';
@@ -32,6 +33,8 @@ class _HomePageState extends State<HomePage> {
   final FavoritService _favoritService = new FavoritService();
   final CategorieService _categorieService = new CategorieService();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+
   List<Message> allConversation = new List<Message>();
   bool showPictures = false;
 
@@ -367,17 +370,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadMyFavorits() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _userEmail = prefs.getString(USER_EMAIL);
+    _userEmail = _sharedPreferenceService.read(USER_EMAIL);
 
     if (_userEmail != null && _userEmail.isNotEmpty) {
       myFavorits = await _favoritService.fetchFavoritByUserEmail(_userEmail);
-      //setState(() {});
     }
   }
 
   Future<void> _loadMyCategories() async {
     categories = await _categorieService.fetchCategories();
+    String jsonCategorie = jsonEncode(categories);
+    print("Category: " + jsonCategorie);
     List<Categorie> translatedcategories =
         _categorieService.translateCategories(categories, context);
 
@@ -401,8 +404,7 @@ class _HomePageState extends State<HomePage> {
   void setDeviceToken(String event) async {
     _deviceToken = event;
     if (_deviceToken.isNotEmpty) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString(DEVICE_TOKEN, _deviceToken);
+      _sharedPreferenceService.save(DEVICE_TOKEN, _deviceToken);
     }
     print('Device-Token-Home: $event');
   }

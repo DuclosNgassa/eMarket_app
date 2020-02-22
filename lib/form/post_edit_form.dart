@@ -18,10 +18,10 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
-import '../model/feetyp.dart';
+import '../model/enumeration/feetyp.dart';
+import '../model/enumeration/posttyp.dart';
 import '../model/post.dart';
 import '../model/post_image.dart' as MyImage;
-import '../model/posttyp.dart';
 import '../services/global.dart';
 import '../services/image_service.dart';
 import '../services/post_service.dart';

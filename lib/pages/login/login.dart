@@ -1,11 +1,12 @@
 import 'package:emarket_app/localization/app_localizations.dart';
-import 'package:emarket_app/model/login_source.dart';
+import 'package:emarket_app/model/enumeration/login_source.dart';
+import 'package:emarket_app/model/enumeration/user_status.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user.dart';
-import 'package:emarket_app/model/user_status.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +15,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   final LoginSource page;
@@ -30,10 +30,10 @@ class _LoginState extends State<Login> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+  final UserService _userService = new UserService();
 
   String _deviceToken = "";
-
-  UserService _userService = new UserService();
 
   @override
   void initState() {
@@ -154,16 +154,14 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> setSharedPreferences(FirebaseUser userDetails) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(USER_EMAIL, userDetails.email);
-    prefs.setString(USER_NAME, userDetails.displayName);
+    _sharedPreferenceService.save(USER_EMAIL, userDetails.email);
+    _sharedPreferenceService.save(USER_NAME, userDetails.displayName);
   }
 
   Future<void> _saveUser(FirebaseUser firebaseUser) async {
     User existsUser = await _userService.fetchUserByEmail(firebaseUser.email);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    _deviceToken = await prefs.getString(DEVICE_TOKEN);
+    _deviceToken = _sharedPreferenceService.read(DEVICE_TOKEN);
 
     if (existsUser != null) {
       if (_deviceToken != null && _deviceToken.isNotEmpty) {
@@ -205,8 +203,7 @@ class _LoginState extends State<Login> {
   void setDeviceToken(String fcmToken) async {
     _deviceToken = fcmToken;
     if (_deviceToken.isNotEmpty) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString(DEVICE_TOKEN, _deviceToken);
+      _sharedPreferenceService.save(DEVICE_TOKEN, _deviceToken);
     }
     print('Device-Token-Login: $fcmToken');
   }

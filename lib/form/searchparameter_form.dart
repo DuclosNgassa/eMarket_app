@@ -7,7 +7,7 @@ import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../model/posttyp.dart';
+import '../model/enumeration/posttyp.dart';
 import '../model/searchparameter.dart';
 import '../validator/form_validator.dart';
 

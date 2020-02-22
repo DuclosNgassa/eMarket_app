@@ -1,4 +1,4 @@
-import 'package:emarket_app/model/user_status.dart';
+import 'package:emarket_app/model/enumeration/user_status.dart';
 
 class User {
   int id;
@@ -7,7 +7,7 @@ class User {
   String phone_number = '';
   String device_token = '';
   String email = '';
-  int rating = 5; //max 10 Bewerztungssystem
+  int rating = 5; //max 10 Bewertungssystem
   UserStatus status;
 
   User(
@@ -24,14 +24,25 @@ class User {
     return User(
       id: json["id"],
       name: json["name"],
+      created_at: DateTime.parse(json["created_at"]),
       phone_number: json["phone_number"],
       device_token: json["device_token"],
       email: json["email"],
-      created_at: DateTime.parse(json["created_at"]),
       rating: json["rating"],
-      status: json["user_status"],
+      status: convertStringToStatus(json["user_status"]),
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id.toString(),
+    'name': name,
+    'created_at': created_at.toString(),
+    'phone_number': phone_number,
+    'device_token': device_token,
+    'email': email,
+    'rating': rating,
+    'status': convertStatusToString(status),
+  };
 
   Map<String, dynamic> toMapUpdate(User user) {
     Map<String, dynamic> params = toMap(user);

@@ -7,10 +7,10 @@ import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/message_service.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserMessagePage extends StatefulWidget {
   final List<UserMessage> userMessage;
@@ -23,7 +23,8 @@ class UserMessagePage extends StatefulWidget {
 }
 
 class _UserMessagePageState extends State<UserMessagePage> {
-  MessageService _messageService = new MessageService();
+  final MessageService _messageService = new MessageService();
+  final SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
 
   String loggedUseremail;
   List<UserMessage> userMessageWithoutLoggedUser = new List();
@@ -235,8 +236,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
       widget.userMessage.elementAt(index).user.email == loggedUseremail;
 
   Future<void> getUserEmailFromPrefs() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    loggedUseremail = prefs.getString(USER_EMAIL);
+    loggedUseremail = _sharedPreferenceService.read(USER_EMAIL);
 
     for (int i = 0; i < widget.userMessage.length; i++) {
       if (!isLoggedUser(i)) {

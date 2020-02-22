@@ -1,6 +1,6 @@
-import 'package:emarket_app/model/feetyp.dart';
+import 'package:emarket_app/model/enumeration/feetyp.dart';
 
-import '../model/posttyp.dart';
+import '../model/enumeration/posttyp.dart';
 
 class SearchParameter {
   String title;

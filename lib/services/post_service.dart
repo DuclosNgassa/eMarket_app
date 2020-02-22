@@ -6,11 +6,11 @@ import 'package:http/http.dart' as http;
 
 import '../model/post.dart';
 import '../services/global.dart';
-import 'authentication_service.dart';
+import 'sharedpreferences_service.dart';
 
 class PostService {
 
-  AuthenticationService _authenticationService = new AuthenticationService();
+  SharedPreferenceService _authenticationService = new SharedPreferenceService();
 
   Future<Post> save(Map<String, dynamic> params) async {
     Map<String, String> headers = await _authenticationService.getHeaders();

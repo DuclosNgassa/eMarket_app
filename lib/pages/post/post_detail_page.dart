@@ -15,11 +15,11 @@ import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/image_service.dart';
 import 'package:emarket_app/services/post_service.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/post.dart';
 
@@ -41,6 +41,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
   final UserService _userService = new UserService();
   final FavoritService _favoritService = new FavoritService();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+
   String userEmail;
   bool _isDownloaded = false;
   User _postOwner;
@@ -305,8 +307,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 
   Future<void> _loadUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String _userEmail = prefs.getString(USER_EMAIL);
+    String _userEmail = _sharedPreferenceService.read(USER_EMAIL);
     if (_userEmail != null && _userEmail.isNotEmpty) {
       userEmail = _userEmail;
       setState(() {});
@@ -454,9 +455,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   Future<void> _loadMyFavorits() async {
     if (userEmail == null || userEmail.isEmpty) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      userEmail = prefs.getString(USER_EMAIL);
+      userEmail = _sharedPreferenceService.read(USER_EMAIL);
     }
+
     if (userEmail != null && userEmail.isNotEmpty) {
       myFavorits = await _favoritService.fetchFavoritByUserEmail(userEmail);
 

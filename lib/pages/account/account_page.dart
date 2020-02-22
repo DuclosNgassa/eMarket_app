@@ -2,16 +2,17 @@ import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/form/post_edit_form.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
+import 'package:emarket_app/model/enumeration/login_source.dart';
+import 'package:emarket_app/model/enumeration/status.dart';
 import 'package:emarket_app/model/favorit.dart';
-import 'package:emarket_app/model/login_source.dart';
 import 'package:emarket_app/model/post.dart';
-import 'package:emarket_app/model/status.dart';
 import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/post_service.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountPage extends StatefulWidget {
   @override
@@ -31,9 +31,10 @@ class _AccountState extends State<AccountPage>
     with SingleTickerProviderStateMixin {
   final PostService _postService = new PostService();
   final FavoritService _favoritService = new FavoritService();
+  final SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
   final GoogleSignIn _gSignIn = GoogleSignIn();
-  TabController controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  TabController controller;
 
   String userName = 'eMarket';
   String userEmail = 'eMarket@softsolutions.de';
@@ -414,9 +415,8 @@ class _AccountState extends State<AccountPage>
   }
 
   Future<void> loadUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String _userEmail = prefs.getString(USER_EMAIL);
-    String _userName = prefs.getString(USER_NAME);
+    String _userEmail = _sharedPreferenceService.read(USER_EMAIL);
+    String _userName = _sharedPreferenceService.read(USER_NAME);
     if (_userEmail != null && _userEmail.isNotEmpty) {
       userEmail = _userEmail;
       userName = _userName == null ? userName : _userName;
@@ -482,7 +482,7 @@ class _AccountState extends State<AccountPage>
   _logOut() async {
     await FirebaseAuth.instance.signOut();
     _gSignIn.signOut();
-    clearSharedPreferences();
+    _sharedPreferenceService.clearForLogOut();
 
     Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
@@ -490,10 +490,5 @@ class _AccountState extends State<AccountPage>
             HOMEPAGE), //new ProfileScreen(detailsUser: details),
       ),
     );
-  }
-
-  void clearSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
   }
 }

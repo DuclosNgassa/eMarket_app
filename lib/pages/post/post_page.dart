@@ -1,4 +1,4 @@
-import 'package:emarket_app/model/login_source.dart';
+import 'package:emarket_app/model/enumeration/login_source.dart';
 import 'package:emarket_app/pages/login/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

@@ -17,4 +17,12 @@ class Categorie {
       icon: json["icon"],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id.toString(),
+    'title': title,
+    'parentid': parentid.toString(),
+    'icon': icon,
+  };
+
 }

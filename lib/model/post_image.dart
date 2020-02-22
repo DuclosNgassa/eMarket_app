@@ -18,4 +18,12 @@ class PostImage {
       postid: json["postid"],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id.toString(),
+    'image_url': image_url,
+    'created_at': created_at.toString(),
+    'postid': postid.toString()
+  };
+
 }

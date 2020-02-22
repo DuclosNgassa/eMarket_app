@@ -15,12 +15,12 @@ import 'package:emarket_app/pages/post/post_page.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/post_service.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class NavigationPage extends StatefulWidget {
   int _selectedIndex = 0;
@@ -32,15 +32,16 @@ class NavigationPage extends StatefulWidget {
 }
 
 class _NavigationPageState extends State<NavigationPage> {
-  int _localSelectedIndex = 0;
   static bool isLogedIn = false;
-  String userEmail;
-  int _incomingMessage = 0;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  List<myMessage.Message> allConversation = new List<myMessage.Message>();
   final PostService _postService = new PostService();
   final MessageService _messageService = new MessageService();
+  final SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  List<myMessage.Message> allConversation = new List<myMessage.Message>();
+  int _localSelectedIndex = 0;
+  int _incomingMessage = 0;
+  String userEmail;
 
   @override
   void initState() {
@@ -291,8 +292,7 @@ class _NavigationPageState extends State<NavigationPage> {
   }
 
   Future<void> _loadUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String _userEmail = prefs.getString(USER_EMAIL);
+    String _userEmail = _sharedPreferenceService.read(USER_EMAIL);
     if (_userEmail != null && _userEmail.isNotEmpty) {
       userEmail = _userEmail;
       setState(() {});

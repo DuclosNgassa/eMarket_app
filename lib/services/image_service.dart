@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:emarket_app/services/authentication_service.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -14,7 +14,7 @@ import '../model/post_image.dart';
 import '../services/global.dart';
 
 class ImageService {
-  AuthenticationService _authenticationService = new AuthenticationService();
+  SharedPreferenceService _authenticationService = new SharedPreferenceService();
 
   Future<PostImage> saveImage(Map<String, dynamic> params) async {
     Map<String, String> headers = await _authenticationService.getHeaders();

@@ -19,6 +19,14 @@ class UserNotification {
     );
   }
 
+  Map<String, dynamic> toJson() => {
+    'id': id.toString(),
+    'title': title,
+    'message': message,
+    'useremail': useremail,
+    'created_at': created_at.toString(),
+  };
+
   Map<String, dynamic> toMap(UserNotification userNotification) {
     Map<String, dynamic> params = Map<String, dynamic>();
     params["title"] = userNotification.title.toString();

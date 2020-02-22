@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:emarket_app/model/favorit.dart';
-import 'package:emarket_app/services/authentication_service.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:http/http.dart' as http;
 
 import '../services/global.dart';
 
 class FavoritService {
 
-  AuthenticationService _authenticationService = new AuthenticationService();
+  SharedPreferenceService _authenticationService = new SharedPreferenceService();
 
   Future<Favorit> save(Map<String, dynamic> params) async {
     Map<String, String> headers = await _authenticationService.getHeaders();

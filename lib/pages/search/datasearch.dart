@@ -1,9 +1,9 @@
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
+import 'package:emarket_app/model/enumeration/feetyp.dart';
+import 'package:emarket_app/model/enumeration/posttyp.dart';
 import 'package:emarket_app/model/favorit.dart';
-import 'package:emarket_app/model/feetyp.dart';
 import 'package:emarket_app/model/post.dart';
-import 'package:emarket_app/model/posttyp.dart';
 import 'package:emarket_app/model/searchparameter.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/search/search_result.dart';

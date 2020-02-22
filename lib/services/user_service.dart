@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:emarket_app/model/user.dart';
-import 'package:emarket_app/services/authentication_service.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:http/http.dart' as http;
 
 import '../services/global.dart';
 
 class UserService {
-  AuthenticationService _authenticationService = new AuthenticationService();
+  SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
 
   Future<User> saveUser(Map<String, dynamic> params) async {
     final response = await http.post(Uri.encodeFull(URL_USERS), body: params);
@@ -22,7 +22,7 @@ class UserService {
   }
 
   Future<List<User>> fetchUsers() async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
     final response = await http.Client().get(URL_USERS, headers: headers);
     if (response.statusCode == HttpStatus.ok) {
@@ -58,7 +58,7 @@ class UserService {
   }
 
   Future<User> update(Map<String, dynamic> params) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
     final response =
         await http.Client().put('$URL_USERS/${params["id"]}', headers: headers, body: params);
@@ -75,7 +75,7 @@ class UserService {
       return null;
     }
 
-    await _authenticationService.saveAuthenticationToken(json["token"]);
+    await _sharedPreferenceService.save(AUTHENTICATION_TOKEN, json["token"]);
 
     return User(
       id: json["data"]["id"],
@@ -94,7 +94,7 @@ class UserService {
       return null;
     }
 
-    await _authenticationService.saveAuthenticationToken(json["token"]);
+    await _sharedPreferenceService.save(AUTHENTICATION_TOKEN, json["token"]);
 
     return User(
       id: json["data"]["id"],

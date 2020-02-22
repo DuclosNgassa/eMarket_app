@@ -5,9 +5,9 @@ import 'package:emarket_app/model/post_image.dart';
 import 'package:emarket_app/services/image_service.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../model/feetyp.dart';
-import '../model/posttyp.dart';
-import '../model/status.dart';
+import '../model/enumeration/posttyp.dart';
+import 'enumeration/feetyp.dart';
+import 'enumeration/status.dart';
 
 class Post {
   int id;
@@ -98,6 +98,7 @@ class Post {
   }
 
   Map<String, dynamic> toJson() => {
+        'id': id.toString(),
         'title': title,
         'created_at': created_at.toString(),
         'updated_at': updated_at.toString(),

@@ -1,6 +1,6 @@
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
-import 'package:emarket_app/model/login_source.dart';
+import 'package:emarket_app/model/enumeration/login_source.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/post_message.dart';
@@ -11,6 +11,7 @@ import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/pages/message/user_message_page.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/post_service.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
@@ -18,7 +19,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/global.dart';
 
@@ -34,6 +34,7 @@ class _MessagePageState extends State<MessagePage> {
   MessageService _messageService = new MessageService();
   PostService _postService = new PostService();
   UserService _userService = new UserService();
+  SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
   FirebaseUser firebaseUser;
   String userEmail;
 
@@ -321,8 +322,7 @@ class _MessagePageState extends State<MessagePage> {
 
   Future<void> _loadUser() async {
     if (userEmail == null || userEmail.isEmpty) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String _userEmail = prefs.getString(USER_EMAIL);
+      String _userEmail = _sharedPreferenceService.read(USER_EMAIL);
       if (_userEmail != null && _userEmail.isNotEmpty) {
         userEmail = _userEmail;
         setState(() {});

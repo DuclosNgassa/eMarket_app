@@ -9,13 +9,13 @@ import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/message_service.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/global.dart';
 
@@ -33,6 +33,9 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+  final MessageService messageService = new MessageService();
+  final UserService _userService = new UserService();
 
   final TextEditingController _textEditingController =
       new TextEditingController();
@@ -42,8 +45,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   User receiver;
 
   List<Message> _messages = new List(); // new
-  MessageService messageService = new MessageService();
-  UserService _userService = new UserService();
 
   _ChatPageState(List<Message> messages, Post post);
 
@@ -166,8 +167,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   Future setNewIncomingMessage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool(NEW_MESSAGE, true);
+    _sharedPreferenceService.save(NEW_MESSAGE, true);
   }
 
   void insertFirebaseMessagingInMessages(
@@ -308,9 +308,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   void initChatMessage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    userEmail = await prefs.getString(USER_EMAIL);
-    userName = prefs.getString(USER_NAME);
+    userEmail = _sharedPreferenceService.read(USER_EMAIL);
+    userName = _sharedPreferenceService.read(USER_NAME);
     _messages = widget.messages;
 
     if (_messages.isEmpty) {
