@@ -307,7 +307,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 
   Future<void> _loadUser() async {
-    String _userEmail = _sharedPreferenceService.read(USER_EMAIL);
+    String _userEmail = await _sharedPreferenceService.read(USER_EMAIL);
     if (_userEmail != null && _userEmail.isNotEmpty) {
       userEmail = _userEmail;
       setState(() {});
@@ -455,7 +455,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   Future<void> _loadMyFavorits() async {
     if (userEmail == null || userEmail.isEmpty) {
-      userEmail = _sharedPreferenceService.read(USER_EMAIL);
+      userEmail = await _sharedPreferenceService.read(USER_EMAIL);
     }
 
     if (userEmail != null && userEmail.isNotEmpty) {

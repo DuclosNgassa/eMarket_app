@@ -308,8 +308,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   void initChatMessage() async {
-    userEmail = _sharedPreferenceService.read(USER_EMAIL);
-    userName = _sharedPreferenceService.read(USER_NAME);
+    userEmail = await _sharedPreferenceService.read(USER_EMAIL);
+    userName = await _sharedPreferenceService.read(USER_NAME);
     _messages = widget.messages;
 
     if (_messages.isEmpty) {

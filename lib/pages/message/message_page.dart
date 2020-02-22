@@ -322,7 +322,7 @@ class _MessagePageState extends State<MessagePage> {
 
   Future<void> _loadUser() async {
     if (userEmail == null || userEmail.isEmpty) {
-      String _userEmail = _sharedPreferenceService.read(USER_EMAIL);
+      String _userEmail = await _sharedPreferenceService.read(USER_EMAIL);
       if (_userEmail != null && _userEmail.isNotEmpty) {
         userEmail = _userEmail;
         setState(() {});

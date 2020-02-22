@@ -388,7 +388,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadMyFavorits() async {
-    _userEmail = _sharedPreferenceService.read(USER_EMAIL);
+    _userEmail = await _sharedPreferenceService.read(USER_EMAIL);
 
     if (_userEmail != null && _userEmail.isNotEmpty) {
       myFavorits = await _favoritService.fetchFavoritByUserEmail(_userEmail);

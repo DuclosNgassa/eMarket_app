@@ -58,7 +58,7 @@ class Post {
       fee: int.parse(json["fee"]),
       fee_typ: Post.convertStringToFeeTyp(json["fee_typ"]),
       city: json["city"],
-      quarter: json["quartier"],
+      quarter: json["quarter"],
       status: Post.convertStringToStatus(json["status"]),
       rating: json["rating"],
       useremail: json["useremail"],
@@ -82,7 +82,7 @@ class Post {
       fee: int.parse(json["fee"]),
       fee_typ: Post.convertStringToFeeTyp(json["fee_typ"]),
       city: json["city"],
-      quarter: json["quartier"],
+      quarter: json["quarter"],
       status: Post.convertStringToStatus(json["status"]),
       rating: int.parse(json["rating"]),
       useremail: json["useremail"],
@@ -105,7 +105,7 @@ class Post {
     params["fee"] = post.fee.toString();
     params["fee_typ"] = convertFeeTypToString(post.fee_typ);
     params["city"] = post.city;
-    params["quartier"] = post.quarter;
+    params["quarter"] = post.quarter;
     params["status"] = convertStatusToString(post.status);
     params["rating"] = post.rating.toString();
     params["useremail"] = post.useremail;

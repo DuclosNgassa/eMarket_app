@@ -236,7 +236,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
       widget.userMessage.elementAt(index).user.email == loggedUseremail;
 
   Future<void> getUserEmailFromPrefs() async {
-    loggedUseremail = _sharedPreferenceService.read(USER_EMAIL);
+    loggedUseremail = await _sharedPreferenceService.read(USER_EMAIL);
 
     for (int i = 0; i < widget.userMessage.length; i++) {
       if (!isLoggedUser(i)) {

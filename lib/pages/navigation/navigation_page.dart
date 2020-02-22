@@ -292,7 +292,7 @@ class _NavigationPageState extends State<NavigationPage> {
   }
 
   Future<void> _loadUser() async {
-    String _userEmail = _sharedPreferenceService.read(USER_EMAIL);
+    String _userEmail = await _sharedPreferenceService.read(USER_EMAIL);
     if (_userEmail != null && _userEmail.isNotEmpty) {
       userEmail = _userEmail;
       setState(() {});

@@ -393,7 +393,7 @@ class PostOwnerState extends State<PostOwner> {
   }
 
   void setUserDaten() async {
-    _userEmail = _sharedPreferenceService.read(USER_EMAIL);
+    _userEmail = await _sharedPreferenceService.read(USER_EMAIL);
 
     setState(() {});
   }

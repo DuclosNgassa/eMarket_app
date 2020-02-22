@@ -161,7 +161,7 @@ class _LoginState extends State<Login> {
   Future<void> _saveUser(FirebaseUser firebaseUser) async {
     User existsUser = await _userService.fetchUserByEmail(firebaseUser.email);
 
-    _deviceToken = _sharedPreferenceService.read(DEVICE_TOKEN);
+    _deviceToken = await _sharedPreferenceService.read(DEVICE_TOKEN);
 
     if (existsUser != null) {
       if (_deviceToken != null && _deviceToken.isNotEmpty) {

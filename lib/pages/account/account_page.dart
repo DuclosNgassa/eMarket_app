@@ -415,8 +415,8 @@ class _AccountState extends State<AccountPage>
   }
 
   Future<void> loadUser() async {
-    String _userEmail = _sharedPreferenceService.read(USER_EMAIL);
-    String _userName = _sharedPreferenceService.read(USER_NAME);
+    String _userEmail = await _sharedPreferenceService.read(USER_EMAIL);
+    String _userName = await _sharedPreferenceService.read(USER_NAME);
     if (_userEmail != null && _userEmail.isNotEmpty) {
       userEmail = _userEmail;
       userName = _userName == null ? userName : _userName;
