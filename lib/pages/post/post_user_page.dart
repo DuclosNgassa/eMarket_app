@@ -53,35 +53,8 @@ class _PostUserPageState extends State<PostUserPage> {
                     ),
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.only(
-                      left: SizeConfig.blockSizeHorizontal * 5,
-                      top: SizeConfig.blockSizeVertical * 5),
-                  constraints: BoxConstraints.expand(
-                      height: SizeConfig.screenHeight / 6),
-                  child: _buildTitle(),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: SizeConfig.screenHeight * 0.125),
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: SizeConfig.blockSizeHorizontal * 2,
-                          vertical: SizeConfig.blockSizeVertical),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          new Container(
-                            padding: EdgeInsets.only(top: 10),
-                            constraints: BoxConstraints.expand(
-                                height: SizeConfig.screenHeight * 0.845),
-                            child: PostCardComponentPage(postList: widget.posts, myFavorits:widget.myFavorits, userEmail: widget.userEmail, showPictures: showPictures),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                _buildTitle(),
+                _buildPostsContainer(),
               ],
             ),
           ],
@@ -92,48 +65,79 @@ class _PostUserPageState extends State<PostUserPage> {
 
   Container _buildTitle() {
     return Container(
-      child: Padding(
-        padding: EdgeInsets.only(
-            left: SizeConfig.blockSizeHorizontal * 2,
-            right: SizeConfig.blockSizeHorizontal),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: new Text(
-                    AppLocalizations.of(context).translate('advert_list') +
-                        ' ' +
-                        widget.postOwnerName,
-                    style: SizeConfig.styleTitleWhite,
+      padding: EdgeInsets.only(
+          left: SizeConfig.blockSizeHorizontal * 5,
+          top: SizeConfig.blockSizeVertical * 5),
+      constraints: BoxConstraints.expand(
+          height: SizeConfig.screenHeight / 6),
+      child: Container(
+        child: Padding(
+          padding: EdgeInsets.only(
+              left: SizeConfig.blockSizeHorizontal * 2,
+              right: SizeConfig.blockSizeHorizontal),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    child: new Text(
+                      AppLocalizations.of(context).translate('advert_list') +
+                          ' ' +
+                          widget.postOwnerName,
+                      style: SizeConfig.styleTitleWhite,
+                    ),
                   ),
-                ),
-                Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Switch(
-                        value: showPictures,
-                        onChanged: (value) {
-                          setState(() {
-                            showPictures = value;
-                          });
-                        },
-                        activeTrackColor: Colors.lightGreenAccent,
-                        activeColor: Colors.green,
-                      ),
-                      Text(
-                        AppLocalizations.of(context).translate('pictures'),
-                        style: SizeConfig.styleNormalBlack,
-                      ),
-                    ],
+                  Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Switch(
+                          value: showPictures,
+                          onChanged: (value) {
+                            setState(() {
+                              showPictures = value;
+                            });
+                          },
+                          activeTrackColor: Colors.lightGreenAccent,
+                          activeColor: Colors.green,
+                        ),
+                        Text(
+                          AppLocalizations.of(context).translate('pictures'),
+                          style: SizeConfig.styleNormalBlack,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPostsContainer(){
+    return                 Container(
+      margin: EdgeInsets.only(top: SizeConfig.screenHeight * 0.125),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: SizeConfig.blockSizeHorizontal * 2,
+              vertical: SizeConfig.blockSizeVertical),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              new Container(
+                padding: EdgeInsets.only(top: 10),
+                constraints: BoxConstraints.expand(
+                    height: SizeConfig.screenHeight * 0.845),
+                child: PostCardComponentPage(postList: widget.posts, myFavorits:widget.myFavorits, userEmail: widget.userEmail, showPictures: showPictures),
+              ),
+            ],
+          ),
         ),
       ),
     );

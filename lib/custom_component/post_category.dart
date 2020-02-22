@@ -37,13 +37,6 @@ class PostCategoryState extends State<PostCategory> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        loadMorePost(postList);
-        setState(() {});
-      }
-    });
   }
 
   @override
@@ -55,7 +48,6 @@ class PostCategoryState extends State<PostCategory> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data.length > 0) {
-            loadMorePost(snapshot.data);
             return Column(
               children: <Widget>[
                 Row(
@@ -97,7 +89,7 @@ class PostCategoryState extends State<PostCategory> {
                   margin: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 3),
                   height: SizeConfig.screenHeight * 0.6,
                   child: PostCardComponentPage(
-                      postList: postListItems,
+                      postList: snapshot.data,
                       myFavorits: widget.myFavorits,
                       userEmail: widget.userEmail,
                       showPictures: showPictures),
@@ -155,15 +147,4 @@ class PostCategoryState extends State<PostCategory> {
     return postList;
   }
 
-  void loadMorePost(List<Post> _postList) {
-    if (present < _postList.length) {
-      if ((present + perPage) > _postList.length) {
-        postListItems.addAll(_postList.getRange(present, _postList.length));
-        present = _postList.length;
-      } else {
-        postListItems.addAll(_postList.getRange(present, present + perPage));
-        present = present + perPage;
-      }
-    }
-  }
 }

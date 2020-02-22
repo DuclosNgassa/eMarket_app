@@ -8,12 +8,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SearchResultPage extends StatefulWidget{
-  final List<Post> resultList;
+  final List<Post> searchResultList;
   final List<Favorit> myFavorits;
   final String userEmail;
 
 
-  SearchResultPage(this.resultList, this.myFavorits, this.userEmail);
+  SearchResultPage({this.searchResultList, this.myFavorits, this.userEmail});
 
   @override
   SearchResultState createState() => SearchResultState();
@@ -57,7 +57,7 @@ class SearchResultState extends State<SearchResultPage>{
             padding: EdgeInsets.only(top: 10),
             constraints: BoxConstraints.expand(
                 height: SizeConfig.screenHeight * 0.845),
-            child: PostCardComponentPage(postList: widget.resultList, myFavorits:widget.myFavorits, userEmail: widget.userEmail, showPictures: showPictures),
+            child: PostCardComponentPage(postList: widget.searchResultList, myFavorits:widget.myFavorits, userEmail: widget.userEmail, showPictures: showPictures),
           ),
         ],
       ),

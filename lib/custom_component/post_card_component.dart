@@ -20,6 +20,19 @@ class PostCardComponentPage extends StatefulWidget{
 }
 
 class PostCardComponentState extends State<PostCardComponentPage>{
+  List<Post> postListItems = new List();
+
+  int perPage = 10;
+  int present = 0;
+
+  ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _initControllers();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +42,7 @@ class PostCardComponentState extends State<PostCardComponentPage>{
   }
 
   Widget buildPostListView(bool showPictures) {
+    _loadMorePost(widget.postList);
     if (showPictures) {
       return GridView.count(
         crossAxisCount: 2,
@@ -69,6 +83,29 @@ class PostCardComponentState extends State<PostCardComponentPage>{
           );
         }),
       );
+    }
+  }
+
+  void _initControllers() {
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _loadMorePost(widget.postList);
+        setState(() {});
+      }
+    });
+  }
+
+  void _loadMorePost(List<Post> _postList) {
+    print("_loadMorePost");
+    if (present < _postList.length) {
+      if ((present + perPage) > _postList.length) {
+        postListItems.addAll(_postList.getRange(present, _postList.length));
+        present = _postList.length;
+      } else {
+        postListItems.addAll(_postList.getRange(present, present + perPage));
+        present = present + perPage;
+      }
     }
   }
 

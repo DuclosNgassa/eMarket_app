@@ -77,12 +77,12 @@ class DataSearch extends SearchDelegate<Post> {
   Widget buildSuggestions(BuildContext context) {
     SizeConfig().init(context);
 
-    final List<Post> resultList =
-    query.isEmpty && searchParameter == null && childCategories == null
-        ? postList
-        : postList.where((post) => isSelected(post)).toList();
+    final List<Post> searchResultList =
+        query.isEmpty && searchParameter == null && childCategories == null
+            ? postList
+            : postList.where((post) => isSelected(post)).toList();
 
-    if (resultList.isEmpty) {
+    if (searchResultList.isEmpty) {
       return Center(
         child: Padding(
           padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 2),
@@ -94,7 +94,10 @@ class DataSearch extends SearchDelegate<Post> {
       );
     }
 
-    return SearchResultPage(resultList, myFavorits, userEmail);
+    return SearchResultPage(
+        searchResultList: searchResultList,
+        myFavorits: myFavorits,
+        userEmail: userEmail);
   }
 
   bool isSelected(Post post) {
