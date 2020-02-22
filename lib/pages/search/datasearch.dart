@@ -1,4 +1,3 @@
-import 'package:emarket_app/custom_component/home_card.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/model/favorit.dart';
@@ -7,29 +6,26 @@ import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/posttyp.dart';
 import 'package:emarket_app/model/searchparameter.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
+import 'package:emarket_app/pages/search/search_result.dart';
 import 'package:emarket_app/pages/search/searchparameter.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 class DataSearch extends SearchDelegate<Post> {
-
   final List<Post> postList;
   final List<Favorit> myFavorits;
   final String userEmail;
+  final String searchLabel;
   SearchParameter searchParameter;
   List<int> childCategories;
+  bool showPictures = false;
 
-  DataSearch(this.postList, this.myFavorits, this.userEmail, this.searchParameter,
-      this.childCategories);
+  DataSearch(this.postList, this.myFavorits, this.userEmail, this.searchLabel,
+      this.searchParameter, this.childCategories);
 
   @override
-  String get searchFieldLabel => getSearch();
-
-  String getSearch(){
-    return "Search";
-    //AppLocalizations.of(context).translate('search');
-  }
+  String get searchFieldLabel => searchLabel;
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -50,6 +46,7 @@ class DataSearch extends SearchDelegate<Post> {
 
   @override
   List<Widget> buildActions(BuildContext context) {
+    SizeConfig().init(context);
     return [
       IconButton(
         icon: Icon(Icons.clear),
@@ -72,10 +69,7 @@ class DataSearch extends SearchDelegate<Post> {
 
   @override
   Widget buildResults(BuildContext context) {
-    //_postService.fetchPosts().then((result) => postList = result);
-
     // TODO: implement buildResults
-    //return PostDetailPage(context);
     return null;
   }
 
@@ -83,10 +77,10 @@ class DataSearch extends SearchDelegate<Post> {
   Widget buildSuggestions(BuildContext context) {
     SizeConfig().init(context);
 
-    final resultList =
-        query.isEmpty && searchParameter == null && childCategories == null
-            ? postList
-            : postList.where((post) => isSelected(post)).toList();
+    final List<Post> resultList =
+    query.isEmpty && searchParameter == null && childCategories == null
+        ? postList
+        : postList.where((post) => isSelected(post)).toList();
 
     if (resultList.isEmpty) {
       return Center(
@@ -100,28 +94,7 @@ class DataSearch extends SearchDelegate<Post> {
       );
     }
 
-    return GridView.count(
-      // Create a grid with 2 columns. If you change the scrollDirection to
-      // horizontal, this produces 2 rows.
-      crossAxisCount: 2,
-      mainAxisSpacing: 0,
-      crossAxisSpacing: 0,
-      childAspectRatio: 1.5,
-
-      children: List.generate(resultList.length, (index) {
-        return Padding(
-          padding: EdgeInsets.only(
-              left: index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
-          child: HomeCard(
-            resultList[index],
-            myFavorits,
-            userEmail,
-            SizeConfig.blockSizeVertical * 18,
-            SizeConfig.screenWidth * 0.5 - 10,
-          ),
-        );
-      }),
-    );
+    return SearchResultPage(resultList, myFavorits, userEmail);
   }
 
   bool isSelected(Post post) {
@@ -145,11 +118,10 @@ class DataSearch extends SearchDelegate<Post> {
   ///  @param valuePost a string value of a post
   ///  @param valueSearchParam a string value of the searchparameter
   ///  Please don´t change parameter´s order!!!
-  bool _compareString(String valuePost, String valueSearchParam) { // Please don´t change parameter´s order!!!
-    if(valueSearchParam == null || valueSearchParam.isEmpty)
-      return true;
-    if (valuePost == null || valuePost.isEmpty)
-      return false;
+  bool _compareString(String valuePost, String valueSearchParam) {
+    // Please don´t change parameter´s order!!!
+    if (valueSearchParam == null || valueSearchParam.isEmpty) return true;
+    if (valuePost == null || valuePost.isEmpty) return false;
 
     return valuePost.toLowerCase().contains(valueSearchParam.toLowerCase());
   }
@@ -171,8 +143,7 @@ class DataSearch extends SearchDelegate<Post> {
   ///  @param feeMaxSearchParam
   ///  Please don´t change parameter´s order!!!
   bool _compareFee(int postFee, int feeMinSearchParam, int feeMaxSearchParam) {
-    if(feeMinSearchParam == null && feeMaxSearchParam == null)
-      return true;
+    if (feeMinSearchParam == null && feeMaxSearchParam == null) return true;
     if (feeMaxSearchParam == null && feeMinSearchParam != null) {
       return postFee >= feeMinSearchParam;
     }
@@ -182,8 +153,7 @@ class DataSearch extends SearchDelegate<Post> {
     }
 
     if (feeMaxSearchParam != null && feeMinSearchParam != null) {
-      return postFee >= feeMinSearchParam &&
-          postFee <= feeMaxSearchParam;
+      return postFee >= feeMinSearchParam && postFee <= feeMaxSearchParam;
     }
 
     return false;
@@ -194,8 +164,7 @@ class DataSearch extends SearchDelegate<Post> {
   ///  @param searchParamFeeTyp
   ///  Please don´t change parameter´s order!!!
   bool _compareFeeTyp(FeeTyp postFeeTyp, FeeTyp searchParamFeeTyp) {
-    if(searchParamFeeTyp == null)
-      return true;
+    if (searchParamFeeTyp == null) return true;
 
     return postFeeTyp == searchParamFeeTyp;
   }
@@ -205,7 +174,7 @@ class DataSearch extends SearchDelegate<Post> {
   ///  @param searchParamPostTyp
   ///  Please don´t change parameter´s order!!!
   bool _comparePostTyp(PostTyp postTyp, PostTyp searchParamPostTyp) {
-    if(searchParamPostTyp == null || searchParamPostTyp == PostTyp.all)
+    if (searchParamPostTyp == null || searchParamPostTyp == PostTyp.all)
       return true;
 
     return postTyp == searchParamPostTyp;

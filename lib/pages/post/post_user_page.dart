@@ -1,6 +1,5 @@
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
-import 'package:emarket_app/custom_component/home_card.dart';
-import 'package:emarket_app/custom_component/home_card_picture.dart';
+import 'package:emarket_app/custom_component/post_card_component.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
@@ -76,7 +75,7 @@ class _PostUserPageState extends State<PostUserPage> {
                             padding: EdgeInsets.only(top: 10),
                             constraints: BoxConstraints.expand(
                                 height: SizeConfig.screenHeight * 0.845),
-                            child: buildMyPostListView(showPictures),
+                            child: PostCardComponentPage(postList: widget.posts, myFavorits:widget.myFavorits, userEmail: widget.userEmail, showPictures: showPictures),
                           ),
                         ],
                       ),
@@ -129,7 +128,6 @@ class _PostUserPageState extends State<PostUserPage> {
                         AppLocalizations.of(context).translate('pictures'),
                         style: SizeConfig.styleNormalBlack,
                       ),
-                      //Icon(Icons.photo_camera, size: SizeConfig.blockSizeHorizontal * 7, color: Colors.black,)
                     ],
                   ),
                 ),
@@ -139,49 +137,5 @@ class _PostUserPageState extends State<PostUserPage> {
         ),
       ),
     );
-  }
-
-  Widget buildMyPostListView(bool showPictures) {
-    if (showPictures) {
-      return GridView.count(
-        crossAxisCount: 2,
-        mainAxisSpacing: 0,
-        crossAxisSpacing: 0,
-        childAspectRatio: 1,
-        children: List.generate(widget.posts.length, (index) {
-          return Padding(
-            padding: EdgeInsets.only(
-                left: index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
-            child: HomeCardPicture(
-              widget.posts.elementAt(index),
-              widget.myFavorits,
-              widget.userEmail,
-              SizeConfig.blockSizeVertical * 60,
-              SizeConfig.screenWidth * 0.5 - 10,
-            ),
-          );
-        }),
-      );
-    } else {
-      return GridView.count(
-        crossAxisCount: 2,
-        mainAxisSpacing: 0,
-        crossAxisSpacing: 0,
-        childAspectRatio: 1.5,
-        children: List.generate(widget.posts.length, (index) {
-          return Padding(
-            padding: EdgeInsets.only(
-                left: index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
-            child: HomeCard(
-              widget.posts.elementAt(index),
-              widget.myFavorits,
-              widget.userEmail,
-              SizeConfig.blockSizeVertical * 20,
-              SizeConfig.screenWidth * 0.5 - 10,
-            ),
-          );
-        }),
-      );
-    }
   }
 }

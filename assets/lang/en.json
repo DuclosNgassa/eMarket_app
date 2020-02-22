@@ -215,5 +215,6 @@
   "corn": "Corn",
   "other_category": "Other categories",
   "other": "Other",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "same_category_post": "Posts in the same category"
 }

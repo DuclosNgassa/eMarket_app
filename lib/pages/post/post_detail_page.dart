@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
+import 'package:emarket_app/custom_component/post_category.dart';
 import 'package:emarket_app/custom_component/post_owner.dart';
 import 'package:emarket_app/form/post_edit_form.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
@@ -45,6 +46,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   User _postOwner;
   Favorit myFavoritToAdd;
   Favorit myFavoritToRemove;
+  bool showPictures = false;
 
   Icon favoritIcon = Icon(
     Icons.favorite_border,
@@ -264,7 +266,18 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             user: _postOwner,
                             splashColor: colorDeepPurple300,
                             textStyle: SizeConfig.styleTitleBlack,
-                          )
+                          ),
+                          SizedBox(
+                            height: SizeConfig.blockSizeVertical * 2,
+                          ),
+                          Container(
+                            height: SizeConfig.screenHeight * 0.75,
+                              child: PostCategory(
+                            categoryId: widget.post.categorieid,
+                            actualPostId: widget.post.id,
+                            myFavorits: myFavorits,
+                            userEmail: userEmail
+                          ))
                         ],
                       ),
                     ),

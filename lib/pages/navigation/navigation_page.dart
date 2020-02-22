@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:emarket_app/custom_component/custom_icon_message.dart';
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
@@ -20,7 +21,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:connectivity/connectivity.dart';
 
 class NavigationPage extends StatefulWidget {
   int _selectedIndex = 0;

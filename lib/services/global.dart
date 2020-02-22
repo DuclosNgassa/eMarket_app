@@ -19,6 +19,7 @@ const URL_POST_BY_ID = URL_POSTS + "/";
 const URL_POST_ACTIVE = URL_POSTS + "/active";
 const URL_POST_VIEW = URL_POSTS + "/view/";
 const URL_POST_BY_USEREMAIL = URL_POSTS + "/user/";
+const URL_POST_BY_CATEGORY = URL_POSTS + "/categorie/";
 
 const URL_USERS = SERVER_URL + "/users";
 const URL_USERS_BY_EMAIL = URL_USERS + "/email/";

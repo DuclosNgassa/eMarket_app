@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   String _deviceToken = "";
   String _userEmail = "";
-
+  String _searchLabel;
   final List<Message> fireBaseMessages = [];
 
   List<Post> searchResult = new List();
@@ -66,8 +66,7 @@ class _HomePageState extends State<HomePage> {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         loadMorePost(postList);
-        setState(() {
-        });
+        setState(() {});
       }
     });
   }
@@ -75,12 +74,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    _searchLabel = AppLocalizations.of(context).translate('search');
 
     return FutureBuilder(
       future: _loadPost(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          if(snapshot.data.length > 0){
+          if (snapshot.data.length > 0) {
             loadMorePost(snapshot.data);
             return Container(
               margin: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 3),
@@ -114,13 +114,14 @@ class _HomePageState extends State<HomePage> {
                                           .translate('give_your_search'),
                                       labelText: AppLocalizations.of(context)
                                           .translate('search'),
-                                      labelStyle: TextStyle(color: Colors.white),
+                                      labelStyle:
+                                          TextStyle(color: Colors.white),
                                     ),
                                     onTap: () {
                                       showSearch(
                                         context: context,
-                                        delegate: DataSearch(postList, myFavorits,
-                                            _userEmail, null, null),
+                                        delegate: DataSearch(postList,
+                                            myFavorits, _userEmail, _searchLabel, null, null),
                                       );
                                     },
                                   ),
@@ -136,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                                     showSearch(
                                       context: context,
                                       delegate: DataSearch(postList, myFavorits,
-                                          _userEmail, null, null),
+                                          _userEmail, _searchLabel, null, null),
                                     );
                                   },
                                 ),
@@ -157,13 +158,14 @@ class _HomePageState extends State<HomePage> {
                                             showPictures = value;
                                           });
                                         },
-                                        activeTrackColor: Colors.lightGreenAccent,
+                                        activeTrackColor:
+                                            Colors.lightGreenAccent,
                                         activeColor: Colors.green,
                                       ),
                                       Text(
                                         AppLocalizations.of(context)
                                             .translate('pictures'),
-                                        style: SizeConfig.styleNormalBlack,
+                                        style: SizeConfig.styleNormalBlackBold,
                                       ),
                                       //Icon(Icons.photo_camera, size: SizeConfig.blockSizeHorizontal * 7, color: Colors.black,)
                                     ],
@@ -182,13 +184,13 @@ class _HomePageState extends State<HomePage> {
                       childAspectRatio: 5,
                     ),
                     delegate:
-                    SliverChildListDelegate([_buildCategorieGridView()]),
+                        SliverChildListDelegate([_buildCategorieGridView()]),
                   ),
                   _buildSliverGrid(showPictures),
                 ],
               ),
             );
-          } else{
+          } else {
             return new Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(
@@ -201,8 +203,7 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           }
-        }
-        else if (snapshot.hasError) {
+        } else if (snapshot.hasError) {
           MyNotification.showInfoFlushbar(
               context,
               AppLocalizations.of(context).translate('erro'),
@@ -222,8 +223,9 @@ class _HomePageState extends State<HomePage> {
               Image.asset(
                 "assets/gif/loading.gif",
               ),
-              Text(AppLocalizations.of(context)
-                  .translate('loading'),)
+              Text(
+                AppLocalizations.of(context).translate('loading'),
+              )
             ],
           ),
         );
@@ -325,13 +327,13 @@ class _HomePageState extends State<HomePage> {
 
   void loadMorePost(List<Post> _postList) {
     if (present < _postList.length) {
-        if ((present + perPage) > _postList.length) {
-          postListItems.addAll(_postList.getRange(present, _postList.length));
-          present = _postList.length;
-        } else {
-          postListItems.addAll(_postList.getRange(present, present + perPage));
-          present = present + perPage;
-        }
+      if ((present + perPage) > _postList.length) {
+        postListItems.addAll(_postList.getRange(present, _postList.length));
+        present = _postList.length;
+      } else {
+        postListItems.addAll(_postList.getRange(present, present + perPage));
+        present = present + perPage;
+      }
     }
   }
 
@@ -347,7 +349,7 @@ class _HomePageState extends State<HomePage> {
     showSearch(
       context: context,
       delegate:
-          DataSearch(postList, myFavorits, _userEmail, null, childCategories),
+          DataSearch(postList, myFavorits, _userEmail, _searchLabel, null, childCategories),
     );
   }
 
@@ -394,7 +396,6 @@ class _HomePageState extends State<HomePage> {
         categorie.title == 'Autre categories');
     parentCategories.add(categorieTemp);
 
-    //setState(() {});
   }
 
   void setDeviceToken(String event) async {

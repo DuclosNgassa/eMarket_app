@@ -95,6 +95,26 @@ class PostService {
     }
   }
 
+  Future<List<Post>> fetchPostByCategory(int categoryId) async {
+    final response = await http.Client().get('$URL_POST_BY_CATEGORY$categoryId');
+    if (response.statusCode == HttpStatus.ok) {
+      Map<String, dynamic> mapResponse = json.decode(response.body);
+      if (mapResponse["result"] == "ok") {
+        final posts = mapResponse["data"].cast<Map<String, dynamic>>();
+        final postList = await posts.map<Post>((json) {
+          return Post.fromJson(json);
+        }).toList();
+        return postList;
+      } else {
+        throw Exception('Failed to load Posts by categoryId from the internet');
+      }
+    } else if (response.statusCode == HttpStatus.notFound) {
+      return null;
+    } else {
+      throw Exception('Failed to load Posts by categoryId from the internet');
+    }
+  }
+
   Future<Post> update(Map<String, dynamic> params) async {
     Map<String, String> headers = await _authenticationService.getHeaders();
 

@@ -24,6 +24,7 @@ class SizeConfig {
   static TextStyle styleTitleWhite;
   static TextStyle styleNormalWhite;
   static TextStyle styleNormalBlack;
+  static TextStyle styleNormalBlackBold;
   static TextStyle styleNormalBlackCard;
   static TextStyle styleNormalBlack3;
   static TextStyle styleButtonWhite;
@@ -93,6 +94,12 @@ class SizeConfig {
     styleNormalBlack = new TextStyle(
       color: Colors.black,
       fontSize: SizeConfig.safeBlockHorizontal * 4,
+    );
+
+    styleNormalBlackBold = new TextStyle(
+      color: Colors.black,
+      fontSize: SizeConfig.safeBlockHorizontal * 4,
+      fontWeight: FontWeight.bold
     );
 
     styleNormalBlackCard = new TextStyle(

@@ -7,6 +7,7 @@ import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
 import '../model/post.dart';
 import '../pages/post/post_detail_page.dart';
 
