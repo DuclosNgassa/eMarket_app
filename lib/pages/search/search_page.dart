@@ -1,18 +1,17 @@
 import 'package:emarket_app/localization/app_localizations.dart';
-import 'package:emarket_app/model/categorie_tile.dart';
+import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/enumeration/feetyp.dart';
 import 'package:emarket_app/model/enumeration/posttyp.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/searchparameter.dart';
-import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/search/search_result.dart';
 import 'package:emarket_app/pages/search/searchparameter.dart';
 import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
-class DataSearch extends SearchDelegate<Post> {
+class SearchPage extends SearchDelegate<Post> {
   final List<Post> postList;
   final List<Favorit> myFavorits;
   final String userEmail;
@@ -20,9 +19,10 @@ class DataSearch extends SearchDelegate<Post> {
   SearchParameter searchParameter;
   List<int> childCategories;
   bool showPictures = false;
+  Categorie parentCategory;
 
-  DataSearch(this.postList, this.myFavorits, this.userEmail, this.searchLabel,
-      this.searchParameter, this.childCategories);
+  SearchPage(this.postList, this.myFavorits, this.userEmail, this.searchLabel,
+      this.searchParameter, this.childCategories, this.parentCategory);
 
   @override
   String get searchFieldLabel => searchLabel;
@@ -97,7 +97,8 @@ class DataSearch extends SearchDelegate<Post> {
     return SearchResultPage(
         searchResultList: searchResultList,
         myFavorits: myFavorits,
-        userEmail: userEmail);
+        userEmail: userEmail,
+        parentCategory: parentCategory);
   }
 
   bool isSelected(Post post) {
@@ -183,6 +184,7 @@ class DataSearch extends SearchDelegate<Post> {
     return postTyp == searchParamPostTyp;
   }
 
+/*
   Future showCategoriePage(BuildContext context) async {
     CategorieTile _categorieTile = await Navigator.of(context).push(
       MaterialPageRoute(
@@ -193,6 +195,7 @@ class DataSearch extends SearchDelegate<Post> {
     );
     print("Categorie: " + _categorieTile.title);
   }
+*/
 
   Future showSearchParameterPage(BuildContext context) async {
     searchParameter = await Navigator.push(

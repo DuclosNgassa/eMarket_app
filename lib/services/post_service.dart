@@ -9,13 +9,14 @@ import '../services/global.dart';
 import 'sharedpreferences_service.dart';
 
 class PostService {
-
-  SharedPreferenceService _authenticationService = new SharedPreferenceService();
+  SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
 
   Future<Post> save(Map<String, dynamic> params) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
-    final response = await http.post(Uri.encodeFull(URL_POSTS), headers: headers, body: params);
+    final response = await http.post(Uri.encodeFull(URL_POSTS),
+        headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToPost(responseBody);
@@ -25,7 +26,7 @@ class PostService {
   }
 
   Future<List<Post>> fetchPosts() async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
     final response = await http.Client().get(URL_POSTS, headers: headers);
     if (response.statusCode == HttpStatus.ok) {
@@ -45,6 +46,39 @@ class PostService {
   }
 
   Future<List<Post>> fetchActivePosts() async {
+
+    String cacheTimeString =
+        await _sharedPreferenceService.read(POST_LIST_CACHE_TIME);
+
+    if(cacheTimeString != null){
+      DateTime cacheTime = DateTime.parse(cacheTimeString);
+      DateTime actualDateTime = DateTime.now();
+
+      if(actualDateTime.difference(cacheTime) > Duration(minutes: 3)){
+        return await _loadPostFromServer();
+      }else{
+        return await _loadPostFromCache();
+      }
+    }else{
+      return await _loadPostFromServer();
+    }
+  }
+
+  Future<List<Post>> _loadPostFromCache() async {
+    String listPostFromSharePrefs =
+    await _sharedPreferenceService.read(POST_LIST);
+    if (listPostFromSharePrefs != null) {
+      Iterable iterablePost = jsonDecode(listPostFromSharePrefs);
+      final postList = await iterablePost.map<Post>((post) {
+        return Post.fromJsonPref(post);
+      }).toList();
+      return postList;
+    } else {
+      return await _loadPostFromServer();
+    }
+  }
+
+  Future<List<Post>> _loadPostFromServer() async {
     final response = await http.Client().get(URL_POST_ACTIVE);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
@@ -53,10 +87,19 @@ class PostService {
         final postList = await posts.map<Post>((json) {
           return Post.fromJson(json);
         }).toList();
-
-        return postList;
+        //fetch image to display
+        for (var post in postList) {
+          await post.getImageUrl();
+        }
+        List<Post> sortedpostList = sortDescending(postList);
+        //save posts in cache
+        String jsonPosts = jsonEncode(postList);
+        _sharedPreferenceService.save(POST_LIST, jsonPosts);
+        DateTime cacheTime = DateTime.now();
+        _sharedPreferenceService.save(POST_LIST_CACHE_TIME, cacheTime.toIso8601String());
+        return sortedpostList;
       } else {
-        return [];
+        return await _loadPostFromCache();
       }
     } else {
       throw Exception('Failed to load Posts from the internet');
@@ -96,7 +139,8 @@ class PostService {
   }
 
   Future<List<Post>> fetchPostByCategory(int categoryId) async {
-    final response = await http.Client().get('$URL_POST_BY_CATEGORY$categoryId');
+    final response =
+        await http.Client().get('$URL_POST_BY_CATEGORY$categoryId');
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -116,7 +160,7 @@ class PostService {
   }
 
   Future<Post> update(Map<String, dynamic> params) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
     final response = await http.Client()
         .put('$URL_POSTS/${params["id"]}', headers: headers, body: params);
@@ -139,9 +183,10 @@ class PostService {
   }
 
   Future<bool> delete(int id) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
-    final response = await http.Client().delete('$URL_POSTS/$id', headers: headers);
+    final response =
+        await http.Client().delete('$URL_POSTS/$id', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       if (responseBody["result"] == "ok") {
@@ -152,8 +197,9 @@ class PostService {
     }
   }
 
-  List<Post> sortDescending(List<Post> posts){
-    posts.sort((post1, post2) => post1.updated_at.isAfter(post2.updated_at) ? 0 : 1);
+  List<Post> sortDescending(List<Post> posts) {
+    posts.sort(
+        (post1, post2) => post1.updated_at.isAfter(post2.updated_at) ? 0 : 1);
 
     return posts;
   }

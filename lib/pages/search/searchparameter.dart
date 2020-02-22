@@ -22,7 +22,7 @@ class _SearchParameterPageState extends State<SearchParameterPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('search')),
+        title: Text(AppLocalizations.of(context).translate('search'),),
         backgroundColor: colorDeepPurple300,
       ),
       body: SafeArea(

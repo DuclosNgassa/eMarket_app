@@ -7,7 +7,7 @@ import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/message.dart';
-import 'package:emarket_app/pages/search/datasearch.dart';
+import 'package:emarket_app/pages/search/search_page.dart';
 import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
@@ -124,13 +124,13 @@ class _HomePageState extends State<HomePage> {
                                     onTap: () {
                                       showSearch(
                                         context: context,
-                                        delegate: DataSearch(
+                                        delegate: SearchPage(
                                             postList,
                                             myFavorits,
                                             _userEmail,
                                             _searchLabel,
                                             null,
-                                            null),
+                                            null, null,),
                                       );
                                     },
                                   ),
@@ -145,8 +145,8 @@ class _HomePageState extends State<HomePage> {
                                   onPressed: () {
                                     showSearch(
                                       context: context,
-                                      delegate: DataSearch(postList, myFavorits,
-                                          _userEmail, _searchLabel, null, null),
+                                      delegate: SearchPage(postList, myFavorits,
+                                          _userEmail, _searchLabel, null, null, null),
                                     );
                                   },
                                 ),
@@ -328,7 +328,7 @@ class _HomePageState extends State<HomePage> {
           text: parentCategories[index].title,
           textStyle: _myTextStyle,
           onPressed: () =>
-              showSearchWithParentCategorie(parentCategories[index].id),
+              showSearchWithParentCategorie(parentCategories[index]),
         );
       }),
     );
@@ -346,44 +346,24 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void showSearchWithParentCategorie(int parentCategorie) async {
+  void showSearchWithParentCategorie(Categorie parentCategorie) async {
     List<int> childCategories = new List();
 
     for (Categorie categorie in categories) {
-      if (categorie.parentid == parentCategorie) {
+      if (categorie.parentid == parentCategorie.id) {
         childCategories.add(categorie.id);
       }
     }
 
     showSearch(
       context: context,
-      delegate: DataSearch(postList, myFavorits, _userEmail, _searchLabel, null,
-          childCategories),
+      delegate: SearchPage(postList, myFavorits, _userEmail, _searchLabel, null,
+          childCategories, parentCategorie),
     );
   }
 
   Future<List<Post>> _loadPost() async {
-    List<Post> _postList = new List();
-
-    String listPostFromSharePrefs =
-        await _sharedPreferenceService.read(POST_LIST);
-    if (listPostFromSharePrefs != null) {
-      Iterable iterablePost = jsonDecode(listPostFromSharePrefs);
-      postList = await iterablePost.map<Post>((post) {
-        return Post.fromJsonPref(post);
-      }).toList();
-    } else {
-      _postList = await _postService.fetchActivePosts();
-      //fetch image to display
-      for (var post in _postList) {
-        await post.getImageUrl();
-      }
-      postList = _postService.sortDescending(_postList);
-      //Cache posts
-      String jsonPosts = jsonEncode(postList);
-      _sharedPreferenceService.save(POST_LIST, jsonPosts);
-    }
-
+    postList = await _postService.fetchActivePosts();
     return postList;
   }
 
