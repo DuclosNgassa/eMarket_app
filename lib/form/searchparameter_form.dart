@@ -309,8 +309,9 @@ class SearchParameterFormState extends State<SearchParameterForm> {
     form.save();
     searchParameter.category = _categorieId;
     searchParameter.postTyp = _postTyp;
-    searchParameter.feeTyp = _feeTyp == 'All' ? null : Converter.convertStringToFeeTyp (_feeTyp);
+    searchParameter.feeTyp = (_feeTyp == 'All' || _feeTyp == 'Tout') ? null : Converter.convertStringToFeeTyp (_feeTyp);
 
     Navigator.of(context).pop(searchParameter);
   }
+
 }

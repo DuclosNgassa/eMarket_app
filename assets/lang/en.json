@@ -69,6 +69,8 @@
   "gift": "Gift",
   "negotiable": "Negotiable",
   "fixed": "Fixed",
+  "price_negotiable":"Negotiable price",
+  "price_fixe":"Fixed price",
   "modify_advert": "Modification of publication ",
   "give_advert_title": "Give a title to your publication",
   "category": "Category",

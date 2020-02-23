@@ -320,24 +320,24 @@ class Post {
     return 'negotiable';
   }
 
-  static String convertFeeTypToDisplay(FeeTyp value) {
+  static String convertFeeTypToDisplay(FeeTyp value, BuildContext context) {
     switch (value) {
       case FeeTyp.negotiable:
         {
-          return 'Prix négociable';
+          return AppLocalizations.of(context).translate('price_negotiable');
         }
         break;
       case FeeTyp.fixed:
         {
-          return 'Prix fixe';
+          return AppLocalizations.of(context).translate('price_fixe');
         }
         break;
       case FeeTyp.gift:
         {
-          return 'Gratuit';
+          return AppLocalizations.of(context).translate('gift');
         }
         break;
     }
-    return 'Prix négociable';
+    return AppLocalizations.of(context).translate('price_negotiable');
   }
 }

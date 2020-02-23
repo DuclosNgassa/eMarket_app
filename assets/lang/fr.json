@@ -69,6 +69,8 @@
   "gift": "Kdo",
   "negotiable": "Negociable",
   "fixed": "Fixe",
+  "price_negotiable":"Prix négociable",
+  "price_fixe":"Prix fixe",
   "modify_advert": "Modification d´annonce",
   "give_advert_title": "Donnez un titre de votre annonce",
   "category": "Categorie",

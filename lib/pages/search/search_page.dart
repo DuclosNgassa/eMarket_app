@@ -184,19 +184,6 @@ class SearchPage extends SearchDelegate<Post> {
     return postTyp == searchParamPostTyp;
   }
 
-/*
-  Future showCategoriePage(BuildContext context) async {
-    CategorieTile _categorieTile = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) {
-          return CategoriePage();
-        },
-      ),
-    );
-    print("Categorie: " + _categorieTile.title);
-  }
-*/
-
   Future showSearchParameterPage(BuildContext context) async {
     searchParameter = await Navigator.push(
       context,
@@ -204,14 +191,12 @@ class SearchPage extends SearchDelegate<Post> {
         builder: (context) => SearchParameterPage(),
       ),
     );
-    if (searchParameter != null && searchParameter.city != null) {
-      print('Ville: ${searchParameter.city}');
-    }
   }
 
   void _clearFormSearch() {
     query = "";
     searchParameter = null;
     childCategories = null;
+    parentCategory = null;
   }
 }

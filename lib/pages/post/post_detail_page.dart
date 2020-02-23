@@ -177,7 +177,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               ),
                               Text(
                                 Post.convertFeeTypToDisplay(
-                                    widget.post.fee_typ),
+                                    widget.post.fee_typ, context),
                                 style: SizeConfig.stylePrice,
                               ),
                             ],

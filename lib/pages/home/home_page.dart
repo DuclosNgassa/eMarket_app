@@ -416,11 +416,9 @@ class _HomePageState extends State<HomePage> {
       //Cache translated categories
       String jsonCategorie = jsonEncode(translatedcategories);
       _sharedPreferenceService.save(CATEGORIE_LIST, jsonCategorie);
-      print("Category: " + jsonCategorie);
       //Cache parent categories
       String jsonParentCategorie = jsonEncode(parentCategories);
       _sharedPreferenceService.save(PARENT_CATEGORIE_LIST, jsonParentCategorie);
-      print("Parent-Category: " + jsonParentCategorie);
     }
   }
 

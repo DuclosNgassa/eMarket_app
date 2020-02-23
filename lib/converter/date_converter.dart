@@ -7,7 +7,6 @@ class DateConverter {
     try {
       return DateFormat.yMd().parseStrict(input);
     } catch (e) {
-      print('An error occured while converting Date: ' + e);
       return null;
     }
   }

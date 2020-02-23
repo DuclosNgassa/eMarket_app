@@ -640,7 +640,6 @@ class PostFormState extends State<PostForm> {
 
   Future<Post> _savePost() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    print("User: " + user.email);
 
     newPost.fee_typ = utils.Converter.convertStringToFeeTyp(_feeTyp);
     newPost.categorieid = _categorieTile.id;
