@@ -81,7 +81,7 @@ flutter:
      - assets/gif/help.gif
      - assets/gif/sharesocial.gif
      - assets/gif/loading.gif
-  #  - images/a_dot_ham.jpeg
+     - assets/icons/emarket-512.png
 
   fonts:
     - family: Pacifico

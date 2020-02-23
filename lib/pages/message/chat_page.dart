@@ -303,10 +303,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
-  int _reverse(int value) {
-    return -value;
-  }
-
   void initChatMessage() async {
     userEmail = await _sharedPreferenceService.read(USER_EMAIL);
     userName = await _sharedPreferenceService.read(USER_NAME);
@@ -315,8 +311,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     if (_messages.isEmpty) {
       await _getReceiverByEmail(widget.post.useremail);
     } else {
-      _messages.sort((message1, message2) =>
-          _reverse(message1.created_at.compareTo(message2.created_at)));
+      _messages.sort((message1, message2) => message2.created_at.compareTo(message1.created_at));
 
       for (Message message in widget.messages) {
         if (message.sender != userEmail) {

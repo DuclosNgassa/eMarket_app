@@ -18,7 +18,8 @@ class HomeCardPicture extends StatefulWidget {
   final double width;
   final double height;
 
-  HomeCardPicture(this.post, this.myFavorits, this.userEmail, this.height, this.width);
+  HomeCardPicture(
+      this.post, this.myFavorits, this.userEmail, this.height, this.width);
 
   @override
   _HomeCardPictureState createState() =>
@@ -94,7 +95,6 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
   Future<void> updateIconFavorit() async {
     if (widget.userEmail != null && widget.userEmail.isNotEmpty) {
       if (favoritIcon.icon == Icons.favorite) {
-
         for (Favorit item in myFavorits) {
           if (item.useremail == widget.userEmail && item.postid == post.id) {
             myFavoritToRemove = item;
@@ -177,8 +177,7 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
       width: width,
       margin: EdgeInsets.only(
           right: SizeConfig.blockSizeHorizontal * 2,
-          top: SizeConfig.blockSizeVertical * 2
-      ),
+          top: SizeConfig.blockSizeVertical * 2),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -196,16 +195,28 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
           Stack(
             children: <Widget>[
               //Center(child: CircularProgressIndicator()),
-              _buildPostImage(post.imageUrl)
+              _buildPostImage(post.imageUrl),
+/*
+              post.imageUrl != null && post.imageUrl.isNotEmpty
+                  ? Container()
+                  : Positioned(
+                      top: SizeConfig.blockSizeVertical * 2,
+                      child: Text(
+                        "Annonce sans image",
+                        style: TextStyle(color: Colors.teal),
+                      ),
+                    ),
+*/
             ],
           ),
-
           Container(
-            padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal, right: SizeConfig.blockSizeHorizontal, top: SizeConfig.blockSizeVertical),
+            padding: EdgeInsets.only(
+                left: SizeConfig.blockSizeHorizontal,
+                right: SizeConfig.blockSizeHorizontal,
+                top: SizeConfig.blockSizeVertical),
             child: Column(
               children: <Widget>[
                 Row(
-
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
@@ -213,7 +224,6 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
                             style: SizeConfig.styleTitleBlackCard)),
                   ],
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
@@ -232,7 +242,6 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
                     ),
                   ],
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: _buildRating(widget.post.rating),
@@ -290,7 +299,6 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
                     blurRadius: 10.0)
               ]),
               child: AspectRatio(
-
                 aspectRatio: 1.7,
                 child:
 /*
@@ -309,12 +317,9 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
                 ),
 */
 
-
-
-
-
-                CachedNetworkImage(
-                  placeholder: (context, url) => Image.asset("assets/gif/loading-world.gif"),
+                    CachedNetworkImage(
+                  placeholder: (context, url) =>
+                      Image.asset("assets/gif/loading-world.gif"),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                   imageUrl: imageUrl,
                   fit: BoxFit.fitWidth,
@@ -322,26 +327,25 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
               ),
             ),
           )
-        :
-    ClipRRect(
-      borderRadius: BorderRadius.circular(16.0),
-      child: Container(
-        width: 150,
-        height: 75,
-        decoration: BoxDecoration(color: Colors.white, boxShadow: [
-          BoxShadow(
-              color: Colors.black12,
-              offset: Offset(3.0, 6.0),
-              blurRadius: 10.0)
-        ]),
-        child: AspectRatio(
-          aspectRatio: 0.5,
-          child: Image.asset(
-            "assets/images/kmerconsulting.png",
-          ),
-        ),
-      ),
-    );
+        : ClipRRect(
+            borderRadius: BorderRadius.circular(16.0),
+            child: Container(
+              width: 150,
+              height: 75,
+              decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                BoxShadow(
+                    color: Colors.black12,
+                    offset: Offset(3.0, 6.0),
+                    blurRadius: 10.0)
+              ]),
+              child: AspectRatio(
+                aspectRatio: 0.5,
+                child: Image.asset(
+                  "assets/icons/emarket-512.png",
+                ),
+              ),
+            ),
+          );
   }
 
   Future<void> setFavoritIcon() async {

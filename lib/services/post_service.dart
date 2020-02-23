@@ -46,27 +46,26 @@ class PostService {
   }
 
   Future<List<Post>> fetchActivePosts() async {
-
     String cacheTimeString =
         await _sharedPreferenceService.read(POST_LIST_CACHE_TIME);
 
-    if(cacheTimeString != null){
+    if (cacheTimeString != null) {
       DateTime cacheTime = DateTime.parse(cacheTimeString);
       DateTime actualDateTime = DateTime.now();
 
-      if(actualDateTime.difference(cacheTime) > Duration(minutes: 3)){
+      if (actualDateTime.difference(cacheTime) > Duration(minutes: 3)) {
         return await _loadPostFromServer();
-      }else{
+      } else {
         return await _loadPostFromCache();
       }
-    }else{
+    } else {
       return await _loadPostFromServer();
     }
   }
 
   Future<List<Post>> _loadPostFromCache() async {
     String listPostFromSharePrefs =
-    await _sharedPreferenceService.read(POST_LIST);
+        await _sharedPreferenceService.read(POST_LIST);
     if (listPostFromSharePrefs != null) {
       Iterable iterablePost = jsonDecode(listPostFromSharePrefs);
       final postList = await iterablePost.map<Post>((post) {
@@ -96,7 +95,8 @@ class PostService {
         String jsonPosts = jsonEncode(postList);
         _sharedPreferenceService.save(POST_LIST, jsonPosts);
         DateTime cacheTime = DateTime.now();
-        _sharedPreferenceService.save(POST_LIST_CACHE_TIME, cacheTime.toIso8601String());
+        _sharedPreferenceService.save(
+            POST_LIST_CACHE_TIME, cacheTime.toIso8601String());
         return sortedpostList;
       } else {
         return await _loadPostFromCache();
@@ -124,9 +124,14 @@ class PostService {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
         final posts = mapResponse["data"].cast<Map<String, dynamic>>();
-        final postList = await posts.map<Post>((json) {
+        final List<Post> postList = await posts.map<Post>((json) {
           return Post.fromJson(json);
         }).toList();
+
+        //Sort the postlist descending
+        postList.sort(
+            (post1, post2) => post2.updated_at.compareTo(post1.updated_at));
+
         return postList;
       } else {
         throw Exception('Failed to load Posts from the internet');
@@ -198,8 +203,7 @@ class PostService {
   }
 
   List<Post> sortDescending(List<Post> posts) {
-    posts.sort(
-        (post1, post2) => post1.updated_at.isAfter(post2.updated_at) ? 0 : 1);
+    posts.sort((post1, post2) => post2.updated_at.compareTo(post1.updated_at));
 
     return posts;
   }
