@@ -130,7 +130,7 @@ class ImageService {
 
   Future<bool> deleteByImageUrl(String url) async {
     Map<String, String> headers = await _authenticationService.getHeaders();
-    String urlToremove = url.split("images/")[1];
+    String urlToremove = url.split("img/")[1];
     final response = await http.Client()
         .delete('$URL_IMAGES_BY_IMAGE_URL$urlToremove', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
