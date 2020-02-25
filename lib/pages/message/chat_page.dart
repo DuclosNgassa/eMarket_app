@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
+import 'package:emarket_app/model/enumeration/status.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user.dart';
@@ -11,6 +12,7 @@ import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/services/user_service.dart';
+import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -428,13 +430,29 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   _showPostDetailPage(Post post) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) {
-          return PostDetailPage(post);
-        },
-      ),
-    );
+    if(post.status == Status.active) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return PostDetailPage(post);
+          },
+        ),
+      );
+    }else{
+      MyNotification.showInfoFlushbar(
+          context,
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate(
+              'no_longer_available'),
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.blue.shade300,
+          ),
+          Colors.blue.shade300,
+          2);
+      setState(() {});
+    }
   }
 
   Future<void> _getReceiverByEmail(String email) async {

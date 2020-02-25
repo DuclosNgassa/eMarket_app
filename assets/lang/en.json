@@ -69,8 +69,8 @@
   "gift": "Gift",
   "negotiable": "Negotiable",
   "fixed": "Fixed",
-  "price_negotiable":"Negotiable price",
-  "price_fixe":"Fixed price",
+  "price_negotiable": "Negotiable price",
+  "price_fixe": "Fixed price",
   "modify_advert": "Modification of publication ",
   "give_advert_title": "Give a title to your publication",
   "category": "Category",
@@ -218,5 +218,6 @@
   "other_category": "Other categories",
   "other": "Other",
   "loading": "Loading...",
-  "same_category_post": "Posts in the same category"
+  "same_category_post": "Posts in the same category",
+  "no_longer_available": "This post is no longer available"
 }

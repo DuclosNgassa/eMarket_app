@@ -194,19 +194,7 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
         children: <Widget>[
           Stack(
             children: <Widget>[
-              //Center(child: CircularProgressIndicator()),
               _buildPostImage(post.imageUrl),
-/*
-              post.imageUrl != null && post.imageUrl.isNotEmpty
-                  ? Container()
-                  : Positioned(
-                      top: SizeConfig.blockSizeVertical * 2,
-                      child: Text(
-                        "Annonce sans image",
-                        style: TextStyle(color: Colors.teal),
-                      ),
-                    ),
-*/
             ],
           ),
           Container(
@@ -290,8 +278,6 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
         ? ClipRRect(
             borderRadius: BorderRadius.circular(16.0),
             child: Container(
-              //width: 150,
-              //height: 150,
               decoration: BoxDecoration(color: Colors.white, boxShadow: [
                 BoxShadow(
                     color: Colors.black12,
@@ -300,24 +286,7 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
               ]),
               child: AspectRatio(
                 aspectRatio: 1.7,
-                child:
-/*
-
-                ExtendedImage.network(
-                  imageUrl,
-
-                  //width: ScreenUtil.instance.setWidth(400),
-                  //height: ScreenUtil.instance.setWidth(400),
-                  fit: BoxFit.fitWidth,
-                  cache: true,
-                  //border: Border.all(color: Colors.red, width: 1.0),
-                  //shape: boxShape,
-                  //borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                  //cancelToken: cancellationToken,
-                ),
-*/
-
-                    CachedNetworkImage(
+                child: CachedNetworkImage(
                   placeholder: (context, url) =>
                       Image.asset("assets/gif/loading-world.gif"),
                   errorWidget: (context, url, error) => Icon(Icons.error),
