@@ -99,7 +99,7 @@ class _ImageDetailState extends State<ImageDetailPage> {
                 borderRadius: BorderRadius.circular(10),
                 image: DecorationImage(
                   image: imageProvider,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
@@ -124,7 +124,7 @@ class _ImageDetailState extends State<ImageDetailPage> {
             ),
             child: Image.file(
               widget.files[index],
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
             ),
           ),
         );
