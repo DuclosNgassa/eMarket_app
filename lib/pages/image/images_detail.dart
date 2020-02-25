@@ -88,14 +88,19 @@ class _ImageDetailState extends State<ImageDetailPage> {
 
   Widget buildImagesGridView() {
     return new Swiper(
+      pagination: SwiperPagination(),
       itemBuilder: (BuildContext context, int index) {
-        return CachedNetworkImage(
-          imageUrl: widget.images.elementAt(index).image_url,
-          imageBuilder: (context, imageProvider) => Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: imageProvider,
-                fit: BoxFit.scaleDown,
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: CachedNetworkImage(
+            imageUrl: widget.images.elementAt(index).image_url,
+            imageBuilder: (context, imageProvider) => Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
@@ -109,11 +114,19 @@ class _ImageDetailState extends State<ImageDetailPage> {
 
   Widget buildFilesGridView() {
     return new Swiper(
+      pagination: SwiperPagination(),
       itemBuilder: (BuildContext context, int index) {
-        return Image.file(
-          widget.files[index],
-          width: SizeConfig.blockSizeHorizontal * 20,
-            fit: BoxFit.scaleDown,
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Image.file(
+              widget.files[index],
+              fit: BoxFit.cover,
+            ),
+          ),
         );
       },
       itemCount: widget.files.length,
