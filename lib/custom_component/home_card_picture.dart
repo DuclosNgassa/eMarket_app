@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
+import 'package:emarket_app/model/enumeration/status.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/global.dart';
@@ -83,13 +84,28 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
 
   // This is the builder method that creates a new page
   showPostDetailPage() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) {
-          return PostDetailPage(post);
-        },
-      ),
-    );
+    if (post.status == Status.active) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return PostDetailPage(post);
+          },
+        ),
+      );
+    } else {
+      MyNotification.showInfoFlushbar(
+          context,
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate('no_longer_available'),
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.blue.shade300,
+          ),
+          Colors.blue.shade300,
+          2);
+      setState(() {});
+    }
   }
 
   Future<void> updateIconFavorit() async {
