@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/converter/utils.dart' as utils;
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
@@ -164,7 +165,8 @@ class _PostEditFormState extends State<PostEditForm> {
                             padding: EdgeInsets.only(
                                 top: SizeConfig.blockSizeVertical * 5.0),
                             child: Text(
-                              AppLocalizations.of(context).translate('modify_advert'),
+                              AppLocalizations.of(context)
+                                  .translate('modify_advert'),
                               style: SizeConfig.styleTitleWhite,
                             ),
                           ),
@@ -193,8 +195,10 @@ class _PostEditFormState extends State<PostEditForm> {
                               _fieldFocusChange(_titelFocusNode, _feeFocusNode);
                             },
                             decoration: InputDecoration(
-                              hintText: AppLocalizations.of(context).translate('give_advert_title'),
-                              labelText: AppLocalizations.of(context).translate('title'),
+                              hintText: AppLocalizations.of(context)
+                                  .translate('give_advert_title'),
+                              labelText: AppLocalizations.of(context)
+                                  .translate('title'),
                               labelStyle: SizeConfig.styleFormBlack,
                             ),
                             initialValue: _post.title,
@@ -202,7 +206,8 @@ class _PostEditFormState extends State<PostEditForm> {
                               LengthLimitingTextInputFormatter(30),
                             ],
                             validator: (val) => formValidator.isEmptyText(val)
-                                ? AppLocalizations.of(context).translate('give_title')
+                                ? AppLocalizations.of(context)
+                                    .translate('give_title')
                                 : null,
                             onSaved: (val) => _post.title = val,
                           ),
@@ -214,7 +219,8 @@ class _PostEditFormState extends State<PostEditForm> {
                                   padding: EdgeInsets.only(
                                       top: SizeConfig.blockSizeVertical * 2),
                                   child: Text(
-                                    AppLocalizations.of(context).translate('category'),
+                                    AppLocalizations.of(context)
+                                        .translate('category'),
                                     style: SizeConfig.styleFormBlack,
                                   ),
                                 ),
@@ -229,7 +235,8 @@ class _PostEditFormState extends State<PostEditForm> {
                                       IconButton(
                                         onPressed: showCategoriePage,
                                         icon: Icon(Icons.arrow_forward_ios),
-                                        tooltip: AppLocalizations.of(context).translate('choose_category'),
+                                        tooltip: AppLocalizations.of(context)
+                                            .translate('choose_category'),
                                       )
                                     ],
                                   ),
@@ -251,8 +258,14 @@ class _PostEditFormState extends State<PostEditForm> {
                                         _feeFocusNode, _cityFocusNode);
                                   },
                                   decoration: InputDecoration(
-                                    hintText: AppLocalizations.of(context).translate('give_price'),
-                                    labelText: AppLocalizations.of(context).translate('price') + ' (' + AppLocalizations.of(context).translate('fcfa') + ')',
+                                    hintText: AppLocalizations.of(context)
+                                        .translate('give_price'),
+                                    labelText: AppLocalizations.of(context)
+                                            .translate('price') +
+                                        ' (' +
+                                        AppLocalizations.of(context)
+                                            .translate('fcfa') +
+                                        ')',
                                     labelStyle: SizeConfig.styleFormBlack,
                                   ),
                                   initialValue: _post.fee.toString(),
@@ -263,7 +276,8 @@ class _PostEditFormState extends State<PostEditForm> {
                                   ],
                                   validator: (val) =>
                                       formValidator.isEmptyText(val)
-                                          ? AppLocalizations.of(context).translate('give_price')
+                                          ? AppLocalizations.of(context)
+                                              .translate('give_price')
                                           : null,
                                   onSaved: (val) => _post.fee = int.parse(val),
                                 ),
@@ -276,7 +290,9 @@ class _PostEditFormState extends State<PostEditForm> {
                                     builder: (FormFieldState state) {
                                       return InputDecorator(
                                         decoration: InputDecoration(
-                                          labelText: AppLocalizations.of(context).translate('price_typ'),
+                                          labelText:
+                                              AppLocalizations.of(context)
+                                                  .translate('price_typ'),
                                           labelStyle: SizeConfig.styleFormBlack,
                                           errorText: state.hasError
                                               ? state.errorText
@@ -328,8 +344,10 @@ class _PostEditFormState extends State<PostEditForm> {
                                           _cityFocusNode, _quarterFocusNode);
                                     },
                                     decoration: InputDecoration(
-                                      hintText: AppLocalizations.of(context).translate('give_city'),
-                                      labelText: AppLocalizations.of(context).translate('city'),
+                                      hintText: AppLocalizations.of(context)
+                                          .translate('give_city'),
+                                      labelText: AppLocalizations.of(context)
+                                          .translate('city'),
                                       labelStyle: SizeConfig.styleFormBlack,
                                     ),
                                     initialValue: _post.city,
@@ -338,7 +356,8 @@ class _PostEditFormState extends State<PostEditForm> {
                                     ],
                                     validator: (val) =>
                                         formValidator.isEmptyText(val)
-                                            ? AppLocalizations.of(context).translate('give_city')
+                                            ? AppLocalizations.of(context)
+                                                .translate('give_city')
                                             : null,
                                     onSaved: (val) => _post.city = val,
                                   ),
@@ -353,8 +372,10 @@ class _PostEditFormState extends State<PostEditForm> {
                                           _quarterFocusNode, _phoneFocusNode);
                                     },
                                     decoration: InputDecoration(
-                                      hintText: AppLocalizations.of(context).translate('give_neighborhood'),
-                                      labelText: AppLocalizations.of(context).translate('neighborhood'),
+                                      hintText: AppLocalizations.of(context)
+                                          .translate('give_neighborhood'),
+                                      labelText: AppLocalizations.of(context)
+                                          .translate('neighborhood'),
                                       labelStyle: SizeConfig.styleFormBlack,
                                     ),
                                     initialValue: _post.quarter,
@@ -363,7 +384,8 @@ class _PostEditFormState extends State<PostEditForm> {
                                     ],
                                     validator: (val) =>
                                         formValidator.isEmptyText(val)
-                                            ? AppLocalizations.of(context).translate('give_neighborhood')
+                                            ? AppLocalizations.of(context)
+                                                .translate('give_neighborhood')
                                             : null,
                                     onSaved: (val) => _post.quarter = val,
                                   ),
@@ -380,8 +402,10 @@ class _PostEditFormState extends State<PostEditForm> {
                                   _phoneFocusNode, _descriptionFocusNode);
                             },
                             decoration: InputDecoration(
-                              hintText: AppLocalizations.of(context).translate('give_phonenumber'),
-                              labelText: AppLocalizations.of(context).translate('phonenumber'),
+                              hintText: AppLocalizations.of(context)
+                                  .translate('give_phonenumber'),
+                              labelText: AppLocalizations.of(context)
+                                  .translate('phonenumber'),
                               labelStyle: SizeConfig.styleFormBlack,
                             ),
                             initialValue: _post.phoneNumber,
@@ -403,8 +427,10 @@ class _PostEditFormState extends State<PostEditForm> {
                             },
                             maxLines: 4,
                             decoration: InputDecoration(
-                              hintText: AppLocalizations.of(context).translate('advert_description'),
-                              labelText: AppLocalizations.of(context).translate('description'),
+                              hintText: AppLocalizations.of(context)
+                                  .translate('advert_description'),
+                              labelText: AppLocalizations.of(context)
+                                  .translate('description'),
                               labelStyle: SizeConfig.styleFormBlack,
                             ),
                             initialValue: _post.description,
@@ -412,7 +438,8 @@ class _PostEditFormState extends State<PostEditForm> {
                               LengthLimitingTextInputFormatter(500),
                             ],
                             validator: (val) => formValidator.isEmptyText(val)
-                                ? AppLocalizations.of(context).translate('give_advert_description')
+                                ? AppLocalizations.of(context)
+                                    .translate('give_advert_description')
                                 : null,
                             onSaved: (val) => _post.description = val,
                           ),
@@ -424,23 +451,30 @@ class _PostEditFormState extends State<PostEditForm> {
                                 child: RaisedButton(
                                   shape: const StadiumBorder(),
                                   color: Colors.red,
-                                  child: Text(AppLocalizations.of(context).translate('cancel'),
+                                  child: Text(
+                                      AppLocalizations.of(context)
+                                          .translate('cancel'),
                                       style: SizeConfig.styleButtonWhite),
                                   onPressed: _cancelChange,
                                 ),
                               ),
                               Expanded(child: SizedBox()),
-                              isSaved ? new Container() : Container(
-                                padding: EdgeInsets.only(
-                                    top: SizeConfig.blockSizeVertical * 2),
-                                child: RaisedButton(
-                                  shape: const StadiumBorder(),
-                                  color: colorDeepPurple400,
-                                  child: Text(AppLocalizations.of(context).translate('save'),
-                                      style: SizeConfig.styleButtonWhite),
-                                  onPressed: _submitForm,
-                                ),
-                              ),
+                              isSaved
+                                  ? new Container()
+                                  : Container(
+                                      padding: EdgeInsets.only(
+                                          top:
+                                              SizeConfig.blockSizeVertical * 2),
+                                      child: RaisedButton(
+                                        shape: const StadiumBorder(),
+                                        color: colorDeepPurple400,
+                                        child: Text(
+                                            AppLocalizations.of(context)
+                                                .translate('save'),
+                                            style: SizeConfig.styleButtonWhite),
+                                        onPressed: _submitForm,
+                                      ),
+                                    ),
                             ],
                           ),
                         ],
@@ -508,8 +542,18 @@ class _PostEditFormState extends State<PostEditForm> {
                           child: AspectRatio(
                             aspectRatio: 0.5,
                             child: oldPostImages[index] != null
-                                ? Image.network(oldPostImages[index].image_url, fit: BoxFit.fill,)
-                                : null,
+                                ? CachedNetworkImage(
+                                    placeholder: (context, url) => Image.asset(
+                                        "assets/gif/loading-world.gif"),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                    imageUrl: oldPostImages[index].image_url,
+                                    fit: BoxFit.fill,
+                                  )
+                                : new Container(
+                                    width: 0.0,
+                                    height: 0.0,
+                                  ),
                           ),
                         ),
                       ),
@@ -620,7 +664,8 @@ class _PostEditFormState extends State<PostEditForm> {
               color: Colors.deepPurple,
             ),
             onPressed: _selectGalleryImage,
-            tooltip: AppLocalizations.of(context).translate('select_from_gallery'),
+            tooltip:
+                AppLocalizations.of(context).translate('select_from_gallery'),
           ),
         ],
       ),
@@ -697,7 +742,11 @@ class _PostEditFormState extends State<PostEditForm> {
       MyNotification.showInfoFlushbar(
           context,
           AppLocalizations.of(context).translate('downloading_images'),
-          AppLocalizations.of(context).translate('download_only') + ' ' + MAX_IMAGE.toString() + ' ' + AppLocalizations.of(context).translate('pictures'),
+          AppLocalizations.of(context).translate('download_only') +
+              ' ' +
+              MAX_IMAGE.toString() +
+              ' ' +
+              AppLocalizations.of(context).translate('pictures'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -724,7 +773,11 @@ class _PostEditFormState extends State<PostEditForm> {
       MyNotification.showInfoFlushbar(
           context,
           AppLocalizations.of(context).translate('downloading_images'),
-          AppLocalizations.of(context).translate('download_only') + ' ' + MAX_IMAGE.toString() + ' ' + AppLocalizations.of(context).translate('pictures'),
+          AppLocalizations.of(context).translate('download_only') +
+              ' ' +
+              MAX_IMAGE.toString() +
+              ' ' +
+              AppLocalizations.of(context).translate('pictures'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -742,7 +795,7 @@ class _PostEditFormState extends State<PostEditForm> {
   void _submitForm() async {
     final FormState form = _formKey.currentState;
 
-    if(!isSaved) {
+    if (!isSaved) {
       if (!form.validate()) {
         MyNotification.showInfoFlushbar(
             context,
@@ -778,8 +831,8 @@ class _PostEditFormState extends State<PostEditForm> {
         MyNotification.showInfoFlushbar(
             context,
             AppLocalizations.of(context).translate('info'),
-            AppLocalizations.of(context).translate(
-                'advert_changed_success_message'),
+            AppLocalizations.of(context)
+                .translate('advert_changed_success_message'),
             Icon(
               Icons.info_outline,
               size: 28,
@@ -916,15 +969,17 @@ class _PostEditFormState extends State<PostEditForm> {
   Future<void> _loadImages() async {
     _feeTyp = getFeeTyp(widget.post.fee_typ);
     _postTyp = widget.post.post_typ;
-    oldPostImages =
-        await _imageService.fetchImagesByPostID(widget.post.id);
+    oldPostImages = await _imageService.fetchImagesByPostID(widget.post.id);
     imageCount = oldPostImages.length;
 
     Categorie _categorie =
         await _categorieService.fetchCategorieByID(widget.post.categorieid);
-    String translatedCategory = AppLocalizations.of(context).translate(_categorie.title);
+    String translatedCategory =
+        AppLocalizations.of(context).translate(_categorie.title);
 
-    _categorieTile = new CategorieTile(translatedCategory == null ? _categorieTile.title : translatedCategory, _categorie.id);
+    _categorieTile = new CategorieTile(
+        translatedCategory == null ? _categorieTile.title : translatedCategory,
+        _categorie.id);
     setState(() {});
   }
 
