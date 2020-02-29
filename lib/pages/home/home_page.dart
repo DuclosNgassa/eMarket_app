@@ -85,6 +85,7 @@ class _HomePageState extends State<HomePage> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data.length > 0) {
+            print("Stop load post");
             loadMorePost(snapshot.data);
             return Container(
               margin: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 3),
@@ -225,21 +226,173 @@ class _HomePageState extends State<HomePage> {
               Colors.redAccent,
               4);
         }
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image.asset(
-                "assets/gif/loading.gif",
-              ),
-              Text(
-                AppLocalizations.of(context).translate('loading'),
-              )
-            ],
-          ),
-        );
+        return _buildPageWithDataFromCache();
       },
     );
+  }
+
+  Widget _buildPageWithDataFromCache() {
+    return FutureBuilder(
+        future: _loadPostFromCache(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            print("Stop load post cache");
+            if (snapshot.data.length > 0) {
+              loadMorePost(snapshot.data);
+              return Container(
+                margin: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 3),
+                height: SizeConfig.screenHeight,
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  slivers: <Widget>[
+                    SliverAppBar(
+                      backgroundColor: Colors.transparent,
+                      expandedHeight: SizeConfig.blockSizeVertical * 10,
+                      floating: true,
+                      snap: false,
+                      pinned: true,
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: SizeConfig.blockSizeHorizontal * 2),
+                              child: Row(
+                                children: <Widget>[
+                                  new Expanded(
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        fillColor: Colors.white,
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0)),
+                                        ),
+                                        hintText: AppLocalizations.of(context)
+                                            .translate('give_your_search'),
+                                        labelText: AppLocalizations.of(context)
+                                            .translate('search'),
+                                        labelStyle:
+                                        TextStyle(color: Colors.white),
+                                      ),
+                                      onTap: () {
+                                        showSearch(
+                                          context: context,
+                                          delegate: SearchPage(
+                                            postList,
+                                            myFavorits,
+                                            _userEmail,
+                                            _searchLabel,
+                                            null,
+                                            null, null,),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.search,
+                                      color: Colors.white,
+                                    ),
+                                    tooltip: AppLocalizations.of(context)
+                                        .translate('to_search'),
+                                    onPressed: () {
+                                      showSearch(
+                                        context: context,
+                                        delegate: SearchPage(postList, myFavorits,
+                                            _userEmail, _searchLabel, null, null, null),
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(
+                                    width: SizeConfig.blockSizeHorizontal * 2,
+                                  ),
+
+//this goes in as one of the children in our column
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        right: SizeConfig.blockSizeHorizontal),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Switch(
+                                          value: showPictures,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              showPictures = value;
+                                            });
+                                          },
+                                          activeTrackColor:
+                                          Colors.lightGreenAccent,
+                                          activeColor: Colors.green,
+                                        ),
+                                        Text(
+                                          AppLocalizations.of(context)
+                                              .translate('pictures'),
+                                          style: SizeConfig.styleNormalBlackBold,
+                                        ),
+                                        //Icon(Icons.photo_camera, size: SizeConfig.blockSizeHorizontal * 7, color: Colors.black,)
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SliverGrid(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                        childAspectRatio: 5,
+                      ),
+                      delegate:
+                      SliverChildListDelegate([_buildCategorieGridView()]),
+                    ),
+                    _buildSliverGrid(showPictures),
+                  ],
+                ),
+              );
+            } else {
+              return new Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: SizeConfig.blockSizeHorizontal * 3,
+                    vertical: SizeConfig.blockSizeVertical * 2,
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context).translate('no_post_found'),
+                  ),
+                ),
+              );
+            }
+          } else if (snapshot.hasError) {
+            MyNotification.showInfoFlushbar(
+                context,
+                AppLocalizations.of(context).translate('erro'),
+                AppLocalizations.of(context).translate('error_loading'),
+                Icon(
+                  Icons.info_outline,
+                  size: 28,
+                  color: Colors.redAccent,
+                ),
+                Colors.redAccent,
+                4);
+          }
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(
+                  "assets/gif/loading.gif",
+                ),
+                Text(
+                  AppLocalizations.of(context).translate('loading'),
+                )
+              ],
+            ),
+          );
+        },
+      );
   }
 
   SliverGrid _buildSliverGrid(bool showPictures) {
@@ -363,7 +516,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<List<Post>> _loadPost() async {
+    print("Start load post");
     postList = await _postService.fetchActivePosts();
+    return postList;
+  }
+
+  Future<List<Post>> _loadPostFromCache() async {
+    print("Start load post cache");
+
+    postList = await _postService.loadPostFromCacheWithoutServerCall();
     return postList;
   }
 

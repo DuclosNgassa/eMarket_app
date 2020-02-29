@@ -907,28 +907,6 @@ class _PostEditFormState extends State<PostEditForm> {
     }
   }
 
-/*
-  Future<http.StreamedResponse> uploadImage(File file, Uri url) async {
-    var fileName = path.basename(file.path);
-
-    img.Image image_temp = img.decodeImage(file.readAsBytesSync());
-    img.Image resized_img = img.copyResize(image_temp, width: 480);
-
-    var request = http.MultipartRequest('POST', url)
-      ..files.add(
-        new http.MultipartFile.fromBytes(
-          'image',
-          img.encodeJpg(resized_img),
-          filename: fileName,
-          contentType: MediaType.parse('image/jpeg'),
-        ),
-      );
-
-    var response = await request.send();
-    return response;
-  }
-*/
-
   Future<void> _saveImages(Post updatedPost) async {
     MyImage.PostImage newImage = new MyImage.PostImage();
     newImage.postid = updatedPost.id;

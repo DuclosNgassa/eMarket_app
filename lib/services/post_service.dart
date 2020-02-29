@@ -54,16 +54,16 @@ class PostService {
       DateTime actualDateTime = DateTime.now();
 
       if (actualDateTime.difference(cacheTime) > Duration(minutes: 3)) {
-        return await _loadPostFromServer();
+        return await loadPostFromServer();
       } else {
-        return await _loadPostFromCache();
+        return await loadPostFromCache();
       }
     } else {
-      return await _loadPostFromServer();
+      return await loadPostFromServer();
     }
   }
 
-  Future<List<Post>> _loadPostFromCache() async {
+  Future<List<Post>> loadPostFromCache() async {
     String listPostFromSharePrefs =
         await _sharedPreferenceService.read(POST_LIST);
     if (listPostFromSharePrefs != null) {
@@ -73,11 +73,25 @@ class PostService {
       }).toList();
       return postList;
     } else {
-      return await _loadPostFromServer();
+      return await loadPostFromServer();
     }
   }
 
-  Future<List<Post>> _loadPostFromServer() async {
+  Future<List<Post>> loadPostFromCacheWithoutServerCall() async {
+    String listPostFromSharePrefs =
+        await _sharedPreferenceService.read(POST_LIST);
+    if (listPostFromSharePrefs != null) {
+      Iterable iterablePost = jsonDecode(listPostFromSharePrefs);
+      final postList = await iterablePost.map<Post>((post) {
+        return Post.fromJsonPref(post);
+      }).toList();
+      return postList;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<Post>> loadPostFromServer() async {
     final response = await http.Client().get(URL_POST_ACTIVE);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
@@ -99,7 +113,7 @@ class PostService {
             POST_LIST_CACHE_TIME, cacheTime.toIso8601String());
         return sortedpostList;
       } else {
-        return await _loadPostFromCache();
+        return await loadPostFromCache();
       }
     } else {
       throw Exception('Failed to load Posts from the internet');

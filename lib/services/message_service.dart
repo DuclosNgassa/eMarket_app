@@ -10,10 +10,10 @@ import '../services/global.dart';
 
 class MessageService {
 
-  SharedPreferenceService _authenticationService = new SharedPreferenceService();
+  SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
 
   Future<Message> saveMessage(Map<String, dynamic> params) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
     final response = await http.post(Uri.encodeFull(URL_MESSAGES), headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
@@ -25,7 +25,7 @@ class MessageService {
   }
 
   Future<List<Message>> fetchMessages() async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
     final response = await http.Client().get(URL_MESSAGES, headers: headers);
     if (response.statusCode == HttpStatus.ok) {
@@ -45,14 +45,14 @@ class MessageService {
   }
 
   Future<List<Message>> fetchMessageByEmail(String email) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
     final response = await http.Client().get('$URL_MESSAGES_BY_EMAIL$email', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
-        final users = mapResponse["data"].cast<Map<String, dynamic>>();
-        final messageList = await users.map<Message>((json) {
+        final messages = mapResponse["data"].cast<Map<String, dynamic>>();
+        final messageList = await messages.map<Message>((json) {
           return Message.fromJson(json);
         }).toList();
         return messageList;
@@ -65,14 +65,14 @@ class MessageService {
   }
 
   Future<List<Message>> fetchMessageByPostId(int postId) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
     final response = await http.Client().get('$URL_MESSAGES_BY_POSTID$postId', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
-        final users = mapResponse["data"].cast<Map<String, dynamic>>();
-        final messageList = await users.map<Message>((json) {
+        final messages = mapResponse["data"].cast<Map<String, dynamic>>();
+        final messageList = await messages.map<Message>((json) {
           return Message.fromJson(json);
         }).toList();
         return messageList;
@@ -85,14 +85,14 @@ class MessageService {
   }
 
   Future<List<Message>> fetchMessageBySender(String sender) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
     final response = await http.Client().get('$URL_MESSAGES_BY_SENDER$sender', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
-        final users = mapResponse["data"].cast<Map<String, dynamic>>();
-        final messageList = await users.map<Message>((json) {
+        final messages = mapResponse["data"].cast<Map<String, dynamic>>();
+        final messageList = await messages.map<Message>((json) {
           return Message.fromJson(json);
         }).toList();
         return messageList;
@@ -105,14 +105,14 @@ class MessageService {
   }
 
   Future<List<Message>> fetchMessageByReceiver(String receiver) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
     final response = await http.Client().get('$URL_MESSAGES_BY_RECEIVER$receiver', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
-        final users = mapResponse["data"].cast<Map<String, dynamic>>();
-        final messageList = await users.map<Message>((json) {
+        final messages = mapResponse["data"].cast<Map<String, dynamic>>();
+        final messageList = await messages.map<Message>((json) {
           return Message.fromJson(json);
         }).toList();
         return messageList;
@@ -125,7 +125,7 @@ class MessageService {
   }
 
   Future<Message> update(Map<String, dynamic> params) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
     final response = await http.Client().put('$URL_MESSAGES/${params["id"]}', headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
@@ -137,7 +137,7 @@ class MessageService {
   }
 
   Future<bool> delete(int id) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
     final response = await http.Client().delete('$URL_MESSAGES/$id', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
