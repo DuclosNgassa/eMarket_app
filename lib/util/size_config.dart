@@ -16,6 +16,7 @@ class SizeConfig {
 
   static double BUTTON_FONT_SIZE;
 
+  static TextStyle styleTitleRed;
   static TextStyle styleTitleBlack;
   static TextStyle styleTitleBlackCard;
   static TextStyle styleCity;
@@ -55,6 +56,12 @@ class SizeConfig {
         _mediaQueryData.padding.top + _mediaQueryData.padding.bottom;
     safeBlockHorizontal = (screenWidth - _safeAreaHorizontal) / 100;
     safeBlockVertical = (screenHeight - _safeAreaVertical) / 100;
+
+    styleTitleRed = new TextStyle(
+        color: Colors.red,
+        fontWeight: FontWeight.bold,
+        fontStyle: FontStyle.italic,
+        fontSize: SizeConfig.safeBlockHorizontal * 5);
 
     styleTitleBlack = new TextStyle(
         color: Colors.black,

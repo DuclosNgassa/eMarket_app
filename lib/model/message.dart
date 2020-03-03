@@ -28,6 +28,19 @@ class Message {
     );
   }
 
+  //To use when retrieving message from sharedpreference
+  factory Message.fromJsonPref(Map<String, dynamic> json) {
+    return Message(
+      id: int.parse(json["id"]),
+      sender: json["sender"],
+      receiver: json["receiver"],
+      created_at: DateTime.parse(json["created_at"]),
+      postid: int.parse(json["postid"]),
+      body: json["body"],
+      read: int.parse(json["read"]),
+    );
+  }
+
   Map<String, dynamic> toJson() => {
     'id': id.toString(),
     'sender': sender,

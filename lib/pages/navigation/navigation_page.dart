@@ -32,11 +32,13 @@ class NavigationPage extends StatefulWidget {
 }
 
 class _NavigationPageState extends State<NavigationPage> {
+  bool showPictures = false;
   static bool isLogedIn = false;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final PostService _postService = new PostService();
   final MessageService _messageService = new MessageService();
-  final SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+  final SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   List<myMessage.Message> allConversation = new List<myMessage.Message>();
   int _localSelectedIndex = 0;
@@ -60,6 +62,77 @@ class _NavigationPageState extends State<NavigationPage> {
 
     super.initState();
     _fireBaseCloudMessagingListeners();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    checkConnectivity();
+
+    return new Scaffold(
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Stack(
+                children: <Widget>[
+                  ClipPath(
+                    clipper: CustomShapeClipper(),
+                    child: Container(
+                      height: SizeConfig.screenHeight / 4,
+                      decoration: BoxDecoration(
+                        gradient: new LinearGradient(
+                            colors: [colorDeepPurple400, colorDeepPurple300],
+                            begin: const FractionalOffset(1.0, 1.0),
+                            end: const FractionalOffset(0.2, 0.2),
+                            stops: [0.0, 1.0],
+                            tileMode: TileMode.clamp),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: SizeConfig.safeBlockVertical * 7),
+                    constraints: BoxConstraints.expand(
+                        height: SizeConfig.safeBlockVertical * 90),
+                    child: _widgetOptions.elementAt(_localSelectedIndex),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            title: Text(
+                AppLocalizations.of(context).translate('home')), //Text('Home'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            title: Text(AppLocalizations.of(context).translate('add_advert')),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            title: Text(AppLocalizations.of(context).translate('account')),
+          ),
+          BottomNavigationBarItem(
+            icon: buildNewMessageIcon(),
+            title: Text(AppLocalizations.of(context).translate('messages')),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info),
+            title: Text(AppLocalizations.of(context).translate('infos')),
+          ),
+        ],
+        currentIndex: _localSelectedIndex,
+        selectedItemColor: colorDeepPurple400,
+        unselectedItemColor: Colors.grey,
+        onTap: _onItemTapped,
+      ),
+    );
   }
 
   Future onSelectNotification(String payload) {
@@ -159,77 +232,6 @@ class _NavigationPageState extends State<NavigationPage> {
     setState(() {});
   }
 
-  @override
-  Widget build(BuildContext context) {
-    SizeConfig().init(context);
-    checkConnectivity();
-
-    return new Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Stack(
-                children: <Widget>[
-                  ClipPath(
-                    clipper: CustomShapeClipper(),
-                    child: Container(
-                      height: SizeConfig.screenHeight / 4,
-                      decoration: BoxDecoration(
-                        gradient: new LinearGradient(
-                            colors: [colorDeepPurple400, colorDeepPurple300],
-                            begin: const FractionalOffset(1.0, 1.0),
-                            end: const FractionalOffset(0.2, 0.2),
-                            stops: [0.0, 1.0],
-                            tileMode: TileMode.clamp),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin:
-                        EdgeInsets.only(top: SizeConfig.safeBlockVertical * 7),
-                    constraints: BoxConstraints.expand(
-                        height: SizeConfig.safeBlockVertical * 90),
-                    child: _widgetOptions.elementAt(_localSelectedIndex),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text(
-                AppLocalizations.of(context).translate('home')), //Text('Home'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            title: Text(AppLocalizations.of(context).translate('add_advert')),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            title: Text(AppLocalizations.of(context).translate('account')),
-          ),
-          BottomNavigationBarItem(
-            icon: buildNewMessageIcon(),
-            title: Text(AppLocalizations.of(context).translate('messages')),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.info),
-            title: Text(AppLocalizations.of(context).translate('infos')),
-          ),
-        ],
-        currentIndex: _localSelectedIndex,
-        selectedItemColor: colorDeepPurple400,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-      ),
-    );
-  }
-
   void _onItemTapped(int index) {
     if (index == MESSAGEPAGE) {
       _incomingMessage = 0;
@@ -327,4 +329,5 @@ class _NavigationPageState extends State<NavigationPage> {
     MessagePage(),
     InfoPage(),
   ];
+
 }

@@ -57,10 +57,17 @@ const String USER_NAME = "USER_NAME";
 const String DEVICE_TOKEN = "DEVICE_TOKEN";
 const String AUTHENTICATION_TOKEN = "auth-token";
 const String NEW_MESSAGE = "NEW_MESSAGE";
+const String MESSAGE_LIST = "MESSAGE_LIST";
+const String MESSAGE_LIST_CACHE_TIME = "MESSAGE_LIST_CACHE_TIME";
 const String POST_LIST = "POST_LIST";
+const String MY_POST_LIST = "POST_LIST";
 const String POST_LIST_CACHE_TIME = "POST_LIST_CACHE_TIME";
+const String MY_POST_LIST_CACHE_TIME = "MY_POST_LIST_CACHE_TIME";
 const String CATEGORIE_LIST = "CATEGORIE_LIST";
 const String PARENT_CATEGORIE_LIST = "PARENT_CATEGORIE_LIST";
+const String SHOW_PICTURES = "SHOW_PICTURES";
+const String SHOW_PICTURES_YES = "SHOW_PICTURES_YES";
+const String SHOW_PICTURES_NO = "SHOW_PICTURES_NO";
 
 Color colorDeepPurple300 = Colors.deepPurple[300]; //Color(0xFF95E08E);
 Color colorDeepPurple400 = Colors.deepPurple[400]; //Color(0xFF33BBB5);

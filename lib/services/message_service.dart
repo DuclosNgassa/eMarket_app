@@ -45,6 +45,24 @@ class MessageService {
   }
 
   Future<List<Message>> fetchMessageByEmail(String email) async {
+    String emailMessagesCacheTimeString = MESSAGE_LIST_CACHE_TIME + email;
+    String cacheTimeString =
+    await _sharedPreferenceService.read(emailMessagesCacheTimeString);
+    if (cacheTimeString != null) {
+      DateTime cacheTime = DateTime.parse(cacheTimeString);
+      DateTime actualDateTime = DateTime.now();
+
+      if (actualDateTime.difference(cacheTime) > Duration(minutes: 3)) {
+        return _fetchMessageByEmailFromServer(email);
+      } else {
+        return _fetchMessageByEmailFromCache(email);
+      }
+    }else{
+      return _fetchMessageByEmailFromServer(email);
+    }
+  }
+
+  Future<List<Message>> _fetchMessageByEmailFromServer(String email) async {
     Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
     final response = await http.Client().get('$URL_MESSAGES_BY_EMAIL$email', headers: headers);
@@ -55,12 +73,38 @@ class MessageService {
         final messageList = await messages.map<Message>((json) {
           return Message.fromJson(json);
         }).toList();
+
+        //save messages in cache
+        String emailMessageFromCache = MESSAGE_LIST + email;
+        String jsonMessages = jsonEncode(messageList);
+        _sharedPreferenceService.save(emailMessageFromCache, jsonMessages);
+
+        String emailMessagesCacheTimeString = MESSAGE_LIST_CACHE_TIME + email;
+        DateTime cacheTime = DateTime.now();
+        _sharedPreferenceService.save(
+            emailMessagesCacheTimeString, cacheTime.toIso8601String());
+
         return messageList;
       } else {
         return null;
       }
     } else {
       throw Exception('Failed to load Messages by sender from the internet');
+    }
+  }
+
+  Future<List<Message>> _fetchMessageByEmailFromCache(String email) async {
+    String emailMessageFromCache = MESSAGE_LIST + email;
+    String listMessageFromSharePrefs =
+    await _sharedPreferenceService.read(emailMessageFromCache);
+    if (listMessageFromSharePrefs != null) {
+      Iterable iterablePost = jsonDecode(listMessageFromSharePrefs);
+      final messageList = await iterablePost.map<Message>((message) {
+        return Message.fromJsonPref(message);
+      }).toList();
+      return messageList;
+    } else {
+      return null;
     }
   }
 

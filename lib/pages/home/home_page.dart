@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
-import 'package:emarket_app/custom_component/home_card_picture.dart';
+import 'package:emarket_app/custom_component/post_card_component.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/favorit.dart';
@@ -18,7 +18,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../custom_component/home_card.dart';
 import '../../model/post.dart';
 import '../../services/post_service.dart';
 
@@ -44,6 +43,11 @@ class _HomePageState extends State<HomePage> {
   String _searchLabel;
   final List<Message> fireBaseMessages = [];
 
+  double heightCustomCategorieButton = SizeConfig.blockSizeVertical * 5;
+  TextStyle _myTextStyle = TextStyle(
+    color: Colors.white,
+    fontSize: SizeConfig.safeBlockHorizontal * 2.6,
+  );
   List<Post> searchResult = new List();
   List<Post> postList = new List();
   List<Post> postListItems = new List();
@@ -61,7 +65,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadMyFavorits();
-    _loadMyCategories();
 
     _firebaseMessaging.onTokenRefresh.listen(setDeviceToken);
     _firebaseMessaging.getToken();
@@ -80,126 +83,92 @@ class _HomePageState extends State<HomePage> {
     SizeConfig().init(context);
     _searchLabel = AppLocalizations.of(context).translate('search');
 
+    return Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Container(
+          height: SizeConfig.screenHeight,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      height: SizeConfig.blockSizeVertical * 10,
+                      width: SizeConfig.screenWidth * 0.82,
+                      child: _buildCategorieGridView(),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 15.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: Colors.white),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.search,
+                            color: colorDeepPurple400,
+                          ),
+                          iconSize: SizeConfig.blockSizeHorizontal * 11,
+                          tooltip: AppLocalizations.of(context)
+                              .translate('to_search'),
+                          onPressed: () {
+                            showSearch(
+                              context: context,
+                              delegate: SearchPage(postList, myFavorits,
+                                  _userEmail, _searchLabel, null, null, null),
+                            );
+                          },
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                Container(
+                    height: SizeConfig.screenHeight * 0.74,
+                    child: _buildPageWithDataFromServer()),
+              ],
+            ),
+          ),
+        ),
+        floatingActionButton: Padding(
+          padding: EdgeInsets.only(
+              bottom: SizeConfig.blockSizeVertical,
+              right: SizeConfig.screenWidth * 0.4),
+          child: FloatingActionButton(
+            backgroundColor: Colors.red,
+            onPressed: () => _changeShowPictures(),
+            tooltip: 'Image',
+            child: Icon(Icons.image),
+          ),
+        ));
+  }
+
+  _changeShowPictures() async {
+    showPictures = !showPictures;
+    setState(() {});
+  }
+
+  Widget _buildPageWithDataFromServer() {
     return FutureBuilder(
       future: _loadPost(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          print("Stop load post cache");
           if (snapshot.data.length > 0) {
-            print("Stop load post");
             loadMorePost(snapshot.data);
             return Container(
-              margin: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 3),
-              height: SizeConfig.screenHeight,
-              child: CustomScrollView(
-                controller: _scrollController,
-                slivers: <Widget>[
-                  SliverAppBar(
-                    backgroundColor: Colors.transparent,
-                    expandedHeight: SizeConfig.blockSizeVertical * 10,
-                    floating: true,
-                    snap: false,
-                    pinned: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: SizeConfig.blockSizeHorizontal * 2),
-                            child: Row(
-                              children: <Widget>[
-                                new Expanded(
-                                  child: TextField(
-                                    decoration: InputDecoration(
-                                      fillColor: Colors.white,
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10.0)),
-                                      ),
-                                      hintText: AppLocalizations.of(context)
-                                          .translate('give_your_search'),
-                                      labelText: AppLocalizations.of(context)
-                                          .translate('search'),
-                                      labelStyle:
-                                          TextStyle(color: Colors.white),
-                                    ),
-                                    onTap: () {
-                                      showSearch(
-                                        context: context,
-                                        delegate: SearchPage(
-                                            postList,
-                                            myFavorits,
-                                            _userEmail,
-                                            _searchLabel,
-                                            null,
-                                            null, null,),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.search,
-                                    color: Colors.white,
-                                  ),
-                                  tooltip: AppLocalizations.of(context)
-                                      .translate('to_search'),
-                                  onPressed: () {
-                                    showSearch(
-                                      context: context,
-                                      delegate: SearchPage(postList, myFavorits,
-                                          _userEmail, _searchLabel, null, null, null),
-                                    );
-                                  },
-                                ),
-                                SizedBox(
-                                  width: SizeConfig.blockSizeHorizontal * 2,
-                                ),
-
-//this goes in as one of the children in our column
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      right: SizeConfig.blockSizeHorizontal),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Switch(
-                                        value: showPictures,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            showPictures = value;
-                                          });
-                                        },
-                                        activeTrackColor:
-                                            Colors.lightGreenAccent,
-                                        activeColor: Colors.green,
-                                      ),
-                                      Text(
-                                        AppLocalizations.of(context)
-                                            .translate('pictures'),
-                                        style: SizeConfig.styleNormalBlackBold,
-                                      ),
-                                      //Icon(Icons.photo_camera, size: SizeConfig.blockSizeHorizontal * 7, color: Colors.black,)
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SliverGrid(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1,
-                      childAspectRatio: 5,
-                    ),
-                    delegate:
-                        SliverChildListDelegate([_buildCategorieGridView()]),
-                  ),
-                  _buildSliverGrid(showPictures),
-                ],
-              ),
-            );
+              padding: EdgeInsets.only(top: 10),
+              constraints: BoxConstraints.expand(
+                  height: SizeConfig.screenHeight * 0.845),
+              child: PostCardComponentPage(
+                  postList: snapshot.data,
+                  myFavorits: myFavorits,
+                  userEmail: _userEmail,
+                  showPictures: showPictures),
+            ); //_buildPostGrid(showPictures);
           } else {
             return new Center(
               child: Padding(
@@ -233,138 +202,91 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildPageWithDataFromCache() {
     return FutureBuilder(
-        future: _loadPostFromCache(),
+      future: _loadPostFromCache(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          print("Stop load post cache");
+          if (snapshot.data.length > 0) {
+            loadMorePost(snapshot.data);
+            return Container(
+              padding: EdgeInsets.only(top: 10),
+              constraints: BoxConstraints.expand(
+                  height: SizeConfig.screenHeight * 0.845),
+              child: PostCardComponentPage(
+                  postList: snapshot.data,
+                  myFavorits: myFavorits,
+                  userEmail: _userEmail,
+                  showPictures: showPictures),
+            );
+          } else {
+            return new Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: SizeConfig.blockSizeHorizontal * 3,
+                  vertical: SizeConfig.blockSizeVertical * 2,
+                ),
+                child: Text(
+                  AppLocalizations.of(context).translate('no_post_found'),
+                ),
+              ),
+            );
+          }
+        } else if (snapshot.hasError) {
+          MyNotification.showInfoFlushbar(
+              context,
+              AppLocalizations.of(context).translate('erro'),
+              AppLocalizations.of(context).translate('error_loading'),
+              Icon(
+                Icons.info_outline,
+                size: 28,
+                color: Colors.redAccent,
+              ),
+              Colors.redAccent,
+              4);
+        }
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image.asset(
+                "assets/gif/loading.gif",
+              ),
+              Text(
+                AppLocalizations.of(context).translate('loading'),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCategorieGridView() {
+    return FutureBuilder(
+        future: _loadMyCategories(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            print("Stop load post cache");
-            if (snapshot.data.length > 0) {
-              loadMorePost(snapshot.data);
-              return Container(
-                margin: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 3),
-                height: SizeConfig.screenHeight,
-                child: CustomScrollView(
-                  controller: _scrollController,
-                  slivers: <Widget>[
-                    SliverAppBar(
-                      backgroundColor: Colors.transparent,
-                      expandedHeight: SizeConfig.blockSizeVertical * 10,
-                      floating: true,
-                      snap: false,
-                      pinned: true,
-                      flexibleSpace: FlexibleSpaceBar(
-                        background: Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: SizeConfig.blockSizeHorizontal * 2),
-                              child: Row(
-                                children: <Widget>[
-                                  new Expanded(
-                                    child: TextField(
-                                      decoration: InputDecoration(
-                                        fillColor: Colors.white,
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10.0)),
-                                        ),
-                                        hintText: AppLocalizations.of(context)
-                                            .translate('give_your_search'),
-                                        labelText: AppLocalizations.of(context)
-                                            .translate('search'),
-                                        labelStyle:
-                                        TextStyle(color: Colors.white),
-                                      ),
-                                      onTap: () {
-                                        showSearch(
-                                          context: context,
-                                          delegate: SearchPage(
-                                            postList,
-                                            myFavorits,
-                                            _userEmail,
-                                            _searchLabel,
-                                            null,
-                                            null, null,),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.search,
-                                      color: Colors.white,
-                                    ),
-                                    tooltip: AppLocalizations.of(context)
-                                        .translate('to_search'),
-                                    onPressed: () {
-                                      showSearch(
-                                        context: context,
-                                        delegate: SearchPage(postList, myFavorits,
-                                            _userEmail, _searchLabel, null, null, null),
-                                      );
-                                    },
-                                  ),
-                                  SizedBox(
-                                    width: SizeConfig.blockSizeHorizontal * 2,
-                                  ),
-
-//this goes in as one of the children in our column
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        right: SizeConfig.blockSizeHorizontal),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Switch(
-                                          value: showPictures,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              showPictures = value;
-                                            });
-                                          },
-                                          activeTrackColor:
-                                          Colors.lightGreenAccent,
-                                          activeColor: Colors.green,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)
-                                              .translate('pictures'),
-                                          style: SizeConfig.styleNormalBlackBold,
-                                        ),
-                                        //Icon(Icons.photo_camera, size: SizeConfig.blockSizeHorizontal * 7, color: Colors.black,)
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SliverGrid(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 1,
-                        childAspectRatio: 5,
-                      ),
-                      delegate:
-                      SliverChildListDelegate([_buildCategorieGridView()]),
-                    ),
-                    _buildSliverGrid(showPictures),
-                  ],
-                ),
-              );
-            } else {
-              return new Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: SizeConfig.blockSizeHorizontal * 3,
-                    vertical: SizeConfig.blockSizeVertical * 2,
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context).translate('no_post_found'),
-                  ),
-                ),
-              );
-            }
+            return GridView.count(
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
+              crossAxisCount: 1,
+              scrollDirection: Axis.horizontal,
+              children: List.generate(parentCategories.length, (index) {
+                return CustomCategorieButton(
+                  width: SizeConfig.blockSizeHorizontal * 32,
+                  height: heightCustomCategorieButton,
+                  fillColor: colorWhite,
+                  icon: IconData(int.parse(parentCategories[index].icon),
+                      fontFamily: 'MaterialIcons'),
+                  splashColor: colorDeepPurple400,
+                  iconColor: colorDeepPurple400,
+                  text: parentCategories[index].title,
+                  textStyle: _myTextStyle,
+                  onPressed: () =>
+                      showSearchWithParentCategorie(parentCategories[index]),
+                );
+              }),
+            );
           } else if (snapshot.hasError) {
             MyNotification.showInfoFlushbar(
                 context,
@@ -379,112 +301,11 @@ class _HomePageState extends State<HomePage> {
                 4);
           }
           return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Image.asset(
-                  "assets/gif/loading.gif",
-                ),
-                Text(
-                  AppLocalizations.of(context).translate('loading'),
-                )
-              ],
+            child: CupertinoActivityIndicator(
+              radius: SizeConfig.blockSizeHorizontal * 5,
             ),
           );
-        },
-      );
-  }
-
-  SliverGrid _buildSliverGrid(bool showPictures) {
-    if (showPictures) {
-      return SliverGrid(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 0,
-          crossAxisSpacing: 0,
-          childAspectRatio: 1,
-        ),
-        delegate: SliverChildBuilderDelegate(
-          (BuildContext context, int index) {
-            if (index == postListItems.length) {
-              return CupertinoActivityIndicator();
-            }
-            return Padding(
-              padding: EdgeInsets.only(
-                  left:
-                      index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
-              child: HomeCardPicture(
-                  postListItems.elementAt(index),
-                  myFavorits,
-                  _userEmail,
-                  SizeConfig.blockSizeVertical * 40,
-                  SizeConfig.screenWidth * 0.5 - 10),
-            );
-          },
-          childCount: postListItems.length,
-        ),
-      );
-    } else {
-      return SliverGrid(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 0,
-          crossAxisSpacing: 0,
-          childAspectRatio: 1.5,
-        ),
-        delegate: SliverChildBuilderDelegate(
-          (BuildContext context, int index) {
-            if (index == postListItems.length) {
-              return CupertinoActivityIndicator(
-                radius: SizeConfig.blockSizeHorizontal * 10,
-              );
-            }
-            return Padding(
-              padding: EdgeInsets.only(
-                  left:
-                      index % 2 == 0 ? SizeConfig.blockSizeHorizontal * 2 : 0),
-              child: HomeCard(
-                  postListItems.elementAt(index),
-                  myFavorits,
-                  _userEmail,
-                  SizeConfig.blockSizeVertical * 20,
-                  SizeConfig.screenWidth * 0.5 - 10),
-            );
-          },
-          childCount: postListItems.length,
-        ),
-      );
-    }
-  }
-
-  Widget _buildCategorieGridView() {
-    TextStyle _myTextStyle = TextStyle(
-      color: Colors.black,
-      fontSize: SizeConfig.safeBlockHorizontal * 2.6,
-    );
-
-    double heightCustomCategorieButton = SizeConfig.blockSizeVertical * 5;
-    return GridView.count(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      crossAxisCount: 1,
-      scrollDirection: Axis.horizontal,
-      children: List.generate(parentCategories.length, (index) {
-        return CustomCategorieButton(
-          width: SizeConfig.blockSizeHorizontal * 32,
-          height: heightCustomCategorieButton,
-          fillColor: colorDeepPurple400,
-          icon: IconData(int.parse(parentCategories[index].icon),
-              fontFamily: 'MaterialIcons'),
-          splashColor: colorWhite,
-          iconColor: colorWhite,
-          text: parentCategories[index].title,
-          textStyle: _myTextStyle,
-          onPressed: () =>
-              showSearchWithParentCategorie(parentCategories[index]),
-        );
-      }),
-    );
+        });
   }
 
   void loadMorePost(List<Post> _postList) {
@@ -524,7 +345,7 @@ class _HomePageState extends State<HomePage> {
   Future<List<Post>> _loadPostFromCache() async {
     print("Start load post cache");
 
-    postList = await _postService.loadPostFromCacheWithoutServerCall();
+    postList = await _postService.fetchActivePostFromCacheWithoutServerCall();
     return postList;
   }
 
@@ -536,28 +357,23 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _loadMyCategories() async {
+  Future<List<Categorie>> _loadMyCategories() async {
     String listCategoryFromSharePrefs =
         await _sharedPreferenceService.read(CATEGORIE_LIST);
-    String listParentCategoryFromSharePrefs =
-        await _sharedPreferenceService.read(PARENT_CATEGORIE_LIST);
 
-    if (listCategoryFromSharePrefs != null &&
-        listParentCategoryFromSharePrefs != null) {
+    if (listCategoryFromSharePrefs != null) {
       Iterable iterableCategories = jsonDecode(listCategoryFromSharePrefs);
       categories = await iterableCategories.map<Categorie>((category) {
-        return Categorie.fromJsonPref(category);
-      }).toList();
-
-      Iterable iterableParentCategories =
-          jsonDecode(listParentCategoryFromSharePrefs);
-      parentCategories =
-          await iterableParentCategories.map<Categorie>((category) {
         return Categorie.fromJsonPref(category);
       }).toList();
     } else {
       categories = await _categorieService.fetchCategories();
 
+      //Cache translated categories
+      String jsonCategorie = jsonEncode(categories);
+      _sharedPreferenceService.save(CATEGORIE_LIST, jsonCategorie);
+    }
+    if (parentCategories == null || parentCategories.isEmpty) {
       List<Categorie> translatedcategories =
           _categorieService.translateCategories(categories, context);
       for (var _categorie in translatedcategories) {
@@ -574,13 +390,8 @@ class _HomePageState extends State<HomePage> {
           categorie.title == 'Other categories' ||
           categorie.title == 'Autre categories');
       parentCategories.add(categorieTemp);
-      //Cache translated categories
-      String jsonCategorie = jsonEncode(translatedcategories);
-      _sharedPreferenceService.save(CATEGORIE_LIST, jsonCategorie);
-      //Cache parent categories
-      String jsonParentCategorie = jsonEncode(parentCategories);
-      _sharedPreferenceService.save(PARENT_CATEGORIE_LIST, jsonParentCategorie);
     }
+    return parentCategories;
   }
 
   void setDeviceToken(String event) async {

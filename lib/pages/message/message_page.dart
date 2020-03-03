@@ -1,4 +1,5 @@
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
+import 'package:emarket_app/custom_component/item_list.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/enumeration/login_source.dart';
 import 'package:emarket_app/model/message.dart';
@@ -19,6 +20,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../services/global.dart';
 
@@ -34,7 +36,8 @@ class _MessagePageState extends State<MessagePage> {
   MessageService _messageService = new MessageService();
   PostService _postService = new PostService();
   UserService _userService = new UserService();
-  SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+  SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
   FirebaseUser firebaseUser;
   String userEmail;
 
@@ -94,8 +97,8 @@ class _MessagePageState extends State<MessagePage> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(
-                        top: SizeConfig.blockSizeVertical * 8),
+                    padding:
+                        EdgeInsets.only(top: SizeConfig.blockSizeVertical * 8),
                     child: new Container(
                       constraints: BoxConstraints.expand(
                           height: SizeConfig.screenHeight * 0.77),
@@ -167,10 +170,20 @@ class _MessagePageState extends State<MessagePage> {
               Colors.redAccent,
               4);
         }
+/*
         return Center(
           child: CupertinoActivityIndicator(
             radius: SizeConfig.blockSizeHorizontal * 5,
           ),
+        );
+*/
+        return ListView.builder(
+          itemCount: 10,
+          // Important code
+          itemBuilder: (context, index) => Shimmer.fromColors(
+              baseColor: Colors.grey[400],
+              highlightColor: Colors.white,
+              child: ListItem(index: -1)),
         );
       },
     );

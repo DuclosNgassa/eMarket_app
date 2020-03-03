@@ -108,7 +108,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   margin:
                       EdgeInsets.only(top: SizeConfig.blockSizeVertical * 5),
                   constraints: BoxConstraints.expand(
-                      height: SizeConfig.screenHeight * 0.9),
+                      height: SizeConfig.screenHeight * 0.95),
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
