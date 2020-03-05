@@ -1,3 +1,4 @@
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +23,7 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return RawMaterialButton(
       onPressed: onPressed,
@@ -35,13 +37,16 @@ class CustomButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            icon != null ? Padding(
-              padding: EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 2),
-              child: Icon(
-                icon,
-                color: iconColor,
-              ),
-            ): Container(),
+            icon != null
+                ? Padding(
+                    padding: EdgeInsets.only(
+                        right: SizeConfig.blockSizeHorizontal * 2),
+                    child: Icon(
+                      icon,
+                      color: iconColor,
+                    ),
+                  )
+                : Container(),
             Text(
               text,
               style: textStyle,

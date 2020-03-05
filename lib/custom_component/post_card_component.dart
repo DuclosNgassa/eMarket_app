@@ -1,25 +1,26 @@
-
 import 'package:emarket_app/custom_component/home_card.dart';
 import 'package:emarket_app/custom_component/home_card_picture.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class PostCardComponentPage extends StatefulWidget{
+class PostCardComponentPage extends StatefulWidget {
   final List<Post> postList;
   final List<Favorit> myFavorits;
   final String userEmail;
   final bool showPictures;
 
-  PostCardComponentPage({this.postList, this.myFavorits, this.userEmail, this.showPictures});
+  PostCardComponentPage(
+      {this.postList, this.myFavorits, this.userEmail, this.showPictures});
 
   @override
   PostCardComponentState createState() => PostCardComponentState();
 }
 
-class PostCardComponentState extends State<PostCardComponentPage>{
+class PostCardComponentState extends State<PostCardComponentPage> {
   List<Post> postListItems = new List();
 
   int perPage = 10;
@@ -33,10 +34,10 @@ class PostCardComponentState extends State<PostCardComponentPage>{
     _initControllers();
   }
 
-
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return buildPostListView(widget.showPictures);
   }
@@ -108,5 +109,4 @@ class PostCardComponentState extends State<PostCardComponentPage>{
       }
     }
   }
-
 }

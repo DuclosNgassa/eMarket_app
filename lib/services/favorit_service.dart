@@ -2,21 +2,25 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/model/favorit.dart';
+import 'package:emarket_app/model/post.dart';
+import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:http/http.dart' as http;
 
-import '../services/global.dart';
+import '../util/global.dart';
 
 class FavoritService {
-
-  SharedPreferenceService _authenticationService = new SharedPreferenceService();
+  SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
+  PostService _postService = new PostService();
 
   Future<Favorit> save(Map<String, dynamic> params) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
-    final response =
-        await http.post(Uri.encodeFull(URL_FAVORITS), headers: headers, body: params);
+    final response = await http.post(Uri.encodeFull(URL_FAVORITS),
+        headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToFavorit(responseBody);
@@ -27,7 +31,7 @@ class FavoritService {
   }
 
   Future<List<Favorit>> fetchFavorits() async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
     final response = await http.Client().get(URL_FAVORITS, headers: headers);
     if (response.statusCode == HttpStatus.ok) {
@@ -47,9 +51,10 @@ class FavoritService {
   }
 
   Future<List<Favorit>> fetchFavoritByUserEmail(String email) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
-    final response = await http.get('$URL_FAVORITS_BY_EMAIL$email', headers: headers);
+    final response =
+        await http.get('$URL_FAVORITS_BY_EMAIL$email', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -68,11 +73,50 @@ class FavoritService {
     }
   }
 
-  Future<Favorit> update(Map<String, dynamic> params) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+  Future<List<Post>> loadMyFavoritFromCache(String userEmail) async {
+    String EMAIL_MY_FAVORIT_LIST = MY_FAVORIT_LIST + userEmail;
 
-    final response =
-        await http.Client().put('$URL_FAVORITS/${params["id"]}', headers: headers, body: params);
+    String listPostFromSharePrefs =
+        await _sharedPreferenceService.read(EMAIL_MY_FAVORIT_LIST);
+    if (listPostFromSharePrefs != null) {
+      Iterable iterablePost = jsonDecode(listPostFromSharePrefs);
+      final postList = await iterablePost.map<Post>((post) {
+        return Post.fromJsonPref(post);
+      }).toList();
+      return postList;
+    } else {
+      return loadMyFavoritFromServer(userEmail);
+    }
+  }
+
+  Future<List<Post>> loadMyFavoritFromServer(String userEmail) async {
+    String EMAIL_MY_FAVORIT_LIST = MY_FAVORIT_LIST + userEmail;
+    String EMAIL_MY_FAVORIT_LIST_CACHE_TIME =
+        MY_FAVORIT_LIST_CACHE_TIME + userEmail;
+
+    List<Post> _myFavoritPosts = new List();
+    List<Favorit> _myFavorits = await fetchFavoritByUserEmail(userEmail);
+    //_myFavoritPosts.clear();
+    for (Favorit favorit in _myFavorits) {
+      Post post = await _postService.fetchPostById(favorit.postid);
+      _myFavoritPosts.add(post);
+    }
+    if (_myFavoritPosts.isNotEmpty) {
+      // Cache _myFavoritPosts
+      String jsonFavorits = jsonEncode(_myFavoritPosts);
+      _sharedPreferenceService.save(EMAIL_MY_FAVORIT_LIST, jsonFavorits);
+      DateTime cacheTime = DateTime.now();
+      _sharedPreferenceService.save(
+          EMAIL_MY_FAVORIT_LIST_CACHE_TIME, cacheTime.toIso8601String());
+    }
+    return _myFavoritPosts;
+  }
+
+  Future<Favorit> update(Map<String, dynamic> params) async {
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
+
+    final response = await http.Client()
+        .put('$URL_FAVORITS/${params["id"]}', headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToFavorit(responseBody);
@@ -83,9 +127,10 @@ class FavoritService {
   }
 
   Future<bool> delete(int id) async {
-    Map<String, String> headers = await _authenticationService.getHeaders();
+    Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
-    final response = await http.Client().delete('$URL_FAVORITS/$id', headers: headers);
+    final response =
+        await http.Client().delete('$URL_FAVORITS/$id', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       if (responseBody["result"] == "ok") {

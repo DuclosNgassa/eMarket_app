@@ -1,4 +1,6 @@
 import 'package:emarket_app/custom_component/custom_button.dart';
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
@@ -6,8 +8,6 @@ import 'package:emarket_app/pages/contact/contact_page.dart';
 import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
-
-import '../../services/global.dart';
 
 class FaqPage extends StatefulWidget {
   @override
@@ -24,11 +24,12 @@ class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('how_it_works')),
-        backgroundColor: colorDeepPurple400,
+        backgroundColor: GlobalColor.colorDeepPurple400,
       ),
       body: buildListTile(),
     );
@@ -54,11 +55,13 @@ class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: CustomButton(
-              fillColor: colorDeepPurple400,
+              fillColor: GlobalColor.colorDeepPurple400,
               splashColor: Colors.white,
               iconColor: Colors.white,
-              text: AppLocalizations.of(context).translate('other_questions') + ' ' + AppLocalizations.of(context).translate('contact_us'),
-              textStyle: SizeConfig.styleButtonWhite,
+              text: AppLocalizations.of(context).translate('other_questions') +
+                  ' ' +
+                  AppLocalizations.of(context).translate('contact_us'),
+              textStyle: GlobalStyling.styleButtonWhite,
               onPressed: () => showContactPage(),
             ),
           ),
@@ -73,13 +76,14 @@ class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
         ExpansionTile(
           title: Text(
             AppLocalizations.of(context).translate('faq1'),
-            style: SizeConfig.styleTitleBlack,
+            style: GlobalStyling.styleTitleBlack,
           ),
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(AppLocalizations.of(context).translate('resp1'),
-                style: SizeConfig.styleNormalBlack,
+              child: Text(
+                AppLocalizations.of(context).translate('resp1'),
+                style: GlobalStyling.styleNormalBlack,
               ),
             ),
           ],
@@ -87,14 +91,14 @@ class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
         ExpansionTile(
           title: Text(
             AppLocalizations.of(context).translate('faq2'),
-            style: SizeConfig.styleTitleBlack,
+            style: GlobalStyling.styleTitleBlack,
           ),
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 AppLocalizations.of(context).translate('resp2'),
-                style: SizeConfig.styleNormalBlack,
+                style: GlobalStyling.styleNormalBlack,
               ),
             ),
           ],
@@ -102,14 +106,14 @@ class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
         ExpansionTile(
           title: Text(
             AppLocalizations.of(context).translate('faq3'),
-            style: SizeConfig.styleTitleBlack,
+            style: GlobalStyling.styleTitleBlack,
           ),
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 AppLocalizations.of(context).translate('resp3'),
-                style: SizeConfig.styleNormalBlack,
+                style: GlobalStyling.styleNormalBlack,
               ),
             ),
           ],
@@ -117,14 +121,14 @@ class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
         ExpansionTile(
           title: Text(
             AppLocalizations.of(context).translate('faq4'),
-            style: SizeConfig.styleTitleBlack,
+            style: GlobalStyling.styleTitleBlack,
           ),
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 AppLocalizations.of(context).translate('resp4'),
-                style: SizeConfig.styleNormalBlack,
+                style: GlobalStyling.styleNormalBlack,
               ),
             ),
           ],
@@ -132,14 +136,14 @@ class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
         ExpansionTile(
           title: Text(
             AppLocalizations.of(context).translate('faq5'),
-            style: SizeConfig.styleTitleBlack,
+            style: GlobalStyling.styleTitleBlack,
           ),
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 AppLocalizations.of(context).translate('resp5'),
-                style: SizeConfig.styleNormalBlack,
+                style: GlobalStyling.styleNormalBlack,
               ),
             ),
           ],
@@ -147,14 +151,14 @@ class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
         ExpansionTile(
           title: Text(
             AppLocalizations.of(context).translate('faq6'),
-            style: SizeConfig.styleTitleBlack,
+            style: GlobalStyling.styleTitleBlack,
           ),
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 AppLocalizations.of(context).translate('resp6'),
-                style: SizeConfig.styleNormalBlack,
+                style: GlobalStyling.styleNormalBlack,
               ),
             ),
           ],

@@ -1,6 +1,7 @@
 import 'package:emarket_app/form/contact_form.dart';
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
-import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
@@ -15,12 +16,13 @@ class _ContactPageState extends State<ContactPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('contact_us')),
-        backgroundColor: colorDeepPurple300,
+        backgroundColor: GlobalColor.colorDeepPurple300,
       ),
       body: SafeArea(
         top: false,

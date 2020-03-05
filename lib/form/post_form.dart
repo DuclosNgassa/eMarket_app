@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:emarket_app/converter/utils.dart' as utils;
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
+import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/model/enumeration/status.dart';
@@ -20,7 +23,6 @@ import 'package:image_picker/image_picker.dart';
 import '../model/enumeration/posttyp.dart';
 import '../model/post.dart';
 import '../model/post_image.dart' as MyImage;
-import '../services/global.dart';
 import '../services/image_service.dart';
 import '../services/post_service.dart';
 import '../validator/form_validator.dart';
@@ -87,6 +89,7 @@ class PostFormState extends State<PostForm> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return Form(
       key: _formKey,
@@ -103,7 +106,7 @@ class PostFormState extends State<PostForm> {
                 children: <Widget>[
                   Text(
                     AppLocalizations.of(context).translate('advert_creation'),
-                    style: SizeConfig.styleTitleWhite,
+                    style: GlobalStyling.styleTitleWhite,
                   ),
                   Expanded(
                     child: Container(
@@ -117,7 +120,7 @@ class PostFormState extends State<PostForm> {
             ),
             _buildRadioButtons(),
             TextFormField(
-              style: SizeConfig.styleFormGrey,
+              style: GlobalStyling.styleFormGrey,
               textInputAction: TextInputAction.next,
               autofocus: true,
               onFieldSubmitted: (term) {
@@ -127,7 +130,7 @@ class PostFormState extends State<PostForm> {
                   hintText:
                       AppLocalizations.of(context).translate('give_title'),
                   labelText: AppLocalizations.of(context).translate('title'),
-                  labelStyle: SizeConfig.styleFormBlack),
+                  labelStyle: GlobalStyling.styleFormBlack),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(30),
               ],
@@ -145,7 +148,7 @@ class PostFormState extends State<PostForm> {
                         EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
                     child: Text(
                       AppLocalizations.of(context).translate('category'),
-                      style: SizeConfig.styleFormBlack,
+                      style: GlobalStyling.styleFormBlack,
                     ),
                   ),
                   GestureDetector(
@@ -155,7 +158,7 @@ class PostFormState extends State<PostForm> {
                         Expanded(
                           child: Text(
                             _categorieTile.title,
-                            style: SizeConfig.styleFormGrey,
+                            style: GlobalStyling.styleFormGrey,
                           ),
                         ),
                         IconButton(
@@ -176,7 +179,7 @@ class PostFormState extends State<PostForm> {
               children: <Widget>[
                 Expanded(
                   child: TextFormField(
-                    style: SizeConfig.styleFormGrey,
+                    style: GlobalStyling.styleFormGrey,
                     textInputAction: TextInputAction.next,
                     focusNode: _feeFocusNode,
                     onFieldSubmitted: (term) {
@@ -190,7 +193,7 @@ class PostFormState extends State<PostForm> {
                               ' (' +
                               AppLocalizations.of(context).translate('fcfa') +
                               ')',
-                      labelStyle: SizeConfig.styleFormBlack,
+                      labelStyle: GlobalStyling.styleFormBlack,
                     ),
                     inputFormatters: [
                       WhitelistingTextInputFormatter.digitsOnly,
@@ -212,7 +215,7 @@ class PostFormState extends State<PostForm> {
                           decoration: InputDecoration(
                             labelText: AppLocalizations.of(context)
                                 .translate('price_typ'),
-                            labelStyle: SizeConfig.styleFormBlack,
+                            labelStyle: GlobalStyling.styleFormBlack,
                             errorText: state.hasError ? state.errorText : null,
                           ),
                           child: DropdownButtonHideUnderline(
@@ -230,7 +233,7 @@ class PostFormState extends State<PostForm> {
                                 return DropdownMenuItem(
                                   value: value,
                                   child: Text(value,
-                                      style: SizeConfig.styleFormGrey),
+                                      style: GlobalStyling.styleFormGrey),
                                 );
                               }).toList(),
                             ),
@@ -253,7 +256,7 @@ class PostFormState extends State<PostForm> {
                 children: <Widget>[
                   Expanded(
                     child: TextFormField(
-                      style: SizeConfig.styleFormGrey,
+                      style: GlobalStyling.styleFormGrey,
                       textInputAction: TextInputAction.next,
                       focusNode: _cityFocusNode,
                       onFieldSubmitted: (term) {
@@ -264,7 +267,7 @@ class PostFormState extends State<PostForm> {
                             AppLocalizations.of(context).translate('give_city'),
                         labelText:
                             AppLocalizations.of(context).translate('city'),
-                        labelStyle: SizeConfig.styleFormBlack,
+                        labelStyle: GlobalStyling.styleFormBlack,
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
@@ -277,7 +280,7 @@ class PostFormState extends State<PostForm> {
                   ),
                   Expanded(
                     child: TextFormField(
-                      style: SizeConfig.styleFormGrey,
+                      style: GlobalStyling.styleFormGrey,
                       textInputAction: TextInputAction.next,
                       focusNode: _quarterFocusNode,
                       onFieldSubmitted: (term) {
@@ -288,7 +291,7 @@ class PostFormState extends State<PostForm> {
                             .translate('give_neighborhood'),
                         labelText: AppLocalizations.of(context)
                             .translate('neighborhood'),
-                        labelStyle: SizeConfig.styleFormBlack,
+                        labelStyle: GlobalStyling.styleFormBlack,
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
@@ -304,7 +307,7 @@ class PostFormState extends State<PostForm> {
               ),
             ),
             TextFormField(
-              style: SizeConfig.styleFormGrey,
+              style: GlobalStyling.styleFormGrey,
               textInputAction: TextInputAction.next,
               focusNode: _phoneFocusNode,
               onFieldSubmitted: (term) {
@@ -315,7 +318,7 @@ class PostFormState extends State<PostForm> {
                     AppLocalizations.of(context).translate('give_phonenumber'),
                 labelText:
                     AppLocalizations.of(context).translate('phonenumber'),
-                labelStyle: SizeConfig.styleFormBlack,
+                labelStyle: GlobalStyling.styleFormBlack,
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [
@@ -325,7 +328,7 @@ class PostFormState extends State<PostForm> {
               onSaved: (val) => newPost.phoneNumber = val,
             ),
             TextFormField(
-              style: SizeConfig.styleFormGrey,
+              style: GlobalStyling.styleFormGrey,
               focusNode: _descriptionFocusNode,
               textInputAction: TextInputAction.newline,
               keyboardType: TextInputType.multiline,
@@ -335,7 +338,7 @@ class PostFormState extends State<PostForm> {
                     .translate('advert_description'),
                 labelText:
                     AppLocalizations.of(context).translate('description'),
-                labelStyle: SizeConfig.styleFormBlack,
+                labelStyle: GlobalStyling.styleFormBlack,
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(500),
@@ -353,9 +356,9 @@ class PostFormState extends State<PostForm> {
                 padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
                 child: RaisedButton(
                   shape: const StadiumBorder(),
-                  color: colorDeepPurple400,
+                  color: GlobalColor.colorDeepPurple400,
                   child: Text(AppLocalizations.of(context).translate('save'),
-                      style: SizeConfig.styleButtonWhite),
+                      style: GlobalStyling.styleButtonWhite),
                   onPressed: _submitForm,
                 ),
               ),
@@ -410,7 +413,7 @@ class PostFormState extends State<PostForm> {
                           width: SizeConfig.blockSizeHorizontal * 20,
                           height: SizeConfig.blockSizeVertical * 25,
                           decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: GlobalColor.colorWhite,
                               boxShadow: [
                                 BoxShadow(
                                     color: Colors.black12,
@@ -432,7 +435,7 @@ class PostFormState extends State<PostForm> {
                   ),
                   secondaryActions: <Widget>[
                     IconSlideAction(
-                        color: colorRed,
+                        color: GlobalColor.colorRed,
                         icon: Icons.delete,
                         onTap: () {
                           setState(() {
@@ -456,7 +459,7 @@ class PostFormState extends State<PostForm> {
           new IconButton(
             icon: Icon(
               Icons.add_a_photo,
-              color: colorDeepPurple400,
+              color: GlobalColor.colorDeepPurple400,
             ),
             onPressed: _takePhoto,
             tooltip: AppLocalizations.of(context).translate('take_photo'),
@@ -464,7 +467,7 @@ class PostFormState extends State<PostForm> {
           new IconButton(
             icon: Icon(
               Icons.image,
-              color: colorDeepPurple400,
+              color: GlobalColor.colorDeepPurple400,
             ),
             onPressed: _selectGalleryImage,
             tooltip:
@@ -493,7 +496,7 @@ class PostFormState extends State<PostForm> {
           ),
           Text(
             AppLocalizations.of(context).translate('offer'),
-            style: SizeConfig.styleRadioButton,
+            style: GlobalStyling.styleRadioButton,
           ),
           Radio(
             //activeColor: Colors.black,
@@ -507,7 +510,7 @@ class PostFormState extends State<PostForm> {
           ),
           Text(
             AppLocalizations.of(context).translate('search'),
-            style: SizeConfig.styleRadioButton,
+            style: GlobalStyling.styleRadioButton,
           ),
           Radio(
             //activeColor: Colors.black,
@@ -521,7 +524,7 @@ class PostFormState extends State<PostForm> {
           ),
           Text(
             AppLocalizations.of(context).translate('all'),
-            style: SizeConfig.styleRadioButton,
+            style: GlobalStyling.styleRadioButton,
           ),
         ],
       ),

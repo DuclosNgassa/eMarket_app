@@ -1,3 +1,4 @@
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,7 @@ class CustomCategorieButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return RawMaterialButton(
       onPressed: onPressed,

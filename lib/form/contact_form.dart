@@ -1,6 +1,7 @@
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/user_notification.dart';
-import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/user_notification_service.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
@@ -48,6 +49,7 @@ class ContactFormState extends State<ContactForm> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return Form(
       key: _formKey,
@@ -58,7 +60,7 @@ class ContactFormState extends State<ContactForm> {
         child: Column(
           children: <Widget>[
             TextFormField(
-              style: SizeConfig.styleFormGrey,
+              style: GlobalStyling.styleFormGrey,
               textInputAction: TextInputAction.next,
               focusNode: _subjectFocusNode,
               onFieldSubmitted: (term) {
@@ -67,7 +69,7 @@ class ContactFormState extends State<ContactForm> {
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context).translate('give_title'),
                 labelText: AppLocalizations.of(context).translate('title'),
-                labelStyle: SizeConfig.styleFormBlack,
+                labelStyle: GlobalStyling.styleFormBlack,
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(30),
@@ -75,7 +77,7 @@ class ContactFormState extends State<ContactForm> {
               onSaved: (val) => _userNotification.title = val,
             ),
             TextFormField(
-              style: SizeConfig.styleFormGrey,
+              style: GlobalStyling.styleFormGrey,
               textInputAction: TextInputAction.newline,
               keyboardType: TextInputType.multiline,
               focusNode: _messageFocusNode,
@@ -85,9 +87,10 @@ class ContactFormState extends State<ContactForm> {
               },
               maxLines: 10,
               decoration: InputDecoration(
-                hintText: AppLocalizations.of(context).translate('give_your_message'),
+                hintText:
+                    AppLocalizations.of(context).translate('give_your_message'),
                 labelText: AppLocalizations.of(context).translate('message'),
-                labelStyle: SizeConfig.styleFormBlack,
+                labelStyle: GlobalStyling.styleFormBlack,
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(500),
@@ -102,8 +105,9 @@ class ContactFormState extends State<ContactForm> {
               padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
               child: RaisedButton(
                 shape: const StadiumBorder(),
-                color: colorDeepPurple400,
-                child: Text(AppLocalizations.of(context).translate('send'), style: SizeConfig.styleButtonWhite),
+                color: GlobalColor.colorDeepPurple400,
+                child: Text(AppLocalizations.of(context).translate('send'),
+                    style: GlobalStyling.styleButtonWhite),
                 onPressed: _submitForm,
               ),
             ),
@@ -144,7 +148,6 @@ class ContactFormState extends State<ContactForm> {
           2);
 
       clearForm();
-
     }
   }
 

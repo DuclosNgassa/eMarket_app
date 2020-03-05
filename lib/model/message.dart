@@ -42,14 +42,14 @@ class Message {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id.toString(),
-    'sender': sender,
-    'receiver': receiver,
-    'created_at': created_at.toString(),
-    'postid': postid.toString(),
-    'body': body.toString(),
-    'read': read.toString(),
-  };
+        'id': id.toString(),
+        'sender': sender,
+        'receiver': receiver,
+        'created_at': created_at.toString(),
+        'postid': postid.toString(),
+        'body': body.toString(),
+        'read': read.toString(),
+      };
 
   Map<String, dynamic> toMap(Message message) {
     Map<String, dynamic> params = Map<String, dynamic>();
@@ -69,5 +69,4 @@ class Message {
 
     return params;
   }
-
 }

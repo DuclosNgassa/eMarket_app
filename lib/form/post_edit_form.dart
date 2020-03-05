@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/converter/utils.dart' as utils;
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
+import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
@@ -23,7 +26,6 @@ import '../model/enumeration/feetyp.dart';
 import '../model/enumeration/posttyp.dart';
 import '../model/post.dart';
 import '../model/post_image.dart' as MyImage;
-import '../services/global.dart';
 import '../services/image_service.dart';
 import '../services/post_service.dart';
 import '../validator/form_validator.dart';
@@ -107,6 +109,7 @@ class _PostEditFormState extends State<PostEditForm> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return new Scaffold(
       body: Center(
@@ -121,7 +124,10 @@ class _PostEditFormState extends State<PostEditForm> {
                       height: SizeConfig.screenHeight / 4,
                       decoration: BoxDecoration(
                         gradient: new LinearGradient(
-                            colors: [colorDeepPurple400, colorDeepPurple300],
+                            colors: [
+                              GlobalColor.colorDeepPurple400,
+                              GlobalColor.colorDeepPurple300
+                            ],
                             begin: const FractionalOffset(1.0, 1.0),
                             end: const FractionalOffset(0.2, 0.2),
                             stops: [0.0, 1.0],
@@ -167,7 +173,7 @@ class _PostEditFormState extends State<PostEditForm> {
                             child: Text(
                               AppLocalizations.of(context)
                                   .translate('modify_advert'),
-                              style: SizeConfig.styleTitleWhite,
+                              style: GlobalStyling.styleTitleWhite,
                             ),
                           ),
                           oldPostImages.length > 0
@@ -188,7 +194,7 @@ class _PostEditFormState extends State<PostEditForm> {
                           Divider(),
                           _buildRadioButtons(),
                           TextFormField(
-                            style: SizeConfig.styleFormGrey,
+                            style: GlobalStyling.styleFormGrey,
                             textInputAction: TextInputAction.next,
                             autofocus: true,
                             onFieldSubmitted: (term) {
@@ -199,7 +205,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                   .translate('give_advert_title'),
                               labelText: AppLocalizations.of(context)
                                   .translate('title'),
-                              labelStyle: SizeConfig.styleFormBlack,
+                              labelStyle: GlobalStyling.styleFormBlack,
                             ),
                             initialValue: _post.title,
                             inputFormatters: [
@@ -221,7 +227,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                   child: Text(
                                     AppLocalizations.of(context)
                                         .translate('category'),
-                                    style: SizeConfig.styleFormBlack,
+                                    style: GlobalStyling.styleFormBlack,
                                   ),
                                 ),
                                 GestureDetector(
@@ -230,7 +236,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                     children: <Widget>[
                                       Expanded(
                                         child: Text(_categorieTile.title,
-                                            style: SizeConfig.styleFormGrey),
+                                            style: GlobalStyling.styleFormGrey),
                                       ),
                                       IconButton(
                                         onPressed: showCategoriePage,
@@ -250,7 +256,7 @@ class _PostEditFormState extends State<PostEditForm> {
                             children: <Widget>[
                               Expanded(
                                 child: TextFormField(
-                                  style: SizeConfig.styleFormGrey,
+                                  style: GlobalStyling.styleFormGrey,
                                   textInputAction: TextInputAction.next,
                                   focusNode: _feeFocusNode,
                                   onFieldSubmitted: (term) {
@@ -266,7 +272,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                         AppLocalizations.of(context)
                                             .translate('fcfa') +
                                         ')',
-                                    labelStyle: SizeConfig.styleFormBlack,
+                                    labelStyle: GlobalStyling.styleFormBlack,
                                   ),
                                   initialValue: _post.fee.toString(),
                                   keyboardType: TextInputType.number,
@@ -293,7 +299,8 @@ class _PostEditFormState extends State<PostEditForm> {
                                           labelText:
                                               AppLocalizations.of(context)
                                                   .translate('price_typ'),
-                                          labelStyle: SizeConfig.styleFormBlack,
+                                          labelStyle:
+                                              GlobalStyling.styleFormBlack,
                                           errorText: state.hasError
                                               ? state.errorText
                                               : null,
@@ -315,8 +322,8 @@ class _PostEditFormState extends State<PostEditForm> {
                                                 value: value,
                                                 child: Text(
                                                   value,
-                                                  style:
-                                                      SizeConfig.styleFormGrey,
+                                                  style: GlobalStyling
+                                                      .styleFormGrey,
                                                 ),
                                               );
                                             }).toList(),
@@ -336,7 +343,7 @@ class _PostEditFormState extends State<PostEditForm> {
                               children: <Widget>[
                                 Expanded(
                                   child: TextFormField(
-                                    style: SizeConfig.styleFormGrey,
+                                    style: GlobalStyling.styleFormGrey,
                                     textInputAction: TextInputAction.next,
                                     focusNode: _cityFocusNode,
                                     onFieldSubmitted: (term) {
@@ -348,7 +355,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                           .translate('give_city'),
                                       labelText: AppLocalizations.of(context)
                                           .translate('city'),
-                                      labelStyle: SizeConfig.styleFormBlack,
+                                      labelStyle: GlobalStyling.styleFormBlack,
                                     ),
                                     initialValue: _post.city,
                                     inputFormatters: [
@@ -364,7 +371,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                 ),
                                 Expanded(
                                   child: TextFormField(
-                                    style: SizeConfig.styleFormGrey,
+                                    style: GlobalStyling.styleFormGrey,
                                     textInputAction: TextInputAction.next,
                                     focusNode: _quarterFocusNode,
                                     onFieldSubmitted: (term) {
@@ -376,7 +383,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                           .translate('give_neighborhood'),
                                       labelText: AppLocalizations.of(context)
                                           .translate('neighborhood'),
-                                      labelStyle: SizeConfig.styleFormBlack,
+                                      labelStyle: GlobalStyling.styleFormBlack,
                                     ),
                                     initialValue: _post.quarter,
                                     inputFormatters: [
@@ -394,7 +401,7 @@ class _PostEditFormState extends State<PostEditForm> {
                             ),
                           ),
                           TextFormField(
-                            style: SizeConfig.styleFormGrey,
+                            style: GlobalStyling.styleFormGrey,
                             textInputAction: TextInputAction.next,
                             focusNode: _phoneFocusNode,
                             onFieldSubmitted: (term) {
@@ -406,7 +413,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                   .translate('give_phonenumber'),
                               labelText: AppLocalizations.of(context)
                                   .translate('phonenumber'),
-                              labelStyle: SizeConfig.styleFormBlack,
+                              labelStyle: GlobalStyling.styleFormBlack,
                             ),
                             initialValue: _post.phoneNumber,
                             inputFormatters: [
@@ -417,7 +424,7 @@ class _PostEditFormState extends State<PostEditForm> {
                             onSaved: (val) => _post.phoneNumber = val,
                           ),
                           TextFormField(
-                            style: SizeConfig.styleFormGrey,
+                            style: GlobalStyling.styleFormGrey,
                             textInputAction: TextInputAction.newline,
                             keyboardType: TextInputType.multiline,
                             focusNode: _descriptionFocusNode,
@@ -431,7 +438,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                   .translate('advert_description'),
                               labelText: AppLocalizations.of(context)
                                   .translate('description'),
-                              labelStyle: SizeConfig.styleFormBlack,
+                              labelStyle: GlobalStyling.styleFormBlack,
                             ),
                             initialValue: _post.description,
                             inputFormatters: [
@@ -454,7 +461,7 @@ class _PostEditFormState extends State<PostEditForm> {
                                   child: Text(
                                       AppLocalizations.of(context)
                                           .translate('cancel'),
-                                      style: SizeConfig.styleButtonWhite),
+                                      style: GlobalStyling.styleButtonWhite),
                                   onPressed: _cancelChange,
                                 ),
                               ),
@@ -467,11 +474,12 @@ class _PostEditFormState extends State<PostEditForm> {
                                               SizeConfig.blockSizeVertical * 2),
                                       child: RaisedButton(
                                         shape: const StadiumBorder(),
-                                        color: colorDeepPurple400,
+                                        color: GlobalColor.colorDeepPurple400,
                                         child: Text(
                                             AppLocalizations.of(context)
                                                 .translate('save'),
-                                            style: SizeConfig.styleButtonWhite),
+                                            style:
+                                                GlobalStyling.styleButtonWhite),
                                         onPressed: _submitForm,
                                       ),
                                     ),
@@ -561,7 +569,7 @@ class _PostEditFormState extends State<PostEditForm> {
                   ),
                   secondaryActions: <Widget>[
                     IconSlideAction(
-                        color: colorRed,
+                        color: GlobalColor.colorRed,
                         icon: Icons.delete,
                         onTap: () {
                           setState(() {
@@ -628,7 +636,7 @@ class _PostEditFormState extends State<PostEditForm> {
                   ),
                   secondaryActions: <Widget>[
                     IconSlideAction(
-                        color: colorRed,
+                        color: GlobalColor.colorRed,
                         icon: Icons.delete,
                         onTap: () {
                           setState(() {
@@ -689,7 +697,7 @@ class _PostEditFormState extends State<PostEditForm> {
           ),
           Text(
             AppLocalizations.of(context).translate('offer'),
-            style: SizeConfig.styleRadioButton,
+            style: GlobalStyling.styleRadioButton,
           ),
           Radio(
             value: PostTyp.search,
@@ -703,7 +711,7 @@ class _PostEditFormState extends State<PostEditForm> {
           Expanded(
             child: Text(
               AppLocalizations.of(context).translate('search'),
-              style: SizeConfig.styleRadioButton,
+              style: GlobalStyling.styleRadioButton,
             ),
           ),
           Radio(
@@ -718,7 +726,7 @@ class _PostEditFormState extends State<PostEditForm> {
           Expanded(
             child: Text(
               AppLocalizations.of(context).translate('all'),
-              style: SizeConfig.styleRadioButton,
+              style: GlobalStyling.styleRadioButton,
             ),
           ),
         ],

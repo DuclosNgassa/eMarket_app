@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/model/user_notification.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:http/http.dart' as http;
 
-import '../services/global.dart';
-
 class UserNotificationService {
-  SharedPreferenceService _authenticationService = new SharedPreferenceService();
+  SharedPreferenceService _authenticationService =
+      new SharedPreferenceService();
 
   Future<UserNotification> save(Map<String, dynamic> params) async {
     Map<String, String> headers = await _authenticationService.getHeaders();
@@ -89,7 +89,8 @@ class UserNotificationService {
   Future<bool> delete(int id) async {
     Map<String, String> headers = await _authenticationService.getHeaders();
 
-    final response = await http.Client().delete('$URL_USER_NOTIFICATION/$id', headers: headers);
+    final response = await http.Client()
+        .delete('$URL_USER_NOTIFICATION/$id', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       if (responseBody["result"] == "ok") {

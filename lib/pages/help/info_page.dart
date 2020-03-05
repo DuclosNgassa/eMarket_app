@@ -1,3 +1,5 @@
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/pages/help/privacy_policy_page.dart';
 import 'package:emarket_app/pages/help/share_page.dart';
@@ -5,7 +7,6 @@ import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../services/global.dart';
 import 'about_us_page.dart';
 import 'help_page.dart';
 
@@ -21,6 +22,7 @@ class _InfoPageState extends State<InfoPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return Column(
       children: <Widget>[
@@ -34,7 +36,7 @@ class _InfoPageState extends State<InfoPage> {
                 padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 3),
                 child: new Text(
                   AppLocalizations.of(context).translate('infos'),
-                  style: SizeConfig.styleTitleWhite,
+                  style: GlobalStyling.styleTitleWhite,
                 ),
               ),
             ],
@@ -66,12 +68,12 @@ class _InfoPageState extends State<InfoPage> {
             onTap: () => showHelpPage(),
             leading: Icon(
               Icons.help,
-              color: colorBlue,
+              color: GlobalColor.colorBlue,
             ),
             title: Text(AppLocalizations.of(context).translate('how_it_works')),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: colorGrey300,
+              color: GlobalColor.colorGrey300,
             ),
           ),
           Divider(
@@ -81,13 +83,13 @@ class _InfoPageState extends State<InfoPage> {
             onTap: () => showSharePage(),
             leading: Icon(
               Icons.favorite,
-              color: colorRed,
+              color: GlobalColor.colorRed,
             ),
             title:
                 Text(AppLocalizations.of(context).translate('inform_friends')),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: colorGrey300,
+              color: GlobalColor.colorGrey300,
             ),
           ),
           Divider(
@@ -97,12 +99,12 @@ class _InfoPageState extends State<InfoPage> {
             onTap: () => showAboutUsPage(),
             leading: Icon(
               Icons.sentiment_satisfied,
-              color: colorDeepPurple300,
+              color: GlobalColor.colorDeepPurple300,
             ),
             title: Text(AppLocalizations.of(context).translate('who_are_we')),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: colorGrey300,
+              color: GlobalColor.colorGrey300,
             ),
           ),
           Divider(),
@@ -110,13 +112,13 @@ class _InfoPageState extends State<InfoPage> {
             onTap: () => showPrivacyPolicyPage(),
             leading: Icon(
               Icons.account_balance,
-              color: colorDeepPurple300,
+              color: GlobalColor.colorDeepPurple300,
             ),
             title:
                 Text(AppLocalizations.of(context).translate('privacy_policy')),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: colorGrey300,
+              color: GlobalColor.colorGrey300,
             ),
           ),
           Divider(),

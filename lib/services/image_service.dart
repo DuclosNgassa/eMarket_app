@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -11,10 +12,10 @@ import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as path;
 
 import '../model/post_image.dart';
-import '../services/global.dart';
 
 class ImageService {
-  SharedPreferenceService _authenticationService = new SharedPreferenceService();
+  SharedPreferenceService _authenticationService =
+      new SharedPreferenceService();
 
   Future<PostImage> saveImage(Map<String, dynamic> params) async {
     Map<String, String> headers = await _authenticationService.getHeaders();
@@ -69,6 +70,14 @@ class ImageService {
     } else {
       throw Exception('Failed to load Images from the internet');
     }
+  }
+
+  List<PostImage> fetchImagesFromJson(String jsonString) {
+    Iterable iterablePost = jsonDecode(jsonString);
+    final postImageList = iterablePost.map<PostImage>((postImage) {
+      return PostImage.fromJsonPref(postImage);
+    }).toList();
+    return postImageList;
   }
 
   Future<List<PostImage>> fetchImagesByPostID(int postId) async {

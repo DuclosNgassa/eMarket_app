@@ -24,9 +24,8 @@ class PostMessage {
   }
 
   Map<String, dynamic> toJson() => {
-    'post': post.toJson(),
-    'messages': jsonEncode(messages),
-    'recentMessageDate': recentMessageDate.toString(),
-  };
-
+        'post': post.toJson(),
+        'messages': jsonEncode(messages),
+        'recentMessageDate': recentMessageDate.toString(),
+      };
 }

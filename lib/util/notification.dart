@@ -4,9 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MyNotification {
-
-
-  static void showInfoFlushbar(BuildContext context, String title, String message, Icon icon, Color leftBarIndicatorColor, int duration) {
+  static void showInfoFlushbar(BuildContext context, String title,
+      String message, Icon icon, Color leftBarIndicatorColor, int duration) {
     Flushbar(
       title: title,
       message: message,
@@ -16,8 +15,12 @@ class MyNotification {
     )..show(context);
   }
 
-
-  static Future<void> showConfirmationDialog(BuildContext context, String title, String body, GestureTapCallback onPressedJA, GestureTapCallback onPressedNEIN) async {
+  static Future<void> showConfirmationDialog(
+      BuildContext context,
+      String title,
+      String body,
+      GestureTapCallback onPressedJA,
+      GestureTapCallback onPressedNEIN) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -45,5 +48,4 @@ class MyNotification {
       },
     );
   }
-
 }

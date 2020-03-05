@@ -1,4 +1,6 @@
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/enumeration/status.dart';
 import 'package:emarket_app/model/message.dart';
@@ -6,9 +8,9 @@ import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user_message.dart';
 import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
-import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
+import 'package:emarket_app/util/global.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,8 @@ class UserMessagePage extends StatefulWidget {
 
 class _UserMessagePageState extends State<UserMessagePage> {
   final MessageService _messageService = new MessageService();
-  final SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+  final SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
 
   String loggedUseremail;
   List<UserMessage> userMessageWithoutLoggedUser = new List();
@@ -41,6 +44,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return Container(
       child: Scaffold(
@@ -54,7 +58,10 @@ class _UserMessagePageState extends State<UserMessagePage> {
                     height: SizeConfig.screenHeight / 4,
                     decoration: BoxDecoration(
                       gradient: new LinearGradient(
-                          colors: [colorDeepPurple400, colorDeepPurple300],
+                          colors: [
+                            GlobalColor.colorDeepPurple400,
+                            GlobalColor.colorDeepPurple300
+                          ],
                           begin: const FractionalOffset(1.0, 1.0),
                           end: const FractionalOffset(0.2, 0.2),
                           stops: [0.0, 1.0],
@@ -117,7 +124,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
                     AppLocalizations.of(context).translate('my') +
                         ' ' +
                         AppLocalizations.of(context).translate('messages'),
-                    style: SizeConfig.styleTitleWhite,
+                    style: GlobalStyling.styleTitleWhite,
                   ),
                 ],
               ),
@@ -132,7 +139,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
                       AppLocalizations.of(context).translate('advert') +
                           ' ' +
                           widget.userMessage.elementAt(0).post.title,
-                      style: SizeConfig.styleSubtitleWhite,
+                      style: GlobalStyling.styleSubtitleWhite,
                     ),
                   ),
                   Padding(
@@ -140,7 +147,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
                         EdgeInsets.only(right: SizeConfig.blockSizeHorizontal),
                     child: Icon(
                       Icons.arrow_forward_ios,
-                      color: colorWhite,
+                      color: GlobalColor.colorWhite,
                     ),
                   ),
                 ],
@@ -153,7 +160,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
   }
 
   _showPostDetailPage(Post post) {
-    if(post.status == Status.active) {
+    if (post.status == Status.active) {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
@@ -161,12 +168,11 @@ class _UserMessagePageState extends State<UserMessagePage> {
           },
         ),
       );
-    }else{
+    } else {
       MyNotification.showInfoFlushbar(
           context,
           AppLocalizations.of(context).translate('info'),
-          AppLocalizations.of(context).translate(
-              'no_longer_available'),
+          AppLocalizations.of(context).translate('no_longer_available'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -179,44 +185,62 @@ class _UserMessagePageState extends State<UserMessagePage> {
   }
 
   Widget buildMyMessageListView() {
-    return ListView.separated(
-        itemBuilder: (context, index) => Slidable(
-              actionPane: SlidableBehindActionPane(),
-              actionExtentRatio: 0.25,
-              child: Container(
-                color: colorTransparent,
-                child: ListTile(
-                  onTap: () =>
-                      openChat(userMessageWithoutLoggedUser.elementAt(index)),
-                  leading: CircleAvatar(
-                    backgroundColor: colorDeepPurple300,
-                    child: Text((index + 1).toString()),
-                    foregroundColor: colorWhite,
+    return ListView.builder(
+        itemBuilder: (context, index) {
+          return Slidable(
+            actionPane: SlidableBehindActionPane(),
+            actionExtentRatio: 0.25,
+            child: Container(
+              child: Card(
+                elevation: 8.0,
+                margin:
+                    new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: GlobalColor.colorGrey200,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  title: Text(
-                      userMessageWithoutLoggedUser.elementAt(index).user.name),
-                  subtitle: buildSubtitle(index, context),
+                  child: ListTile(
+                    onTap: () =>
+                        openChat(userMessageWithoutLoggedUser.elementAt(index)),
+                    leading: CircleAvatar(
+                      backgroundColor: GlobalColor.colorDeepPurple300,
+                      child: Text((index + 1).toString()),
+                      foregroundColor: GlobalColor.colorWhite,
+                    ),
+                    title: Text(userMessageWithoutLoggedUser
+                        .elementAt(index)
+                        .user
+                        .name),
+                    subtitle: buildSubtitle(index, context),
+                    trailing: Icon(
+                      Icons.keyboard_arrow_right,
+                      color: GlobalColor.colorDeepPurple300,
+                      size: SizeConfig.blockSizeHorizontal * 10,
+                    ),
+                  ),
                 ),
               ),
-              actions: <Widget>[
-                IconSlideAction(
-                  caption: AppLocalizations.of(context).translate('open'),
-                  color: colorDeepPurple300,
-                  icon: Icons.visibility,
-                  onTap: () =>
-                      openChat(userMessageWithoutLoggedUser.elementAt(index)),
-                ),
-              ],
-              secondaryActions: <Widget>[
-                IconSlideAction(
-                  caption: AppLocalizations.of(context).translate('delete'),
-                  color: colorRed,
-                  icon: Icons.delete,
-                  onTap: null,
-                ),
-              ],
             ),
-        separatorBuilder: (context, index) => Divider(),
+            actions: <Widget>[
+              IconSlideAction(
+                caption: AppLocalizations.of(context).translate('open'),
+                color: GlobalColor.colorDeepPurple300,
+                icon: Icons.visibility,
+                onTap: () =>
+                    openChat(userMessageWithoutLoggedUser.elementAt(index)),
+              ),
+            ],
+            secondaryActions: <Widget>[
+              IconSlideAction(
+                caption: AppLocalizations.of(context).translate('delete'),
+                color: GlobalColor.colorRed,
+                icon: Icons.delete,
+                onTap: null,
+              ),
+            ],
+          );
+        },
         itemCount: userMessageWithoutLoggedUser.length);
   }
 
@@ -234,7 +258,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
                 AppLocalizations.of(context)
                     .translate('messages')
                     .toLowerCase(),
-            style: SizeConfig.styleSubtitleBlueAccent,
+            style: GlobalStyling.styleSubtitleBlueAccent,
           )
         : newMessage == 1
             ? Text(
@@ -245,7 +269,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
                     AppLocalizations.of(context)
                         .translate('message')
                         .toLowerCase(),
-                style: SizeConfig.styleSubtitleBlueAccent,
+                style: GlobalStyling.styleSubtitleBlueAccent,
               )
             : null;
   }

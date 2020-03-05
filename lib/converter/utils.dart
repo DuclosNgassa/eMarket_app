@@ -3,7 +3,7 @@ import 'package:emarket_app/model/enumeration/feetyp.dart';
 class Converter {
   static FeeTyp convertStringToFeeTyp(String newValue) {
     switch (newValue) {
-    //English translation
+      //English translation
       case 'Gift':
         {
           return FeeTyp.gift;

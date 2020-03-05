@@ -1,5 +1,7 @@
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/model/enumeration/login_source.dart';
 import 'package:emarket_app/pages/login/login.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +17,9 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    GlobalStyling().init(context);
+
     return FutureBuilder<FirebaseUser>(
         future: FirebaseAuth.instance.currentUser(),
         builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
@@ -44,7 +49,6 @@ class _PostPageState extends State<PostPage> {
           }
 
           return new Login(LoginSource.postPage, null);
-
         });
   }
 }

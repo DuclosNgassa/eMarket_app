@@ -1,5 +1,7 @@
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
-import 'package:emarket_app/custom_component/item_list.dart';
+import 'package:emarket_app/custom_component/placeholder_item.dart';
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/enumeration/login_source.dart';
 import 'package:emarket_app/model/message.dart';
@@ -22,7 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../services/global.dart';
+import '../../util/global.dart';
 
 class MessagePage extends StatefulWidget {
   @override
@@ -49,6 +51,7 @@ class _MessagePageState extends State<MessagePage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return FutureBuilder<FirebaseUser>(
         future: FirebaseAuth.instance.currentUser(),
@@ -67,7 +70,10 @@ class _MessagePageState extends State<MessagePage> {
                       height: SizeConfig.screenHeight / 6,
                       decoration: BoxDecoration(
                         gradient: new LinearGradient(
-                            colors: [colorDeepPurple400, colorDeepPurple300],
+                            colors: [
+                              GlobalColor.colorDeepPurple400,
+                              GlobalColor.colorDeepPurple300
+                            ],
                             begin: const FractionalOffset(1.0, 1.0),
                             end: const FractionalOffset(0.2, 0.2),
                             stops: [0.0, 1.0],
@@ -90,7 +96,7 @@ class _MessagePageState extends State<MessagePage> {
                                 ' ' +
                                 AppLocalizations.of(context)
                                     .translate('messages'),
-                            style: SizeConfig.styleTitleWhite,
+                            style: GlobalStyling.styleTitleWhite,
                           ),
                         ),
                       ],
@@ -120,29 +126,43 @@ class _MessagePageState extends State<MessagePage> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data.length > 0) {
-            return ListView.separated(
+            return ListView.builder(
                 itemBuilder: (context, index) {
                   return Slidable(
                     actionPane: SlidableBehindActionPane(),
                     actionExtentRatio: 0.25,
                     child: Container(
-                      color: Colors.transparent,
-                      child: ListTile(
-                        onTap: () => openUserMessage(
-                            _postMessages.elementAt(index),
-                            _postMessages.elementAt(index).post.title),
-                        leading: CircleAvatar(
-                          backgroundColor: colorDeepPurple300,
-                          child: Text((index + 1).toString()),
-                          foregroundColor: colorWhite,
+                      child: Card(
+                        elevation: 8.0,
+                        margin: new EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 6.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: GlobalColor.colorGrey200,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ListTile(
+                            onTap: () => openUserMessage(
+                                _postMessages.elementAt(index),
+                                _postMessages.elementAt(index).post.title),
+                            leading: CircleAvatar(
+                              backgroundColor: GlobalColor.colorDeepPurple300,
+                              child: Text((index + 1).toString()),
+                              foregroundColor: GlobalColor.colorWhite,
+                            ),
+                            title:
+                                Text(_postMessages.elementAt(index).post.title),
+                            subtitle: buildSubtitle(index, context),
+                            trailing: Icon(Icons.keyboard_arrow_right,
+                                color: GlobalColor.colorDeepPurple300,
+                                size: SizeConfig.blockSizeHorizontal * 10),
+                          ),
                         ),
-                        title: Text(_postMessages.elementAt(index).post.title),
-                        subtitle: buildSubtitle(index, context),
                       ),
                     ),
                   );
                 },
-                separatorBuilder: (context, index) => Divider(),
+                //separatorBuilder: (context, index) => Divider(),
                 itemCount: _postMessages.length);
           } else {
             return new Center(
@@ -170,20 +190,16 @@ class _MessagePageState extends State<MessagePage> {
               Colors.redAccent,
               4);
         }
-/*
-        return Center(
-          child: CupertinoActivityIndicator(
-            radius: SizeConfig.blockSizeHorizontal * 5,
-          ),
-        );
-*/
         return ListView.builder(
           itemCount: 10,
           // Important code
           itemBuilder: (context, index) => Shimmer.fromColors(
-              baseColor: Colors.grey[400],
-              highlightColor: Colors.white,
-              child: ListItem(index: -1)),
+            baseColor: Colors.grey[400],
+            highlightColor: Colors.white,
+            child: ListItem(
+              page: MESSAGEPAGE,
+            ),
+          ),
         );
       },
     );
@@ -202,7 +218,7 @@ class _MessagePageState extends State<MessagePage> {
                 AppLocalizations.of(context)
                     .translate('messages')
                     .toLowerCase(),
-            style: SizeConfig.styleSubtitleBlueAccent,
+            style: GlobalStyling.styleSubtitleBlueAccent,
           )
         : newMessage == 1
             ? Text(
@@ -213,7 +229,7 @@ class _MessagePageState extends State<MessagePage> {
                     AppLocalizations.of(context)
                         .translate('message')
                         .toLowerCase(),
-                style: SizeConfig.styleSubtitleBlueAccent,
+                style: GlobalStyling.styleSubtitleBlueAccent,
               )
             : null;
   }

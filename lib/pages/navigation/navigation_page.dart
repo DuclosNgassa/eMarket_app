@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:emarket_app/custom_component/custom_icon_message.dart';
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/message.dart' as myMessage;
 import 'package:emarket_app/model/post.dart';
@@ -12,10 +14,10 @@ import 'package:emarket_app/pages/home/home_page.dart';
 import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/pages/message/message_page.dart';
 import 'package:emarket_app/pages/post/post_page.dart';
-import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
+import 'package:emarket_app/util/global.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -67,7 +69,9 @@ class _NavigationPageState extends State<NavigationPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    checkConnectivity();
+    GlobalStyling().init(context);
+
+    _checkConnectivity();
 
     return new Scaffold(
       body: Center(
@@ -82,7 +86,10 @@ class _NavigationPageState extends State<NavigationPage> {
                       height: SizeConfig.screenHeight / 4,
                       decoration: BoxDecoration(
                         gradient: new LinearGradient(
-                            colors: [colorDeepPurple400, colorDeepPurple300],
+                            colors: [
+                              GlobalColor.colorDeepPurple400,
+                              GlobalColor.colorDeepPurple300
+                            ],
                             begin: const FractionalOffset(1.0, 1.0),
                             end: const FractionalOffset(0.2, 0.2),
                             stops: [0.0, 1.0],
@@ -128,7 +135,7 @@ class _NavigationPageState extends State<NavigationPage> {
           ),
         ],
         currentIndex: _localSelectedIndex,
-        selectedItemColor: colorDeepPurple400,
+        selectedItemColor: GlobalColor.colorDeepPurple400,
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
       ),
@@ -301,7 +308,7 @@ class _NavigationPageState extends State<NavigationPage> {
     }
   }
 
-  void checkConnectivity() async {
+  void _checkConnectivity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
       // I am connected to a mobile network.
@@ -329,5 +336,4 @@ class _NavigationPageState extends State<NavigationPage> {
     MessagePage(),
     InfoPage(),
   ];
-
 }

@@ -1,9 +1,10 @@
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/custom_component/post_card_component.dart';
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
-import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
@@ -32,6 +33,7 @@ class _PostUserPageState extends State<PostUserPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return Container(
       child: Scaffold(
@@ -45,7 +47,10 @@ class _PostUserPageState extends State<PostUserPage> {
                     height: SizeConfig.screenHeight / 4,
                     decoration: BoxDecoration(
                       gradient: new LinearGradient(
-                          colors: [colorDeepPurple400, colorDeepPurple300],
+                          colors: [
+                            GlobalColor.colorDeepPurple400,
+                            GlobalColor.colorDeepPurple300
+                          ],
                           begin: const FractionalOffset(1.0, 1.0),
                           end: const FractionalOffset(0.2, 0.2),
                           stops: [0.0, 1.0],
@@ -68,8 +73,7 @@ class _PostUserPageState extends State<PostUserPage> {
       padding: EdgeInsets.only(
           left: SizeConfig.blockSizeHorizontal * 5,
           top: SizeConfig.blockSizeVertical * 5),
-      constraints: BoxConstraints.expand(
-          height: SizeConfig.screenHeight / 6),
+      constraints: BoxConstraints.expand(height: SizeConfig.screenHeight / 6),
       child: Container(
         child: Padding(
           padding: EdgeInsets.only(
@@ -86,7 +90,7 @@ class _PostUserPageState extends State<PostUserPage> {
                       AppLocalizations.of(context).translate('advert_list') +
                           ' ' +
                           widget.postOwnerName,
-                      style: SizeConfig.styleTitleWhite,
+                      style: GlobalStyling.styleTitleWhite,
                     ),
                   ),
                   Container(
@@ -105,7 +109,7 @@ class _PostUserPageState extends State<PostUserPage> {
                         ),
                         Text(
                           AppLocalizations.of(context).translate('pictures'),
-                          style: SizeConfig.styleNormalBlack,
+                          style: GlobalStyling.styleNormalBlack,
                         ),
                       ],
                     ),
@@ -119,8 +123,8 @@ class _PostUserPageState extends State<PostUserPage> {
     );
   }
 
-  Widget _buildPostsContainer(){
-    return                 Container(
+  Widget _buildPostsContainer() {
+    return Container(
       margin: EdgeInsets.only(top: SizeConfig.screenHeight * 0.125),
       child: SingleChildScrollView(
         child: Padding(
@@ -134,7 +138,11 @@ class _PostUserPageState extends State<PostUserPage> {
                 padding: EdgeInsets.only(top: 10),
                 constraints: BoxConstraints.expand(
                     height: SizeConfig.screenHeight * 0.845),
-                child: PostCardComponentPage(postList: widget.posts, myFavorits:widget.myFavorits, userEmail: widget.userEmail, showPictures: showPictures),
+                child: PostCardComponentPage(
+                    postList: widget.posts,
+                    myFavorits: widget.myFavorits,
+                    userEmail: widget.userEmail,
+                    showPictures: showPictures),
               ),
             ],
           ),

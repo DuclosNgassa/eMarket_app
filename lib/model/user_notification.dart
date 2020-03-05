@@ -8,7 +8,6 @@ class UserNotification {
   UserNotification(
       {this.id, this.title, this.message, this.useremail, this.created_at});
 
-
   factory UserNotification.fromJson(Map<String, dynamic> json) {
     return UserNotification(
       id: json["id"],
@@ -20,12 +19,12 @@ class UserNotification {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id.toString(),
-    'title': title,
-    'message': message,
-    'useremail': useremail,
-    'created_at': created_at.toString(),
-  };
+        'id': id.toString(),
+        'title': title,
+        'message': message,
+        'useremail': useremail,
+        'created_at': created_at.toString(),
+      };
 
   Map<String, dynamic> toMap(UserNotification userNotification) {
     Map<String, dynamic> params = Map<String, dynamic>();
@@ -36,5 +35,4 @@ class UserNotification {
 
     return params;
   }
-
 }

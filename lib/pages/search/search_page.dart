@@ -1,3 +1,5 @@
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/enumeration/feetyp.dart';
@@ -7,7 +9,6 @@ import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/searchparameter.dart';
 import 'package:emarket_app/pages/search/search_result.dart';
 import 'package:emarket_app/pages/search/searchparameter.dart';
-import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
@@ -29,17 +30,24 @@ class SearchPage extends SearchDelegate<Post> {
 
   @override
   ThemeData appBarTheme(BuildContext context) {
+    SizeConfig().init(context);
+    GlobalStyling().init(context);
+
     final ThemeData theme = Theme.of(context);
     return theme.copyWith(
-      primaryColor: colorDeepPurple300,
+      primaryColor: GlobalColor.colorDeepPurple300,
       primaryIconTheme: theme.primaryIconTheme,
       primaryColorBrightness: theme.primaryColorBrightness,
       primaryTextTheme: theme.primaryTextTheme,
       inputDecorationTheme: InputDecorationTheme(
-        hintStyle:
-            Theme.of(context).textTheme.title.copyWith(color: Colors.white),
-        labelStyle:
-            Theme.of(context).textTheme.title.copyWith(color: Colors.white),
+        hintStyle: Theme.of(context)
+            .textTheme
+            .title
+            .copyWith(color: GlobalColor.colorWhite),
+        labelStyle: Theme.of(context)
+            .textTheme
+            .title
+            .copyWith(color: GlobalColor.colorWhite),
       ),
     );
   }
@@ -47,15 +55,17 @@ class SearchPage extends SearchDelegate<Post> {
   @override
   List<Widget> buildActions(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
+
     return [
       IconButton(
         icon: Icon(Icons.clear),
-        color: colorWhite,
+        color: GlobalColor.colorWhite,
         onPressed: () => _clearFormSearch(),
       ),
       IconButton(
         icon: Icon(Icons.build),
-        color: colorWhite,
+        color: GlobalColor.colorWhite,
         onPressed: () => showSearchParameterPage(context),
       ),
     ];
@@ -76,6 +86,7 @@ class SearchPage extends SearchDelegate<Post> {
   @override
   Widget buildSuggestions(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     final List<Post> searchResultList =
         query.isEmpty && searchParameter == null && childCategories == null
@@ -88,7 +99,7 @@ class SearchPage extends SearchDelegate<Post> {
           padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 2),
           child: Text(
             AppLocalizations.of(context).translate('no_result_found'),
-            style: SizeConfig.styleTitleBlack,
+            style: GlobalStyling.styleTitleBlack,
           ),
         ),
       );

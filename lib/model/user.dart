@@ -34,15 +34,15 @@ class User {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id.toString(),
-    'name': name,
-    'created_at': created_at.toString(),
-    'phone_number': phone_number,
-    'device_token': device_token,
-    'email': email,
-    'rating': rating,
-    'status': convertStatusToString(status),
-  };
+        'id': id.toString(),
+        'name': name,
+        'created_at': created_at.toString(),
+        'phone_number': phone_number,
+        'device_token': device_token,
+        'email': email,
+        'rating': rating,
+        'status': convertStatusToString(status),
+      };
 
   Map<String, dynamic> toMapUpdate(User user) {
     Map<String, dynamic> params = toMap(user);

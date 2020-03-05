@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/post_image.dart';
-import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -21,6 +22,9 @@ class ImageDetailPage extends StatefulWidget {
 
 class _ImageDetailState extends State<ImageDetailPage> {
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    GlobalStyling().init(context);
+
     return Stack(
       children: <Widget>[
         Container(
@@ -32,7 +36,10 @@ class _ImageDetailState extends State<ImageDetailPage> {
             height: SizeConfig.screenHeight / 3,
             decoration: BoxDecoration(
               gradient: new LinearGradient(
-                  colors: [colorDeepPurple400, colorDeepPurple300],
+                  colors: [
+                    GlobalColor.colorDeepPurple400,
+                    GlobalColor.colorDeepPurple300
+                  ],
                   begin: const FractionalOffset(1.0, 1.0),
                   end: const FractionalOffset(0.2, 0.2),
                   stops: [0.0, 1.0],

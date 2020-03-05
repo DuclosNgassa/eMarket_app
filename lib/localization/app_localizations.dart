@@ -15,7 +15,8 @@ class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsdelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsdelegate();
 
   Map<String, String> _localizedStrings;
 
@@ -43,7 +44,6 @@ class AppLocalizations {
 // In this case, the localized strings will be gotten in an AppLocalizations object
 class _AppLocalizationsdelegate
     extends LocalizationsDelegate<AppLocalizations> {
-
   // This delegate instance will never change (it doesn´t even have fields)
   // It can provide a constant constructor.
   const _AppLocalizationsdelegate();

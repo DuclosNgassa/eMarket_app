@@ -1,4 +1,5 @@
 import 'package:emarket_app/custom_component/post_card_component.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/favorit.dart';
@@ -29,6 +30,7 @@ class SearchResultState extends State<SearchResultPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return SingleChildScrollView(
       child: Column(
@@ -49,7 +51,7 @@ class SearchResultState extends State<SearchResultPage> {
                             AppLocalizations.of(context).translate('category') +
                                 ": " +
                                 widget.parentCategory.title,
-                            style: SizeConfig.styleNormalBlackBold,
+                            style: GlobalStyling.styleNormalBlackBold,
                           ),
                         )
                       : Container(
@@ -68,7 +70,7 @@ class SearchResultState extends State<SearchResultPage> {
                   ),
                   Text(
                     AppLocalizations.of(context).translate('pictures'),
-                    style: SizeConfig.styleNormalBlackBold,
+                    style: GlobalStyling.styleNormalBlackBold,
                   ),
                 ],
               ),

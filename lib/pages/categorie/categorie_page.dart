@@ -1,7 +1,9 @@
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
-import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/categorie_service.dart';
@@ -18,6 +20,8 @@ class _CategoriePageState extends State<CategoriePage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    GlobalStyling().init(context);
     return WillPopScope(
       onWillPop: _backPressed,
       child: Scaffold(
@@ -26,7 +30,7 @@ class _CategoriePageState extends State<CategoriePage> {
             child:
                 Text(AppLocalizations.of(context).translate('choose_category')),
           ),
-          backgroundColor: colorDeepPurple400,
+          backgroundColor: GlobalColor.colorDeepPurple400,
         ),
         body: ListView.builder(
           itemBuilder: (BuildContext context, int index) {
@@ -76,14 +80,18 @@ class _CategoriePageState extends State<CategoriePage> {
 
   Future<void> _loadCategorie() async {
     categories = await _categorieService.fetchCategories();
-    List<Categorie> translatedcategories = _categorieService.translateCategories(categories, context);
+    List<Categorie> translatedcategories =
+        _categorieService.translateCategories(categories, context);
 
     translatedcategories.sort((a, b) => a.title.compareTo(b.title));
 
     //put other category at the end of the list
-    Categorie categorieTemp = translatedcategories
-        .firstWhere((categorie) => categorie.title == 'Other categories' || categorie.title == 'Autre categories');
-    translatedcategories.removeWhere((categorie) => categorie.title == 'Other categories' || categorie.title == 'Autre categories');
+    Categorie categorieTemp = translatedcategories.firstWhere((categorie) =>
+        categorie.title == 'Other categories' ||
+        categorie.title == 'Autre categories');
+    translatedcategories.removeWhere((categorie) =>
+        categorie.title == 'Other categories' ||
+        categorie.title == 'Autre categories');
     translatedcategories.add(categorieTemp);
 
     categoriesTiles = await _categorieService

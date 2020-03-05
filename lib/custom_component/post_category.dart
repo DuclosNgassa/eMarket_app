@@ -1,4 +1,5 @@
 import 'package:emarket_app/custom_component/post_card_component.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
@@ -42,6 +43,7 @@ class PostCategoryState extends State<PostCategory> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return FutureBuilder(
       future: _loadPost(widget.categoryId),
@@ -56,7 +58,7 @@ class PostCategoryState extends State<PostCategory> {
                       child: Text(
                         AppLocalizations.of(context)
                             .translate('same_category_post'),
-                        style: SizeConfig.styleNormalBlackBold,
+                        style: GlobalStyling.styleNormalBlackBold,
                       ),
                     ),
                     Padding(
@@ -75,9 +77,8 @@ class PostCategoryState extends State<PostCategory> {
                             activeColor: Colors.green,
                           ),
                           Text(
-                            AppLocalizations.of(context)
-                                .translate('pictures'),
-                            style: SizeConfig.styleNormalBlackBold,
+                            AppLocalizations.of(context).translate('pictures'),
+                            style: GlobalStyling.styleNormalBlackBold,
                           ),
                           //Icon(Icons.photo_camera, size: SizeConfig.blockSizeHorizontal * 7, color: Colors.black,)
                         ],
@@ -86,7 +87,8 @@ class PostCategoryState extends State<PostCategory> {
                   ],
                 ),
                 Container(
-                  margin: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 3),
+                  margin:
+                      EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 3),
                   height: SizeConfig.screenHeight * 0.6,
                   child: PostCardComponentPage(
                       postList: snapshot.data,
@@ -146,5 +148,4 @@ class PostCategoryState extends State<PostCategory> {
 
     return postList;
   }
-
 }

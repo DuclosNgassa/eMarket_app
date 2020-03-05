@@ -1,3 +1,5 @@
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/enumeration/login_source.dart';
 import 'package:emarket_app/model/enumeration/user_status.dart';
@@ -5,9 +7,9 @@ import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
-import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/services/user_service.dart';
+import 'package:emarket_app/util/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -30,7 +32,8 @@ class _LoginState extends State<Login> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  final SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+  final SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
   final UserService _userService = new UserService();
 
   String _deviceToken = "";
@@ -47,6 +50,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return Scaffold(
       body: Builder(
@@ -54,7 +58,7 @@ class _LoginState extends State<Login> {
           fit: StackFit.expand,
           children: <Widget>[
             Container(
-              color: colorDeepPurple300,
+              color: GlobalColor.colorDeepPurple300,
               width: SizeConfig.screenWidth,
               height: SizeConfig.screenHeight,
             ),
@@ -69,28 +73,23 @@ class _LoginState extends State<Login> {
                     alignment: Alignment.center,
                     child: RaisedButton(
                       shape: const StadiumBorder(),
-                      color: colorDeepPurple500,
+                      color: GlobalColor.colorDeepPurple500,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Icon(
                             FontAwesomeIcons.google,
-                            color: colorRed,
+                            color: GlobalColor.colorRed,
                           ),
                           SizedBox(width: SizeConfig.blockSizeHorizontal * 3),
                           Text(
                             AppLocalizations.of(context)
                                 .translate('log_in_with_google'),
-                            style: SizeConfig.styleButtonWhite,
+                            style: GlobalStyling.styleButtonWhite,
                           ),
                         ],
                       ),
                       onPressed: () => _signIn(context),
-/*
-                      onPressed: () => _signIn(context)
-                          .then((FirebaseUser user) => _saveUser(user))
-                          .catchError((e) => print(e)),
-*/
                     ),
                   ),
                 ),
@@ -130,7 +129,7 @@ class _LoginState extends State<Login> {
   Future<void> _signIn(BuildContext context) async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth =
-    await googleUser.authentication;
+        await googleUser.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       idToken: googleAuth.idToken,
@@ -144,11 +143,9 @@ class _LoginState extends State<Login> {
 
     await _saveUser(userDetails);
 
-
     Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
-        builder: (context) =>
-            navigate(),
+        builder: (context) => navigate(),
       ),
     );
   }

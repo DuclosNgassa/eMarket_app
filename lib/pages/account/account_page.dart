@@ -1,6 +1,9 @@
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
+import 'package:emarket_app/custom_component/placeholder_item.dart';
 import 'package:emarket_app/form/post_edit_form.dart';
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/enumeration/login_source.dart';
 import 'package:emarket_app/model/enumeration/status.dart';
@@ -10,9 +13,9 @@ import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
 import 'package:emarket_app/services/favorit_service.dart';
-import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
+import 'package:emarket_app/util/global.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shimmer/shimmer.dart';
 
 class AccountPage extends StatefulWidget {
   @override
@@ -31,7 +35,8 @@ class _AccountState extends State<AccountPage>
     with SingleTickerProviderStateMixin {
   final PostService _postService = new PostService();
   final FavoritService _favoritService = new FavoritService();
-  final SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+  final SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
   final GoogleSignIn _gSignIn = GoogleSignIn();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
   TabController controller;
@@ -52,6 +57,7 @@ class _AccountState extends State<AccountPage>
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return FutureBuilder<FirebaseUser>(
         future: FirebaseAuth.instance.currentUser(),
@@ -78,7 +84,7 @@ class _AccountState extends State<AccountPage>
                                   Expanded(
                                     child: Text(
                                       userName,
-                                      style: SizeConfig.styleTitleWhite,
+                                      style: GlobalStyling.styleTitleWhite,
                                       textAlign: TextAlign.left,
                                     ),
                                   ),
@@ -91,7 +97,7 @@ class _AccountState extends State<AccountPage>
                                   left: SizeConfig.blockSizeHorizontal * 2),
                               child: Text(
                                 userEmail,
-                                style: SizeConfig.styleNormalWhite,
+                                style: GlobalStyling.styleNormalWhite,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -101,9 +107,9 @@ class _AccountState extends State<AccountPage>
                       expandedHeight: SizeConfig.screenHeight * 0.19,
                       bottom: TabBar(
                         labelColor: Colors.black,
-                        labelStyle: SizeConfig.styleNormalBlack,
+                        labelStyle: GlobalStyling.styleNormalBlack,
                         //isScrollable: true,
-                        indicatorColor: colorDeepPurple400,
+                        indicatorColor: GlobalColor.colorDeepPurple400,
                         tabs: [
                           Tab(
                               text: AppLocalizations.of(context)
@@ -137,79 +143,106 @@ class _AccountState extends State<AccountPage>
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data.length > 0) {
-            return ListView.separated(
+            return ListView.builder(
                 itemBuilder: (context, index) => Slidable(
                       actionPane: SlidableBehindActionPane(),
                       actionExtentRatio: 0.25,
                       child: Container(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          onTap: () =>
-                              showPostDetailPage(_myPosts.elementAt(index)),
-                          leading: CircleAvatar(
-                            backgroundColor:
-                                isPostArchivated(_myPosts.elementAt(index))
-                                    ? colorGrey400
-                                    : colorDeepPurple300,
-                            child: Text((index + 1).toString()),
-                            foregroundColor: colorWhite,
-                          ),
-                          title: Text(_myPosts.elementAt(index).title),
-                          subtitle: Text(DateConverter.convertToString(
-                              _myPosts.elementAt(index).created_at, context)),
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              Text(_myPosts.elementAt(index).fee.toString() +
-                                  ' ' +
-                                  AppLocalizations.of(context)
-                                      .translate('fcfa')),
-                              SizedBox(
-                                height: SizeConfig.blockSizeVertical,
+                        color: GlobalColor.colorTransparent,
+                        child: Card(
+                          elevation: 8.0,
+                          margin: new EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 6.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: GlobalColor.colorGrey200,
+                            ),
+                            child: ListTile(
+                              onTap: () =>
+                                  showPostDetailPage(_myPosts.elementAt(index)),
+                              leading: CircleAvatar(
+                                backgroundColor:
+                                    isPostArchivated(_myPosts.elementAt(index))
+                                        ? GlobalColor.colorGrey400
+                                        : GlobalColor.colorDeepPurple300,
+                                child: Text((index + 1).toString()),
+                                foregroundColor: GlobalColor.colorWhite,
                               ),
-                              if (isPostArchivated(_myPosts.elementAt(index)))
-                                Text(
-                                  AppLocalizations.of(context)
-                                      .translate('sold'),
-                                  style: SizeConfig.styleFormGrey,
-                                ),
-                            ],
+                              title: Text(_myPosts.elementAt(index).title),
+                              subtitle: Text(DateConverter.convertToString(
+                                  _myPosts.elementAt(index).created_at,
+                                  context)),
+                              trailing: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: <Widget>[
+                                  Text(
+                                      _myPosts.elementAt(index).fee.toString() +
+                                          ' ' +
+                                          AppLocalizations.of(context)
+                                              .translate('fcfa')),
+                                  SizedBox(
+                                    height: SizeConfig.blockSizeVertical,
+                                  ),
+                                  isPostArchivated(_myPosts.elementAt(index))
+                                      ? Text(
+                                          AppLocalizations.of(context)
+                                              .translate('sold'),
+                                          style: GlobalStyling.styleFormGrey,
+                                        )
+                                      : Container(
+                                          height: 0,
+                                          width: 0,
+                                        ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ),
                       actions: <Widget>[
-                        if (isPostActive(_myPosts.elementAt(index)))
-                          IconSlideAction(
-                            caption:
-                                AppLocalizations.of(context).translate('sold'),
-                            color: Colors.green,
-                            icon: Icons.done,
-                            onTap: () =>
-                                archivatePost(_myPosts.elementAt(index), index),
-                          ),
-                        if (isPostActive(_myPosts.elementAt(index)))
-                          IconSlideAction(
-                            caption: AppLocalizations.of(context)
-                                .translate('change'),
-                            color: colorBlue,
-                            icon: Icons.edit,
-                            onTap: () =>
-                                showPostEditForm(_myPosts.elementAt(index)),
-                          ),
+                        isPostActive(
+                          _myPosts.elementAt(index),
+                        )
+                            ? IconSlideAction(
+                                caption: AppLocalizations.of(context)
+                                    .translate('sold'),
+                                color: Colors.green,
+                                icon: Icons.done,
+                                onTap: () => archivatePost(
+                                    _myPosts.elementAt(index), index),
+                              )
+                            : Container(
+                                height: 0,
+                                width: 0,
+                              ),
+                        isPostActive(_myPosts.elementAt(index))
+                            ? IconSlideAction(
+                                caption: AppLocalizations.of(context)
+                                    .translate('change'),
+                                color: GlobalColor.colorBlue,
+                                icon: Icons.edit,
+                                onTap: () => showPostEditForm(
+                                  _myPosts.elementAt(index),
+                                ),
+                              )
+                            : Container(
+                                height: 0,
+                                width: 0,
+                              ),
                       ],
                       secondaryActions: <Widget>[
                         IconSlideAction(
                           caption:
                               AppLocalizations.of(context).translate('delete'),
-                          color: colorRed,
+                          color: GlobalColor.colorRed,
                           icon: Icons.delete,
                           onTap: () => _showDeletePostDialog(
                               _myPosts.elementAt(index), index),
                         ),
                       ],
                     ),
-                separatorBuilder: (context, index) => Divider(),
                 itemCount: _myPosts.length);
           } else {
             return Padding(
@@ -227,7 +260,7 @@ class _AccountState extends State<AccountPage>
                             "\n\n" +
                             AppLocalizations.of(context)
                                 .translate('no_sell_item2'),
-                        style: SizeConfig.styleTitleBlack,
+                        style: GlobalStyling.styleTitleBlack,
                       ),
                     ),
                   ),
@@ -248,9 +281,146 @@ class _AccountState extends State<AccountPage>
               Colors.redAccent,
               4);
         }
-        return Center(
-          child: CupertinoActivityIndicator(
-            radius: SizeConfig.blockSizeHorizontal * 5,
+        return ListView.builder(
+          itemCount: 10,
+          // Important code
+          itemBuilder: (context, index) => Shimmer.fromColors(
+            baseColor: Colors.grey[400],
+            highlightColor: Colors.white,
+            child: ListItem(
+              page: ACCOUNTPAGE,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildMyFavoritPostListView() {
+    return FutureBuilder(
+      future: _loadMyFavorits(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          if (snapshot.data.length > 0) {
+            return ListView.builder(
+                itemBuilder: (context, index) => Slidable(
+                      actionPane: SlidableBehindActionPane(),
+                      actionExtentRatio: 0.25,
+                      child: Container(
+                        color: Colors.transparent,
+                        child: Card(
+                          elevation: 8.0,
+                          margin: new EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 6.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: GlobalColor.colorGrey200,
+                            ),
+                            child: ListTile(
+                              onTap: () => showPostDetailPage(
+                                  _myFavoritPosts.elementAt(index)),
+                              leading: CircleAvatar(
+                                backgroundColor: isPostActive(
+                                        _myFavoritPosts.elementAt(index))
+                                    ? GlobalColor.colorDeepPurple300
+                                    : GlobalColor.colorGrey400,
+                                child: Text((index + 1).toString()),
+                                foregroundColor: GlobalColor.colorWhite,
+                              ),
+                              title:
+                                  Text(_myFavoritPosts.elementAt(index).title),
+                              subtitle: Text(DateConverter.convertToString(
+                                  _myFavoritPosts.elementAt(index).created_at,
+                                  context)),
+                              trailing: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: <Widget>[
+                                  Text(_myFavoritPosts
+                                          .elementAt(index)
+                                          .fee
+                                          .toString() +
+                                      ' ' +
+                                      AppLocalizations.of(context)
+                                          .translate('fcfa')),
+                                  SizedBox(
+                                    height: SizeConfig.blockSizeVertical,
+                                  ),
+                                  !isPostActive(
+                                          _myFavoritPosts.elementAt(index))
+                                      ? Text(
+                                          AppLocalizations.of(context)
+                                              .translate('sold'),
+                                          style: GlobalStyling.styleFormGrey,
+                                        )
+                                      : Container(
+                                          height: 0,
+                                          width: 0,
+                                        ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      secondaryActions: <Widget>[
+                        IconSlideAction(
+                          caption:
+                              AppLocalizations.of(context).translate('delete'),
+                          color: GlobalColor.colorRed,
+                          icon: Icons.delete,
+                          onTap: () => _showDeleteFavoritDialog(
+                              _myFavoritPosts.elementAt(index).id, index),
+                        ),
+                      ],
+                    ),
+                itemCount: _myFavoritPosts.length);
+          } else {
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: SizeConfig.blockSizeHorizontal * 2,
+                  vertical: SizeConfig.blockSizeVertical),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        AppLocalizations.of(context).translate('no_favorit') +
+                            "\n\n" +
+                            AppLocalizations.of(context)
+                                .translate('mark_favorit'),
+                        style: GlobalStyling.styleTitleBlack,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+        } else if (snapshot.hasError) {
+          MyNotification.showInfoFlushbar(
+              context,
+              AppLocalizations.of(context).translate('erro'),
+              AppLocalizations.of(context).translate('error_loading'),
+              Icon(
+                Icons.info_outline,
+                size: 28,
+                color: Colors.redAccent,
+              ),
+              Colors.redAccent,
+              4);
+        }
+        return ListView.builder(
+          itemCount: 10,
+          // Important code
+          itemBuilder: (context, index) => Shimmer.fromColors(
+            baseColor: Colors.grey[400],
+            highlightColor: Colors.white,
+            child: ListItem(
+              page: ACCOUNTPAGE,
+            ),
           ),
         );
       },
@@ -263,63 +433,6 @@ class _AccountState extends State<AccountPage>
 
   bool isPostArchivated(Post post) {
     return post.status == Status.archivated;
-  }
-
-  Widget buildMyFavoritPostListView() {
-    if (_myFavoritPosts.length > 0) {
-      return ListView.separated(
-          itemBuilder: (context, index) => Slidable(
-                actionPane: SlidableBehindActionPane(),
-                actionExtentRatio: 0.25,
-                child: Container(
-                  color: Colors.transparent,
-                  child: ListTile(
-                    onTap: () =>
-                        showPostDetailPage(_myFavoritPosts.elementAt(index)),
-                    leading: CircleAvatar(
-                      backgroundColor:
-                          isPostActive(_myFavoritPosts.elementAt(index))
-                              ? colorDeepPurple300
-                              : colorGrey400,
-                      child: Text((index + 1).toString()),
-                      foregroundColor: colorWhite,
-                    ),
-                    title: Text(_myFavoritPosts.elementAt(index).title),
-                    subtitle: Text(DateConverter.convertToString(
-                        _myFavoritPosts.elementAt(index).created_at, context)),
-                    trailing: Text(
-                        _myFavoritPosts.elementAt(index).fee.toString() +
-                            ' ' +
-                            AppLocalizations.of(context).translate('fcfa')),
-                  ),
-                ),
-                secondaryActions: <Widget>[
-                  IconSlideAction(
-                    caption: AppLocalizations.of(context).translate('delete'),
-                    color: colorRed,
-                    icon: Icons.delete,
-                    onTap: () => _showDeleteFavoritDialog(
-                        _myFavoritPosts.elementAt(index).id, index),
-                  ),
-                ],
-              ),
-          separatorBuilder: (context, index) => Divider(),
-          itemCount: _myFavoritPosts.length);
-    } else {
-      return new Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: SizeConfig.blockSizeHorizontal * 2,
-              vertical: SizeConfig.blockSizeVertical),
-          child: Text(
-            AppLocalizations.of(context).translate('no_favorit') +
-                "\n\n" +
-                AppLocalizations.of(context).translate('mark_favorit'),
-            style: SizeConfig.styleTitleBlack,
-          ),
-        ),
-      );
-    }
   }
 
   Future<void> archivatePost(Post post, int index) async {
@@ -419,9 +532,9 @@ class _AccountState extends State<AccountPage>
     String _userName = await _sharedPreferenceService.read(USER_NAME);
     if (_userEmail != null && _userEmail.isNotEmpty) {
       userEmail = _userEmail;
-      userName = _userName == null ? userName : _userName;
-      _loadMyFavorits();
-      setState(() {});
+      userName = _userName ?? userName;
+      //_loadMyFavorits();
+      //setState(() {});
     }
   }
 
@@ -433,19 +546,35 @@ class _AccountState extends State<AccountPage>
     return _myPosts;
   }
 
-  Future<void> _loadMyFavorits() async {
+  Future<List<Post>> _loadMyFavorits() async {
     if (userEmail != null &&
         userEmail.isNotEmpty &&
         _myFavorits.isEmpty &&
         _myFavoritPosts.isEmpty) {
-      _myFavorits = await _favoritService.fetchFavoritByUserEmail(userEmail);
-      _myFavoritPosts.clear();
-      for (Favorit favorit in _myFavorits) {
-        Post post = await _postService.fetchPostById(favorit.postid);
-        _myFavoritPosts.add(post);
+      String EMAIL_MY_FAVORIT_LIST_CACHE_TIME =
+          MY_FAVORIT_LIST_CACHE_TIME + userEmail;
+
+      String cacheTimeString =
+          await _sharedPreferenceService.read(EMAIL_MY_FAVORIT_LIST_CACHE_TIME);
+      if (cacheTimeString != null) {
+        DateTime cacheTime = DateTime.parse(cacheTimeString);
+        DateTime actualDateTime = DateTime.now();
+
+        if (actualDateTime.difference(cacheTime) > Duration(minutes: 3)) {
+          _myFavoritPosts =
+              await _favoritService.loadMyFavoritFromServer(userEmail);
+        } else {
+          _myFavoritPosts =
+              await _favoritService.loadMyFavoritFromCache(userEmail);
+        }
+      } else {
+        _myFavoritPosts =
+            await _favoritService.loadMyFavoritFromServer(userEmail);
       }
+      return _myFavoritPosts;
     }
-    setState(() {});
+
+    return _myFavoritPosts;
   }
 
   Widget showLogout() {
@@ -459,7 +588,7 @@ class _AccountState extends State<AccountPage>
               padding:
                   EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 2),
               child: CustomButton(
-                fillColor: colorRed,
+                fillColor: GlobalColor.colorRed,
                 icon: FontAwesomeIcons.signOutAlt,
                 //icon: Icons.directions_run,
                 splashColor: Colors.white,

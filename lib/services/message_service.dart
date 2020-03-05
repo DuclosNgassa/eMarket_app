@@ -2,25 +2,28 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:http/http.dart' as http;
 
-import '../services/global.dart';
+import '../util/global.dart';
 
 class MessageService {
-
-  SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+  SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
 
   Future<Message> saveMessage(Map<String, dynamic> params) async {
     Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
-    final response = await http.post(Uri.encodeFull(URL_MESSAGES), headers: headers, body: params);
+    final response = await http.post(Uri.encodeFull(URL_MESSAGES),
+        headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToMessage(responseBody);
     } else {
-      throw Exception('Failed to save a Message. Error: ${response.toString()}');
+      throw Exception(
+          'Failed to save a Message. Error: ${response.toString()}');
     }
   }
 
@@ -47,7 +50,7 @@ class MessageService {
   Future<List<Message>> fetchMessageByEmail(String email) async {
     String emailMessagesCacheTimeString = MESSAGE_LIST_CACHE_TIME + email;
     String cacheTimeString =
-    await _sharedPreferenceService.read(emailMessagesCacheTimeString);
+        await _sharedPreferenceService.read(emailMessagesCacheTimeString);
     if (cacheTimeString != null) {
       DateTime cacheTime = DateTime.parse(cacheTimeString);
       DateTime actualDateTime = DateTime.now();
@@ -57,7 +60,7 @@ class MessageService {
       } else {
         return _fetchMessageByEmailFromCache(email);
       }
-    }else{
+    } else {
       return _fetchMessageByEmailFromServer(email);
     }
   }
@@ -65,7 +68,8 @@ class MessageService {
   Future<List<Message>> _fetchMessageByEmailFromServer(String email) async {
     Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
-    final response = await http.Client().get('$URL_MESSAGES_BY_EMAIL$email', headers: headers);
+    final response = await http.Client()
+        .get('$URL_MESSAGES_BY_EMAIL$email', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -96,7 +100,7 @@ class MessageService {
   Future<List<Message>> _fetchMessageByEmailFromCache(String email) async {
     String emailMessageFromCache = MESSAGE_LIST + email;
     String listMessageFromSharePrefs =
-    await _sharedPreferenceService.read(emailMessageFromCache);
+        await _sharedPreferenceService.read(emailMessageFromCache);
     if (listMessageFromSharePrefs != null) {
       Iterable iterablePost = jsonDecode(listMessageFromSharePrefs);
       final messageList = await iterablePost.map<Message>((message) {
@@ -111,7 +115,8 @@ class MessageService {
   Future<List<Message>> fetchMessageByPostId(int postId) async {
     Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
-    final response = await http.Client().get('$URL_MESSAGES_BY_POSTID$postId', headers: headers);
+    final response = await http.Client()
+        .get('$URL_MESSAGES_BY_POSTID$postId', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -131,7 +136,8 @@ class MessageService {
   Future<List<Message>> fetchMessageBySender(String sender) async {
     Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
-    final response = await http.Client().get('$URL_MESSAGES_BY_SENDER$sender', headers: headers);
+    final response = await http.Client()
+        .get('$URL_MESSAGES_BY_SENDER$sender', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -151,7 +157,8 @@ class MessageService {
   Future<List<Message>> fetchMessageByReceiver(String receiver) async {
     Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
-    final response = await http.Client().get('$URL_MESSAGES_BY_RECEIVER$receiver', headers: headers);
+    final response = await http.Client()
+        .get('$URL_MESSAGES_BY_RECEIVER$receiver', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
@@ -171,31 +178,35 @@ class MessageService {
   Future<Message> update(Map<String, dynamic> params) async {
     Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
-    final response = await http.Client().put('$URL_MESSAGES/${params["id"]}', headers: headers, body: params);
+    final response = await http.Client()
+        .put('$URL_MESSAGES/${params["id"]}', headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToMessageUpdate(responseBody);
     } else {
-      throw Exception('Failed to update a Message. Error: ${response.toString()}');
+      throw Exception(
+          'Failed to update a Message. Error: ${response.toString()}');
     }
   }
 
   Future<bool> delete(int id) async {
     Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
-    final response = await http.Client().delete('$URL_MESSAGES/$id', headers: headers);
+    final response =
+        await http.Client().delete('$URL_MESSAGES/$id', headers: headers);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
-      if(responseBody["result"] == "ok"){
+      if (responseBody["result"] == "ok") {
         return true;
       }
     } else {
-      throw Exception('Failed to delete a Message. Error: ${response.toString()}');
+      throw Exception(
+          'Failed to delete a Message. Error: ${response.toString()}');
     }
   }
 
   Message convertResponseToMessage(Map<String, dynamic> json) {
-    if(json["data"] == null){
+    if (json["data"] == null) {
       return null;
     }
     return Message(
@@ -210,7 +221,7 @@ class MessageService {
   }
 
   Message convertResponseToMessageUpdate(Map<String, dynamic> json) {
-    if(json["data"] == null){
+    if (json["data"] == null) {
       return null;
     }
     return Message(
@@ -228,28 +239,27 @@ class MessageService {
     int numberOfNewMessage = 0;
 
     messages.forEach((message) =>
-    message.read == 0 && message.receiver == userEmail
-        ? numberOfNewMessage++
-        : numberOfNewMessage = numberOfNewMessage);
+        message.read == 0 && message.receiver == userEmail
+            ? numberOfNewMessage++
+            : numberOfNewMessage = numberOfNewMessage);
 
     return numberOfNewMessage;
   }
 
-
-  bool isMessageRead(Message message, String userEmail){
+  bool isMessageRead(Message message, String userEmail) {
     return message.receiver == userEmail && message.read == 0;
   }
 
-  Message updateMessageAsRead(Message message){
+  Message updateMessageAsRead(Message message) {
     Message updatedMessage = message;
     updatedMessage.read = 1;
     return updatedMessage;
   }
 
-  List<Message> getMessageRead(List<Message> messages, String userEmail){
+  List<Message> getMessageRead(List<Message> messages, String userEmail) {
     List<Message> messageReads = new List();
-    for(Message message in messages) {
-      if(isMessageRead(message, userEmail)){
+    for (Message message in messages) {
+      if (isMessageRead(message, userEmail)) {
         messageReads.add(updateMessageAsRead(message));
       }
     }
@@ -261,10 +271,9 @@ class MessageService {
     List<Message> messageToUpdate = new List();
     messageToUpdate = getMessageRead(messages, userEmail);
 
-    for(Message message in messageToUpdate){
+    for (Message message in messageToUpdate) {
       Map<String, dynamic> messageParams = message.toMapUpdate(message);
       await update(messageParams);
     }
   }
-
 }

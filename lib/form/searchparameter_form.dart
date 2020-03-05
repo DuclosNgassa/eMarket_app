@@ -1,8 +1,9 @@
 import 'package:emarket_app/converter/utils.dart';
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
-import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import '../validator/form_validator.dart';
 
 class SearchParameterForm extends StatefulWidget {
   final String allTranslated;
+
   SearchParameterForm(BuildContext context, this.allTranslated);
 
   @override
@@ -28,7 +30,6 @@ class SearchParameterFormState extends State<SearchParameterForm> {
   FormValidator formValidator = new FormValidator();
   SearchParameter searchParameter = new SearchParameter();
 
-
   @override
   void initState() {
     _feeTyp = widget.allTranslated;
@@ -36,9 +37,15 @@ class SearchParameterFormState extends State<SearchParameterForm> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> _feeTyps = <String>[AppLocalizations.of(context).translate('gift'), AppLocalizations.of(context).translate('negotiable'), AppLocalizations.of(context).translate('fixed'), AppLocalizations.of(context).translate('all')];
-
     SizeConfig().init(context);
+    GlobalStyling().init(context);
+
+    List<String> _feeTyps = <String>[
+      AppLocalizations.of(context).translate('gift'),
+      AppLocalizations.of(context).translate('negotiable'),
+      AppLocalizations.of(context).translate('fixed'),
+      AppLocalizations.of(context).translate('all')
+    ];
 
     return Container(
       height: SizeConfig.screenHeight,
@@ -46,7 +53,8 @@ class SearchParameterFormState extends State<SearchParameterForm> {
         key: _formKey,
         autovalidate: false,
         child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockSizeHorizontal * 2),
+          padding: EdgeInsets.symmetric(
+              horizontal: SizeConfig.blockSizeHorizontal * 2),
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(right: 20.0),
@@ -64,7 +72,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                   ),
                   Text(
                     AppLocalizations.of(context).translate('offer'),
-                    style: SizeConfig.styleRadioButton,
+                    style: GlobalStyling.styleRadioButton,
                   ),
                   Radio(
                     value: PostTyp.search,
@@ -77,7 +85,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                   ),
                   Text(
                     AppLocalizations.of(context).translate('search'),
-                    style: SizeConfig.styleRadioButton,
+                    style: GlobalStyling.styleRadioButton,
                   ),
                   Radio(
                     value: PostTyp.all,
@@ -90,18 +98,18 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                   ),
                   Text(
                     AppLocalizations.of(context).translate('all'),
-                    style: SizeConfig.styleRadioButton,
+                    style: GlobalStyling.styleRadioButton,
                   ),
                 ],
               ),
             ),
             Divider(),
             TextFormField(
-              style: SizeConfig.styleFormGrey,
+              style: GlobalStyling.styleFormGrey,
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context).translate('title'),
                 labelText: AppLocalizations.of(context).translate('title'),
-                labelStyle: SizeConfig.styleFormBlack,
+                labelStyle: GlobalStyling.styleFormBlack,
               ),
               inputFormatters: [
                 LengthLimitingTextInputFormatter(30),
@@ -114,10 +122,10 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                 children: <Widget>[
                   Padding(
                     padding:
-                    EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
+                        EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
                     child: Text(
                       AppLocalizations.of(context).translate('category'),
-                      style: SizeConfig.styleFormBlack,
+                      style: GlobalStyling.styleFormBlack,
                     ),
                   ),
                   GestureDetector(
@@ -127,13 +135,14 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                         Expanded(
                           child: Text(
                             _categorie,
-                            style: SizeConfig.styleFormGrey,
+                            style: GlobalStyling.styleFormGrey,
                           ),
                         ),
                         IconButton(
                           onPressed: showCategoriePage,
                           icon: Icon(Icons.arrow_forward_ios),
-                          tooltip: AppLocalizations.of(context).translate('choose_category'),
+                          tooltip: AppLocalizations.of(context)
+                              .translate('choose_category'),
                         )
                       ],
                     ),
@@ -148,11 +157,13 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                 children: <Widget>[
                   Expanded(
                     child: TextFormField(
-                      style: SizeConfig.styleFormGrey,
+                      style: GlobalStyling.styleFormGrey,
                       decoration: InputDecoration(
-                        hintText: AppLocalizations.of(context).translate('advert_city'),
-                        labelText: AppLocalizations.of(context).translate('city'),
-                        labelStyle: SizeConfig.styleFormBlack,
+                        hintText: AppLocalizations.of(context)
+                            .translate('advert_city'),
+                        labelText:
+                            AppLocalizations.of(context).translate('city'),
+                        labelStyle: GlobalStyling.styleFormBlack,
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
@@ -162,11 +173,13 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                   ),
                   Expanded(
                     child: TextFormField(
-                      style: SizeConfig.styleFormGrey,
+                      style: GlobalStyling.styleFormGrey,
                       decoration: InputDecoration(
-                        hintText: AppLocalizations.of(context).translate('advert_neighborhood'),
-                        labelText: AppLocalizations.of(context).translate('neighborhood'),
-                        labelStyle: SizeConfig.styleFormBlack,
+                        hintText: AppLocalizations.of(context)
+                            .translate('advert_neighborhood'),
+                        labelText: AppLocalizations.of(context)
+                            .translate('neighborhood'),
+                        labelStyle: GlobalStyling.styleFormBlack,
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(30),
@@ -187,7 +200,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                     child: Column(children: <Widget>[
                       Text(
                         AppLocalizations.of(context).translate('min_price'),
-                        style: SizeConfig.styleFormBlack,
+                        style: GlobalStyling.styleFormBlack,
                       ),
                     ]),
                   ),
@@ -196,7 +209,8 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                       children: <Widget>[
                         TextFormField(
                           decoration: InputDecoration(
-                              hintText: AppLocalizations.of(context).translate('fcfa'),
+                              hintText: AppLocalizations.of(context)
+                                  .translate('fcfa'),
                               labelStyle: TextStyle(color: Colors.black)),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
@@ -214,7 +228,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                       children: <Widget>[
                         Text(
                           AppLocalizations.of(context).translate('max_price'),
-                          style: SizeConfig.styleFormBlack,
+                          style: GlobalStyling.styleFormBlack,
                         ),
                       ],
                     ),
@@ -224,7 +238,8 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                       children: <Widget>[
                         TextFormField(
                           decoration: InputDecoration(
-                            hintText: AppLocalizations.of(context).translate('fcfa'),
+                            hintText:
+                                AppLocalizations.of(context).translate('fcfa'),
                             labelStyle: TextStyle(
                               color: Colors.black,
                             ),
@@ -247,8 +262,9 @@ class SearchParameterFormState extends State<SearchParameterForm> {
               builder: (FormFieldState state) {
                 return InputDecorator(
                   decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context).translate('price_typ'),
-                    labelStyle: SizeConfig.styleFormBlack,
+                    labelText:
+                        AppLocalizations.of(context).translate('price_typ'),
+                    labelStyle: GlobalStyling.styleFormBlack,
                     errorText: state.hasError ? state.errorText : null,
                   ),
                   child: DropdownButtonHideUnderline(
@@ -265,7 +281,8 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem(
                           value: value,
-                          child: Text(value, style: SizeConfig.styleFormGrey),
+                          child:
+                              Text(value, style: GlobalStyling.styleFormGrey),
                         );
                       }).toList(),
                     ),
@@ -278,8 +295,10 @@ class SearchParameterFormState extends State<SearchParameterForm> {
               padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
               child: RaisedButton(
                 shape: const StadiumBorder(),
-                color: colorDeepPurple400,
-                child: Text(AppLocalizations.of(context).translate('to_search_capital'), style: SizeConfig.styleButtonWhite),
+                color: GlobalColor.colorDeepPurple400,
+                child: Text(
+                    AppLocalizations.of(context).translate('to_search_capital'),
+                    style: GlobalStyling.styleButtonWhite),
                 onPressed: _submitForm,
               ),
             ),
@@ -309,9 +328,10 @@ class SearchParameterFormState extends State<SearchParameterForm> {
     form.save();
     searchParameter.category = _categorieId;
     searchParameter.postTyp = _postTyp;
-    searchParameter.feeTyp = (_feeTyp == 'All' || _feeTyp == 'Tout') ? null : Converter.convertStringToFeeTyp (_feeTyp);
+    searchParameter.feeTyp = (_feeTyp == 'All' || _feeTyp == 'Tout')
+        ? null
+        : Converter.convertStringToFeeTyp(_feeTyp);
 
     Navigator.of(context).pop(searchParameter);
   }
-
 }

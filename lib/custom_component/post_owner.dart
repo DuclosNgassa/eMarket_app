@@ -1,3 +1,6 @@
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
+import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/enumeration/login_source.dart';
 import 'package:emarket_app/model/message.dart';
@@ -5,9 +8,9 @@ import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/pages/message/chat_page.dart';
-import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
+import 'package:emarket_app/util/global.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -41,7 +44,8 @@ class PostOwner extends StatefulWidget {
 
 class PostOwnerState extends State<PostOwner> {
   final MessageService _messageService = new MessageService();
-  final SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+  final SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
   bool isLogedIn = false; //TODO save login as sharedPreferencies
   List<Message> messagesSentOrReceived = new List<Message>();
   String _userEmail;
@@ -55,6 +59,7 @@ class PostOwnerState extends State<PostOwner> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return FutureBuilder<FirebaseUser>(
         future: FirebaseAuth.instance.currentUser(),
@@ -91,13 +96,13 @@ class PostOwnerState extends State<PostOwner> {
                       child: Container(
                         height: SizeConfig.blockSizeVertical * 6,
                         width: SizeConfig.blockSizeHorizontal * 10,
-                        color: colorDeepPurple400,
+                        color: GlobalColor.colorDeepPurple400,
                         child: Center(
                           child: Text(
                             widget.user != null && widget.user.name != null
                                 ? widget.user.name[0].toUpperCase()
                                 : 'e',
-                            style: SizeConfig.styleTitleWhite,
+                            style: GlobalStyling.styleTitleWhite,
                           ),
                         ),
                       ),
@@ -118,7 +123,7 @@ class PostOwnerState extends State<PostOwner> {
                               widget.user != null && widget.user.name != null
                                   ? widget.user.name
                                   : 'eMarket',
-                              style: SizeConfig.styleTitleBlack),
+                              style: GlobalStyling.styleTitleBlack),
                         ],
                       ),
                     ),
@@ -130,7 +135,7 @@ class PostOwnerState extends State<PostOwner> {
                           Text(
                             AppLocalizations.of(context)
                                 .translate('privat_user'),
-                            style: SizeConfig.styleGreyDetail,
+                            style: GlobalStyling.styleGreyDetail,
                           ),
                         ],
                       ),
@@ -157,7 +162,7 @@ class PostOwnerState extends State<PostOwner> {
                         ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(5.0)),
                           child: Container(
-                            color: colorDeepPurple400,
+                            color: GlobalColor.colorDeepPurple400,
                             height: SizeConfig.blockSizeVertical * 3,
                             width: SizeConfig.blockSizeHorizontal * 5,
                             child: Center(
@@ -192,12 +197,13 @@ class PostOwnerState extends State<PostOwner> {
 
   List<Widget> _buildRating(int rating) {
     List<Widget> widgetList = new List();
-    Widget icon = Icon(Icons.sentiment_satisfied, color: colorGrey400);
+    Widget icon =
+        Icon(Icons.sentiment_satisfied, color: GlobalColor.colorGrey400);
 
     Widget satisfaction = Expanded(
       child: Text(
         "Satisfaction: TOP",
-        style: SizeConfig.styleGreyDetail,
+        style: GlobalStyling.styleGreyDetail,
       ),
     );
 
@@ -207,7 +213,7 @@ class PostOwnerState extends State<PostOwner> {
     for (var i = 0; i < MAX_RATING; i++) {
       Icon icon = Icon(
         Icons.star,
-        color: i < rating ? colorBlue : colorGrey300,
+        color: i < rating ? GlobalColor.colorBlue : GlobalColor.colorGrey300,
         size: SizeConfig.BUTTON_FONT_SIZE,
       );
 
@@ -226,7 +232,7 @@ class PostOwnerState extends State<PostOwner> {
           icon: Icon(
             Icons.textsms,
             size: SizeConfig.blockSizeHorizontal * 10,
-            color: colorDeepPurple400,
+            color: GlobalColor.colorDeepPurple400,
           ),
         ),
         SizedBox(
@@ -235,7 +241,7 @@ class PostOwnerState extends State<PostOwner> {
         widget.post.phoneNumber != null && widget.post.phoneNumber.isNotEmpty
             ? Expanded(
                 child: CustomButton(
-                  fillColor: colorDeepPurple400,
+                  fillColor: GlobalColor.colorDeepPurple400,
                   icon: Icons.phone_iphone,
                   splashColor: Colors.white,
                   iconColor: Colors.white,
@@ -249,19 +255,6 @@ class PostOwnerState extends State<PostOwner> {
                 ),
               )
             : Container(),
-/*
-        SizedBox(
-          width: SizeConfig.blockSizeHorizontal * 2,
-        ),
-        IconButton(
-          onPressed: _makeTransfert,
-          icon: Icon(
-            Icons.monetization_on,
-            size: SizeConfig.blockSizeHorizontal * 10,
-            color: colorDeepPurple400,
-          ),
-        ),
-*/
         SizedBox(
           width: SizeConfig.blockSizeHorizontal,
         ),
@@ -270,7 +263,7 @@ class PostOwnerState extends State<PostOwner> {
           icon: Icon(
             Icons.share,
             size: SizeConfig.blockSizeHorizontal * 10,
-            color: colorDeepPurple400,
+            color: GlobalColor.colorDeepPurple400,
           ),
           tooltip: AppLocalizations.of(context).translate('share'),
         ),

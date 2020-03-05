@@ -1,9 +1,10 @@
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
+import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../services/global.dart';
 
 class AboutUsPage extends StatefulWidget {
   @override
@@ -21,10 +22,11 @@ class _AboutUsPageState extends State<AboutUsPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return new Scaffold(
       appBar: new AppBar(
-        backgroundColor: colorDeepPurple300,
+        backgroundColor: GlobalColor.colorDeepPurple300,
         title: _buildTitle(),
         automaticallyImplyLeading: false,
       ),
@@ -52,7 +54,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
             padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 3),
             child: Text(
               AppLocalizations.of(context).translate('about_us_text'),
-              style: SizeConfig.styleNormalBlack,
+              style: GlobalStyling.styleNormalBlack,
             ),
           ),
           SizedBox(
@@ -61,10 +63,10 @@ class _AboutUsPageState extends State<AboutUsPage> {
           Container(
             child: RaisedButton(
               shape: const StadiumBorder(),
-              color: colorDeepPurple400,
+              color: GlobalColor.colorDeepPurple400,
               child: Text(
                 AppLocalizations.of(context).translate('visit_us'),
-                style: SizeConfig.styleSubtitleWhite,
+                style: GlobalStyling.styleSubtitleWhite,
               ),
               onPressed: () => launch(SITE_WEB),
             ),

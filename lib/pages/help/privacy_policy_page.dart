@@ -1,9 +1,10 @@
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
+import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
-import '../../services/global.dart';
 
 class PrivacyPolicyPage extends StatefulWidget {
   @override
@@ -21,10 +22,11 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return new Scaffold(
       appBar: new AppBar(
-        backgroundColor: colorDeepPurple300,
+        backgroundColor: GlobalColor.colorDeepPurple300,
         title: _buildTitle(),
         automaticallyImplyLeading: false,
       ),

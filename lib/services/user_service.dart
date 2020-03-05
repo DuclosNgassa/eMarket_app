@@ -2,14 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:http/http.dart' as http;
 
-import '../services/global.dart';
+import '../util/global.dart';
 
 class UserService {
-  SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+  SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
 
   Future<User> saveUser(Map<String, dynamic> params) async {
     final response = await http.post(Uri.encodeFull(URL_USERS), body: params);
@@ -60,8 +62,8 @@ class UserService {
   Future<User> update(Map<String, dynamic> params) async {
     Map<String, String> headers = await _sharedPreferenceService.getHeaders();
 
-    final response =
-        await http.Client().put('$URL_USERS/${params["id"]}', headers: headers, body: params);
+    final response = await http.Client()
+        .put('$URL_USERS/${params["id"]}', headers: headers, body: params);
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
       return convertResponseToUserUpdate(responseBody);

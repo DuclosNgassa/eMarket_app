@@ -5,21 +5,23 @@ import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/custom_component/post_category.dart';
 import 'package:emarket_app/custom_component/post_owner.dart';
 import 'package:emarket_app/form/post_edit_form.dart';
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post_image.dart';
 import 'package:emarket_app/model/user.dart';
-import 'package:emarket_app/pages/image/images_detail.dart';
 import 'package:emarket_app/pages/post/post_user_page.dart';
 import 'package:emarket_app/services/favorit_service.dart';
-import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/image_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/services/user_service.dart';
+import 'package:emarket_app/util/global.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 import '../../model/post.dart';
 
@@ -41,7 +43,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
   final UserService _userService = new UserService();
   final FavoritService _favoritService = new FavoritService();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
-  SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+  SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
 
   String userEmail;
   bool _isDownloaded = false;
@@ -53,7 +56,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Icon favoritIcon = Icon(
     Icons.favorite_border,
     size: 30,
-    color: colorGrey400,
+    color: GlobalColor.colorGrey400,
   );
 
   @override
@@ -83,10 +86,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return Container(
       child: Scaffold(
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Stack(
               children: <Widget>[
@@ -96,7 +101,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     height: SizeConfig.screenHeight / 4,
                     decoration: BoxDecoration(
                       gradient: new LinearGradient(
-                          colors: [colorDeepPurple400, colorDeepPurple300],
+                          colors: [
+                            GlobalColor.colorDeepPurple400,
+                            GlobalColor.colorDeepPurple300
+                          ],
                           begin: const FractionalOffset(1.0, 1.0),
                           end: const FractionalOffset(0.2, 0.2),
                           stops: [0.0, 1.0],
@@ -115,7 +123,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           horizontal: SizeConfig.blockSizeHorizontal * 2,
                           vertical: SizeConfig.blockSizeVertical),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           _isPostOwner()
                               ? Container(
@@ -123,7 +131,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   child: IconButton(
                                     icon: new Icon(
                                       Icons.edit,
-                                      color: colorWhite,
+                                      color: GlobalColor.colorWhite,
                                     ),
                                     tooltip: AppLocalizations.of(context)
                                         .translate('change'),
@@ -132,32 +140,45 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   ),
                                 )
                               : new Container(),
-                          Container(
-                            height: SizeConfig.blockSizeVertical * 20,
-                            //height: 125.0,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Expanded(
-                                  child: buildImageGridView(),
+                          _isDownloaded
+                              ? Container(
+                                  height: SizeConfig.blockSizeVertical * 50,
+                                  //height: 125.0,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: buildImageGridView(),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Container(
+                                  height: SizeConfig.blockSizeVertical * 20,
+                                  //height: 125.0,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: buildImageGridView(),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ],
-                            ),
-                          ),
                           Divider(),
                           Row(
                             children: <Widget>[
                               Expanded(
                                 child: Text(
                                   widget.post.title,
-                                  style: SizeConfig.styleTitleBlack,
+                                  style: GlobalStyling.styleTitleBlack,
                                   //style: titleDetailStyle,
                                 ),
                               ),
                               InkWell(
                                 onTap: () => updateIconFavorit(),
                                 child: CircleAvatar(
-                                  backgroundColor: colorGrey100,
+                                  backgroundColor: GlobalColor.colorGrey100,
                                   child: favoritIcon,
                                 ),
                               ),
@@ -172,13 +193,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                       ' ' +
                                       AppLocalizations.of(context)
                                           .translate('fcfa'),
-                                  style: SizeConfig.stylePrice,
+                                  style: GlobalStyling.stylePrice,
                                 ),
                               ),
                               Text(
                                 Post.convertFeeTypToDisplay(
                                     widget.post.fee_typ, context),
-                                style: SizeConfig.stylePrice,
+                                style: GlobalStyling.stylePrice,
                               ),
                             ],
                           ),
@@ -205,7 +226,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                 SizeConfig.blockSizeHorizontal,
                                           ),
                                           child: Icon(Icons.calendar_today,
-                                              color: colorDeepPurple300),
+                                              color: GlobalColor
+                                                  .colorDeepPurple300),
                                         ),
                                         Text(DateConverter.convertToString(
                                             widget.post.created_at, context)),
@@ -218,7 +240,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                 padding: EdgeInsets.only(
                                     right: SizeConfig.blockSizeHorizontal),
                                 child: Icon(Icons.remove_red_eye,
-                                    color: colorDeepPurple300),
+                                    color: GlobalColor.colorDeepPurple300),
                               ),
                               Text(widget.post.count_view.toString()),
                               Expanded(
@@ -227,7 +249,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   child: Text(
                                     Post.convertPostTypToStringForDisplay(
                                         widget.post.post_typ, context),
-                                    style: SizeConfig.styleTitleBlack,
+                                    style: GlobalStyling.styleTitleBlack,
                                   ),
                                 ),
                               ),
@@ -241,7 +263,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               Text(
                                 AppLocalizations.of(context)
                                     .translate('description'),
-                                style: SizeConfig.styleTitleBlack,
+                                style: GlobalStyling.styleTitleBlack,
                                 //style: titleDetailStyle,
                               ),
                             ],
@@ -252,7 +274,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               Expanded(
                                 child: Text(
                                   widget.post.description,
-                                  style: SizeConfig.styleNormalBlack,
+                                  style: GlobalStyling.styleNormalBlack,
                                 ),
                               ),
                             ],
@@ -266,20 +288,19 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             fillColor: Colors.transparent,
                             post: widget.post,
                             user: _postOwner,
-                            splashColor: colorDeepPurple300,
-                            textStyle: SizeConfig.styleTitleBlack,
+                            splashColor: GlobalColor.colorDeepPurple300,
+                            textStyle: GlobalStyling.styleTitleBlack,
                           ),
                           SizedBox(
                             height: SizeConfig.blockSizeVertical * 2,
                           ),
                           Container(
-                            height: SizeConfig.screenHeight * 0.75,
+                              height: SizeConfig.screenHeight * 0.75,
                               child: PostCategory(
-                            categoryId: widget.post.categorieid,
-                            actualPostId: widget.post.id,
-                            myFavorits: myFavorits,
-                            userEmail: userEmail
-                          ))
+                                  categoryId: widget.post.categorieid,
+                                  actualPostId: widget.post.id,
+                                  myFavorits: myFavorits,
+                                  userEmail: userEmail))
                         ],
                       ),
                     ),
@@ -327,11 +348,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   List<Widget> _buildAddress(int rating) {
     List<Widget> widgetList = new List();
-    Widget location = Icon(Icons.location_on, color: colorDeepPurple300);
+    Widget location =
+        Icon(Icons.location_on, color: GlobalColor.colorDeepPurple300);
     Widget city = Expanded(
       child: Text(
         widget.post.city + ', ' + widget.post.quarter,
-        style: SizeConfig.styleGreyDetail,
+        style: GlobalStyling.styleGreyDetail,
       ),
     );
 
@@ -346,12 +368,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
       return Container(
         height: 15.0,
         child: CustomButton(
-          fillColor: colorDeepPurple400,
+          fillColor: GlobalColor.colorDeepPurple400,
           icon: Icons.file_download,
           splashColor: Colors.white,
           iconColor: Colors.white,
           text: AppLocalizations.of(context).translate('download_images'),
-          textStyle: SizeConfig.styleNormalWhite,
+          textStyle: GlobalStyling.styleNormalWhite,
           onPressed: () => _downloadPictures(),
         ),
       );
@@ -360,17 +382,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
       return Container(
         height: 15.0,
         child: CustomButton(
-          fillColor: colorDeepPurple400,
+          fillColor: GlobalColor.colorDeepPurple400,
           icon: Icons.sentiment_satisfied,
           splashColor: Colors.white,
           iconColor: Colors.white,
           text: AppLocalizations.of(context).translate('post_without_images'),
-          textStyle: SizeConfig.styleNormalWhite,
+          textStyle: GlobalStyling.styleNormalWhite,
           onPressed: null,
         ),
       );
     }
-    return GridView.count(
+    /*return GridView.count(
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
       crossAxisCount: 1,
@@ -427,6 +449,33 @@ class _PostDetailPageState extends State<PostDetailPage> {
           );
         },
       ),
+    );*/
+    return buildImagesGridView();
+  }
+
+  Widget buildImagesGridView() {
+    return new Swiper(
+      pagination: SwiperPagination(),
+      itemBuilder: (BuildContext context, int index) {
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: CachedNetworkImage(
+            imageUrl: postImages[index].image_url,
+            imageBuilder: (context, imageProvider) => Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      itemCount: postImages.length,
+      viewportFraction: 1,
+      scale: 1,
     );
   }
 
@@ -532,7 +581,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     favoritIcon = Icon(
       Icons.favorite_border,
       size: 30,
-      color: colorGrey400,
+      color: GlobalColor.colorGrey400,
     );
   }
 

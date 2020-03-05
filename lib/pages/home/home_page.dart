@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
 import 'package:emarket_app/custom_component/post_card_component.dart';
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/favorit.dart';
@@ -10,8 +12,8 @@ import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/pages/search/search_page.dart';
 import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/services/favorit_service.dart';
-import 'package:emarket_app/services/global.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
+import 'package:emarket_app/util/global.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -45,7 +47,7 @@ class _HomePageState extends State<HomePage> {
 
   double heightCustomCategorieButton = SizeConfig.blockSizeVertical * 5;
   TextStyle _myTextStyle = TextStyle(
-    color: Colors.white,
+    color: GlobalColor.colorWhite,
     fontSize: SizeConfig.safeBlockHorizontal * 2.6,
   );
   List<Post> searchResult = new List();
@@ -81,6 +83,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
+
     _searchLabel = AppLocalizations.of(context).translate('search');
 
     return Scaffold(
@@ -95,21 +99,22 @@ class _HomePageState extends State<HomePage> {
               children: <Widget>[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                      height: SizeConfig.blockSizeVertical * 10,
+                      height: SizeConfig.blockSizeVertical * 11,
                       width: SizeConfig.screenWidth * 0.82,
                       child: _buildCategorieGridView(),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(bottom: 15.0),
+                      padding: const EdgeInsets.only(left: 8.0),
                       child: Container(
                         decoration: BoxDecoration(
                             shape: BoxShape.circle, color: Colors.white),
                         child: IconButton(
                           icon: Icon(
                             Icons.search,
-                            color: colorDeepPurple400,
+                            color: GlobalColor.colorDeepPurple400,
                           ),
                           iconSize: SizeConfig.blockSizeHorizontal * 11,
                           tooltip: AppLocalizations.of(context)
@@ -275,11 +280,11 @@ class _HomePageState extends State<HomePage> {
                 return CustomCategorieButton(
                   width: SizeConfig.blockSizeHorizontal * 32,
                   height: heightCustomCategorieButton,
-                  fillColor: colorWhite,
+                  fillColor: GlobalColor.colorWhite,
                   icon: IconData(int.parse(parentCategories[index].icon),
                       fontFamily: 'MaterialIcons'),
-                  splashColor: colorDeepPurple400,
-                  iconColor: colorDeepPurple400,
+                  splashColor: GlobalColor.colorDeepPurple400,
+                  iconColor: GlobalColor.colorDeepPurple400,
                   text: parentCategories[index].title,
                   textStyle: _myTextStyle,
                   onPressed: () =>

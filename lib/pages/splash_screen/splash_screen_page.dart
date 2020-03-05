@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:emarket_app/custom_component/custom_linear_gradient.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
-import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/util/global.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
@@ -36,6 +37,8 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
+
     return Scaffold(
       body: Container(
         child: Stack(

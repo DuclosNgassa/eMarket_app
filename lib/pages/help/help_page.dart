@@ -1,9 +1,10 @@
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/pages/contact/contact_page.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
-import '../../services/global.dart';
 import 'faq_page.dart';
 
 class HelpPage extends StatefulWidget {
@@ -25,10 +26,11 @@ class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return new Scaffold(
       appBar: new AppBar(
-        backgroundColor: colorDeepPurple300,
+        backgroundColor: GlobalColor.colorDeepPurple300,
         title: _buildTitle(),
         automaticallyImplyLeading: false,
       ),
@@ -54,12 +56,12 @@ class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
             onTap: () => showFaqPage(),
             leading: Icon(
               Icons.help_outline,
-              color: colorDeepPurple300,
+              color: GlobalColor.colorDeepPurple300,
             ),
             title: Text(AppLocalizations.of(context).translate('how_it_works')),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: colorGrey300,
+              color: GlobalColor.colorGrey300,
             ),
           ),
           Divider(),
@@ -67,12 +69,12 @@ class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
             onTap: () => showContactPage(),
             leading: Icon(
               Icons.message,
-              color: colorBlue,
+              color: GlobalColor.colorBlue,
             ),
             title: Text(AppLocalizations.of(context).translate('contact_us')),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: colorGrey300,
+              color: GlobalColor.colorGrey300,
             ),
           ),
         ],
@@ -99,5 +101,4 @@ class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
       ),
     );
   }
-
 }

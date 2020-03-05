@@ -16,11 +16,11 @@ class Favorit {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id.toString(),
-    'useremail': useremail,
-    'created_at': created_at.toString(),
-    'postid': postid.toString(),
-  };
+        'id': id.toString(),
+        'useremail': useremail,
+        'created_at': created_at.toString(),
+        'postid': postid.toString(),
+      };
 
   Map<String, dynamic> toMap(Favorit favorit) {
     Map<String, dynamic> params = Map<String, dynamic>();

@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/enumeration/status.dart';
 import 'package:emarket_app/model/message.dart';
@@ -19,7 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
 
-import '../../services/global.dart';
+import '../../util/global.dart';
 
 class ChatPage extends StatefulWidget {
   List<Message> messages;
@@ -35,7 +37,8 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  final SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+  final SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
   final MessageService messageService = new MessageService();
   final UserService _userService = new UserService();
 
@@ -101,6 +104,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    GlobalStyling().init(context);
 
     return Container(
       child: Scaffold(
@@ -115,7 +119,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                       height: SizeConfig.screenHeight / 4,
                       decoration: BoxDecoration(
                         gradient: new LinearGradient(
-                            colors: [colorDeepPurple400, colorDeepPurple300],
+                            colors: [
+                              GlobalColor.colorDeepPurple400,
+                              GlobalColor.colorDeepPurple300
+                            ],
                             begin: const FractionalOffset(1.0, 1.0),
                             end: const FractionalOffset(0.2, 0.2),
                             stops: [0.0, 1.0],
@@ -141,7 +148,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                         constraints: BoxConstraints.expand(
                             height: SizeConfig.safeBlockVertical * 85),
                         child: Padding(
-                          padding: EdgeInsets.only(top:SizeConfig.blockSizeVertical * 4),
+                          padding: EdgeInsets.only(
+                              top: SizeConfig.blockSizeVertical * 4),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -175,14 +183,14 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   void insertFirebaseMessagingInMessages(
       notification, Map<String, dynamic> message) {
     final Completer<Map<String, dynamic>> completer =
-    Completer<Map<String, dynamic>>();
+        Completer<Map<String, dynamic>>();
 
     setState(() {
       Message fireBaseMessage = new Message(
           body: notification["body"],
           created_at: DateTime.now().subtract(Duration(hours: 2)),
           postid:
-          widget.post != null ? widget.post.id : widget.messages[0].postid,
+              widget.post != null ? widget.post.id : widget.messages[0].postid,
           receiver: userName,
           sender: receiver.email);
 
@@ -294,7 +302,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               child: new IconButton(
                 icon: new Icon(
                   Icons.send,
-                  color: colorDeepPurple300,
+                  color: GlobalColor.colorDeepPurple300,
                 ),
                 onPressed: () => _handleSubmitted(_textEditingController.text),
               ),
@@ -313,7 +321,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     if (_messages.isEmpty) {
       await _getReceiverByEmail(widget.post.useremail);
     } else {
-      _messages.sort((message1, message2) => message2.created_at.compareTo(message1.created_at));
+      _messages.sort((message1, message2) =>
+          message2.created_at.compareTo(message1.created_at));
 
       for (Message message in widget.messages) {
         if (message.sender != userEmail) {
@@ -344,7 +353,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             children: <Widget>[
               Text(
                 AppLocalizations.of(context).translate('chat'),
-                style: SizeConfig.styleTitleWhite,
+                style: GlobalStyling.styleTitleWhite,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -356,7 +365,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                       AppLocalizations.of(context).translate('advert') +
                           ' ' +
                           widget.post.title,
-                      style: SizeConfig.styleSubtitleWhite,
+                      style: GlobalStyling.styleSubtitleWhite,
                     ),
                   ),
                   Padding(
@@ -364,7 +373,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                         EdgeInsets.only(right: SizeConfig.blockSizeHorizontal),
                     child: Icon(
                       Icons.arrow_forward_ios,
-                      color: colorWhite,
+                      color: GlobalColor.colorWhite,
                     ),
                   ),
                 ],
@@ -430,7 +439,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   _showPostDetailPage(Post post) {
-    if(post.status == Status.active) {
+    if (post.status == Status.active) {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
@@ -438,12 +447,11 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           },
         ),
       );
-    }else{
+    } else {
       MyNotification.showInfoFlushbar(
           context,
           AppLocalizations.of(context).translate('info'),
-          AppLocalizations.of(context).translate(
-              'no_longer_available'),
+          AppLocalizations.of(context).translate('no_longer_available'),
           Icon(
             Icons.info_outline,
             size: 28,

@@ -151,11 +151,12 @@ class Post {
     ImageService _imageService = new ImageService();
 
     try {
-      List<PostImage> imageList = await _imageService.fetchImagesByPostID(this.id);
+      List<PostImage> imageList =
+          await _imageService.fetchImagesByPostID(this.id);
       if (imageList.length > 0) {
         imageUrl = imageList.elementAt(0).image_url;
       } else {
-        imageUrl ="";
+        imageUrl = "";
       }
     } catch (exception) {
       print(exception);
@@ -204,7 +205,8 @@ class Post {
     return 'offer';
   }
 
-  static String convertPostTypToStringForDisplay(PostTyp value, BuildContext context) {
+  static String convertPostTypToStringForDisplay(
+      PostTyp value, BuildContext context) {
     switch (value) {
       case PostTyp.offer:
         {

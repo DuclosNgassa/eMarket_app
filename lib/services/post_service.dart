@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:emarket_app/global/global_url.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/post.dart';
-import '../services/global.dart';
+import '../util/global.dart';
 import 'sharedpreferences_service.dart';
 
 class PostService {
@@ -200,34 +201,34 @@ class PostService {
   Future<List<Post>> fetchPostByCategory(int categoryId) async {
     List<Post> postCategories = new List();
     List<Post> postList = await fetchActivePostFromCacheWithoutServerCall();
+    if (postList == null || postList.isEmpty) {
+      postList = await fetchPostByCategoryFromServer(categoryId);
+    }
+
     if (postList != null && postList.isNotEmpty) {
       for (Post post in postList) {
         if (post.categorieid == categoryId) {
           postCategories.add(post);
         }
       }
-      return postList;
-    } else {
-      final response =
-          await http.Client().get('$URL_POST_BY_CATEGORY$categoryId');
-      if (response.statusCode == HttpStatus.ok) {
-        Map<String, dynamic> mapResponse = json.decode(response.body);
-        if (mapResponse["result"] == "ok") {
-          final posts = mapResponse["data"].cast<Map<String, dynamic>>();
-          final postList = await posts.map<Post>((json) {
-            return Post.fromJson(json);
-          }).toList();
-          return postList;
-        } else {
-          throw Exception(
-              'Failed to load Posts by categoryId from the internet');
-        }
-      } else if (response.statusCode == HttpStatus.notFound) {
-        return null;
-      } else {
-        throw Exception('Failed to load Posts by categoryId from the internet');
+    }
+    return postCategories;
+  }
+
+  Future<List<Post>> fetchPostByCategoryFromServer(int categoryId) async {
+    List<Post> postList = new List();
+    final response =
+        await http.Client().get('$URL_POST_BY_CATEGORY$categoryId');
+    if (response.statusCode == HttpStatus.ok) {
+      Map<String, dynamic> mapResponse = json.decode(response.body);
+      if (mapResponse["result"] == "ok") {
+        final posts = mapResponse["data"].cast<Map<String, dynamic>>();
+        postList = await posts.map<Post>((json) {
+          return Post.fromJson(json);
+        }).toList();
       }
     }
+    return postList;
   }
 
   Future<Post> update(Map<String, dynamic> params) async {

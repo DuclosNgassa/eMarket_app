@@ -1,8 +1,10 @@
+import 'package:emarket_app/global/global_color.dart';
+import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/enumeration/status.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/services/favorit_service.dart';
-import 'package:emarket_app/services/global.dart';
+import 'package:emarket_app/util/global.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +34,7 @@ class _HomeCardState extends State<HomeCard> {
   Icon favoritIcon = Icon(
     Icons.favorite_border,
     size: 30,
-    color: colorGrey400,
+    color: GlobalColor.colorGrey400,
   );
 
   FavoritService _favoritService = new FavoritService();
@@ -59,6 +61,9 @@ class _HomeCardState extends State<HomeCard> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    GlobalStyling().init(context);
+
     return Stack(children: <Widget>[
       InkWell(
         onTap: showPostDetailPage,
@@ -70,7 +75,7 @@ class _HomeCardState extends State<HomeCard> {
         child: InkWell(
           onTap: () => updateIconFavorit(),
           child: CircleAvatar(
-            backgroundColor: colorGrey100,
+            backgroundColor: GlobalColor.colorGrey100,
             child: favoritIcon,
           ),
         ),
@@ -80,7 +85,7 @@ class _HomeCardState extends State<HomeCard> {
 
   // This is the builder method that creates a new page
   showPostDetailPage() {
-    if(post.status == Status.active) {
+    if (post.status == Status.active) {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
@@ -88,12 +93,11 @@ class _HomeCardState extends State<HomeCard> {
           },
         ),
       );
-    }else{
+    } else {
       MyNotification.showInfoFlushbar(
           context,
           AppLocalizations.of(context).translate('info'),
-          AppLocalizations.of(context).translate(
-              'no_longer_available'),
+          AppLocalizations.of(context).translate('no_longer_available'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -152,7 +156,7 @@ class _HomeCardState extends State<HomeCard> {
     favoritIcon = Icon(
       Icons.favorite_border,
       size: 30,
-      color: colorGrey400,
+      color: GlobalColor.colorGrey400,
     );
   }
 
@@ -180,8 +184,6 @@ class _HomeCardState extends State<HomeCard> {
   }
 
   Widget _buildHomeCard(BuildContext context, double height, double width) {
-    SizeConfig().init(context);
-
     // A new container
     // The height and width are arbitrary numbers for styling.
     return Container(
@@ -212,7 +214,7 @@ class _HomeCardState extends State<HomeCard> {
             children: <Widget>[
               Expanded(
                   child: Text(widget.post.title,
-                      style: SizeConfig.styleTitleBlackCard)),
+                      style: GlobalStyling.styleTitleBlackCard)),
             ],
           ),
           SizedBox(
@@ -226,13 +228,13 @@ class _HomeCardState extends State<HomeCard> {
                   widget.post.fee.toString() +
                       ' ' +
                       AppLocalizations.of(context).translate('fcfa'),
-                  style: SizeConfig.stylePriceCard,
+                  style: GlobalStyling.stylePriceCard,
                 ),
               ),
               Text(
                 Post.convertPostTypToStringForDisplay(
                     widget.post.post_typ, context),
-                style: SizeConfig.styleNormalBlackCard,
+                style: GlobalStyling.styleNormalBlackCard,
               ),
             ],
           ),
@@ -250,12 +252,12 @@ class _HomeCardState extends State<HomeCard> {
 
   List<Widget> _buildRating(int rating) {
     List<Widget> widgetList = new List();
-    Widget icon = Icon(Icons.location_on, color: colorGrey400);
+    Widget icon = Icon(Icons.location_on, color: GlobalColor.colorGrey400);
 
     Widget city = Expanded(
       child: Text(
         widget.post.city,
-        style: SizeConfig.styleNormalBlack3,
+        style: GlobalStyling.styleNormalBlack3,
       ),
     );
 
@@ -265,7 +267,7 @@ class _HomeCardState extends State<HomeCard> {
     for (var i = 0; i < MAX_RATING; i++) {
       Icon icon = Icon(
         Icons.star,
-        color: i < rating ? colorBlue : colorGrey300,
+        color: i < rating ? GlobalColor.colorBlue : GlobalColor.colorGrey300,
         size: SizeConfig.BUTTON_FONT_SIZE,
       );
 
@@ -273,10 +275,6 @@ class _HomeCardState extends State<HomeCard> {
     }
 
     return widgetList;
-  }
-
-  ImageProvider getImage() {
-    return NetworkImage(widget.post.imageUrl);
   }
 
   Future<void> setFavoritIcon() async {
