@@ -214,9 +214,9 @@ class _UserMessagePageState extends State<UserMessagePage> {
                         .name),
                     subtitle: buildSubtitle(index, context),
                     trailing: Icon(
-                      Icons.keyboard_arrow_right,
+                      Icons.arrow_forward_ios,
                       color: GlobalColor.colorDeepPurple300,
-                      size: SizeConfig.blockSizeHorizontal * 10,
+                      size: SizeConfig.blockSizeHorizontal * 5,
                     ),
                   ),
                 ),

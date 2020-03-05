@@ -156,30 +156,30 @@ class PostOwnerState extends State<PostOwner> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                          child: Container(
-                            color: GlobalColor.colorDeepPurple400,
-                            height: SizeConfig.blockSizeVertical * 3,
-                            width: SizeConfig.blockSizeHorizontal * 5,
-                            child: Center(
-                              child: Text(
-                                widget.postCount.toString(),
-                                style: TextStyle(color: Colors.white),
+                    child: GestureDetector(
+                      onTap: widget.showAllUserPost,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                            child: Container(
+                              color: GlobalColor.colorDeepPurple400,
+                              height: SizeConfig.blockSizeVertical * 3,
+                              width: SizeConfig.blockSizeHorizontal * 5,
+                              child: Center(
+                                child: Text(
+                                  widget.postCount.toString(),
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.arrow_forward_ios),
-                          tooltip: AppLocalizations.of(context)
-                              .translate('other_adverts'),
-                          onPressed: widget.showAllUserPost,
-                        ),
-                      ],
+                          Container(
+                            child:  Icon(Icons.arrow_forward_ios),
+                          )
+                        ],
+                      ),
                     ),
                   )
                 ],
