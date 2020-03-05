@@ -392,64 +392,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
         ),
       );
     }
-    /*return GridView.count(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      crossAxisCount: 1,
-      scrollDirection: Axis.horizontal,
-      children: List.generate(
-        postImages.length,
-        (index) {
-          PostImage asset = postImages[index];
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute<Null>(
-                  builder: (BuildContext context) {
-                    return ImageDetailPage(null, postImages);
-                  },
-                  fullscreenDialog: true,
-                ),
-              );
-            },
-            child: Padding(
-              padding:
-                  EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: Container(
-                  width: 75,
-                  height: 75,
-                  decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                    BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(3.0, 6.0),
-                        blurRadius: 10.0)
-                  ]),
-                  child: AspectRatio(
-                    aspectRatio: 0.5,
-                    child: asset != null
-                        ? CachedNetworkImage(
-                            placeholder: (context, url) =>
-                                Image.asset("assets/gif/loading-world.gif"),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                            imageUrl: asset.image_url,
-                            fit: BoxFit.fill,
-                          )
-                        : new Container(
-                            width: 0.0,
-                            height: 0.0,
-                          ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );*/
     return buildImagesGridView();
   }
 
