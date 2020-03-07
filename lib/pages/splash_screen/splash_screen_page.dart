@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:emarket_app/custom_component/custom_linear_gradient.dart';
 import 'package:emarket_app/global/global_styling.dart';
+import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/util/global.dart';
 import 'package:emarket_app/util/size_config.dart';
@@ -79,7 +80,33 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                   padding: EdgeInsets.only(
                       right: SizeConfig.blockSizeHorizontal * 6),
                   child: Text(
-                    "Le marché sur votre mobile",
+                      AppLocalizations.of(context)
+                          .translate('the_market_of_good_and_service'),
+                    style: TextStyle(
+                        fontSize: SizeConfig.blockSizeHorizontal * 7,
+                        fontFamily: 'Pacifico',
+                        shadows: <Shadow>[
+                          Shadow(
+                              blurRadius: 18.0,
+                              color: Colors.black87,
+                              offset: Offset.fromDirection(120, 12))
+                        ]),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: SizeConfig.screenHeight * 0.58,
+              child: Shimmer.fromColors(
+                period: Duration(milliseconds: 2000),
+                baseColor: Colors.white,
+                highlightColor: Colors.deepPurple,
+                child: Container(
+                  padding: EdgeInsets.only(
+                      right: SizeConfig.blockSizeHorizontal * 6),
+                  child: Text(
+                    AppLocalizations.of(context)
+                        .translate('on_your_phone'),
                     style: TextStyle(
                         fontSize: SizeConfig.blockSizeHorizontal * 7,
                         fontFamily: 'Pacifico',
