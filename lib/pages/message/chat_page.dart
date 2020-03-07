@@ -293,7 +293,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                 textInputAction: TextInputAction.newline,
                 keyboardType: TextInputType.multiline,
                 controller: _textEditingController,
-                maxLines: 5,
+                maxLines: 3,
                 decoration: new InputDecoration.collapsed(
                   hintText:
                       AppLocalizations.of(context).translate('send_message'),

@@ -55,7 +55,7 @@ class MessageService {
       DateTime cacheTime = DateTime.parse(cacheTimeString);
       DateTime actualDateTime = DateTime.now();
 
-      if (actualDateTime.difference(cacheTime) > Duration(minutes: 3)) {
+      if (actualDateTime.difference(cacheTime) > Duration(seconds: 30)) {
         return _fetchMessageByEmailFromServer(email);
       } else {
         return _fetchMessageByEmailFromCache(email);
