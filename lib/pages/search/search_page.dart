@@ -7,8 +7,8 @@ import 'package:emarket_app/model/enumeration/posttyp.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/searchparameter.dart';
-import 'package:emarket_app/pages/search/search_result.dart';
-import 'package:emarket_app/pages/search/searchparameter.dart';
+import 'package:emarket_app/pages/search/search_parameter_page.dart';
+import 'package:emarket_app/pages/search/search_result_page.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
@@ -63,10 +63,15 @@ class SearchPage extends SearchDelegate<Post> {
         color: GlobalColor.colorWhite,
         onPressed: () => _clearFormSearch(),
       ),
-      IconButton(
-        icon: Icon(Icons.build),
-        color: GlobalColor.colorWhite,
-        onPressed: () => showSearchParameterPage(context),
+      Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: SizeConfig.blockSizeHorizontal * 2,
+        ),
+        child: IconButton(
+          icon: Icon(Icons.build),
+          color: GlobalColor.colorWhite,
+          onPressed: () => showSearchParameterPage(context),
+        ),
       ),
     ];
   }

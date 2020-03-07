@@ -5,8 +5,8 @@
   "message": "Message",
   "infos": "Infos",
   "messages": "Messages",
-  "my_adverts": "MES ANNONCES",
-  "my_favorits": "MES FAVORITS",
+  "my_adverts": "Mes Annonces",
+  "my_favorits": "Mes Favorits",
   "no_sell_item1": "Vous n´avez pas encore vendu ou recherché d´objets",
   "no_sell_item2": "Transformez les choses que vous n´utilisez tres peu ou jamais en argent!",
   "sold": "Vendu",
@@ -220,5 +220,7 @@
   "other": "Autre",
   "loading": "Chargement...",
   "same_category_post": "Annonces de la même categorie",
-  "no_longer_available": "Ce post n´est plus disponible"
+  "no_longer_available": "Ce post n´est plus disponible",
+  "download_all_post_first": "Attendez que toutes les annonce soient affichées",
+  "the_market_on_your_mobile":"Le marché sur votre mobile"
 }

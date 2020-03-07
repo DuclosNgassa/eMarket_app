@@ -114,8 +114,8 @@ class _ImageDetailState extends State<ImageDetailPage> {
         );
       },
       itemCount: widget.images.length,
-      viewportFraction: 0.8,
-      scale: 0.9,
+      viewportFraction: 1,
+      scale: 1,
     );
   }
 

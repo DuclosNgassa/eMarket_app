@@ -12,6 +12,7 @@ import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/pages/image/images_detail.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
+import 'package:emarket_app/util/util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -94,163 +95,89 @@ class PostFormState extends State<PostForm> {
     return Form(
       key: _formKey,
       autovalidate: false,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: SizeConfig.blockSizeHorizontal * 2),
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: SizeConfig.blockSizeVertical * 25,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    AppLocalizations.of(context).translate('advert_creation'),
-                    style: GlobalStyling.styleTitleWhite,
-                  ),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: buildImageListView(),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: SizeConfig.blockSizeHorizontal * 2),
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: SizeConfig.blockSizeVertical * 25,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      AppLocalizations.of(context).translate('advert_creation'),
+                      style: GlobalStyling.styleTitleWhite,
                     ),
-                  ),
-                  _buildButtons(),
-                ],
-              ),
-            ),
-            _buildRadioButtons(),
-            TextFormField(
-              style: GlobalStyling.styleFormGrey,
-              textInputAction: TextInputAction.next,
-              autofocus: true,
-              onFieldSubmitted: (term) {
-                _fieldFocusChange(_titelFocusNode, _feeFocusNode);
-              },
-              decoration: InputDecoration(
-                  hintText:
-                      AppLocalizations.of(context).translate('give_title'),
-                  labelText: AppLocalizations.of(context).translate('title'),
-                  labelStyle: GlobalStyling.styleFormBlack),
-              inputFormatters: [
-                LengthLimitingTextInputFormatter(30),
-              ],
-              validator: (val) => formValidator.isEmptyText(val)
-                  ? AppLocalizations.of(context).translate('give_title')
-                  : null,
-              onSaved: (val) => newPost.title = val,
-            ),
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding:
-                        EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
-                    child: Text(
-                      AppLocalizations.of(context).translate('category'),
-                      style: GlobalStyling.styleFormBlack,
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: buildImageListView(),
+                      ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: showCategoriePage,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            _categorieTile.title,
-                            style: GlobalStyling.styleFormGrey,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: showCategoriePage,
-                          icon: Icon(Icons.arrow_forward_ios),
-                          tooltip: AppLocalizations.of(context)
-                              .translate('choose_category'),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: TextFormField(
-                    style: GlobalStyling.styleFormGrey,
-                    textInputAction: TextInputAction.next,
-                    focusNode: _feeFocusNode,
-                    onFieldSubmitted: (term) {
-                      _fieldFocusChange(_feeFocusNode, _cityFocusNode);
-                    },
-                    decoration: InputDecoration(
-                      hintText:
-                          AppLocalizations.of(context).translate('give_price'),
-                      labelText:
-                          AppLocalizations.of(context).translate('price') +
-                              ' (' +
-                              AppLocalizations.of(context).translate('fcfa') +
-                              ')',
-                      labelStyle: GlobalStyling.styleFormBlack,
-                    ),
-                    inputFormatters: [
-                      WhitelistingTextInputFormatter.digitsOnly,
-                    ],
-                    keyboardType: TextInputType.number,
-                    validator: (val) => formValidator.isEmptyText(val)
-                        ? AppLocalizations.of(context).translate('give_price')
-                        : null,
-                    onSaved: (val) => newPost.fee = int.parse(val),
-                  ),
+                    _buildButtons(),
+                  ],
                 ),
-                Expanded(
-                  child: Padding(
-                    padding:
-                        EdgeInsets.only(bottom: SizeConfig.blockSizeVertical),
-                    child: FormField(
-                      builder: (FormFieldState state) {
-                        return InputDecorator(
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context)
-                                .translate('price_typ'),
-                            labelStyle: GlobalStyling.styleFormBlack,
-                            errorText: state.hasError ? state.errorText : null,
-                          ),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton(
-                              value: _feeTyp,
-                              isDense: true,
-                              onChanged: (String newValue) {
-                                setState(() {
-                                  _feeTyp = newValue;
-                                  state.didChange(newValue);
-                                });
-                              },
-                              items: _feeTyps.map<DropdownMenuItem<String>>(
-                                  (String value) {
-                                return DropdownMenuItem(
-                                  value: value,
-                                  child: Text(value,
-                                      style: GlobalStyling.styleFormGrey),
-                                );
-                              }).toList(),
+              ),
+              _buildRadioButtons(),
+              TextFormField(
+                textCapitalization: TextCapitalization.sentences,
+                style: GlobalStyling.styleFormGrey,
+                textInputAction: TextInputAction.next,
+                autofocus: true,
+                onFieldSubmitted: (term) {
+                  Util.fieldFocusChange(
+                      context, _titelFocusNode, _feeFocusNode);
+                },
+                decoration: InputDecoration(
+                    hintText:
+                        AppLocalizations.of(context).translate('give_title'),
+                    labelText: AppLocalizations.of(context).translate('title'),
+                    labelStyle: GlobalStyling.styleFormBlack),
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(30),
+                ],
+                validator: (val) => formValidator.isEmptyText(val)
+                    ? AppLocalizations.of(context).translate('give_title')
+                    : null,
+                onSaved: (val) => newPost.title = val,
+              ),
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: SizeConfig.blockSizeVertical * 2),
+                      child: Text(
+                        AppLocalizations.of(context).translate('category'),
+                        style: GlobalStyling.styleFormBlack,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: showCategoriePage,
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              _categorieTile.title,
+                              style: GlobalStyling.styleFormGrey,
                             ),
                           ),
-                        );
-                      },
-                      validator: (val) => formValidator.isEmptyText(val)
-                          ? AppLocalizations.of(context)
-                              .translate('choose_price_typ')
-                          : null,
+                          IconButton(
+                            onPressed: showCategoriePage,
+                            icon: Icon(Icons.arrow_forward_ios),
+                            tooltip: AppLocalizations.of(context)
+                                .translate('choose_category'),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-            Container(
-              child: Row(
+              ),
+              Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -258,102 +185,191 @@ class PostFormState extends State<PostForm> {
                     child: TextFormField(
                       style: GlobalStyling.styleFormGrey,
                       textInputAction: TextInputAction.next,
-                      focusNode: _cityFocusNode,
+                      focusNode: _feeFocusNode,
                       onFieldSubmitted: (term) {
-                        _fieldFocusChange(_cityFocusNode, _quarterFocusNode);
-                      },
-                      decoration: InputDecoration(
-                        hintText:
-                            AppLocalizations.of(context).translate('give_city'),
-                        labelText:
-                            AppLocalizations.of(context).translate('city'),
-                        labelStyle: GlobalStyling.styleFormBlack,
-                      ),
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(30),
-                      ],
-                      validator: (val) => formValidator.isEmptyText(val)
-                          ? AppLocalizations.of(context).translate('give_city')
-                          : null,
-                      onSaved: (val) => newPost.city = val,
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      style: GlobalStyling.styleFormGrey,
-                      textInputAction: TextInputAction.next,
-                      focusNode: _quarterFocusNode,
-                      onFieldSubmitted: (term) {
-                        _fieldFocusChange(_quarterFocusNode, _phoneFocusNode);
+                        Util.fieldFocusChange(
+                            context, _feeFocusNode, _cityFocusNode);
                       },
                       decoration: InputDecoration(
                         hintText: AppLocalizations.of(context)
-                            .translate('give_neighborhood'),
-                        labelText: AppLocalizations.of(context)
-                            .translate('neighborhood'),
+                            .translate('give_price'),
+                        labelText:
+                            AppLocalizations.of(context).translate('price') +
+                                ' (' +
+                                AppLocalizations.of(context).translate('fcfa') +
+                                ')',
                         labelStyle: GlobalStyling.styleFormBlack,
                       ),
                       inputFormatters: [
-                        LengthLimitingTextInputFormatter(30),
+                        WhitelistingTextInputFormatter.digitsOnly,
                       ],
+                      keyboardType: TextInputType.number,
                       validator: (val) => formValidator.isEmptyText(val)
-                          ? AppLocalizations.of(context)
-                              .translate('give_neighborhood')
+                          ? AppLocalizations.of(context).translate('give_price')
                           : null,
-                      onSaved: (val) => newPost.quarter = val,
+                      onSaved: (val) => newPost.fee = int.parse(val),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding:
+                          EdgeInsets.only(bottom: SizeConfig.blockSizeVertical),
+                      child: FormField(
+                        builder: (FormFieldState state) {
+                          return InputDecorator(
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context)
+                                  .translate('price_typ'),
+                              labelStyle: GlobalStyling.styleFormBlack,
+                              errorText:
+                                  state.hasError ? state.errorText : null,
+                            ),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton(
+                                value: _feeTyp,
+                                isDense: true,
+                                onChanged: (String newValue) {
+                                  setState(() {
+                                    _feeTyp = newValue;
+                                    state.didChange(newValue);
+                                  });
+                                },
+                                items: _feeTyps.map<DropdownMenuItem<String>>(
+                                    (String value) {
+                                  return DropdownMenuItem(
+                                    value: value,
+                                    child: Text(value,
+                                        style: GlobalStyling.styleFormGrey),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          );
+                        },
+                        validator: (val) => formValidator.isEmptyText(val)
+                            ? AppLocalizations.of(context)
+                                .translate('choose_price_typ')
+                            : null,
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
-            TextFormField(
-              style: GlobalStyling.styleFormGrey,
-              textInputAction: TextInputAction.next,
-              focusNode: _phoneFocusNode,
-              onFieldSubmitted: (term) {
-                _fieldFocusChange(_phoneFocusNode, _descriptionFocusNode);
-              },
-              decoration: InputDecoration(
-                hintText:
-                    AppLocalizations.of(context).translate('give_phonenumber'),
-                labelText:
-                    AppLocalizations.of(context).translate('phonenumber'),
-                labelStyle: GlobalStyling.styleFormBlack,
+              Container(
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Expanded(
+                      child: TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
+                        style: GlobalStyling.styleFormGrey,
+                        textInputAction: TextInputAction.next,
+                        focusNode: _cityFocusNode,
+                        onFieldSubmitted: (term) {
+                          Util.fieldFocusChange(
+                              context, _cityFocusNode, _quarterFocusNode);
+                        },
+                        decoration: InputDecoration(
+                          hintText: AppLocalizations.of(context)
+                              .translate('give_city'),
+                          labelText:
+                              AppLocalizations.of(context).translate('city'),
+                          labelStyle: GlobalStyling.styleFormBlack,
+                        ),
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(30),
+                        ],
+                        validator: (val) => formValidator.isEmptyText(val)
+                            ? AppLocalizations.of(context)
+                                .translate('give_city')
+                            : null,
+                        onSaved: (val) => newPost.city = val,
+                      ),
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
+                        style: GlobalStyling.styleFormGrey,
+                        textInputAction: TextInputAction.next,
+                        focusNode: _quarterFocusNode,
+                        onFieldSubmitted: (term) {
+                          Util.fieldFocusChange(
+                              context, _quarterFocusNode, _phoneFocusNode);
+                        },
+                        decoration: InputDecoration(
+                          hintText: AppLocalizations.of(context)
+                              .translate('give_neighborhood'),
+                          labelText: AppLocalizations.of(context)
+                              .translate('neighborhood'),
+                          labelStyle: GlobalStyling.styleFormBlack,
+                        ),
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(30),
+                        ],
+                        validator: (val) => formValidator.isEmptyText(val)
+                            ? AppLocalizations.of(context)
+                                .translate('give_neighborhood')
+                            : null,
+                        onSaved: (val) => newPost.quarter = val,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                LengthLimitingTextInputFormatter(30),
-                WhitelistingTextInputFormatter.digitsOnly,
-              ],
-              onSaved: (val) => newPost.phoneNumber = val,
-            ),
-            TextFormField(
-              style: GlobalStyling.styleFormGrey,
-              focusNode: _descriptionFocusNode,
-              textInputAction: TextInputAction.newline,
-              keyboardType: TextInputType.multiline,
-              maxLines: 4,
-              decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)
-                    .translate('advert_description'),
-                labelText:
-                    AppLocalizations.of(context).translate('description'),
-                labelStyle: GlobalStyling.styleFormBlack,
+              TextFormField(
+                style: GlobalStyling.styleFormGrey,
+                textInputAction: TextInputAction.next,
+                focusNode: _phoneFocusNode,
+                onFieldSubmitted: (term) {
+                  Util.fieldFocusChange(
+                      context, _phoneFocusNode, _descriptionFocusNode);
+                },
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)
+                      .translate('give_phonenumber'),
+                  labelText:
+                      AppLocalizations.of(context).translate('phonenumber'),
+                  labelStyle: GlobalStyling.styleFormBlack,
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(30),
+                  WhitelistingTextInputFormatter.digitsOnly,
+                ],
+                onSaved: (val) => newPost.phoneNumber = val,
               ),
-              inputFormatters: [
-                LengthLimitingTextInputFormatter(500),
-              ],
-              validator: (val) => formValidator.isEmptyText(val)
-                  ? AppLocalizations.of(context)
-                      .translate('give_advert_description')
-                  : null,
-              onSaved: (val) => newPost.description = val,
-            ),
-            Padding(
-              padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 6),
-              child: Container(
+              TextFormField(
+                textCapitalization: TextCapitalization.sentences,
+                style: GlobalStyling.styleFormGrey,
+                focusNode: _descriptionFocusNode,
+                textInputAction: TextInputAction.newline,
+                keyboardType: TextInputType.multiline,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)
+                      .translate('advert_description'),
+                  labelText:
+                      AppLocalizations.of(context).translate('description'),
+                  labelStyle: GlobalStyling.styleFormBlack,
+                ),
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(500),
+                ],
+                validator: (val) => formValidator.isEmptyText(val)
+                    ? AppLocalizations.of(context)
+                        .translate('give_advert_description')
+                    : null,
+                onSaved: (val) => newPost.description = val,
+              ),
+              SizedBox(
+                height: SizeConfig.blockSizeVertical * 5,
+              ),
+              Container(
                 width: SizeConfig.screenWidth * 0.9,
-                padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
+                height: SizeConfig.blockSizeVertical * 6,
+                padding: EdgeInsets.symmetric(
+                    horizontal: SizeConfig.blockSizeVertical * 2),
                 child: RaisedButton(
                   shape: const StadiumBorder(),
                   color: GlobalColor.colorDeepPurple400,
@@ -362,8 +378,11 @@ class PostFormState extends State<PostForm> {
                   onPressed: _submitForm,
                 ),
               ),
-            ),
-          ],
+              SizedBox(
+                height: SizeConfig.blockSizeVertical * 3,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -724,10 +743,5 @@ class PostFormState extends State<PostForm> {
     _imageUrls.clear();
     _categorieTile = new CategorieTile('', 0);
     setState(() {});
-  }
-
-  _fieldFocusChange(FocusNode currentFocus, FocusNode nextFocus) {
-    currentFocus.unfocus();
-    FocusScope.of(context).requestFocus(nextFocus);
   }
 }

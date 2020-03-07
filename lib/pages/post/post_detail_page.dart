@@ -11,6 +11,7 @@ import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post_image.dart';
 import 'package:emarket_app/model/user.dart';
+import 'package:emarket_app/pages/image/images_detail.dart';
 import 'package:emarket_app/pages/post/post_user_page.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/image_service.dart';
@@ -392,6 +393,64 @@ class _PostDetailPageState extends State<PostDetailPage> {
         ),
       );
     }
+    /*return GridView.count(
+      shrinkWrap: true,
+      physics: ClampingScrollPhysics(),
+      crossAxisCount: 1,
+      scrollDirection: Axis.horizontal,
+      children: List.generate(
+        postImages.length,
+        (index) {
+          PostImage asset = postImages[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<Null>(
+                  builder: (BuildContext context) {
+                    return ImageDetailPage(null, postImages);
+                  },
+                  fullscreenDialog: true,
+                ),
+              );
+            },
+            child: Padding(
+              padding:
+                  EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 2),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: Container(
+                  width: 75,
+                  height: 75,
+                  decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(3.0, 6.0),
+                        blurRadius: 10.0)
+                  ]),
+                  child: AspectRatio(
+                    aspectRatio: 0.5,
+                    child: asset != null
+                        ? CachedNetworkImage(
+                            placeholder: (context, url) =>
+                                Image.asset("assets/gif/loading-world.gif"),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                            imageUrl: asset.image_url,
+                            fit: BoxFit.fill,
+                          )
+                        : new Container(
+                            width: 0.0,
+                            height: 0.0,
+                          ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );*/
     return buildImagesGridView();
   }
 
@@ -401,14 +460,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
       itemBuilder: (BuildContext context, int index) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: CachedNetworkImage(
-            imageUrl: postImages[index].image_url,
-            imageBuilder: (context, imageProvider) => Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                  image: imageProvider,
-                  fit: BoxFit.contain,
+          child: GestureDetector(
+            onTap: _showImagedetail,
+            child: CachedNetworkImage(
+              imageUrl: postImages[index].image_url,
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ),
@@ -418,6 +480,18 @@ class _PostDetailPageState extends State<PostDetailPage> {
       itemCount: postImages.length,
       viewportFraction: 1,
       scale: 1,
+    );
+  }
+
+  void _showImagedetail() {
+    Navigator.push(
+      context,
+      MaterialPageRoute<Null>(
+        builder: (BuildContext context) {
+          return ImageDetailPage(null, postImages);
+        },
+        fullscreenDialog: true,
+      ),
     );
   }
 

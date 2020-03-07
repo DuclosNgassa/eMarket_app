@@ -162,7 +162,8 @@ class PostOwnerState extends State<PostOwner> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5.0)),
                             child: Container(
                               color: GlobalColor.colorDeepPurple400,
                               height: SizeConfig.blockSizeVertical * 3,
@@ -176,7 +177,7 @@ class PostOwnerState extends State<PostOwner> {
                             ),
                           ),
                           Container(
-                            child:  Icon(Icons.arrow_forward_ios),
+                            child: Icon(Icons.arrow_forward_ios),
                           )
                         ],
                       ),
@@ -236,7 +237,7 @@ class PostOwnerState extends State<PostOwner> {
           ),
         ),
         SizedBox(
-          width: SizeConfig.blockSizeHorizontal,
+          width: SizeConfig.blockSizeHorizontal * 3,
         ),
         widget.post.phoneNumber != null && widget.post.phoneNumber.isNotEmpty
             ? Expanded(
@@ -256,7 +257,7 @@ class PostOwnerState extends State<PostOwner> {
               )
             : Container(),
         SizedBox(
-          width: SizeConfig.blockSizeHorizontal,
+          width: SizeConfig.blockSizeHorizontal * 3,
         ),
         IconButton(
           onPressed: shareToSystem,
@@ -266,6 +267,9 @@ class PostOwnerState extends State<PostOwner> {
             color: GlobalColor.colorDeepPurple400,
           ),
           tooltip: AppLocalizations.of(context).translate('share'),
+        ),
+        SizedBox(
+          width: SizeConfig.blockSizeHorizontal * 3,
         ),
       ],
     );

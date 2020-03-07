@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                       child: _buildCategorieGridView(),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
+                      padding: const EdgeInsets.only(left: 5.0),
                       child: Container(
                         decoration: BoxDecoration(
                             shape: BoxShape.circle, color: Colors.white),
@@ -119,13 +119,7 @@ class _HomePageState extends State<HomePage> {
                           iconSize: SizeConfig.blockSizeHorizontal * 11,
                           tooltip: AppLocalizations.of(context)
                               .translate('to_search'),
-                          onPressed: () {
-                            showSearch(
-                              context: context,
-                              delegate: SearchPage(postList, myFavorits,
-                                  _userEmail, _searchLabel, null, null, null),
-                            );
-                          },
+                          onPressed: _openSearchPage,
                         ),
                       ),
                     )
@@ -149,6 +143,18 @@ class _HomePageState extends State<HomePage> {
             child: Icon(Icons.image),
           ),
         ));
+  }
+
+  _openSearchPage() {
+    if (postList != null && postList.isNotEmpty) {
+      showSearch(
+        context: context,
+        delegate: SearchPage(
+            postList, myFavorits, _userEmail, _searchLabel, null, null, null),
+      );
+    } else {
+      _showLoadAllPostMessage();
+    }
   }
 
   _changeShowPictures() async {
@@ -190,7 +196,7 @@ class _HomePageState extends State<HomePage> {
         } else if (snapshot.hasError) {
           MyNotification.showInfoFlushbar(
               context,
-              AppLocalizations.of(context).translate('erro'),
+              AppLocalizations.of(context).translate('error'),
               AppLocalizations.of(context).translate('error_loading'),
               Icon(
                 Icons.info_outline,
@@ -198,7 +204,7 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.redAccent,
               ),
               Colors.redAccent,
-              4);
+              3);
         }
         return _buildPageWithDataFromCache();
       },
@@ -239,7 +245,7 @@ class _HomePageState extends State<HomePage> {
         } else if (snapshot.hasError) {
           MyNotification.showInfoFlushbar(
               context,
-              AppLocalizations.of(context).translate('erro'),
+              AppLocalizations.of(context).translate('error'),
               AppLocalizations.of(context).translate('error_loading'),
               Icon(
                 Icons.info_outline,
@@ -295,7 +301,7 @@ class _HomePageState extends State<HomePage> {
           } else if (snapshot.hasError) {
             MyNotification.showInfoFlushbar(
                 context,
-                AppLocalizations.of(context).translate('erro'),
+                AppLocalizations.of(context).translate('error'),
                 AppLocalizations.of(context).translate('error_loading'),
                 Icon(
                   Icons.info_outline,
@@ -328,17 +334,35 @@ class _HomePageState extends State<HomePage> {
   void showSearchWithParentCategorie(Categorie parentCategorie) async {
     List<int> childCategories = new List();
 
-    for (Categorie categorie in categories) {
-      if (categorie.parentid == parentCategorie.id) {
-        childCategories.add(categorie.id);
+    if (postList != null && postList.isNotEmpty) {
+      for (Categorie categorie in categories) {
+        if (categorie.parentid == parentCategorie.id) {
+          childCategories.add(categorie.id);
+        }
       }
-    }
 
-    showSearch(
-      context: context,
-      delegate: SearchPage(postList, myFavorits, _userEmail, _searchLabel, null,
-          childCategories, parentCategorie),
-    );
+      showSearch(
+        context: context,
+        delegate: SearchPage(postList, myFavorits, _userEmail, _searchLabel,
+            null, childCategories, parentCategorie),
+      );
+    } else {
+      _showLoadAllPostMessage();
+    }
+  }
+
+  void _showLoadAllPostMessage() {
+    MyNotification.showInfoFlushbar(
+        context,
+        AppLocalizations.of(context).translate('info'),
+        AppLocalizations.of(context).translate('download_all_post_first'),
+        Icon(
+          Icons.info_outline,
+          size: 28,
+          color: GlobalColor.colorBlue,
+        ),
+        GlobalColor.colorBlue,
+        4);
   }
 
   Future<List<Post>> _loadPost() async {

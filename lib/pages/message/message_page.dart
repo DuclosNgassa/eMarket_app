@@ -180,7 +180,7 @@ class _MessagePageState extends State<MessagePage> {
         } else if (snapshot.hasError) {
           MyNotification.showInfoFlushbar(
               context,
-              AppLocalizations.of(context).translate('erro'),
+              AppLocalizations.of(context).translate('error'),
               AppLocalizations.of(context).translate('error_loading'),
               Icon(
                 Icons.info_outline,

@@ -5,8 +5,8 @@
   "messages": "Messages",
   "message": "Message",
   "infos": "Infos",
-  "my_adverts": "MY PUBLICATIONS",
-  "my_favorits": "MY FAVORITS",
+  "my_adverts": "My Publications",
+  "my_favorits": "My Favorits",
   "no_sell_item1": "You have not sold or searched for items yet",
   "no_sell_item2": "Transform things that you use very little or never into money!",
   "sold": "Sold",
@@ -220,5 +220,7 @@
   "other": "Other",
   "loading": "Loading...",
   "same_category_post": "Posts in the same category",
-  "no_longer_available": "This post is no longer available"
+  "no_longer_available": "This post is no longer available",
+  "download_all_post_first": "Wait until all publications are displayed",
+  "the_market_on_your_mobile":"The market on your mobile"
 }

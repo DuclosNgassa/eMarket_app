@@ -24,7 +24,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   }
 
   Future<bool> _mockCheckForSession() async {
-    await Future.delayed(Duration(milliseconds: 2500), () {});
+    await Future.delayed(Duration(milliseconds: 5000), () {});
 
     return true;
   }
@@ -47,27 +47,52 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
             CustomLinearGradient(
               myChild: new Container(),
             ),
-            Shimmer.fromColors(
-              period: Duration(milliseconds: 1500),
-              baseColor: Colors.white,
-              highlightColor: Colors.deepPurple,
-              child: Container(
-                padding:
-                    EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 6),
-                child: Text(
-                  "eMarket",
-                  style: TextStyle(
-                      fontSize: SizeConfig.blockSizeHorizontal * 15,
-                      fontFamily: 'Pacifico',
-                      shadows: <Shadow>[
-                        Shadow(
-                            blurRadius: 18.0,
-                            color: Colors.black87,
-                            offset: Offset.fromDirection(120, 12))
-                      ]),
+            Positioned(
+              top: SizeConfig.screenHeight * 0.20,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: Container(
+                  width: SizeConfig.blockSizeHorizontal * 40,
+                  height: SizeConfig.blockSizeHorizontal * 40,
+                  decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(3.0, 6.0),
+                        blurRadius: 10.0)
+                  ]),
+                  child: AspectRatio(
+                    aspectRatio: 0.5,
+                    child: Image.asset(
+                      "assets/icons/emarket-512.png",
+                    ),
+                  ),
                 ),
               ),
-            )
+            ),
+            Positioned(
+              top: SizeConfig.screenHeight * 0.5,
+              child: Shimmer.fromColors(
+                period: Duration(milliseconds: 2000),
+                baseColor: Colors.white,
+                highlightColor: Colors.deepPurple,
+                child: Container(
+                  padding: EdgeInsets.only(
+                      right: SizeConfig.blockSizeHorizontal * 6),
+                  child: Text(
+                    "Le marché sur votre mobile",
+                    style: TextStyle(
+                        fontSize: SizeConfig.blockSizeHorizontal * 7,
+                        fontFamily: 'Pacifico',
+                        shadows: <Shadow>[
+                          Shadow(
+                              blurRadius: 18.0,
+                              color: Colors.black87,
+                              offset: Offset.fromDirection(120, 12))
+                        ]),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

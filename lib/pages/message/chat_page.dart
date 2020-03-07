@@ -234,7 +234,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             bottomRight: Radius.circular(16),
           ),
           child: Container(
-            color: Colors.deepPurple[100],
+            color: GlobalColor.colorDeepPurple100,
             child: ListTile(
               title: Text(_messages.elementAt(index).body),
               subtitle: Row(
@@ -260,7 +260,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             bottomLeft: Radius.circular(16),
           ),
           child: Container(
-            color: Colors.black26,
+            color: GlobalColor.colorGrey300,
             child: ListTile(
               title: Text(_messages.elementAt(index).body),
               subtitle: Row(
@@ -289,7 +289,11 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           children: <Widget>[
             new Flexible(
               child: new TextField(
+                textCapitalization: TextCapitalization.sentences,
+                textInputAction: TextInputAction.newline,
+                keyboardType: TextInputType.multiline,
                 controller: _textEditingController,
+                maxLines: 5,
                 decoration: new InputDecoration.collapsed(
                   hintText:
                       AppLocalizations.of(context).translate('send_message'),

@@ -18,7 +18,6 @@ import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/util/global.dart';
-import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -70,8 +69,6 @@ class _NavigationPageState extends State<NavigationPage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     GlobalStyling().init(context);
-
-    _checkConnectivity();
 
     return new Scaffold(
       body: Center(
@@ -308,25 +305,13 @@ class _NavigationPageState extends State<NavigationPage> {
     }
   }
 
-  void _checkConnectivity() async {
+  Future<bool> _checkConnectivity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile) {
-      // I am connected to a mobile network.
-    } else if (connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to a wifi network.
-    } else {
-      MyNotification.showInfoFlushbar(
-          context,
-          AppLocalizations.of(context).translate('info'),
-          AppLocalizations.of(context).translate('no_internet'),
-          Icon(
-            Icons.info_outline,
-            size: 28,
-            color: Colors.redAccent,
-          ),
-          Colors.redAccent,
-          2);
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      return true;
     }
+    return false;
   }
 
   List<Widget> _widgetOptions = <Widget>[

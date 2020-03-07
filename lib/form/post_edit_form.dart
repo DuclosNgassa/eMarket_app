@@ -15,6 +15,7 @@ import 'package:emarket_app/pages/image/images_detail.dart';
 import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
+import 'package:emarket_app/util/util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -194,11 +195,13 @@ class _PostEditFormState extends State<PostEditForm> {
                           Divider(),
                           _buildRadioButtons(),
                           TextFormField(
+                            textCapitalization: TextCapitalization.sentences,
                             style: GlobalStyling.styleFormGrey,
                             textInputAction: TextInputAction.next,
                             autofocus: true,
                             onFieldSubmitted: (term) {
-                              _fieldFocusChange(_titelFocusNode, _feeFocusNode);
+                              Util.fieldFocusChange(
+                                  context, _titelFocusNode, _feeFocusNode);
                             },
                             decoration: InputDecoration(
                               hintText: AppLocalizations.of(context)
@@ -260,8 +263,8 @@ class _PostEditFormState extends State<PostEditForm> {
                                   textInputAction: TextInputAction.next,
                                   focusNode: _feeFocusNode,
                                   onFieldSubmitted: (term) {
-                                    _fieldFocusChange(
-                                        _feeFocusNode, _cityFocusNode);
+                                    Util.fieldFocusChange(
+                                        context, _feeFocusNode, _cityFocusNode);
                                   },
                                   decoration: InputDecoration(
                                     hintText: AppLocalizations.of(context)
@@ -343,11 +346,13 @@ class _PostEditFormState extends State<PostEditForm> {
                               children: <Widget>[
                                 Expanded(
                                   child: TextFormField(
+                                    textCapitalization:
+                                        TextCapitalization.sentences,
                                     style: GlobalStyling.styleFormGrey,
                                     textInputAction: TextInputAction.next,
                                     focusNode: _cityFocusNode,
                                     onFieldSubmitted: (term) {
-                                      _fieldFocusChange(
+                                      Util.fieldFocusChange(context,
                                           _cityFocusNode, _quarterFocusNode);
                                     },
                                     decoration: InputDecoration(
@@ -371,11 +376,13 @@ class _PostEditFormState extends State<PostEditForm> {
                                 ),
                                 Expanded(
                                   child: TextFormField(
+                                    textCapitalization:
+                                        TextCapitalization.sentences,
                                     style: GlobalStyling.styleFormGrey,
                                     textInputAction: TextInputAction.next,
                                     focusNode: _quarterFocusNode,
                                     onFieldSubmitted: (term) {
-                                      _fieldFocusChange(
+                                      Util.fieldFocusChange(context,
                                           _quarterFocusNode, _phoneFocusNode);
                                     },
                                     decoration: InputDecoration(
@@ -405,8 +412,8 @@ class _PostEditFormState extends State<PostEditForm> {
                             textInputAction: TextInputAction.next,
                             focusNode: _phoneFocusNode,
                             onFieldSubmitted: (term) {
-                              _fieldFocusChange(
-                                  _phoneFocusNode, _descriptionFocusNode);
+                              Util.fieldFocusChange(context, _phoneFocusNode,
+                                  _descriptionFocusNode);
                             },
                             decoration: InputDecoration(
                               hintText: AppLocalizations.of(context)
@@ -424,15 +431,12 @@ class _PostEditFormState extends State<PostEditForm> {
                             onSaved: (val) => _post.phoneNumber = val,
                           ),
                           TextFormField(
+                            textCapitalization: TextCapitalization.sentences,
                             style: GlobalStyling.styleFormGrey,
                             textInputAction: TextInputAction.newline,
                             keyboardType: TextInputType.multiline,
                             focusNode: _descriptionFocusNode,
-                            onFieldSubmitted: (value) {
-                              _descriptionFocusNode.unfocus();
-                              _submitForm();
-                            },
-                            maxLines: 4,
+                            maxLines: 5,
                             decoration: InputDecoration(
                               hintText: AppLocalizations.of(context)
                                   .translate('advert_description'),
@@ -450,11 +454,13 @@ class _PostEditFormState extends State<PostEditForm> {
                                 : null,
                             onSaved: (val) => _post.description = val,
                           ),
+                          SizedBox(
+                            height: SizeConfig.blockSizeVertical * 5,
+                          ),
                           Row(
                             children: <Widget>[
                               Container(
-                                padding: EdgeInsets.only(
-                                    top: SizeConfig.blockSizeVertical * 2),
+                                height: SizeConfig.blockSizeVertical * 6,
                                 child: RaisedButton(
                                   shape: const StadiumBorder(),
                                   color: Colors.red,
@@ -469,9 +475,7 @@ class _PostEditFormState extends State<PostEditForm> {
                               isSaved
                                   ? new Container()
                                   : Container(
-                                      padding: EdgeInsets.only(
-                                          top:
-                                              SizeConfig.blockSizeVertical * 2),
+                                      height: SizeConfig.blockSizeVertical * 6,
                                       child: RaisedButton(
                                         shape: const StadiumBorder(),
                                         color: GlobalColor.colorDeepPurple400,
@@ -484,6 +488,9 @@ class _PostEditFormState extends State<PostEditForm> {
                                       ),
                                     ),
                             ],
+                          ),
+                          SizedBox(
+                            height: SizeConfig.blockSizeVertical * 3,
                           ),
                         ],
                       ),
@@ -967,10 +974,5 @@ class _PostEditFormState extends State<PostEditForm> {
         translatedCategory == null ? _categorieTile.title : translatedCategory,
         _categorie.id);
     setState(() {});
-  }
-
-  _fieldFocusChange(FocusNode currentFocus, FocusNode nextFocus) {
-    currentFocus.unfocus();
-    FocusScope.of(context).requestFocus(nextFocus);
   }
 }

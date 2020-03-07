@@ -5,6 +5,7 @@ import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/pages/categorie/categorie_page.dart';
 import 'package:emarket_app/util/size_config.dart';
+import 'package:emarket_app/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -30,9 +31,34 @@ class SearchParameterFormState extends State<SearchParameterForm> {
   FormValidator formValidator = new FormValidator();
   SearchParameter searchParameter = new SearchParameter();
 
+  FocusNode _titelFocusNode;
+  FocusNode _feeMinFocusNode;
+  FocusNode _feeMaxFocusNode;
+  FocusNode _cityFocusNode;
+  FocusNode _quarterFocusNode;
+
   @override
   void initState() {
+    super.initState();
+    _titelFocusNode = FocusNode();
+    _feeMinFocusNode = FocusNode();
+    _feeMaxFocusNode = FocusNode();
+    _cityFocusNode = FocusNode();
+    _quarterFocusNode = FocusNode();
+    ;
     _feeTyp = widget.allTranslated;
+  }
+
+  @override
+  void dispose() {
+    // Clean up the focus node when the Form is disposed.
+    _titelFocusNode.dispose();
+    _feeMinFocusNode.dispose();
+    _feeMaxFocusNode.dispose();
+    _cityFocusNode.dispose();
+    _quarterFocusNode.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -105,7 +131,14 @@ class SearchParameterFormState extends State<SearchParameterForm> {
             ),
             Divider(),
             TextFormField(
+              textCapitalization: TextCapitalization.sentences,
               style: GlobalStyling.styleFormGrey,
+              textInputAction: TextInputAction.next,
+              autofocus: true,
+              focusNode: _titelFocusNode,
+              onFieldSubmitted: (term) {
+                Util.fieldFocusChange(context, _titelFocusNode, _cityFocusNode);
+              },
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context).translate('title'),
                 labelText: AppLocalizations.of(context).translate('title'),
@@ -157,7 +190,14 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                 children: <Widget>[
                   Expanded(
                     child: TextFormField(
+                      textCapitalization: TextCapitalization.sentences,
+                      textInputAction: TextInputAction.next,
                       style: GlobalStyling.styleFormGrey,
+                      focusNode: _cityFocusNode,
+                      onFieldSubmitted: (term) {
+                        Util.fieldFocusChange(
+                            context, _cityFocusNode, _quarterFocusNode);
+                      },
                       decoration: InputDecoration(
                         hintText: AppLocalizations.of(context)
                             .translate('advert_city'),
@@ -173,7 +213,14 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                   ),
                   Expanded(
                     child: TextFormField(
+                      textCapitalization: TextCapitalization.sentences,
+                      textInputAction: TextInputAction.next,
                       style: GlobalStyling.styleFormGrey,
+                      focusNode: _quarterFocusNode,
+                      onFieldSubmitted: (term) {
+                        Util.fieldFocusChange(
+                            context, _quarterFocusNode, _feeMinFocusNode);
+                      },
                       decoration: InputDecoration(
                         hintText: AppLocalizations.of(context)
                             .translate('advert_neighborhood'),
@@ -208,6 +255,12 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                     child: Column(
                       children: <Widget>[
                         TextFormField(
+                          focusNode: _feeMinFocusNode,
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (term) {
+                            Util.fieldFocusChange(
+                                context, _feeMinFocusNode, _feeMaxFocusNode);
+                          },
                           decoration: InputDecoration(
                               hintText: AppLocalizations.of(context)
                                   .translate('fcfa'),
@@ -237,6 +290,7 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                     child: Column(
                       children: <Widget>[
                         TextFormField(
+                          focusNode: _feeMaxFocusNode,
                           decoration: InputDecoration(
                             hintText:
                                 AppLocalizations.of(context).translate('fcfa'),
@@ -290,9 +344,14 @@ class SearchParameterFormState extends State<SearchParameterForm> {
                 );
               },
             ),
+            SizedBox(
+              height: SizeConfig.blockSizeVertical * 5,
+            ),
             Container(
               width: SizeConfig.screenWidth * 0.9,
-              padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
+              height: SizeConfig.blockSizeVertical * 6,
+              padding: EdgeInsets.symmetric(
+                  horizontal: SizeConfig.blockSizeHorizontal * 2),
               child: RaisedButton(
                 shape: const StadiumBorder(),
                 color: GlobalColor.colorDeepPurple400,

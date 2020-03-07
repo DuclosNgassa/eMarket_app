@@ -53,55 +53,61 @@ class _LoginState extends State<Login> {
     GlobalStyling().init(context);
 
     return Scaffold(
-      body: Builder(
-        builder: (context) => Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            Container(
-              color: GlobalColor.colorDeepPurple300,
-              width: SizeConfig.screenWidth,
-              height: SizeConfig.screenHeight,
-            ),
-            Column(
+      backgroundColor: GlobalColor.colorDeepPurple300,
+      body: Center(
+        child: Container(
+          height: SizeConfig.blockSizeVertical * 7,
+          width: SizeConfig.screenWidth * 0.9,
+          child: RaisedButton(
+            shape: const StadiumBorder(),
+            color: GlobalColor.colorDeepPurple500,
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: SizeConfig.blockSizeVertical),
-                Container(
-                  width: SizeConfig.screenWidth -
-                      SizeConfig.blockSizeHorizontal * 10,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: RaisedButton(
-                      shape: const StadiumBorder(),
-                      color: GlobalColor.colorDeepPurple500,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(
-                            FontAwesomeIcons.google,
-                            color: GlobalColor.colorRed,
-                          ),
-                          SizedBox(width: SizeConfig.blockSizeHorizontal * 3),
-                          Text(
-                            AppLocalizations.of(context)
-                                .translate('log_in_with_google'),
-                            style: GlobalStyling.styleButtonWhite,
-                          ),
-                        ],
-                      ),
-                      onPressed: () => _signIn(context),
-                    ),
-                  ),
+                Icon(
+                  FontAwesomeIcons.google,
+                  color: GlobalColor.colorRed,
+                  size: SizeConfig.safeBlockHorizontal * 8,
+                ),
+                SizedBox(width: SizeConfig.blockSizeHorizontal * 3),
+                Text(
+                  AppLocalizations.of(context).translate('log_in_with_google'),
+                  style: GlobalStyling.styleButtonWhite,
                 ),
               ],
             ),
-          ],
+            onPressed: () => _signIn(context),
+          ),
         ),
       ),
     );
   }
 
-  navigate() {
+  Future<void> _signIn(BuildContext context) async {
+    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      idToken: googleAuth.idToken,
+      accessToken: googleAuth.accessToken,
+    );
+
+    FirebaseUser userDetails =
+        (await _firebaseAuth.signInWithCredential(credential)).user;
+
+    await setSharedPreferences(userDetails);
+
+    await _saveUser(userDetails);
+
+    Navigator.of(context).pushReplacement(
+      new MaterialPageRoute(
+        builder: (context) => _navigate(),
+      ),
+    );
+  }
+
+  _navigate() {
     switch (widget.page) {
       case LoginSource.postPage:
         {
@@ -124,30 +130,6 @@ class _LoginState extends State<Login> {
         }
         break;
     }
-  }
-
-  Future<void> _signIn(BuildContext context) async {
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      idToken: googleAuth.idToken,
-      accessToken: googleAuth.accessToken,
-    );
-
-    FirebaseUser userDetails =
-        (await _firebaseAuth.signInWithCredential(credential)).user;
-
-    await setSharedPreferences(userDetails);
-
-    await _saveUser(userDetails);
-
-    Navigator.of(context).pushReplacement(
-      new MaterialPageRoute(
-        builder: (context) => navigate(),
-      ),
-    );
   }
 
   Future<void> setSharedPreferences(FirebaseUser userDetails) async {

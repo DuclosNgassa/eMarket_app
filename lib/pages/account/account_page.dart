@@ -106,8 +106,8 @@ class _AccountState extends State<AccountPage>
                       ),
                       expandedHeight: SizeConfig.screenHeight * 0.19,
                       bottom: TabBar(
-                        labelColor: Colors.black,
-                        labelStyle: GlobalStyling.styleNormalBlack,
+                        labelColor: GlobalColor.colorDeepPurple500,
+                        labelStyle: GlobalStyling.styleNormalBlackBold,
                         //isScrollable: true,
                         indicatorColor: GlobalColor.colorDeepPurple400,
                         tabs: [
@@ -271,7 +271,7 @@ class _AccountState extends State<AccountPage>
         } else if (snapshot.hasError) {
           MyNotification.showInfoFlushbar(
               context,
-              AppLocalizations.of(context).translate('erro'),
+              AppLocalizations.of(context).translate('error'),
               AppLocalizations.of(context).translate('error_loading'),
               Icon(
                 Icons.info_outline,
@@ -402,7 +402,7 @@ class _AccountState extends State<AccountPage>
         } else if (snapshot.hasError) {
           MyNotification.showInfoFlushbar(
               context,
-              AppLocalizations.of(context).translate('erro'),
+              AppLocalizations.of(context).translate('error'),
               AppLocalizations.of(context).translate('error_loading'),
               Icon(
                 Icons.info_outline,

@@ -5,6 +5,7 @@ import 'package:emarket_app/model/user_notification.dart';
 import 'package:emarket_app/services/user_notification_service.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
+import 'package:emarket_app/util/util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -60,11 +61,13 @@ class ContactFormState extends State<ContactForm> {
         child: Column(
           children: <Widget>[
             TextFormField(
+              textCapitalization: TextCapitalization.sentences,
               style: GlobalStyling.styleFormGrey,
               textInputAction: TextInputAction.next,
               focusNode: _subjectFocusNode,
               onFieldSubmitted: (term) {
-                _fieldFocusChange(_subjectFocusNode, _messageFocusNode);
+                Util.fieldFocusChange(
+                    context, _subjectFocusNode, _messageFocusNode);
               },
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context).translate('give_title'),
@@ -77,6 +80,7 @@ class ContactFormState extends State<ContactForm> {
               onSaved: (val) => _userNotification.title = val,
             ),
             TextFormField(
+              textCapitalization: TextCapitalization.sentences,
               style: GlobalStyling.styleFormGrey,
               textInputAction: TextInputAction.newline,
               keyboardType: TextInputType.multiline,
@@ -170,10 +174,5 @@ class ContactFormState extends State<ContactForm> {
   clearForm() {
     _formKey.currentState?.reset();
     setState(() {});
-  }
-
-  _fieldFocusChange(FocusNode currentFocus, FocusNode nextFocus) {
-    currentFocus.unfocus();
-    FocusScope.of(context).requestFocus(nextFocus);
   }
 }
