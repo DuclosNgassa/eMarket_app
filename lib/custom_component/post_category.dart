@@ -15,12 +15,13 @@ class PostCategory extends StatefulWidget {
       {@required this.categoryId,
       @required this.actualPostId,
       this.userEmail,
-      this.myFavorits});
+      this.myFavorits, this.showPictures});
 
   final int categoryId;
   final int actualPostId;
   final String userEmail;
   final List<Favorit> myFavorits;
+  final bool showPictures;
 
   @override
   PostCategoryState createState() => PostCategoryState();
@@ -37,12 +38,10 @@ class PostCategoryState extends State<PostCategory> {
   int perPage = 10;
   int present = 0;
 
-  ScrollController _scrollController = ScrollController();
-
   @override
   void initState() {
     super.initState();
-    _readShowPictures();
+    //_readShowPictures();
   }
 
   @override
@@ -64,27 +63,6 @@ class PostCategoryState extends State<PostCategory> {
                         AppLocalizations.of(context)
                             .translate('same_category_post'),
                         style: GlobalStyling.styleNormalBlackBold,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          right: SizeConfig.blockSizeHorizontal),
-                      child: Column(
-                        children: <Widget>[
-                          Switch(
-                            value: showPictures,
-                            onChanged: (value) {
-                              _changeShowPictures();
-                            },
-                            activeTrackColor: Colors.lightGreenAccent,
-                            activeColor: Colors.green,
-                          ),
-                          Text(
-                            AppLocalizations.of(context).translate('pictures'),
-                            style: GlobalStyling.styleNormalBlackBold,
-                          ),
-                          //Icon(Icons.photo_camera, size: SizeConfig.blockSizeHorizontal * 7, color: Colors.black,)
-                        ],
                       ),
                     ),
                   ],
@@ -149,6 +127,8 @@ class PostCategoryState extends State<PostCategory> {
 
     postList = _postService.sortDescending(_postList);
 
+    await _readShowPictures();
+
     return postList;
   }
 
@@ -158,9 +138,9 @@ class PostCategoryState extends State<PostCategory> {
     setState(() {});
   }
 
+
   _readShowPictures() async {
     showPictures = await Util.readShowPictures(_sharedPreferenceService);
-    setState(() {});
   }
 
 }

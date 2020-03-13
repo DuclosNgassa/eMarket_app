@@ -96,7 +96,10 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
             return PostDetailPage(post);
           },
         ),
-      );
+      ).then((_) {
+        setState(() {
+        });
+      });
     } else {
       MyNotification.showInfoFlushbar(
           context,

@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     refreshKey = GlobalKey<RefreshIndicatorState>();
     _loadMyFavorits();
-    _readShowPictures();
+    //_readShowPictures();
     _firebaseMessaging.onTokenRefresh.listen(setDeviceToken);
     _firebaseMessaging.getToken();
 
@@ -166,7 +166,7 @@ class _HomePageState extends State<HomePage> {
 
   _readShowPictures() async {
     showPictures = await Util.readShowPictures(_sharedPreferenceService);
-    setState(() {});
+    //setState(() {});
   }
 
   Widget _buildPageWithDataFromServer() {
@@ -382,6 +382,8 @@ class _HomePageState extends State<HomePage> {
   Future<List<Post>> _loadPost() async {
     print("Start load post");
     postList = await _postService.fetchActivePosts();
+    await _readShowPictures();
+
     return postList;
   }
 

@@ -54,7 +54,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   User _postOwner;
   Favorit myFavoritToAdd;
   Favorit myFavoritToRemove;
-  bool showPictures = true;
+  bool showPictures = false;
 
   Icon favoritIcon = Icon(
     Icons.favorite_border,
@@ -65,7 +65,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
   @override
   void initState() {
     super.initState();
-    initData();
+    _readShowPictures();
+    _loadUser();
+    _loadPosts();
+    _loadMyFavorits();
+    _getUserByEmail();
+    _updatePostView();
+    _loadPostImages();
   }
 
   @override
@@ -80,6 +86,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       deleteFavorit(myFavoritToRemove);
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +145,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   ),
                                 )
                               : new Container(),
-                              buildImageGridViewShowPicture(),
+                          buildImageGridViewShowPicture(),
                           Divider(),
                           Row(
                             children: <Widget>[
@@ -269,12 +276,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             height: SizeConfig.blockSizeVertical * 2,
                           ),
                           Container(
-                              height: SizeConfig.screenHeight * 0.75,
-                              child: PostCategory(
-                                  categoryId: widget.post.categorieid,
-                                  actualPostId: widget.post.id,
-                                  myFavorits: myFavorits,
-                                  userEmail: userEmail))
+                            height: SizeConfig.screenHeight * 0.75,
+                            child: PostCategory(
+                              categoryId: widget.post.categorieid,
+                              actualPostId: widget.post.id,
+                              myFavorits: myFavorits,
+                              userEmail: userEmail,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -286,59 +295,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
         ),
       ),
     );
-  }
-
-  Widget buildImageGridViewShowPicture() {
-    if(postImages != null && postImages.isEmpty){
-        return Padding(
-          padding: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 10),
-          child: Container(
-            height: SizeConfig.blockSizeVertical * 10,
-            child: CustomButton(
-              fillColor: GlobalColor.colorDeepPurple400,
-              icon: Icons.sentiment_satisfied,
-              splashColor: Colors.white,
-              iconColor: Colors.white,
-              text: AppLocalizations.of(context).translate('post_without_images'),
-              textStyle: GlobalStyling.styleNormalWhite,
-              onPressed: null,
-            ),
-          ),
-        );
-      }
-    if(showPictures && postImages != null && postImages.isNotEmpty){
-      return Container(
-        height: SizeConfig.blockSizeVertical * 50,
-        //height: 125.0,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: buildImagesGridView(),
-            ),
-          ],
-        ),
-      );
-    }
-    if(!showPictures && postImages != null && postImages.isNotEmpty){
-      if (postImages.isNotEmpty && !showPictures) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 10),
-          child: Container(
-            height: SizeConfig.blockSizeVertical * 10,
-            child: CustomButton(
-              fillColor: GlobalColor.colorDeepPurple400,
-              icon: Icons.file_download,
-              splashColor: Colors.white,
-              iconColor: Colors.white,
-              text: AppLocalizations.of(context).translate('download_images'),
-              textStyle: GlobalStyling.styleNormalWhite,
-              onPressed: () => _downloadPictures(),
-            ),
-          ),
-        );
-      }
-    }
   }
 
   showPostEditForm(Post post) {
@@ -358,6 +314,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     String _userEmail = await _sharedPreferenceService.read(USER_EMAIL);
     if (_userEmail != null && _userEmail.isNotEmpty) {
       userEmail = _userEmail;
+      setState(() {});
     }
   }
 
@@ -387,6 +344,59 @@ class _PostDetailPageState extends State<PostDetailPage> {
     widgetList.add(city);
 
     return widgetList;
+  }
+
+  Widget buildImageGridViewShowPicture() {
+    if (showPictures && postImages != null && postImages.isNotEmpty) {
+      return Container(
+        height: SizeConfig.blockSizeVertical * 50,
+        //height: 125.0,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: buildImagesGridView(),
+            ),
+          ],
+        ),
+      );
+    }
+    if (!showPictures && postImages != null && postImages.isNotEmpty) {
+      if (postImages.isNotEmpty && !showPictures) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 10),
+          child: Container(
+            height: SizeConfig.blockSizeVertical * 10,
+            child: CustomButton(
+              fillColor: GlobalColor.colorDeepPurple400,
+              icon: Icons.file_download,
+              splashColor: Colors.white,
+              iconColor: Colors.white,
+              text: AppLocalizations.of(context).translate('download_images'),
+              textStyle: GlobalStyling.styleNormalWhite,
+              onPressed: () => _changeShowPictures(),
+            ),
+          ),
+        );
+      }
+    }
+    if (postImages != null && postImages.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 10),
+        child: Container(
+          height: SizeConfig.blockSizeVertical * 10,
+          child: CustomButton(
+            fillColor: GlobalColor.colorDeepPurple400,
+            icon: Icons.sentiment_satisfied,
+            splashColor: Colors.white,
+            iconColor: Colors.white,
+            text: AppLocalizations.of(context).translate('post_without_images'),
+            textStyle: GlobalStyling.styleNormalWhite,
+            onPressed: null,
+          ),
+        ),
+      );
+    }
   }
 
   Widget buildImagesGridView() {
@@ -432,12 +442,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   Future<void> _loadPostImages() async {
     postImages = await _imageService.fetchImagesByPostID(widget.post.id);
-  }
 
-  void _downloadPictures() async {
-    _changeShowPictures();
-    setState(() {
-    });
+    setState(() {});
   }
 
   Future<void> _loadPosts() async {
@@ -448,6 +454,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       await post.getImageUrl();
     }
 
+    setState(() {});
   }
 
   Future<void> _loadMyFavorits() async {
@@ -460,11 +467,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
       setFavoritIcon();
 
+      setState(() {});
     }
   }
 
   Future<void> _getUserByEmail() async {
     _postOwner = await _userService.fetchUserByEmail(widget.post.useremail);
+    setState(() {});
   }
 
   Future<Post> _updatePostView() async {
@@ -566,24 +575,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   _readShowPictures() async {
     showPictures = await Util.readShowPictures(_sharedPreferenceService);
+    setState(() {});
   }
 
   _changeShowPictures() async {
     showPictures = !showPictures;
     await Util.saveShowPictures(showPictures, _sharedPreferenceService);
-  }
-
-  initData() async {
-    await _loadUser();
-    await _loadPosts();
-    await _loadMyFavorits();
-    await _getUserByEmail();
-    await _updatePostView();
-    await _loadPostImages();
-    await _readShowPictures();
-
-    setState(() {
-
-    });
+    setState(() {});
   }
 }
