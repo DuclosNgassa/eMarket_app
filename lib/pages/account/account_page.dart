@@ -41,15 +41,16 @@ class _AccountState extends State<AccountPage>
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
   TabController controller;
 
-  String userName = 'eMarket';
-  String userEmail = 'eMarket@softsolutions.de';
+//  String userName = 'eMarket';
+//  String userEmail = 'eMarket@softsolutions.de';
+  FirebaseUser _firebaseUser;
   List<Post> _myPosts = new List();
   List<Post> _myFavoritPosts = new List();
   List<Favorit> _myFavorits = new List();
 
   @override
   void initState() {
-    loadUser();
+    //loadUser();
     super.initState();
     controller = TabController(length: 2, vsync: this);
   }
@@ -63,6 +64,9 @@ class _AccountState extends State<AccountPage>
         future: FirebaseAuth.instance.currentUser(),
         builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
           if (snapshot.hasData) {
+            _firebaseUser = snapshot.data; // this is your user instance
+            /// is because there is user already logged
+            saveUserToPrefs(_firebaseUser);
             return Container(
               child: NestedScrollView(
                 headerSliverBuilder:
@@ -83,7 +87,7 @@ class _AccountState extends State<AccountPage>
                                 children: <Widget>[
                                   Expanded(
                                     child: Text(
-                                      userName,
+                                      _firebaseUser.displayName,
                                       style: GlobalStyling.styleTitleWhite,
                                       textAlign: TextAlign.left,
                                     ),
@@ -96,7 +100,7 @@ class _AccountState extends State<AccountPage>
                               padding: EdgeInsets.only(
                                   left: SizeConfig.blockSizeHorizontal * 2),
                               child: Text(
-                                userEmail,
+                                _firebaseUser.email,
                                 style: GlobalStyling.styleNormalWhite,
                                 textAlign: TextAlign.left,
                               ),
@@ -527,32 +531,30 @@ class _AccountState extends State<AccountPage>
     );
   }
 
-  Future<void> loadUser() async {
-    String _userEmail = await _sharedPreferenceService.read(USER_EMAIL);
-    String _userName = await _sharedPreferenceService.read(USER_NAME);
-    if (_userEmail != null && _userEmail.isNotEmpty) {
-      userEmail = _userEmail;
-      userName = _userName ?? userName;
-      //_loadMyFavorits();
-      //setState(() {});
-    }
+  Future<void> saveUserToPrefs(FirebaseUser firebaseUser) async {
+    //userName = firebaseUser.displayName;
+    //userEmail = firebaseUser.email;
+
+    await _sharedPreferenceService.save(USER_EMAIL, firebaseUser.email);
+    await _sharedPreferenceService.save(USER_NAME, firebaseUser.displayName);
+
   }
 
   Future<List<Post>> _loadMyPosts() async {
-    if (userEmail != null && _myPosts.isEmpty) {
-      _myPosts = await _postService.fetchPostByUserEmail(userEmail);
+    if (_firebaseUser!= null && _firebaseUser.email != null && _myPosts.isEmpty) {
+      _myPosts = await _postService.fetchPostByUserEmail(_firebaseUser.email);
     }
 
     return _myPosts;
   }
 
   Future<List<Post>> _loadMyFavorits() async {
-    if (userEmail != null &&
-        userEmail.isNotEmpty &&
+    if (_firebaseUser!= null && _firebaseUser.email != null &&
+        _firebaseUser.email.isNotEmpty &&
         _myFavorits.isEmpty &&
         _myFavoritPosts.isEmpty) {
       String EMAIL_MY_FAVORIT_LIST_CACHE_TIME =
-          MY_FAVORIT_LIST_CACHE_TIME + userEmail;
+          MY_FAVORIT_LIST_CACHE_TIME + _firebaseUser.email;
 
       String cacheTimeString =
           await _sharedPreferenceService.read(EMAIL_MY_FAVORIT_LIST_CACHE_TIME);
@@ -562,14 +564,14 @@ class _AccountState extends State<AccountPage>
 
         if (actualDateTime.difference(cacheTime) > Duration(minutes: 3)) {
           _myFavoritPosts =
-              await _favoritService.loadMyFavoritFromServer(userEmail);
+              await _favoritService.loadMyFavoritFromServer(_firebaseUser.email);
         } else {
           _myFavoritPosts =
-              await _favoritService.loadMyFavoritFromCache(userEmail);
+              await _favoritService.loadMyFavoritFromCache(_firebaseUser.email);
         }
       } else {
         _myFavoritPosts =
-            await _favoritService.loadMyFavoritFromServer(userEmail);
+            await _favoritService.loadMyFavoritFromServer(_firebaseUser.email);
       }
       return _myFavoritPosts;
     }

@@ -4,8 +4,10 @@ import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/services/post_service.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
+import 'package:emarket_app/util/util.dart';
 import 'package:flutter/material.dart';
 
 class PostCategory extends StatefulWidget {
@@ -26,9 +28,11 @@ class PostCategory extends StatefulWidget {
 
 class PostCategoryState extends State<PostCategory> {
   final PostService _postService = new PostService();
+  SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+
   List<Post> postList = new List();
   List<Post> postListItems = new List();
-  bool showPictures = false;
+  bool showPictures = true;
 
   int perPage = 10;
   int present = 0;
@@ -38,6 +42,7 @@ class PostCategoryState extends State<PostCategory> {
   @override
   void initState() {
     super.initState();
+    _readShowPictures();
   }
 
   @override
@@ -69,9 +74,7 @@ class PostCategoryState extends State<PostCategory> {
                           Switch(
                             value: showPictures,
                             onChanged: (value) {
-                              setState(() {
-                                showPictures = value;
-                              });
+                              _changeShowPictures();
                             },
                             activeTrackColor: Colors.lightGreenAccent,
                             activeColor: Colors.green,
@@ -148,4 +151,16 @@ class PostCategoryState extends State<PostCategory> {
 
     return postList;
   }
+
+  _changeShowPictures() async {
+    showPictures = !showPictures;
+    await Util.saveShowPictures(showPictures, _sharedPreferenceService);
+    setState(() {});
+  }
+
+  _readShowPictures() async {
+    showPictures = await Util.readShowPictures(_sharedPreferenceService);
+    setState(() {});
+  }
+
 }

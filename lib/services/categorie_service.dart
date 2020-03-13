@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
+import 'package:emarket_app/util/global.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,7 +13,28 @@ import '../model/categorie.dart';
 import '../model/categorie_tile.dart';
 
 class CategorieService {
+  SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
+
   Future<List<Categorie>> fetchCategories() async {
+    String cacheTimeString =
+        await _sharedPreferenceService.read(CATEGORIE_LIST_CACHE_TIME);
+
+    if (cacheTimeString != null) {
+      DateTime cacheTime = DateTime.parse(cacheTimeString);
+      DateTime actualDateTime = DateTime.now();
+
+      if (actualDateTime.difference(cacheTime) > Duration(days: 1)) {
+        return fetchCategoriesFromServer();
+      } else {
+        return fetchCategoriesFromCache();
+      }
+    } else {
+      return fetchCategoriesFromServer();
+    }
+  }
+
+  Future<List<Categorie>> fetchCategoriesFromServer() async {
     final response = await http.Client().get(URL_CATEGORIES);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
@@ -20,12 +43,36 @@ class CategorieService {
         final categorieList = await categories.map<Categorie>((json) {
           return Categorie.fromJson(json);
         }).toList();
+
+        //Cache translated categories
+        String jsonCategorie = jsonEncode(categorieList);
+        _sharedPreferenceService.save(CATEGORIE_LIST, jsonCategorie);
+
+        DateTime cacheTime = DateTime.now();
+        _sharedPreferenceService.save(
+            CATEGORIE_LIST_CACHE_TIME, cacheTime.toIso8601String());
+
         return categorieList;
       } else {
         return [];
       }
     } else {
-      throw Exception('Failed to load Categories from the internet');
+      return fetchCategoriesFromCache();
+    }
+  }
+
+
+  Future<List<Categorie>> fetchCategoriesFromCache() async {
+    String listCategoryFromSharePrefs =
+    await _sharedPreferenceService.read(CATEGORIE_LIST);
+    if (listCategoryFromSharePrefs != null) {
+      Iterable iterablePost = jsonDecode(listCategoryFromSharePrefs);
+      final categorieList = await iterablePost.map<Categorie>((categorie) {
+        return Categorie.fromJsonPref(categorie);
+      }).toList();
+      return categorieList;
+    } else {
+      return fetchCategoriesFromServer();
     }
   }
 

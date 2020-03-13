@@ -57,14 +57,14 @@ class PostService {
       if (actualDateTime.difference(cacheTime) > Duration(minutes: 3)) {
         return fetchActivePostFromServer();
       } else {
-        return _fetchActivePostFromCache();
+        return fetchActivePostFromCache();
       }
     } else {
       return fetchActivePostFromServer();
     }
   }
 
-  Future<List<Post>> _fetchActivePostFromCache() async {
+  Future<List<Post>> fetchActivePostFromCache() async {
     String listPostFromSharePrefs =
         await _sharedPreferenceService.read(POST_LIST);
     if (listPostFromSharePrefs != null) {
@@ -114,7 +114,7 @@ class PostService {
             POST_LIST_CACHE_TIME, cacheTime.toIso8601String());
         return sortedpostList;
       } else {
-        return _fetchActivePostFromCache();
+        return fetchActivePostFromCache();
       }
     } else {
       throw Exception('Failed to load Posts from the internet');
@@ -142,16 +142,16 @@ class PostService {
       DateTime actualDateTime = DateTime.now();
 
       if (actualDateTime.difference(cacheTime) > Duration(minutes: 3)) {
-        return _loadMyPostFromServer(email);
+        return loadMyPostFromServer(email);
       } else {
-        return _loadMyPostFromCache(email);
+        return loadMyPostFromCache(email);
       }
     } else {
-      return _loadMyPostFromServer(email);
+      return loadMyPostFromServer(email);
     }
   }
 
-  Future<List<Post>> _loadMyPostFromServer(String email) async {
+  Future<List<Post>> loadMyPostFromServer(String email) async {
     String EMAIL_MY_POST_LIST = MY_POST_LIST + email;
     String EMAIL_POST_LIST_CACHE_TIME = MY_POST_LIST_CACHE_TIME + email;
 
@@ -174,7 +174,7 @@ class PostService {
             EMAIL_POST_LIST_CACHE_TIME, cacheTime.toIso8601String());
         return sortedpostList;
       } else {
-        return _loadMyPostFromCache(email);
+        return loadMyPostFromCache(email);
       }
     } else if (response.statusCode == HttpStatus.notFound) {
       return null;
@@ -183,7 +183,7 @@ class PostService {
     }
   }
 
-  Future<List<Post>> _loadMyPostFromCache(String email) async {
+  Future<List<Post>> loadMyPostFromCache(String email) async {
     String EMAIL_MY_POST_LIST = MY_POST_LIST + email;
     String listPostFromSharePrefs =
         await _sharedPreferenceService.read(EMAIL_MY_POST_LIST);
@@ -194,7 +194,7 @@ class PostService {
       }).toList();
       return postList;
     } else {
-      return _loadMyPostFromServer(email);
+      return loadMyPostFromServer(email);
     }
   }
 

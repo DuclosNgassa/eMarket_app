@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
 import 'package:emarket_app/custom_component/post_card_component.dart';
@@ -16,6 +15,7 @@ import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/util/global.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
+import 'package:emarket_app/util/util.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +30,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final globalKey = new GlobalKey<ScaffoldState>();
+  GlobalKey<RefreshIndicatorState> refreshKey;
   final PostService _postService = new PostService();
   final FavoritService _favoritService = new FavoritService();
   final CategorieService _categorieService = new CategorieService();
@@ -38,7 +39,7 @@ class _HomePageState extends State<HomePage> {
       new SharedPreferenceService();
 
   List<Message> allConversation = new List<Message>();
-  bool showPictures = false;
+  bool showPictures = true;
 
   String _deviceToken = "";
   String _userEmail = "";
@@ -66,8 +67,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    refreshKey = GlobalKey<RefreshIndicatorState>();
     _loadMyFavorits();
-
+    _readShowPictures();
     _firebaseMessaging.onTokenRefresh.listen(setDeviceToken);
     _firebaseMessaging.getToken();
 
@@ -84,7 +86,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     GlobalStyling().init(context);
-
     _searchLabel = AppLocalizations.of(context).translate('search');
 
     return Scaffold(
@@ -159,55 +160,68 @@ class _HomePageState extends State<HomePage> {
 
   _changeShowPictures() async {
     showPictures = !showPictures;
+    await Util.saveShowPictures(showPictures, _sharedPreferenceService);
+    setState(() {});
+  }
+
+  _readShowPictures() async {
+    showPictures = await Util.readShowPictures(_sharedPreferenceService);
     setState(() {});
   }
 
   Widget _buildPageWithDataFromServer() {
-    return FutureBuilder(
-      future: _loadPost(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          print("Stop load post cache");
-          if (snapshot.data.length > 0) {
-            loadMorePost(snapshot.data);
-            return Container(
-              padding: EdgeInsets.only(top: 10),
-              constraints: BoxConstraints.expand(
-                  height: SizeConfig.screenHeight * 0.845),
-              child: PostCardComponentPage(
-                  postList: snapshot.data,
-                  myFavorits: myFavorits,
-                  userEmail: _userEmail,
-                  showPictures: showPictures),
-            ); //_buildPostGrid(showPictures);
-          } else {
-            return new Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: SizeConfig.blockSizeHorizontal * 3,
-                  vertical: SizeConfig.blockSizeVertical * 2,
-                ),
-                child: Text(
-                  AppLocalizations.of(context).translate('no_post_found'),
-                ),
-              ),
-            );
-          }
-        } else if (snapshot.hasError) {
-          MyNotification.showInfoFlushbar(
-              context,
-              AppLocalizations.of(context).translate('error'),
-              AppLocalizations.of(context).translate('error_loading'),
-              Icon(
-                Icons.info_outline,
-                size: 28,
-                color: Colors.redAccent,
-              ),
-              Colors.redAccent,
-              3);
-        }
-        return _buildPageWithDataFromCache();
+
+    return RefreshIndicator(
+      key: refreshKey,
+      onRefresh: () async {
+        await _loadAllData();
       },
+      child: FutureBuilder(
+        future: _loadPost(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            print("Stop load post cache");
+            if (snapshot.data.length > 0) {
+              loadMorePost(snapshot.data);
+              return Container(
+                padding: EdgeInsets.only(top: 10),
+                constraints: BoxConstraints.expand(
+                    height: SizeConfig.screenHeight * 0.845),
+                child: PostCardComponentPage(
+                    postList: snapshot.data,
+                    myFavorits: myFavorits,
+                    userEmail: _userEmail,
+                    showPictures: showPictures),
+              ); //_buildPostGrid(showPictures);
+            } else {
+              return new Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: SizeConfig.blockSizeHorizontal * 3,
+                    vertical: SizeConfig.blockSizeVertical * 2,
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context).translate('no_post_found'),
+                  ),
+                ),
+              );
+            }
+          } else if (snapshot.hasError) {
+            MyNotification.showInfoFlushbar(
+                context,
+                AppLocalizations.of(context).translate('error'),
+                AppLocalizations.of(context).translate('error_loading'),
+                Icon(
+                  Icons.info_outline,
+                  size: 28,
+                  color: Colors.redAccent,
+                ),
+                Colors.redAccent,
+                3);
+          }
+          return _buildPageWithDataFromCache();
+        },
+      ),
     );
   }
 
@@ -371,6 +385,11 @@ class _HomePageState extends State<HomePage> {
     return postList;
   }
 
+  Future<void> _loadPostFromServer() async {
+    print("Start load post");
+    postList = await _postService.fetchActivePostFromServer();
+  }
+
   Future<List<Post>> _loadPostFromCache() async {
     print("Start load post cache");
 
@@ -387,21 +406,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<List<Categorie>> _loadMyCategories() async {
-    String listCategoryFromSharePrefs =
-        await _sharedPreferenceService.read(CATEGORIE_LIST);
+    categories = await _categorieService.fetchCategories();
 
-    if (listCategoryFromSharePrefs != null) {
-      Iterable iterableCategories = jsonDecode(listCategoryFromSharePrefs);
-      categories = await iterableCategories.map<Categorie>((category) {
-        return Categorie.fromJsonPref(category);
-      }).toList();
-    } else {
-      categories = await _categorieService.fetchCategories();
+    return buildParentCategories();
+  }
 
-      //Cache translated categories
-      String jsonCategorie = jsonEncode(categories);
-      _sharedPreferenceService.save(CATEGORIE_LIST, jsonCategorie);
-    }
+  Future<List<Categorie>> _loadMyCategoriesFromServer() async {
+    categories = await _categorieService.fetchCategoriesFromServer();
+
+    return buildParentCategories();
+  }
+
+  List<Categorie> buildParentCategories() {
     if (parentCategories == null || parentCategories.isEmpty) {
       List<Categorie> translatedcategories =
           _categorieService.translateCategories(categories, context);
@@ -429,5 +445,13 @@ class _HomePageState extends State<HomePage> {
       _sharedPreferenceService.save(DEVICE_TOKEN, _deviceToken);
     }
     print('Device-Token-Home: $event');
+  }
+
+  Future<void> _loadAllData() async {
+    await _sharedPreferenceService.remove(CATEGORIE_LIST_CACHE_TIME);
+    await _sharedPreferenceService.remove(POST_LIST_CACHE_TIME);
+    await _loadMyFavorits();
+
+    setState(() {});
   }
 }

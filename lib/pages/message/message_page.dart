@@ -41,7 +41,7 @@ class _MessagePageState extends State<MessagePage> {
   SharedPreferenceService _sharedPreferenceService =
       new SharedPreferenceService();
   FirebaseUser firebaseUser;
-  String userEmail;
+  //String userEmail;
 
   @override
   void initState() {
@@ -58,7 +58,7 @@ class _MessagePageState extends State<MessagePage> {
         builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
           if (snapshot.hasData) {
             firebaseUser = snapshot.data;
-
+            saveUserToPrefs(firebaseUser);
             // this is your user instance
             /// is because there is user already logged
             return Column(children: <Widget>[
@@ -206,32 +206,36 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   Widget buildSubtitle(int index, BuildContext context) {
-    int newMessage = _messageService.countNewMessage(
-        _postMessages.elementAt(index).messages, userEmail);
+    if(firebaseUser != null) {
+      int newMessage = _messageService.countNewMessage(
+          _postMessages
+              .elementAt(index)
+              .messages, firebaseUser.email);
 
-    return newMessage > 1
-        ? Text(
-            newMessage.toString() +
-                ' ' +
-                AppLocalizations.of(context).translate('new_plural') +
-                " " +
-                AppLocalizations.of(context)
-                    .translate('messages')
-                    .toLowerCase(),
-            style: GlobalStyling.styleSubtitleBlueAccent,
-          )
-        : newMessage == 1
-            ? Text(
-                newMessage.toString() +
-                    ' ' +
-                    AppLocalizations.of(context).translate('new') +
-                    " " +
-                    AppLocalizations.of(context)
-                        .translate('message')
-                        .toLowerCase(),
-                style: GlobalStyling.styleSubtitleBlueAccent,
-              )
-            : null;
+      return newMessage > 1
+          ? Text(
+        newMessage.toString() +
+            ' ' +
+            AppLocalizations.of(context).translate('new_plural') +
+            " " +
+            AppLocalizations.of(context)
+                .translate('messages')
+                .toLowerCase(),
+        style: GlobalStyling.styleSubtitleBlueAccent,
+      )
+          : newMessage == 1
+          ? Text(
+        newMessage.toString() +
+            ' ' +
+            AppLocalizations.of(context).translate('new') +
+            " " +
+            AppLocalizations.of(context)
+                .translate('message')
+                .toLowerCase(),
+        style: GlobalStyling.styleSubtitleBlueAccent,
+      )
+          : null;
+    }
   }
 
   Future<List<PostMessage>> _loadMessageByEmail(String userEmail) async {
@@ -276,9 +280,8 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   Future<List<PostMessage>> _loadMessages() async {
-    await _loadUser();
-    if (userEmail != null && userEmail.isNotEmpty) {
-      _postMessages = await _loadMessageByEmail(userEmail);
+    if (firebaseUser != null && firebaseUser.email.isNotEmpty) {
+      _postMessages = await _loadMessageByEmail(firebaseUser.email);
       _postMessages.sort((postMessage1, postMessage2) =>
           postMessage1.recentMessageDate.isAfter(postMessage2.recentMessageDate)
               ? 0
@@ -289,7 +292,7 @@ class _MessagePageState extends State<MessagePage> {
 
   void openUserMessage(PostMessage postMessage, String userName) async {
     //Aktueller User ist Bezitzer des Post, dann kann er alle Nachrichten zu dieser Post sehen
-    if (userEmail == postMessage.post.useremail) {
+    if (firebaseUser != null && firebaseUser.email == postMessage.post.useremail) {
       List<UserMessage> userMessage =
           await _mapPostMessageToUserMessage(postMessage);
       Navigator.of(context).push(
@@ -302,7 +305,7 @@ class _MessagePageState extends State<MessagePage> {
     } else {
       List<Message> messagesSentOrReceived = new List<Message>();
       for (Message message in postMessage.messages) {
-        if (message.sender == userEmail || message.receiver == userEmail) {
+        if (firebaseUser != null && (message.sender == firebaseUser.email || message.receiver == firebaseUser.email)) {
           messagesSentOrReceived.add(message);
         }
       }
@@ -349,13 +352,14 @@ class _MessagePageState extends State<MessagePage> {
     return userMessages;
   }
 
-  Future<void> _loadUser() async {
-    if (userEmail == null || userEmail.isEmpty) {
-      String _userEmail = await _sharedPreferenceService.read(USER_EMAIL);
-      if (_userEmail != null && _userEmail.isNotEmpty) {
-        userEmail = _userEmail;
-        setState(() {});
-      }
-    }
+
+  Future<void> saveUserToPrefs(FirebaseUser firebaseUser) async {
+    //userName = firebaseUser.displayName;
+    //userEmail = firebaseUser.email;
+
+    await _sharedPreferenceService.save(USER_EMAIL, firebaseUser.email);
+    await _sharedPreferenceService.save(USER_NAME, firebaseUser.displayName);
+
   }
+
 }
