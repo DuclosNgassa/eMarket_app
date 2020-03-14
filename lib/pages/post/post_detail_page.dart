@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:emarket_app/converter/date_converter.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/custom_component/post_category.dart';
+import 'package:emarket_app/custom_component/post_detail_component.dart';
 import 'package:emarket_app/custom_component/post_owner.dart';
 import 'package:emarket_app/form/post_edit_form.dart';
 import 'package:emarket_app/global/global_color.dart';
@@ -49,8 +49,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
       new SharedPreferenceService();
 
   String userEmail;
-
-  //bool _isDownloaded = false;
   User _postOwner;
   Favorit myFavoritToAdd;
   Favorit myFavoritToRemove;
@@ -86,7 +84,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
       deleteFavorit(myFavoritToRemove);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -125,10 +122,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: SizeConfig.blockSizeHorizontal * 2,
                           vertical: SizeConfig.blockSizeVertical),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           _isPostOwner()
                               ? Container(
@@ -147,118 +144,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               : new Container(),
                           buildImageGridViewShowPicture(),
                           Divider(),
-                          Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  widget.post.title,
-                                  style: GlobalStyling.styleTitleBlack,
-                                  //style: titleDetailStyle,
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () => updateIconFavorit(),
-                                child: CircleAvatar(
-                                  backgroundColor: GlobalColor.colorGrey100,
-                                  child: favoritIcon,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: SizeConfig.blockSizeVertical * 1.5),
-                          Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  widget.post.fee.toString() +
-                                      ' ' +
-                                      AppLocalizations.of(context)
-                                          .translate('fcfa'),
-                                  style: GlobalStyling.stylePrice,
-                                ),
-                              ),
-                              Text(
-                                Post.convertFeeTypToDisplay(
-                                    widget.post.fee_typ, context),
-                                style: GlobalStyling.stylePrice,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: SizeConfig.blockSizeVertical),
-                          Row(
-                            children: _buildAddress(widget.post.rating),
-                          ),
-                          //SizedBox(height: SizeConfig.blockSizeVertical),
-                          Divider(
-                            height: SizeConfig.blockSizeVertical * 3,
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    right: SizeConfig.blockSizeHorizontal * 5),
-                                child: Column(
-                                  children: <Widget>[
-                                    Row(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            right:
-                                                SizeConfig.blockSizeHorizontal,
-                                          ),
-                                          child: Icon(Icons.calendar_today,
-                                              color: GlobalColor
-                                                  .colorDeepPurple300),
-                                        ),
-                                        Text(DateConverter.convertToString(
-                                            widget.post.created_at, context)),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    right: SizeConfig.blockSizeHorizontal),
-                                child: Icon(Icons.remove_red_eye,
-                                    color: GlobalColor.colorDeepPurple300),
-                              ),
-                              Text(widget.post.count_view.toString()),
-                              Expanded(
-                                child: Container(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    Post.convertPostTypToStringForDisplay(
-                                        widget.post.post_typ, context),
-                                    style: GlobalStyling.styleTitleBlack,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Divider(
-                            height: SizeConfig.blockSizeVertical * 3,
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Text(
-                                AppLocalizations.of(context)
-                                    .translate('description'),
-                                style: GlobalStyling.styleTitleBlack,
-                                //style: titleDetailStyle,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: SizeConfig.blockSizeVertical),
-                          Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  widget.post.description,
-                                  style: GlobalStyling.styleNormalBlack,
-                                ),
-                              ),
-                            ],
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: SizeConfig.blockSizeHorizontal * 2),
+                            child: PostDetailComponent(
+                              setFavorit: () => updateIconFavorit(),
+                              post: widget.post,
+                            ),
                           ),
                           Divider(
                             height: SizeConfig.blockSizeVertical * 5,
@@ -274,6 +166,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           ),
                           SizedBox(
                             height: SizeConfig.blockSizeVertical * 2,
+                          ),
+                          Divider(
+                            height: SizeConfig.blockSizeVertical * 5,
                           ),
                           Container(
                             height: SizeConfig.screenHeight * 0.75,
@@ -327,23 +222,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
         },
       ),
     );
-  }
-
-  List<Widget> _buildAddress(int rating) {
-    List<Widget> widgetList = new List();
-    Widget location =
-        Icon(Icons.location_on, color: GlobalColor.colorDeepPurple300);
-    Widget city = Expanded(
-      child: Text(
-        widget.post.city + ', ' + widget.post.quarter,
-        style: GlobalStyling.styleGreyDetail,
-      ),
-    );
-
-    widgetList.add(location);
-    widgetList.add(city);
-
-    return widgetList;
   }
 
   Widget buildImageGridViewShowPicture() {

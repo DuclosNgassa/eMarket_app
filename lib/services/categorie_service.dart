@@ -61,10 +61,9 @@ class CategorieService {
     }
   }
 
-
   Future<List<Categorie>> fetchCategoriesFromCache() async {
     String listCategoryFromSharePrefs =
-    await _sharedPreferenceService.read(CATEGORIE_LIST);
+        await _sharedPreferenceService.read(CATEGORIE_LIST);
     if (listCategoryFromSharePrefs != null) {
       Iterable iterablePost = jsonDecode(listCategoryFromSharePrefs);
       final categorieList = await iterablePost.map<Categorie>((categorie) {

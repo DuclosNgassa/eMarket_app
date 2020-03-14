@@ -12,21 +12,21 @@ class SearchResultPage extends StatefulWidget {
   final List<Post> searchResultList;
   final List<Favorit> myFavorits;
   final String userEmail;
-  final Categorie parentCategory;
+  final Categorie selectedCategory;
+  final bool showPictures;
 
   SearchResultPage(
       {this.searchResultList,
       this.myFavorits,
       this.userEmail,
-      this.parentCategory});
+      this.selectedCategory,
+      this.showPictures});
 
   @override
   SearchResultState createState() => SearchResultState();
 }
 
 class SearchResultState extends State<SearchResultPage> {
-  bool showPictures = false;
-
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -35,46 +35,25 @@ class SearchResultState extends State<SearchResultPage> {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          Container(
-            child: Padding(
-              padding: EdgeInsets.only(
-                  left: SizeConfig.blockSizeHorizontal * 2,
-                  right: SizeConfig.blockSizeHorizontal * 2),
-              child: Row(
-                mainAxisAlignment: widget.parentCategory != null
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.end,
-                children: <Widget>[
-                  widget.parentCategory != null
-                      ? Expanded(
-                          child: Text(
-                            AppLocalizations.of(context).translate('category') +
-                                ": " +
-                                widget.parentCategory.title,
-                            style: GlobalStyling.styleNormalBlackBold,
-                          ),
-                        )
-                      : Container(
-                          height: 0,
-                          width: 0,
-                        ),
-                  Switch(
-                    value: showPictures,
-                    onChanged: (value) {
-                      setState(() {
-                        showPictures = value;
-                      });
-                    },
-                    activeTrackColor: Colors.lightGreenAccent,
-                    activeColor: Colors.green,
-                  ),
-                  Text(
-                    AppLocalizations.of(context).translate('pictures'),
-                    style: GlobalStyling.styleNormalBlackBold,
-                  ),
-                ],
-              ),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              widget.selectedCategory != null
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: SizeConfig.blockSizeVertical * 1.5),
+                      child: Text(
+                        AppLocalizations.of(context).translate('category') +
+                            ": " +
+                            widget.selectedCategory.title,
+                        style: GlobalStyling.styleNormalBlackBold,
+                      ),
+                    )
+                  : Container(
+                      height: 0,
+                      width: 0,
+                    ),
+            ],
           ),
           Container(
             padding: EdgeInsets.only(top: 10),
@@ -84,7 +63,7 @@ class SearchResultState extends State<SearchResultPage> {
                 postList: widget.searchResultList,
                 myFavorits: widget.myFavorits,
                 userEmail: widget.userEmail,
-                showPictures: showPictures),
+                showPictures: widget.showPictures),
           ),
         ],
       ),

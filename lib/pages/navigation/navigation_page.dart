@@ -22,6 +22,7 @@ import 'package:emarket_app/util/size_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class NavigationPage extends StatefulWidget {
   int _selectedIndex = 0;
@@ -248,11 +249,15 @@ class _NavigationPageState extends State<NavigationPage> {
   }
 
   Widget buildNewMessageIcon() {
+    final Widget icon = Icon(
+      FontAwesomeIcons.comments,
+    );
+
     if (_incomingMessage > 0 && _localSelectedIndex != MESSAGEPAGE) {
       return Stack(
         children: <Widget>[
           Container(
-            child: Icon(Icons.message),
+            child: icon,
           ),
           Container(
               margin: EdgeInsets.only(
@@ -262,7 +267,7 @@ class _NavigationPageState extends State<NavigationPage> {
         ],
       );
     }
-    return Icon(Icons.message);
+    return icon;
   }
 
   showNotification(dynamic notification) async {

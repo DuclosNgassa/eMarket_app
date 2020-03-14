@@ -15,7 +15,8 @@ class PostCategory extends StatefulWidget {
       {@required this.categoryId,
       @required this.actualPostId,
       this.userEmail,
-      this.myFavorits, this.showPictures});
+      this.myFavorits,
+      this.showPictures});
 
   final int categoryId;
   final int actualPostId;
@@ -29,7 +30,8 @@ class PostCategory extends StatefulWidget {
 
 class PostCategoryState extends State<PostCategory> {
   final PostService _postService = new PostService();
-  SharedPreferenceService _sharedPreferenceService = new SharedPreferenceService();
+  SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
 
   List<Post> postList = new List();
   List<Post> postListItems = new List();
@@ -57,20 +59,19 @@ class PostCategoryState extends State<PostCategory> {
             return Column(
               children: <Widget>[
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Expanded(
-                      child: Text(
-                        AppLocalizations.of(context)
-                            .translate('same_category_post'),
-                        style: GlobalStyling.styleNormalBlackBold,
-                      ),
+                    Text(
+                      AppLocalizations.of(context)
+                          .translate('same_category_post'),
+                      style: GlobalStyling.styleNormalBlackBold,
                     ),
                   ],
                 ),
                 Container(
                   margin:
                       EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 3),
-                  height: SizeConfig.screenHeight * 0.6,
+                  height: SizeConfig.screenHeight * 0.69,
                   child: PostCardComponentPage(
                       postList: snapshot.data,
                       myFavorits: widget.myFavorits,
@@ -138,9 +139,7 @@ class PostCategoryState extends State<PostCategory> {
     setState(() {});
   }
 
-
   _readShowPictures() async {
     showPictures = await Util.readShowPictures(_sharedPreferenceService);
   }
-
 }

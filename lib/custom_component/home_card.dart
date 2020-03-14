@@ -92,9 +92,8 @@ class _HomeCardState extends State<HomeCard> {
             return PostDetailPage(post);
           },
         ),
-      ).then((_){
-        setState(() {
-        });
+      ).then((_) {
+        setState(() {});
       });
     } else {
       MyNotification.showInfoFlushbar(
@@ -187,8 +186,6 @@ class _HomeCardState extends State<HomeCard> {
   }
 
   Widget _buildHomeCard(BuildContext context, double height, double width) {
-    // A new container
-    // The height and width are arbitrary numbers for styling.
     return Container(
       height: height,
       width: width,

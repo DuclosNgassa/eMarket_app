@@ -41,7 +41,6 @@ class _MessagePageState extends State<MessagePage> {
   SharedPreferenceService _sharedPreferenceService =
       new SharedPreferenceService();
   FirebaseUser firebaseUser;
-  //String userEmail;
 
   @override
   void initState() {
@@ -162,7 +161,6 @@ class _MessagePageState extends State<MessagePage> {
                     ),
                   );
                 },
-                //separatorBuilder: (context, index) => Divider(),
                 itemCount: _postMessages.length);
           } else {
             return new Center(
@@ -206,35 +204,33 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   Widget buildSubtitle(int index, BuildContext context) {
-    if(firebaseUser != null) {
+    if (firebaseUser != null) {
       int newMessage = _messageService.countNewMessage(
-          _postMessages
-              .elementAt(index)
-              .messages, firebaseUser.email);
+          _postMessages.elementAt(index).messages, firebaseUser.email);
 
       return newMessage > 1
           ? Text(
-        newMessage.toString() +
-            ' ' +
-            AppLocalizations.of(context).translate('new_plural') +
-            " " +
-            AppLocalizations.of(context)
-                .translate('messages')
-                .toLowerCase(),
-        style: GlobalStyling.styleSubtitleBlueAccent,
-      )
+              newMessage.toString() +
+                  ' ' +
+                  AppLocalizations.of(context).translate('new_plural') +
+                  " " +
+                  AppLocalizations.of(context)
+                      .translate('messages')
+                      .toLowerCase(),
+              style: GlobalStyling.styleSubtitleBlueAccent,
+            )
           : newMessage == 1
-          ? Text(
-        newMessage.toString() +
-            ' ' +
-            AppLocalizations.of(context).translate('new') +
-            " " +
-            AppLocalizations.of(context)
-                .translate('message')
-                .toLowerCase(),
-        style: GlobalStyling.styleSubtitleBlueAccent,
-      )
-          : null;
+              ? Text(
+                  newMessage.toString() +
+                      ' ' +
+                      AppLocalizations.of(context).translate('new') +
+                      " " +
+                      AppLocalizations.of(context)
+                          .translate('message')
+                          .toLowerCase(),
+                  style: GlobalStyling.styleSubtitleBlueAccent,
+                )
+              : null;
     }
   }
 
@@ -292,7 +288,8 @@ class _MessagePageState extends State<MessagePage> {
 
   void openUserMessage(PostMessage postMessage, String userName) async {
     //Aktueller User ist Bezitzer des Post, dann kann er alle Nachrichten zu dieser Post sehen
-    if (firebaseUser != null && firebaseUser.email == postMessage.post.useremail) {
+    if (firebaseUser != null &&
+        firebaseUser.email == postMessage.post.useremail) {
       List<UserMessage> userMessage =
           await _mapPostMessageToUserMessage(postMessage);
       Navigator.of(context).push(
@@ -305,7 +302,9 @@ class _MessagePageState extends State<MessagePage> {
     } else {
       List<Message> messagesSentOrReceived = new List<Message>();
       for (Message message in postMessage.messages) {
-        if (firebaseUser != null && (message.sender == firebaseUser.email || message.receiver == firebaseUser.email)) {
+        if (firebaseUser != null &&
+            (message.sender == firebaseUser.email ||
+                message.receiver == firebaseUser.email)) {
           messagesSentOrReceived.add(message);
         }
       }
@@ -352,14 +351,8 @@ class _MessagePageState extends State<MessagePage> {
     return userMessages;
   }
 
-
   Future<void> saveUserToPrefs(FirebaseUser firebaseUser) async {
-    //userName = firebaseUser.displayName;
-    //userEmail = firebaseUser.email;
-
     await _sharedPreferenceService.save(USER_EMAIL, firebaseUser.email);
     await _sharedPreferenceService.save(USER_NAME, firebaseUser.displayName);
-
   }
-
 }

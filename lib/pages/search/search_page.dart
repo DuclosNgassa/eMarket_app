@@ -9,21 +9,33 @@ import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/searchparameter.dart';
 import 'package:emarket_app/pages/search/search_parameter_page.dart';
 import 'package:emarket_app/pages/search/search_result_page.dart';
+import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SearchPage extends SearchDelegate<Post> {
+  final CategorieService _categorieService = new CategorieService();
+
   final List<Post> postList;
   final List<Favorit> myFavorits;
   final String userEmail;
   final String searchLabel;
   SearchParameter searchParameter;
   List<int> childCategories;
-  bool showPictures = false;
+  bool showPictures;
   Categorie parentCategory;
+  Categorie selectedCategory;
 
-  SearchPage(this.postList, this.myFavorits, this.userEmail, this.searchLabel,
-      this.searchParameter, this.childCategories, this.parentCategory);
+  SearchPage(
+      this.postList,
+      this.myFavorits,
+      this.userEmail,
+      this.searchLabel,
+      this.searchParameter,
+      this.childCategories,
+      this.parentCategory,
+      this.showPictures);
 
   @override
   String get searchFieldLabel => searchLabel;
@@ -68,7 +80,11 @@ class SearchPage extends SearchDelegate<Post> {
           horizontal: SizeConfig.blockSizeHorizontal * 2,
         ),
         child: IconButton(
-          icon: Icon(Icons.build),
+          icon: Icon(
+            FontAwesomeIcons.cog,
+            color: GlobalColor.colorRed,
+            size: SizeConfig.safeBlockHorizontal * 9,
+          ),
           color: GlobalColor.colorWhite,
           onPressed: () => showSearchParameterPage(context),
         ),
@@ -111,14 +127,17 @@ class SearchPage extends SearchDelegate<Post> {
     }
 
     return SearchResultPage(
-        searchResultList: searchResultList,
-        myFavorits: myFavorits,
-        userEmail: userEmail,
-        parentCategory: parentCategory);
+      searchResultList: searchResultList,
+      myFavorits: myFavorits,
+      userEmail: userEmail,
+      selectedCategory:
+          selectedCategory != null ? selectedCategory : parentCategory,
+      showPictures: showPictures,
+    );
   }
 
   bool isSelected(Post post) {
-    if (childCategories != null) {
+    if (childCategories != null && searchParameter == null) {
       return childCategories.contains(post.categorieid);
     }
 
@@ -200,13 +219,25 @@ class SearchPage extends SearchDelegate<Post> {
     return postTyp == searchParamPostTyp;
   }
 
-  Future showSearchParameterPage(BuildContext context) async {
+  Future<void> showSearchParameterPage(BuildContext context) async {
     searchParameter = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => SearchParameterPage(),
       ),
     );
+
+    if (searchParameter != null && searchParameter.category != null) {
+      selectedCategory = await setSelectedcategory(context);
+    }
+  }
+
+  Future<Categorie> setSelectedcategory(BuildContext context) async {
+    Categorie categorie =
+        await _categorieService.fetchCategorieByID(searchParameter.category);
+    categorie.title =
+        AppLocalizations.of(context).translate(selectedCategory.title);
+    return categorie;
   }
 
   void _clearFormSearch() {
@@ -214,5 +245,6 @@ class SearchPage extends SearchDelegate<Post> {
     searchParameter = null;
     childCategories = null;
     parentCategory = null;
+    selectedCategory = null;
   }
 }

@@ -41,8 +41,6 @@ class _AccountState extends State<AccountPage>
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
   TabController controller;
 
-//  String userName = 'eMarket';
-//  String userEmail = 'eMarket@softsolutions.de';
   FirebaseUser _firebaseUser;
   List<Post> _myPosts = new List();
   List<Post> _myFavoritPosts = new List();
@@ -532,16 +530,14 @@ class _AccountState extends State<AccountPage>
   }
 
   Future<void> saveUserToPrefs(FirebaseUser firebaseUser) async {
-    //userName = firebaseUser.displayName;
-    //userEmail = firebaseUser.email;
-
     await _sharedPreferenceService.save(USER_EMAIL, firebaseUser.email);
     await _sharedPreferenceService.save(USER_NAME, firebaseUser.displayName);
-
   }
 
   Future<List<Post>> _loadMyPosts() async {
-    if (_firebaseUser!= null && _firebaseUser.email != null && _myPosts.isEmpty) {
+    if (_firebaseUser != null &&
+        _firebaseUser.email != null &&
+        _myPosts.isEmpty) {
       _myPosts = await _postService.fetchPostByUserEmail(_firebaseUser.email);
     }
 
@@ -549,7 +545,8 @@ class _AccountState extends State<AccountPage>
   }
 
   Future<List<Post>> _loadMyFavorits() async {
-    if (_firebaseUser!= null && _firebaseUser.email != null &&
+    if (_firebaseUser != null &&
+        _firebaseUser.email != null &&
         _firebaseUser.email.isNotEmpty &&
         _myFavorits.isEmpty &&
         _myFavoritPosts.isEmpty) {
@@ -563,8 +560,8 @@ class _AccountState extends State<AccountPage>
         DateTime actualDateTime = DateTime.now();
 
         if (actualDateTime.difference(cacheTime) > Duration(minutes: 3)) {
-          _myFavoritPosts =
-              await _favoritService.loadMyFavoritFromServer(_firebaseUser.email);
+          _myFavoritPosts = await _favoritService
+              .loadMyFavoritFromServer(_firebaseUser.email);
         } else {
           _myFavoritPosts =
               await _favoritService.loadMyFavoritFromCache(_firebaseUser.email);
@@ -592,7 +589,6 @@ class _AccountState extends State<AccountPage>
               child: CustomButton(
                 fillColor: GlobalColor.colorRed,
                 icon: FontAwesomeIcons.signOutAlt,
-                //icon: Icons.directions_run,
                 splashColor: Colors.white,
                 iconColor: Colors.white,
                 text: AppLocalizations.of(context).translate('logout'),

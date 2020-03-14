@@ -32,7 +32,6 @@ class PostCardComponentState extends State<PostCardComponentPage> {
   void initState() {
     super.initState();
     _initControllers();
-    //_readShowPictures();
   }
 
   @override

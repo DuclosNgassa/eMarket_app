@@ -69,7 +69,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     refreshKey = GlobalKey<RefreshIndicatorState>();
     _loadMyFavorits();
-    //_readShowPictures();
     _firebaseMessaging.onTokenRefresh.listen(setDeviceToken);
     _firebaseMessaging.getToken();
 
@@ -135,13 +134,16 @@ class _HomePageState extends State<HomePage> {
         ),
         floatingActionButton: Padding(
           padding: EdgeInsets.only(
-              bottom: SizeConfig.blockSizeVertical,
-              right: SizeConfig.screenWidth * 0.4),
+              bottom: 0, //SizeConfig.blockSizeVertical,
+              right: SizeConfig.screenWidth * 0.39),
           child: FloatingActionButton(
             backgroundColor: Colors.red,
             onPressed: () => _changeShowPictures(),
             tooltip: 'Image',
-            child: Icon(Icons.image),
+            child: Icon(
+              Icons.image,
+              size: SizeConfig.safeBlockHorizontal * 12,
+            ),
           ),
         ));
   }
@@ -150,8 +152,8 @@ class _HomePageState extends State<HomePage> {
     if (postList != null && postList.isNotEmpty) {
       showSearch(
         context: context,
-        delegate: SearchPage(
-            postList, myFavorits, _userEmail, _searchLabel, null, null, null),
+        delegate: SearchPage(postList, myFavorits, _userEmail, _searchLabel,
+            null, null, null, showPictures),
       );
     } else {
       _showLoadAllPostMessage();
@@ -166,11 +168,9 @@ class _HomePageState extends State<HomePage> {
 
   _readShowPictures() async {
     showPictures = await Util.readShowPictures(_sharedPreferenceService);
-    //setState(() {});
   }
 
   Widget _buildPageWithDataFromServer() {
-
     return RefreshIndicator(
       key: refreshKey,
       onRefresh: () async {
@@ -358,7 +358,7 @@ class _HomePageState extends State<HomePage> {
       showSearch(
         context: context,
         delegate: SearchPage(postList, myFavorits, _userEmail, _searchLabel,
-            null, childCategories, parentCategorie),
+            null, childCategories, parentCategorie, showPictures),
       );
     } else {
       _showLoadAllPostMessage();
@@ -409,12 +409,6 @@ class _HomePageState extends State<HomePage> {
 
   Future<List<Categorie>> _loadMyCategories() async {
     categories = await _categorieService.fetchCategories();
-
-    return buildParentCategories();
-  }
-
-  Future<List<Categorie>> _loadMyCategoriesFromServer() async {
-    categories = await _categorieService.fetchCategoriesFromServer();
 
     return buildParentCategories();
   }

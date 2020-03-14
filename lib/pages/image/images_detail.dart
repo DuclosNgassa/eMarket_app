@@ -54,10 +54,7 @@ class _ImageDetailState extends State<ImageDetailPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: SizeConfig.blockSizeHorizontal * 3,
-                      top: SizeConfig.blockSizeVertical * 15),
+                Center(
                   child: Container(
                     height: SizeConfig.blockSizeVertical * 70,
                     width: SizeConfig.screenWidth * 0.9,
@@ -65,7 +62,10 @@ class _ImageDetailState extends State<ImageDetailPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Expanded(
-                          child: buildPhotoGridView(),
+                          child: Padding(
+                            padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 5),
+                            child: buildPhotoGridView(),
+                          ),
                         ),
                       ],
                     ),

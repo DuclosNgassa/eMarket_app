@@ -97,8 +97,7 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
           },
         ),
       ).then((_) {
-        setState(() {
-        });
+        setState(() {});
       });
     } else {
       MyNotification.showInfoFlushbar(
