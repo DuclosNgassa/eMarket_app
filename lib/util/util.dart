@@ -1,5 +1,6 @@
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/icon_data.dart';
 
 import 'global.dart';
 
@@ -28,4 +29,21 @@ class Util {
       await _sharedPreferenceService.save(SHOW_PICTURES, SHOW_PICTURES_NO);
     }
   }
+
+  static IconData getCategoryIcon(int categorieId, String icon) {
+    switch (categorieId) {
+      case EVENT:
+      case BOOKS:
+      case DONATION_EXCHANGE:
+      case FOOD:
+      case JOB:
+      case COURSES_TRAINING:
+        {
+          return IconDataSolid(int.parse(icon));
+        }
+        break;
+    }
+    return IconData(int.parse(icon), fontFamily: 'MaterialIcons');
+  }
+
 }

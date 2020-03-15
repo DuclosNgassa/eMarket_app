@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
             tooltip: 'Image',
             child: Icon(
               Icons.image,
-              size: SizeConfig.safeBlockHorizontal * 12,
+              size: SizeConfig.safeBlockHorizontal * 11,
             ),
           ),
         ));
@@ -301,8 +301,7 @@ class _HomePageState extends State<HomePage> {
                   width: SizeConfig.blockSizeHorizontal * 32,
                   height: heightCustomCategorieButton,
                   fillColor: GlobalColor.colorWhite,
-                  icon: IconData(int.parse(parentCategories[index].icon),
-                      fontFamily: 'MaterialIcons'),
+                  icon: Util.getCategoryIcon(parentCategories[index].id, parentCategories[index].icon),
                   splashColor: GlobalColor.colorDeepPurple400,
                   iconColor: GlobalColor.colorDeepPurple400,
                   text: parentCategories[index].title,

@@ -4,6 +4,7 @@ import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/util/size_config.dart';
+import 'package:emarket_app/util/util.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/categorie_service.dart';
@@ -52,25 +53,25 @@ class _CategoriePageState extends State<CategoriePage> {
     Navigator.of(context).pop(new CategorieTile('', 0));
   }
 
-  Widget _buildCategories(CategorieTile categorie) {
-    if (categorie.children == null)
+  Widget _buildCategories(CategorieTile categorieTile) {
+    if (categorieTile.children == null)
       return new ListTile(
           dense: true,
           enabled: true,
           isThreeLine: false,
           onLongPress: () => print("long press"),
-          onTap: () => submitCategorie(categorie),
+          onTap: () => submitCategorie(categorieTile),
           selected: true,
-          title: new Text(categorie.title));
+          title: new Text(categorieTile.title));
 
     return new ExpansionTile(
-      key: PageStorageKey<CategorieTile>(categorie),
-      title: new Text(categorie.title),
+      key: PageStorageKey<CategorieTile>(categorieTile),
+      title: new Text(categorieTile.title),
       leading: Icon(
-        IconData(int.parse(categorie.icon), fontFamily: 'MaterialIcons'),
+        Util.getCategoryIcon(categorieTile.id, categorieTile.icon),
         color: Colors.deepPurple,
       ),
-      children: categorie.children.map(_buildCategories).toList(),
+      children: categorieTile.children.map(_buildCategories).toList(),
     );
   }
 

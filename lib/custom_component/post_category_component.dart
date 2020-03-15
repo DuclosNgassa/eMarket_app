@@ -10,8 +10,8 @@ import 'package:emarket_app/util/size_config.dart';
 import 'package:emarket_app/util/util.dart';
 import 'package:flutter/material.dart';
 
-class PostCategory extends StatefulWidget {
-  PostCategory(
+class PostCategoryComponent extends StatefulWidget {
+  PostCategoryComponent(
       {@required this.categoryId,
       @required this.actualPostId,
       this.userEmail,
@@ -25,10 +25,10 @@ class PostCategory extends StatefulWidget {
   final bool showPictures;
 
   @override
-  PostCategoryState createState() => PostCategoryState();
+  PostCategoryComponentState createState() => PostCategoryComponentState();
 }
 
-class PostCategoryState extends State<PostCategory> {
+class PostCategoryComponentState extends State<PostCategoryComponent> {
   final PostService _postService = new PostService();
   SharedPreferenceService _sharedPreferenceService =
       new SharedPreferenceService();
@@ -131,12 +131,6 @@ class PostCategoryState extends State<PostCategory> {
     await _readShowPictures();
 
     return postList;
-  }
-
-  _changeShowPictures() async {
-    showPictures = !showPictures;
-    await Util.saveShowPictures(showPictures, _sharedPreferenceService);
-    setState(() {});
   }
 
   _readShowPictures() async {

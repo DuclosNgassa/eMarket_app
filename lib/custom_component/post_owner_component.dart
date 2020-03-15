@@ -21,8 +21,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'custom_button.dart';
 
-class PostOwner extends StatefulWidget {
-  PostOwner(
+class PostOwnerComponent extends StatefulWidget {
+  PostOwnerComponent(
       {@required this.showAllUserPost,
       @required this.fillColor,
       @required this.splashColor,
@@ -40,10 +40,10 @@ class PostOwner extends StatefulWidget {
   final int postCount;
 
   @override
-  PostOwnerState createState() => PostOwnerState();
+  PostOwnerComponentState createState() => PostOwnerComponentState();
 }
 
-class PostOwnerState extends State<PostOwner> {
+class PostOwnerComponentState extends State<PostOwnerComponent> {
   final MessageService _messageService = new MessageService();
   final SharedPreferenceService _sharedPreferenceService =
       new SharedPreferenceService();

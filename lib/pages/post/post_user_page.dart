@@ -14,16 +14,16 @@ class PostUserPage extends StatefulWidget {
   final String postOwnerName;
   final String postOwnerEmail;
   final String userEmail;
+  final bool showPictures;
 
   PostUserPage(this.posts, this.postOwnerName, this.postOwnerEmail,
-      this.myFavorits, this.userEmail);
+      this.myFavorits, this.userEmail, this.showPictures);
 
   @override
   _PostUserPageState createState() => _PostUserPageState();
 }
 
 class _PostUserPageState extends State<PostUserPage> {
-  bool showPictures = false;
 
   @override
   void initState() {
@@ -58,8 +58,20 @@ class _PostUserPageState extends State<PostUserPage> {
                     ),
                   ),
                 ),
-                _buildTitle(),
-                _buildPostsContainer(),
+                Padding(
+                  padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 7,
+                      left: SizeConfig.blockSizeHorizontal * 2,
+                      right: SizeConfig.blockSizeHorizontal),
+                  child: _buildTitle(),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      left: SizeConfig.blockSizeHorizontal * 2,
+                      right: SizeConfig.blockSizeHorizontal * 2,),
+                  child: Container(
+                      margin: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 7),
+                      child: _buildPostsContainer(),),
+                ),
               ],
             ),
           ],
@@ -70,83 +82,38 @@ class _PostUserPageState extends State<PostUserPage> {
 
   Container _buildTitle() {
     return Container(
-      padding: EdgeInsets.only(
-          left: SizeConfig.blockSizeHorizontal * 5,
-          top: SizeConfig.blockSizeVertical * 5),
-      constraints: BoxConstraints.expand(height: SizeConfig.screenHeight / 6),
-      child: Container(
-        child: Padding(
-          padding: EdgeInsets.only(
-              left: SizeConfig.blockSizeHorizontal * 2,
-              right: SizeConfig.blockSizeHorizontal),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    child: new Text(
-                      AppLocalizations.of(context).translate('advert_list') +
-                          ' ' +
-                          widget.postOwnerName,
-                      style: GlobalStyling.styleTitleWhite,
-                    ),
-                  ),
-                  Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Switch(
-                          value: showPictures,
-                          onChanged: (value) {
-                            setState(() {
-                              showPictures = value;
-                            });
-                          },
-                          activeTrackColor: Colors.lightGreenAccent,
-                          activeColor: Colors.green,
-                        ),
-                        Text(
-                          AppLocalizations.of(context).translate('pictures'),
-                          style: GlobalStyling.styleNormalBlack,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: new Text(
+              AppLocalizations.of(context).translate('advert_list') +
+                  ' ' +
+                  widget.postOwnerName,
+              style: GlobalStyling.styleTitleWhite,
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
   Widget _buildPostsContainer() {
-    return Container(
-      margin: EdgeInsets.only(top: SizeConfig.screenHeight * 0.125),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: SizeConfig.blockSizeHorizontal * 2,
-              vertical: SizeConfig.blockSizeVertical),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              new Container(
-                padding: EdgeInsets.only(top: 10),
-                constraints: BoxConstraints.expand(
-                    height: SizeConfig.screenHeight * 0.845),
-                child: PostCardComponentPage(
-                    postList: widget.posts,
-                    myFavorits: widget.myFavorits,
-                    userEmail: widget.userEmail,
-                    showPictures: showPictures),
-              ),
-            ],
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          new Container(
+            padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 5),
+            constraints: BoxConstraints.expand(
+                height: SizeConfig.screenHeight * 0.9),
+            child: PostCardComponentPage(
+                postList: widget.posts,
+                myFavorits: widget.myFavorits,
+                userEmail: widget.userEmail,
+                showPictures: widget.showPictures),
           ),
-        ),
+        ],
       ),
     );
   }

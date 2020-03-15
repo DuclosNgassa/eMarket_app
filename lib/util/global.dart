@@ -4,6 +4,13 @@ const ACCOUNTPAGE = 2;
 const MESSAGEPAGE = 3;
 const CONFIGURATIONPAGE = 4;
 
+const int EVENT = 18;
+const int BOOKS = 57;
+const int DONATION_EXCHANGE = 54;
+const int FOOD = 95;
+const int JOB = 27;
+const int COURSES_TRAINING = 69;
+
 const String USER_EMAIL = "USER_EMAIL";
 const String USER_NAME = "USER_NAME";
 const String DEVICE_TOKEN = "DEVICE_TOKEN";

@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
-import 'package:emarket_app/custom_component/post_category.dart';
+import 'package:emarket_app/custom_component/post_category_component.dart';
 import 'package:emarket_app/custom_component/post_detail_component.dart';
-import 'package:emarket_app/custom_component/post_owner.dart';
+import 'package:emarket_app/custom_component/post_owner_component.dart';
 import 'package:emarket_app/form/post_edit_form.dart';
 import 'package:emarket_app/global/global_color.dart';
 import 'package:emarket_app/global/global_styling.dart';
@@ -155,7 +155,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           Divider(
                             height: SizeConfig.blockSizeVertical * 5,
                           ),
-                          PostOwner(
+                          PostOwnerComponent(
                             postCount: posts.length,
                             showAllUserPost: () => showPostUserPage(),
                             fillColor: Colors.transparent,
@@ -172,7 +172,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           ),
                           Container(
                             height: SizeConfig.screenHeight * 0.75,
-                            child: PostCategory(
+                            child: PostCategoryComponent(
                               categoryId: widget.post.categorieid,
                               actualPostId: widget.post.id,
                               myFavorits: myFavorits,
@@ -218,7 +218,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       MaterialPageRoute(
         builder: (context) {
           return PostUserPage(
-              posts, _postOwner.name, _postOwner.email, myFavorits, userEmail);
+              posts, _postOwner.name, _postOwner.email, myFavorits, userEmail, showPictures);
         },
       ),
     );
