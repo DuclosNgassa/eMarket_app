@@ -3,11 +3,13 @@ import 'package:emarket_app/global/global_color.dart';
 import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/enumeration/status.dart';
+import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user_message.dart';
 import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
+import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/util/global.dart';
@@ -30,6 +32,8 @@ class _UserMessagePageState extends State<UserMessagePage> {
   final MessageService _messageService = new MessageService();
   final SharedPreferenceService _sharedPreferenceService =
       new SharedPreferenceService();
+  final FavoritService _favoritService = new FavoritService();
+  List<Favorit> myFavorits = new List();
 
   String loggedUseremail;
   List<UserMessage> userMessageWithoutLoggedUser = new List();
@@ -164,7 +168,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
-            return PostDetailPage(post);
+            return PostDetailPage(post, myFavorits);
           },
         ),
       );
@@ -279,6 +283,7 @@ class _UserMessagePageState extends State<UserMessagePage> {
 
   Future<void> getUserEmailFromPrefs() async {
     loggedUseremail = await _sharedPreferenceService.read(USER_EMAIL);
+    await _loadMyFavorits();
 
     for (int i = 0; i < widget.userMessage.length; i++) {
       if (!isLoggedUser(i)) {
@@ -311,9 +316,17 @@ class _UserMessagePageState extends State<UserMessagePage> {
           return ChatPage(
             messages: allMessages,
             post: userMessage.post,
+            myFavorits: myFavorits,
           );
         },
       ),
     );
+  }
+
+  Future<void> _loadMyFavorits() async {
+    if (loggedUseremail != null && loggedUseremail.isNotEmpty) {
+      myFavorits =
+          await _favoritService.fetchFavoritByUserEmail(loggedUseremail);
+    }
   }
 }

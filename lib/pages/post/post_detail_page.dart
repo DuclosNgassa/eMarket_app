@@ -13,13 +13,11 @@ import 'package:emarket_app/model/post_image.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/image/images_detail.dart';
 import 'package:emarket_app/pages/post/post_user_page.dart';
-import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/image_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/global.dart';
-import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:emarket_app/util/util.dart';
 import 'package:flutter/material.dart';
@@ -29,29 +27,31 @@ import '../../model/post.dart';
 
 class PostDetailPage extends StatefulWidget {
   final Post post;
+  final List<Favorit> myFavorits;
 
-  PostDetailPage(this.post);
+  PostDetailPage(this.post, this.myFavorits);
 
   @override
-  _PostDetailPageState createState() => _PostDetailPageState();
+  _PostDetailPageState createState() =>
+      _PostDetailPageState(this.post, this.myFavorits);
 }
 
 class _PostDetailPageState extends State<PostDetailPage> {
+  Post _post;
   List<PostImage> postImages = new List();
   ImageService _imageService = new ImageService();
   List<Post> posts = new List();
   List<Favorit> myFavorits = new List();
   final PostService _postService = new PostService();
   final UserService _userService = new UserService();
-  final FavoritService _favoritService = new FavoritService();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
   SharedPreferenceService _sharedPreferenceService =
       new SharedPreferenceService();
 
+  //final FavoritService _favoritService = new FavoritService();
+
   String userEmail;
   User _postOwner;
-  Favorit myFavoritToAdd;
-  Favorit myFavoritToRemove;
   bool showPictures = false;
 
   Icon favoritIcon = Icon(
@@ -60,29 +60,18 @@ class _PostDetailPageState extends State<PostDetailPage> {
     color: GlobalColor.colorGrey400,
   );
 
+  _PostDetailPageState(this._post, this.myFavorits);
+
   @override
   void initState() {
     super.initState();
     _readShowPictures();
     _loadUser();
+    //_loadMyFavorits();
     _loadPosts();
-    _loadMyFavorits();
     _getUserByEmail();
     _updatePostView();
     _loadPostImages();
-  }
-
-  @override
-  void deactivate() {
-    super.deactivate();
-
-    if (myFavoritToAdd != null) {
-      saveFavorit(myFavoritToAdd);
-    }
-
-    if (myFavoritToRemove != null) {
-      deleteFavorit(myFavoritToRemove);
-    }
   }
 
   @override
@@ -137,8 +126,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     ),
                                     tooltip: AppLocalizations.of(context)
                                         .translate('change'),
-                                    onPressed: () =>
-                                        showPostEditForm(widget.post),
+                                    onPressed: () => showPostEditForm(_post),
                                   ),
                                 )
                               : new Container(),
@@ -148,22 +136,23 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             padding: EdgeInsets.symmetric(
                                 horizontal: SizeConfig.blockSizeHorizontal * 2),
                             child: PostDetailComponent(
-                              setFavorit: () => updateIconFavorit(),
-                              post: widget.post,
+                              userEmail: userEmail,
+                              post: _post,
+                              myFavorits: myFavorits,
                             ),
                           ),
                           Divider(
                             height: SizeConfig.blockSizeVertical * 5,
                           ),
                           PostOwnerComponent(
-                            postCount: posts.length,
-                            showAllUserPost: () => showPostUserPage(),
-                            fillColor: Colors.transparent,
-                            post: widget.post,
-                            user: _postOwner,
-                            splashColor: GlobalColor.colorDeepPurple300,
-                            textStyle: GlobalStyling.styleTitleBlack,
-                          ),
+                              postCount: posts.length,
+                              showAllUserPost: () => showPostUserPage(),
+                              fillColor: Colors.transparent,
+                              post: _post,
+                              user: _postOwner,
+                              splashColor: GlobalColor.colorDeepPurple300,
+                              textStyle: GlobalStyling.styleTitleBlack,
+                              myFavorits: myFavorits),
                           SizedBox(
                             height: SizeConfig.blockSizeVertical * 2,
                           ),
@@ -173,8 +162,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           Container(
                             height: SizeConfig.screenHeight * 0.75,
                             child: PostCategoryComponent(
-                              categoryId: widget.post.categorieid,
-                              actualPostId: widget.post.id,
+                              categoryId: _post.categorieid,
+                              actualPostId: _post.id,
                               myFavorits: myFavorits,
                               userEmail: userEmail,
                             ),
@@ -217,8 +206,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return PostUserPage(
-              posts, _postOwner.name, _postOwner.email, myFavorits, userEmail, showPictures);
+          return PostUserPage(posts, _postOwner.name, _postOwner.email,
+              myFavorits, userEmail, showPictures);
         },
       ),
     );
@@ -319,13 +308,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 
   Future<void> _loadPostImages() async {
-    postImages = await _imageService.fetchImagesByPostID(widget.post.id);
+    postImages = await _imageService.fetchImagesByPostID(_post.id);
 
     setState(() {});
   }
 
   Future<void> _loadPosts() async {
-    posts = await _postService.fetchPostByUserEmail(widget.post.useremail);
+    posts = await _postService.fetchPostByUserEmail(_post.useremail);
 
     //fetch image to display
     for (var post in posts) {
@@ -335,6 +324,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     setState(() {});
   }
 
+/*
   Future<void> _loadMyFavorits() async {
     if (userEmail == null || userEmail.isEmpty) {
       userEmail = await _sharedPreferenceService.read(USER_EMAIL);
@@ -343,112 +333,29 @@ class _PostDetailPageState extends State<PostDetailPage> {
     if (userEmail != null && userEmail.isNotEmpty) {
       myFavorits = await _favoritService.fetchFavoritByUserEmail(userEmail);
 
-      setFavoritIcon();
+      //setFavoritIcon();
 
       setState(() {});
     }
   }
+*/
 
   Future<void> _getUserByEmail() async {
-    _postOwner = await _userService.fetchUserByEmail(widget.post.useremail);
+    _postOwner = await _userService.fetchUserByEmail(_post.useremail);
     setState(() {});
   }
 
   Future<Post> _updatePostView() async {
-    Post post = widget.post;
-    post.count_view++;
+    Post postToUpdate = _post;
+    postToUpdate.count_view++;
 
-    Post updatedPost = await _postService.updateView(widget.post.id);
+    Post updatedPost = await _postService.updateView(postToUpdate.id);
 
     return updatedPost;
   }
 
   bool _isPostOwner() {
-    return userEmail == widget.post.useremail;
-  }
-
-  Future<void> updateIconFavorit() async {
-    if (userEmail != null) {
-      if (favoritIcon.icon == Icons.favorite) {
-        for (Favorit item in myFavorits) {
-          if (item.useremail == userEmail && item.postid == widget.post.id) {
-            myFavoritToRemove = item;
-          }
-        }
-        removeFavorit();
-      } else {
-        Favorit favorit = new Favorit();
-        favorit.postid = widget.post.id;
-        favorit.useremail = userEmail;
-        favorit.created_at = DateTime.now();
-
-        for (Favorit item in myFavorits) {
-          if (!(item.useremail == userEmail && item.postid == widget.post.id)) {
-            myFavoritToAdd = favorit;
-          }
-        }
-
-        addFavorit(favorit);
-      }
-      setState(() {});
-    } else {
-      MyNotification.showInfoFlushbar(
-          context,
-          AppLocalizations.of(context).translate('info'),
-          AppLocalizations.of(context).translate('connect_to_save_advert'),
-          Icon(
-            Icons.info_outline,
-            size: 28,
-            color: Colors.blue.shade300,
-          ),
-          Colors.blue.shade300,
-          2);
-    }
-  }
-
-  void removeFavorit() {
-    if (myFavoritToAdd != null) {
-      myFavoritToAdd = null;
-    }
-
-    favoritIcon = Icon(
-      Icons.favorite_border,
-      size: 30,
-      color: GlobalColor.colorGrey400,
-    );
-  }
-
-  void addFavorit(Favorit favorit) {
-    if (myFavorits.isEmpty) {
-      myFavoritToAdd = favorit;
-    }
-
-    favoritIcon = Icon(
-      Icons.favorite,
-      color: Colors.redAccent,
-      size: 30,
-    );
-  }
-
-  Future<Favorit> saveFavorit(Favorit favorit) async {
-    Map<String, dynamic> favoritParams = favorit.toMap(favorit);
-    Favorit savedFavorit = await _favoritService.save(favoritParams);
-
-    return savedFavorit;
-  }
-
-  Future<void> deleteFavorit(Favorit favorit) async {
-    await _favoritService.delete(favorit.id);
-  }
-
-  Future<void> setFavoritIcon() async {
-    if (userEmail != null) {
-      for (Favorit item in myFavorits) {
-        if (item.useremail == userEmail && item.postid == widget.post.id) {
-          addFavorit(null);
-        }
-      }
-    }
+    return userEmail == _post.useremail;
   }
 
   _readShowPictures() async {

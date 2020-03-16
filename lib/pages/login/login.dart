@@ -3,10 +3,12 @@ import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/enumeration/login_source.dart';
 import 'package:emarket_app/model/enumeration/user_status.dart';
+import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/pages/navigation/navigation_page.dart';
 import 'package:emarket_app/pages/post/post_detail_page.dart';
+import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/global.dart';
@@ -35,7 +37,11 @@ class _LoginState extends State<Login> {
   final SharedPreferenceService _sharedPreferenceService =
       new SharedPreferenceService();
   final UserService _userService = new UserService();
+  final FavoritService _favoritService = new FavoritService();
 
+  List<Favorit> myFavorits = new List();
+
+  FirebaseUser _firebaseUser;
   String _deviceToken = "";
 
   @override
@@ -93,12 +99,13 @@ class _LoginState extends State<Login> {
       accessToken: googleAuth.accessToken,
     );
 
-    FirebaseUser userDetails =
-        (await _firebaseAuth.signInWithCredential(credential)).user;
+    _firebaseUser = (await _firebaseAuth.signInWithCredential(credential)).user;
 
-    await setSharedPreferences(userDetails);
+    await setSharedPreferences(_firebaseUser);
 
-    await _saveUser(userDetails);
+    await _saveUser(_firebaseUser);
+
+    await _loadMyFavorits();
 
     Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
@@ -126,7 +133,7 @@ class _LoginState extends State<Login> {
         break;
       case LoginSource.ownerPage:
         {
-          return new PostDetailPage(widget._post);
+          return new PostDetailPage(widget._post, myFavorits);
         }
         break;
     }
@@ -185,5 +192,16 @@ class _LoginState extends State<Login> {
       _sharedPreferenceService.save(DEVICE_TOKEN, _deviceToken);
     }
     print('Device-Token-Login: $fcmToken');
+  }
+
+  Future<void> _loadMyFavorits() async {
+    if (_firebaseUser != null &&
+        _firebaseUser.email != null &&
+        _firebaseUser.email.isNotEmpty) {
+      myFavorits =
+          await _favoritService.fetchFavoritByUserEmail(_firebaseUser.email);
+
+      // setState(() {});
+    }
   }
 }

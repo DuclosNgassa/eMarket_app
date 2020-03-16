@@ -63,7 +63,8 @@ class _ImageDetailState extends State<ImageDetailPage> {
                       children: <Widget>[
                         Expanded(
                           child: Padding(
-                            padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 5),
+                            padding: EdgeInsets.only(
+                                top: SizeConfig.blockSizeVertical * 5),
                             child: buildPhotoGridView(),
                           ),
                         ),

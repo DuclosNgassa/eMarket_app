@@ -4,6 +4,7 @@ import 'package:emarket_app/global/global_color.dart';
 import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/enumeration/login_source.dart';
+import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/post_message.dart';
@@ -12,6 +13,7 @@ import 'package:emarket_app/model/user_message.dart';
 import 'package:emarket_app/pages/login/login.dart';
 import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/pages/message/user_message_page.dart';
+import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
@@ -38,6 +40,9 @@ class _MessagePageState extends State<MessagePage> {
   MessageService _messageService = new MessageService();
   PostService _postService = new PostService();
   UserService _userService = new UserService();
+  final FavoritService _favoritService = new FavoritService();
+  List<Favorit> myFavorits = new List();
+
   SharedPreferenceService _sharedPreferenceService =
       new SharedPreferenceService();
   FirebaseUser firebaseUser;
@@ -57,6 +62,7 @@ class _MessagePageState extends State<MessagePage> {
         builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
           if (snapshot.hasData) {
             firebaseUser = snapshot.data;
+            _loadMyFavorits();
             saveUserToPrefs(firebaseUser);
             // this is your user instance
             /// is because there is user already logged
@@ -318,6 +324,7 @@ class _MessagePageState extends State<MessagePage> {
             return ChatPage(
               messages: messagesSentOrReceived,
               post: postMessage.post,
+              myFavorits: myFavorits,
             );
           },
         ),
@@ -354,5 +361,14 @@ class _MessagePageState extends State<MessagePage> {
   Future<void> saveUserToPrefs(FirebaseUser firebaseUser) async {
     await _sharedPreferenceService.save(USER_EMAIL, firebaseUser.email);
     await _sharedPreferenceService.save(USER_NAME, firebaseUser.displayName);
+  }
+
+  Future<void> _loadMyFavorits() async {
+    if (firebaseUser != null &&
+        firebaseUser.email != null &&
+        firebaseUser.email.isNotEmpty) {
+      myFavorits =
+          await _favoritService.fetchFavoritByUserEmail(firebaseUser.email);
+    }
   }
 }

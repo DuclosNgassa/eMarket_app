@@ -7,6 +7,7 @@ import 'package:emarket_app/global/global_color.dart';
 import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/enumeration/status.dart';
+import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user.dart';
@@ -27,11 +28,13 @@ class ChatPage extends StatefulWidget {
   List<Message> messages;
   Post post;
   String receiverName;
+  List<Favorit> myFavorits;
 
-  ChatPage({this.messages, this.post});
+  ChatPage({this.messages, this.post, this.myFavorits});
 
   @override
-  _ChatPageState createState() => new _ChatPageState(this.messages, this.post);
+  _ChatPageState createState() =>
+      new _ChatPageState(this.messages, this.post, this.myFavorits);
 }
 
 class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
@@ -48,10 +51,11 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   String userEmail;
   String userName;
   User receiver;
+  Post post;
+  List<Favorit> myFavorits;
 
   List<Message> _messages = new List(); // new
-
-  _ChatPageState(List<Message> messages, Post post);
+  _ChatPageState(this._messages, this.post, this.myFavorits);
 
   @override
   void initState() {
@@ -63,7 +67,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           await setNewIncomingMessage();
           final dynamic notification = message['data'];
           // Handle notification message
-          if (notification['postId'] == widget.post.id.toString() &&
+          if (notification['postId'] == post.id.toString() &&
               notification['sender'] == receiver.email) {
             insertFirebaseMessagingInMessages(notification, message);
           }
@@ -76,7 +80,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           final dynamic notification = message['data'];
 
           // Handle notification message
-          if (notification['postId'] == widget.post.id &&
+          if (notification['postId'] == post.id &&
               notification['receiver'] == userEmail) {
             insertFirebaseMessagingInMessages(notification, message);
           }
@@ -90,7 +94,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
           final dynamic notification = message['data'];
           // Handle notification message
-          if (notification['postId'] == widget.post.id &&
+          if (notification['postId'] == post.id &&
               notification['receiver'] == userEmail) {
             insertFirebaseMessagingInMessages(notification, message);
           }
@@ -137,7 +141,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                     ),
                     constraints: BoxConstraints.expand(
                         height: SizeConfig.screenHeight / 6),
-                    child: _buildTitle(widget.post),
+                    child: _buildTitle(post),
                   ),
                   Column(
                     mainAxisSize: MainAxisSize.min,
@@ -189,8 +193,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       Message fireBaseMessage = new Message(
           body: notification["body"],
           created_at: DateTime.now().subtract(Duration(hours: 2)),
-          postid:
-              widget.post != null ? widget.post.id : widget.messages[0].postid,
+          postid: post != null ? post.id : widget.messages[0].postid,
           receiver: userName,
           sender: receiver.email);
 
@@ -320,10 +323,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   void initChatMessage() async {
     userEmail = await _sharedPreferenceService.read(USER_EMAIL);
     userName = await _sharedPreferenceService.read(USER_NAME);
-    _messages = widget.messages;
+    //_messages = widget.messages;
 
     if (_messages.isEmpty) {
-      await _getReceiverByEmail(widget.post.useremail);
+      await _getReceiverByEmail(post.useremail);
     } else {
       _messages.sort((message1, message2) =>
           message2.created_at.compareTo(message1.created_at));
@@ -349,7 +352,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   Widget _buildTitle(Post post) {
     return Container(
       child: RawMaterialButton(
-        onPressed: () => _showPostDetailPage(widget.post),
+        onPressed: () => _showPostDetailPage(post),
         child: Padding(
           padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical),
           child: Column(
@@ -368,7 +371,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                     child: new Text(
                       AppLocalizations.of(context).translate('advert') +
                           ' ' +
-                          widget.post.title,
+                          post.title,
                       style: GlobalStyling.styleSubtitleWhite,
                     ),
                   ),
@@ -393,8 +396,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     Message message = new Message(
         body: text,
         created_at: DateTime.now(),
-        postid:
-            widget.post != null ? widget.post.id : widget.messages[0].postid,
+        postid: post != null ? post.id : widget.messages[0].postid,
         receiver: receiver.email,
         sender: userEmail);
 
@@ -421,20 +423,20 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         <String, dynamic>{
           'notification': <String, dynamic>{
             'body': _message.body,
-            'title': 'Message: ' + userName + ': ' + widget.post.title
+            'title': 'Message: ' + userName + ': ' + post.title
           },
           'priority': 'high',
           'data': <String, dynamic>{
             'click_action': 'FLUTTER_NOTIFICATION_CLICK',
             'id': '1',
             'status': 'done',
-            'postId': widget.post.id,
+            'postId': post.id,
             'sender': userEmail,
             'sender_name': userName,
             'receiver': receiver.email,
-            'post_title': widget.post.title,
+            'post_title': post.title,
             'body': _message.body,
-            'title': 'Message: ' + userName + ': ' + widget.post.title
+            'title': 'Message: ' + userName + ': ' + post.title
           },
           'to': receiver.device_token,
         },
@@ -442,12 +444,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
-  _showPostDetailPage(Post post) {
+  _showPostDetailPage(Post postToShow) {
     if (post.status == Status.active) {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
-            return PostDetailPage(post);
+            return PostDetailPage(postToShow, myFavorits);
           },
         ),
       );

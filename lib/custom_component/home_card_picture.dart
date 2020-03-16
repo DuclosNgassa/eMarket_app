@@ -93,7 +93,7 @@ class _HomeCardPictureState extends State<HomeCardPicture> {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
-            return PostDetailPage(post);
+            return PostDetailPage(post, myFavorits);
           },
         ),
       ).then((_) {

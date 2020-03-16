@@ -3,6 +3,7 @@ import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/enumeration/login_source.dart';
+import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/message.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/user.dart';
@@ -29,7 +30,8 @@ class PostOwnerComponent extends StatefulWidget {
       @required this.textStyle,
       @required this.post,
       @required this.user,
-      @required this.postCount});
+      @required this.postCount,
+      @required this.myFavorits});
 
   final GestureTapCallback showAllUserPost;
   final Color fillColor;
@@ -38,6 +40,7 @@ class PostOwnerComponent extends StatefulWidget {
   final Post post;
   final User user;
   final int postCount;
+  final List<Favorit> myFavorits;
 
   @override
   PostOwnerComponentState createState() => PostOwnerComponentState();
@@ -309,7 +312,10 @@ class PostOwnerComponentState extends State<PostOwnerComponent> {
           MaterialPageRoute(
             builder: (context) {
               return ChatPage(
-                  messages: messagesSentOrReceived, post: widget.post);
+                messages: messagesSentOrReceived,
+                post: widget.post,
+                myFavorits: widget.myFavorits,
+              );
             },
           ),
         );

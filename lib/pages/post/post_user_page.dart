@@ -24,7 +24,6 @@ class PostUserPage extends StatefulWidget {
 }
 
 class _PostUserPageState extends State<PostUserPage> {
-
   @override
   void initState() {
     super.initState();
@@ -59,18 +58,22 @@ class _PostUserPageState extends State<PostUserPage> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 7,
+                  padding: EdgeInsets.only(
+                      top: SizeConfig.blockSizeVertical * 7,
                       left: SizeConfig.blockSizeHorizontal * 2,
                       right: SizeConfig.blockSizeHorizontal),
                   child: _buildTitle(),
                 ),
                 Padding(
                   padding: EdgeInsets.only(
-                      left: SizeConfig.blockSizeHorizontal * 2,
-                      right: SizeConfig.blockSizeHorizontal * 2,),
+                    left: SizeConfig.blockSizeHorizontal * 2,
+                    right: SizeConfig.blockSizeHorizontal * 2,
+                  ),
                   child: Container(
-                      margin: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 7),
-                      child: _buildPostsContainer(),),
+                    margin:
+                        EdgeInsets.only(top: SizeConfig.blockSizeVertical * 7),
+                    child: _buildPostsContainer(),
+                  ),
                 ),
               ],
             ),
@@ -105,8 +108,8 @@ class _PostUserPageState extends State<PostUserPage> {
         children: <Widget>[
           new Container(
             padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 5),
-            constraints: BoxConstraints.expand(
-                height: SizeConfig.screenHeight * 0.9),
+            constraints:
+                BoxConstraints.expand(height: SizeConfig.screenHeight * 0.9),
             child: PostCardComponentPage(
                 postList: widget.posts,
                 myFavorits: widget.myFavorits,

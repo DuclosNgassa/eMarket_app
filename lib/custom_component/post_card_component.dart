@@ -25,7 +25,8 @@ class PostCardComponentState extends State<PostCardComponentPage> {
 
   int perPage = 10;
   int present = 0;
-  bool showPictures = true;
+
+  //bool showPictures = true;
   ScrollController _scrollController = ScrollController();
 
   @override

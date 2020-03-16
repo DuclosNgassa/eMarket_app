@@ -3,8 +3,10 @@ import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
+import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
+import 'package:emarket_app/util/global.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:emarket_app/util/util.dart';
@@ -32,11 +34,13 @@ class PostCategoryComponentState extends State<PostCategoryComponent> {
   final PostService _postService = new PostService();
   SharedPreferenceService _sharedPreferenceService =
       new SharedPreferenceService();
+  final FavoritService _favoritService = new FavoritService();
+  List<Favorit> myFavorits = new List();
 
   List<Post> postList = new List();
   List<Post> postListItems = new List();
   bool showPictures = true;
-
+  String userEmail;
   int perPage = 10;
   int present = 0;
 
@@ -74,8 +78,8 @@ class PostCategoryComponentState extends State<PostCategoryComponent> {
                   height: SizeConfig.screenHeight * 0.69,
                   child: PostCardComponentPage(
                       postList: snapshot.data,
-                      myFavorits: widget.myFavorits,
-                      userEmail: widget.userEmail,
+                      myFavorits: myFavorits,
+                      userEmail: widget.userEmail ?? userEmail,
                       showPictures: showPictures),
                 ),
               ],
@@ -130,7 +134,22 @@ class PostCategoryComponentState extends State<PostCategoryComponent> {
 
     await _readShowPictures();
 
+    await _loadMyFavorits();
+
     return postList;
+  }
+
+  Future<void> _loadMyFavorits() async {
+    if (widget.userEmail != null && widget.userEmail.isNotEmpty) {
+      myFavorits =
+          await _favoritService.fetchFavoritByUserEmail(widget.userEmail);
+    } else {
+      userEmail = await _sharedPreferenceService.read(USER_EMAIL);
+
+      if (userEmail != null && userEmail.isNotEmpty) {
+        myFavorits = await _favoritService.fetchFavoritByUserEmail(userEmail);
+      }
+    }
   }
 
   _readShowPictures() async {

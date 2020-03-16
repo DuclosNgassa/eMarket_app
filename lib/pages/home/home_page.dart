@@ -68,7 +68,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     refreshKey = GlobalKey<RefreshIndicatorState>();
-    _loadMyFavorits();
     _firebaseMessaging.onTokenRefresh.listen(setDeviceToken);
     _firebaseMessaging.getToken();
 
@@ -301,7 +300,8 @@ class _HomePageState extends State<HomePage> {
                   width: SizeConfig.blockSizeHorizontal * 32,
                   height: heightCustomCategorieButton,
                   fillColor: GlobalColor.colorWhite,
-                  icon: Util.getCategoryIcon(parentCategories[index].id, parentCategories[index].icon),
+                  icon: Util.getCategoryIcon(
+                      parentCategories[index].id, parentCategories[index].icon),
                   splashColor: GlobalColor.colorDeepPurple400,
                   iconColor: GlobalColor.colorDeepPurple400,
                   text: parentCategories[index].title,
@@ -382,28 +382,18 @@ class _HomePageState extends State<HomePage> {
     print("Start load post");
     postList = await _postService.fetchActivePosts();
     await _readShowPictures();
+    await _loadMyFavorits();
 
     return postList;
-  }
-
-  Future<void> _loadPostFromServer() async {
-    print("Start load post");
-    postList = await _postService.fetchActivePostFromServer();
   }
 
   Future<List<Post>> _loadPostFromCache() async {
     print("Start load post cache");
 
     postList = await _postService.fetchActivePostFromCacheWithoutServerCall();
+    await _loadMyFavorits();
+
     return postList;
-  }
-
-  Future<void> _loadMyFavorits() async {
-    _userEmail = await _sharedPreferenceService.read(USER_EMAIL);
-
-    if (_userEmail != null && _userEmail.isNotEmpty) {
-      myFavorits = await _favoritService.fetchFavoritByUserEmail(_userEmail);
-    }
   }
 
   Future<List<Categorie>> _loadMyCategories() async {
@@ -448,5 +438,13 @@ class _HomePageState extends State<HomePage> {
     await _loadMyFavorits();
 
     setState(() {});
+  }
+
+  Future<void> _loadMyFavorits() async {
+    _userEmail = await _sharedPreferenceService.read(USER_EMAIL);
+
+    if (_userEmail != null && _userEmail.isNotEmpty) {
+      myFavorits = await _favoritService.fetchFavoritByUserEmail(_userEmail);
+    }
   }
 }

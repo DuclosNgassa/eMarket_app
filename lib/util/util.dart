@@ -45,5 +45,4 @@ class Util {
     }
     return IconData(int.parse(icon), fontFamily: 'MaterialIcons');
   }
-
 }

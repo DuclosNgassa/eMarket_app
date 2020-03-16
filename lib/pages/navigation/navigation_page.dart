@@ -6,6 +6,7 @@ import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/global/global_color.dart';
 import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
+import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/message.dart' as myMessage;
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/pages/account/account_page.dart';
@@ -14,6 +15,7 @@ import 'package:emarket_app/pages/home/home_page.dart';
 import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/pages/message/message_page.dart';
 import 'package:emarket_app/pages/post/post_page.dart';
+import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/message_service.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
@@ -43,6 +45,9 @@ class _NavigationPageState extends State<NavigationPage> {
       new SharedPreferenceService();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   List<myMessage.Message> allConversation = new List<myMessage.Message>();
+  final FavoritService _favoritService = new FavoritService();
+  List<Favorit> myFavorits = new List();
+
   int _localSelectedIndex = 0;
   int _incomingMessage = 0;
   String userEmail;
@@ -215,7 +220,11 @@ class _NavigationPageState extends State<NavigationPage> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return ChatPage(messages: allConversation, post: post);
+          return ChatPage(
+            messages: allConversation,
+            post: post,
+            myFavorits: myFavorits,
+          );
         },
       ),
     );
@@ -306,7 +315,14 @@ class _NavigationPageState extends State<NavigationPage> {
     String _userEmail = await _sharedPreferenceService.read(USER_EMAIL);
     if (_userEmail != null && _userEmail.isNotEmpty) {
       userEmail = _userEmail;
+      _loadMyFavorits();
       setState(() {});
+    }
+  }
+
+  Future<void> _loadMyFavorits() async {
+    if (userEmail != null && userEmail.isNotEmpty) {
+      myFavorits = await _favoritService.fetchFavoritByUserEmail(userEmail);
     }
   }
 

@@ -451,7 +451,7 @@ class _AccountState extends State<AccountPage>
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
-            return PostDetailPage(post);
+            return PostDetailPage(post, _myFavorits);
           },
         ),
       );
@@ -559,7 +559,7 @@ class _AccountState extends State<AccountPage>
         DateTime cacheTime = DateTime.parse(cacheTimeString);
         DateTime actualDateTime = DateTime.now();
 
-        if (actualDateTime.difference(cacheTime) > Duration(minutes: 3)) {
+        if (actualDateTime.difference(cacheTime) > Duration(minutes: 1)) {
           _myFavoritPosts = await _favoritService
               .loadMyFavoritFromServer(_firebaseUser.email);
         } else {
