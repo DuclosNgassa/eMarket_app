@@ -26,6 +26,7 @@ class SearchPage extends SearchDelegate<Post> {
   bool showPictures;
   Category parentCategory;
   Category selectedCategory;
+  List<Post> searchResultList;
 
   SearchPage(
       this.postList,
@@ -100,8 +101,14 @@ class SearchPage extends SearchDelegate<Post> {
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
-    return null;
+    return SearchResultPage(
+      searchResultList: searchResultList,
+      myFavorits: myFavorits,
+      userEmail: userEmail,
+      selectedCategory:
+          selectedCategory != null ? selectedCategory : parentCategory,
+      showPictures: showPictures,
+    );
   }
 
   @override
@@ -109,7 +116,7 @@ class SearchPage extends SearchDelegate<Post> {
     SizeConfig().init(context);
     GlobalStyling().init(context);
 
-    final List<Post> searchResultList =
+    searchResultList =
         query.isEmpty && searchParameter == null && childCategories == null
             ? postList
             : postList.where((post) => isSelected(post)).toList();

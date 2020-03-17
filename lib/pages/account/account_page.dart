@@ -614,7 +614,7 @@ class _AccountState extends State<AccountPage>
     Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
         builder: (context) => new NavigationPage(
-            HOMEPAGE), //new ProfileScreen(detailsUser: details),
+            HOMEPAGE),
       ),
     );
   }
