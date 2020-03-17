@@ -3,7 +3,7 @@ import 'package:emarket_app/global/global_color.dart';
 import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
-import 'package:emarket_app/pages/categorie/categorie_page.dart';
+import 'package:emarket_app/pages/category/category_page.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:emarket_app/util/util.dart';
 import 'package:flutter/material.dart';

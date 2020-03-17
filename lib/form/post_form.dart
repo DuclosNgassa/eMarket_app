@@ -8,7 +8,7 @@ import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/model/enumeration/status.dart';
-import 'package:emarket_app/pages/categorie/categorie_page.dart';
+import 'package:emarket_app/pages/category/category_page.dart';
 import 'package:emarket_app/pages/image/images_detail.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';

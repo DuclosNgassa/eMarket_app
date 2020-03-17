@@ -10,7 +10,7 @@ import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
 import 'package:emarket_app/model/categorie_tile.dart';
-import 'package:emarket_app/pages/categorie/categorie_page.dart';
+import 'package:emarket_app/pages/category/category_page.dart';
 import 'package:emarket_app/pages/image/images_detail.dart';
 import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/util/notification.dart';
