@@ -273,7 +273,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                     child: Text(DateConverter.convertToString(
                         _messages.elementAt(index).created_at, context)),
                   ),
-                  Text(receiver.name),
+                  Text(receiver != null && receiver.name != null
+                      ? receiver.name
+                      : ""),
                 ],
               ),
             ),

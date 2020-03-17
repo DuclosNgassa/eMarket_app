@@ -514,7 +514,8 @@ class _PostEditFormState extends State<PostEditForm> {
       ),
     );
 
-    _categorieTile = categorieTile.title.isNotEmpty ? categorieTile : _categorieTile;
+    _categorieTile =
+        categorieTile.title.isNotEmpty ? categorieTile : _categorieTile;
     setState(() {});
   }
 

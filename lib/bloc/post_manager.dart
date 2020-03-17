@@ -32,4 +32,11 @@ class PostManager {
 
     yield _postWrapper;
   }
+
+  Stream<List<Post>> get myPosts async* {
+    String userEmail = await _sharedPreferenceService.read(USER_EMAIL);
+    List<Post> myPostList = await _postService.fetchPostByUserEmail(userEmail);
+
+    yield myPostList;
+  }
 }

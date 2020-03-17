@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> {
     return RefreshIndicator(
       key: refreshKey,
       onRefresh: () async {
-        await _loadAllData();
+        await _invalidatePostCache();
       },
       child: StreamBuilder<PostWrapper>(
         stream: _postManager.postWrapper,
@@ -408,7 +408,7 @@ class _HomePageState extends State<HomePage> {
     print('Device-Token-Home: $event');
   }
 
-  Future<void> _loadAllData() async {
+  Future<void> _invalidatePostCache() async {
     await _sharedPreferenceService.remove(CATEGORIE_LIST_CACHE_TIME);
     await _sharedPreferenceService.remove(POST_LIST_CACHE_TIME);
 

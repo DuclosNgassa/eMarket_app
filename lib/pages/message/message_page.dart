@@ -1,3 +1,4 @@
+import 'package:emarket_app/bloc/message_manager.dart';
 import 'package:emarket_app/custom_component/custom_shape_clipper.dart';
 import 'package:emarket_app/custom_component/placeholder_item.dart';
 import 'package:emarket_app/global/global_color.dart';
@@ -6,8 +7,8 @@ import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/enumeration/login_source.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/message.dart';
-import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/model/post_message.dart';
+import 'package:emarket_app/model/post_message_wrapper.dart';
 import 'package:emarket_app/model/user.dart';
 import 'package:emarket_app/model/user_message.dart';
 import 'package:emarket_app/pages/login/login.dart';
@@ -15,7 +16,6 @@ import 'package:emarket_app/pages/message/chat_page.dart';
 import 'package:emarket_app/pages/message/user_message_page.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/message_service.dart';
-import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/services/user_service.dart';
 import 'package:emarket_app/util/notification.dart';
@@ -35,12 +35,14 @@ class MessagePage extends StatefulWidget {
 
 class _MessagePageState extends State<MessagePage> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  List<Message> messages = new List();
   List<PostMessage> _postMessages = new List();
   MessageService _messageService = new MessageService();
-  PostService _postService = new PostService();
   UserService _userService = new UserService();
   final FavoritService _favoritService = new FavoritService();
+  MessageManager _messageManager = new MessageManager();
+
+  GlobalKey<RefreshIndicatorState> refreshKey;
+
   List<Favorit> myFavorits = new List();
 
   SharedPreferenceService _sharedPreferenceService =
@@ -50,6 +52,7 @@ class _MessagePageState extends State<MessagePage> {
   @override
   void initState() {
     super.initState();
+    refreshKey = GlobalKey<RefreshIndicatorState>();
   }
 
   @override
@@ -126,86 +129,93 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   Widget buildMyMessageListView() {
-    return FutureBuilder(
-      future: _loadMessages(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data.length > 0) {
-            return ListView.builder(
-                itemBuilder: (context, index) {
-                  return Slidable(
-                    actionPane: SlidableBehindActionPane(),
-                    actionExtentRatio: 0.25,
-                    child: Container(
-                      child: Card(
-                        elevation: 8.0,
-                        margin: new EdgeInsets.symmetric(
-                            horizontal: 10.0, vertical: 6.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: GlobalColor.colorGrey200,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: ListTile(
-                            onTap: () => openUserMessage(
-                                _postMessages.elementAt(index),
-                                _postMessages.elementAt(index).post.title),
-                            leading: CircleAvatar(
-                              backgroundColor: GlobalColor.colorDeepPurple300,
-                              child: Text((index + 1).toString()),
-                              foregroundColor: GlobalColor.colorWhite,
+    return RefreshIndicator(
+      key: refreshKey,
+      onRefresh: () async {
+        await _invalidateMessageCache();
+      },
+      child: StreamBuilder<PostMessageWrapper>(
+        stream: _messageManager.myPostMessageWrapper,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            _postMessages = snapshot.data.postMessageList;
+            if (snapshot.data.postMessageList.length > 0) {
+              return ListView.builder(
+                  itemBuilder: (context, index) {
+                    return Slidable(
+                      actionPane: SlidableBehindActionPane(),
+                      actionExtentRatio: 0.25,
+                      child: Container(
+                        child: Card(
+                          elevation: 8.0,
+                          margin: new EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 6.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: GlobalColor.colorGrey200,
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            title:
-                                Text(_postMessages.elementAt(index).post.title),
-                            subtitle: buildSubtitle(index, context),
-                            trailing: Icon(Icons.arrow_forward_ios,
-                                color: GlobalColor.colorDeepPurple300,
-                                size: SizeConfig.blockSizeHorizontal * 5),
+                            child: ListTile(
+                              onTap: () => openUserMessage(
+                                  _postMessages.elementAt(index),
+                                  _postMessages.elementAt(index).post.title),
+                              leading: CircleAvatar(
+                                backgroundColor: GlobalColor.colorDeepPurple300,
+                                child: Text((index + 1).toString()),
+                                foregroundColor: GlobalColor.colorWhite,
+                              ),
+                              title: Text(
+                                  _postMessages.elementAt(index).post.title),
+                              subtitle: buildSubtitle(index, context),
+                              trailing: Icon(Icons.arrow_forward_ios,
+                                  color: GlobalColor.colorDeepPurple300,
+                                  size: SizeConfig.blockSizeHorizontal * 5),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-                itemCount: _postMessages.length);
-          } else {
-            return new Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: SizeConfig.blockSizeHorizontal * 3,
-                  vertical: SizeConfig.blockSizeVertical * 2,
+                    );
+                  },
+                  itemCount: _postMessages.length);
+            } else {
+              return new Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: SizeConfig.blockSizeHorizontal * 3,
+                    vertical: SizeConfig.blockSizeVertical * 2,
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context).translate('no_messages'),
+                  ),
                 ),
-                child: Text(
-                  AppLocalizations.of(context).translate('no_messages'),
+              );
+            }
+          } else if (snapshot.hasError) {
+            MyNotification.showInfoFlushbar(
+                context,
+                AppLocalizations.of(context).translate('error'),
+                AppLocalizations.of(context).translate('error_loading'),
+                Icon(
+                  Icons.info_outline,
+                  size: 28,
+                  color: Colors.redAccent,
                 ),
-              ),
-            );
+                Colors.redAccent,
+                4);
           }
-        } else if (snapshot.hasError) {
-          MyNotification.showInfoFlushbar(
-              context,
-              AppLocalizations.of(context).translate('error'),
-              AppLocalizations.of(context).translate('error_loading'),
-              Icon(
-                Icons.info_outline,
-                size: 28,
-                color: Colors.redAccent,
+          return ListView.builder(
+            itemCount: 10,
+            // Important code
+            itemBuilder: (context, index) => Shimmer.fromColors(
+              baseColor: Colors.grey[400],
+              highlightColor: Colors.white,
+              child: ListItem(
+                page: MESSAGEPAGE,
               ),
-              Colors.redAccent,
-              4);
-        }
-        return ListView.builder(
-          itemCount: 10,
-          // Important code
-          itemBuilder: (context, index) => Shimmer.fromColors(
-            baseColor: Colors.grey[400],
-            highlightColor: Colors.white,
-            child: ListItem(
-              page: MESSAGEPAGE,
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -238,58 +248,6 @@ class _MessagePageState extends State<MessagePage> {
                 )
               : null;
     }
-  }
-
-  Future<List<PostMessage>> _loadMessageByEmail(String userEmail) async {
-    if (userEmail != null && userEmail.isNotEmpty) {
-      List<PostMessage> _postMessageList = new List();
-      messages = await _messageService.fetchMessageByEmail(userEmail);
-
-      Set<int> postIds = new Set();
-
-      for (int i = 0; i < messages.length; i++) {
-        postIds.add(messages[i].postid);
-      }
-
-      for (int i = 0; i < postIds.length; i++) {
-        Post post = await _postService.fetchPostById(postIds.elementAt(i));
-        List<Message> messageList = new List();
-
-        int messagesLength = messages.length;
-
-        for (int j = 0; j < messagesLength; j++) {
-          if (postIds.elementAt(i) == messages.elementAt(j).postid) {
-            messageList.add(messages.elementAt(j));
-            //TODO dieser Durchlauf optimieren
-            //messages.removeAt(j);
-            //messagesLength--;
-            //--j;
-          }
-        }
-
-        messageList
-            .sort((m1, m2) => m1.created_at.isAfter(m2.created_at) ? 0 : 1);
-        PostMessage postMessage = new PostMessage(
-            messages: messageList,
-            post: post,
-            recentMessageDate: messageList.elementAt(0).created_at);
-        _postMessageList.add(postMessage);
-      }
-
-      return _postMessageList;
-    }
-    return <PostMessage>[];
-  }
-
-  Future<List<PostMessage>> _loadMessages() async {
-    if (firebaseUser != null && firebaseUser.email.isNotEmpty) {
-      _postMessages = await _loadMessageByEmail(firebaseUser.email);
-      _postMessages.sort((postMessage1, postMessage2) =>
-          postMessage1.recentMessageDate.isAfter(postMessage2.recentMessageDate)
-              ? 0
-              : 1);
-    }
-    return _postMessages;
   }
 
   void openUserMessage(PostMessage postMessage, String userName) async {
@@ -370,5 +328,12 @@ class _MessagePageState extends State<MessagePage> {
       myFavorits =
           await _favoritService.fetchFavoritByUserEmail(firebaseUser.email);
     }
+  }
+
+  Future<void> _invalidateMessageCache() async {
+    await _sharedPreferenceService
+        .remove(MESSAGE_LIST_CACHE_TIME + firebaseUser.email);
+
+    setState(() {});
   }
 }

@@ -2,10 +2,7 @@ import 'package:emarket_app/custom_component/custom_button.dart';
 import 'package:emarket_app/global/global_color.dart';
 import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
-import 'package:emarket_app/model/categorie.dart';
-import 'package:emarket_app/model/categorie_tile.dart';
 import 'package:emarket_app/pages/contact/contact_page.dart';
-import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
