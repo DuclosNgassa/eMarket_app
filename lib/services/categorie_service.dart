@@ -12,11 +12,11 @@ import 'package:http/http.dart' as http;
 import '../model/categorie.dart';
 import '../model/categorie_tile.dart';
 
-class CategorieService {
+class CategoryService {
   SharedPreferenceService _sharedPreferenceService =
       new SharedPreferenceService();
 
-  Future<List<Categorie>> fetchCategories() async {
+  Future<List<Category>> fetchCategories() async {
     String cacheTimeString =
         await _sharedPreferenceService.read(CATEGORIE_LIST_CACHE_TIME);
 
@@ -34,14 +34,14 @@ class CategorieService {
     }
   }
 
-  Future<List<Categorie>> fetchCategoriesFromServer() async {
+  Future<List<Category>> fetchCategoriesFromServer() async {
     final response = await http.Client().get(URL_CATEGORIES);
     if (response.statusCode == HttpStatus.ok) {
       Map<String, dynamic> mapResponse = json.decode(response.body);
       if (mapResponse["result"] == "ok") {
         final categories = mapResponse["data"].cast<Map<String, dynamic>>();
-        final categorieList = await categories.map<Categorie>((json) {
-          return Categorie.fromJson(json);
+        final categorieList = await categories.map<Category>((json) {
+          return Category.fromJson(json);
         }).toList();
 
         //Cache translated categories
@@ -61,13 +61,13 @@ class CategorieService {
     }
   }
 
-  Future<List<Categorie>> fetchCategoriesFromCache() async {
+  Future<List<Category>> fetchCategoriesFromCache() async {
     String listCategoryFromSharePrefs =
         await _sharedPreferenceService.read(CATEGORIE_LIST);
     if (listCategoryFromSharePrefs != null) {
       Iterable iterablePost = jsonDecode(listCategoryFromSharePrefs);
-      final categorieList = await iterablePost.map<Categorie>((categorie) {
-        return Categorie.fromJsonPref(categorie);
+      final categorieList = await iterablePost.map<Category>((categorie) {
+        return Category.fromJsonPref(categorie);
       }).toList();
       return categorieList;
     } else {
@@ -76,9 +76,9 @@ class CategorieService {
   }
 
   Future<List<CategorieTile>> mapCategorieToCategorieTile(
-      List<Categorie> categories) async {
+      List<Category> categories) async {
     List<CategorieTile> categorieTiles = new List();
-    List<Categorie> parentCategories = new List();
+    List<Category> parentCategories = new List();
 
     for (var item in categories) {
       if (item.parentid == null) {
@@ -107,7 +107,7 @@ class CategorieService {
     return categorieTiles;
   }
 
-  Future<Categorie> fetchCategorieByID(int id) async {
+  Future<Category> fetchCategorieByID(int id) async {
     final response = await http.Client().get('$URL_CATEGORIES_BY_ID$id');
     if (response.statusCode == HttpStatus.ok) {
       final responseBody = await json.decode(response.body);
@@ -118,12 +118,12 @@ class CategorieService {
     }
   }
 
-  Categorie convertResponseToCategorie(Map<String, dynamic> json) {
+  Category convertResponseToCategorie(Map<String, dynamic> json) {
     if (json["data"] == null) {
       return null;
     }
 
-    return Categorie(
+    return Category(
       id: json["data"]["id"],
       title: json["data"]["title"],
       parentid: json["data"]["parentid"],
@@ -131,16 +131,16 @@ class CategorieService {
     );
   }
 
-  Categorie translateCategory(Categorie categorie, BuildContext context) {
-    Categorie translatedcategorie = categorie;
+  Category translateCategory(Category categorie, BuildContext context) {
+    Category translatedcategorie = categorie;
     translatedcategorie.title =
         AppLocalizations.of(context).translate(categorie.title);
     return translatedcategorie;
   }
 
-  List<Categorie> translateCategories(
-      List<Categorie> categories, BuildContext context) {
-    List<Categorie> translatedcategories = new List();
+  List<Category> translateCategories(
+      List<Category> categories, BuildContext context) {
+    List<Category> translatedcategories = new List();
     categories.forEach((categorie) =>
         translatedcategories.add(translateCategory(categorie, context)));
 

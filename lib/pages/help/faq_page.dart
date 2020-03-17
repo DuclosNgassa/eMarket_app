@@ -17,10 +17,6 @@ class FaqPage extends StatefulWidget {
 class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  CategorieService _categorieService = new CategorieService();
-  List<Categorie> categories = new List();
-  List<CategorieTile> categoriesTiles = new List();
-
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -38,7 +34,6 @@ class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _loadCategorie();
   }
 
   Widget buildListTile() {
@@ -175,12 +170,5 @@ class _FaqPageState extends State<FaqPage> with TickerProviderStateMixin {
         },
       ),
     );
-  }
-
-  Future<void> _loadCategorie() async {
-    categories = await _categorieService.fetchCategories();
-    categoriesTiles =
-        await _categorieService.mapCategorieToCategorieTile(categories);
-    setState(() {});
   }
 }

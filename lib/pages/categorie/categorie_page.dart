@@ -15,8 +15,8 @@ class CategoriePage extends StatefulWidget {
 }
 
 class _CategoriePageState extends State<CategoriePage> {
-  CategorieService _categorieService = new CategorieService();
-  List<Categorie> categories = new List();
+  CategoryService _categorieService = new CategoryService();
+  List<Category> categories = new List();
   List<CategorieTile> categoriesTiles = new List();
 
   @override
@@ -81,13 +81,13 @@ class _CategoriePageState extends State<CategoriePage> {
 
   Future<void> _loadCategorie() async {
     categories = await _categorieService.fetchCategories();
-    List<Categorie> translatedcategories =
+    List<Category> translatedcategories =
         _categorieService.translateCategories(categories, context);
 
     translatedcategories.sort((a, b) => a.title.compareTo(b.title));
 
     //put other category at the end of the list
-    Categorie categorieTemp = translatedcategories.firstWhere((categorie) =>
+    Category categorieTemp = translatedcategories.firstWhere((categorie) =>
         categorie.title == 'Other categories' ||
         categorie.title == 'Autre categories');
     translatedcategories.removeWhere((categorie) =>

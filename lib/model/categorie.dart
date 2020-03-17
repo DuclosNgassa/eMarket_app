@@ -1,13 +1,13 @@
-class Categorie {
+class Category {
   int id;
   String title;
   int parentid;
   String icon;
 
-  Categorie({this.id, this.title, this.parentid, this.icon});
+  Category({this.id, this.title, this.parentid, this.icon});
 
-  factory Categorie.fromJson(Map<String, dynamic> json) {
-    return Categorie(
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
       id: json["id"],
       title: json["title"],
       parentid: json["parentid"],
@@ -16,8 +16,8 @@ class Categorie {
   }
 
   //To use when retrieving category from sharedpreference
-  factory Categorie.fromJsonPref(Map<String, dynamic> json) {
-    return Categorie(
+  factory Category.fromJsonPref(Map<String, dynamic> json) {
+    return Category(
       id: int.parse(json["id"]),
       title: json["title"],
       parentid: json["parentid"] == "null" ? null : int.parse(json["parentid"]),

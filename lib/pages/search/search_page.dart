@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SearchPage extends SearchDelegate<Post> {
-  final CategorieService _categorieService = new CategorieService();
+  final CategoryService _categorieService = new CategoryService();
 
   final List<Post> postList;
   final List<Favorit> myFavorits;
@@ -24,8 +24,8 @@ class SearchPage extends SearchDelegate<Post> {
   SearchParameter searchParameter;
   List<int> childCategories;
   bool showPictures;
-  Categorie parentCategory;
-  Categorie selectedCategory;
+  Category parentCategory;
+  Category selectedCategory;
 
   SearchPage(
       this.postList,
@@ -232,8 +232,8 @@ class SearchPage extends SearchDelegate<Post> {
     }
   }
 
-  Future<Categorie> setSelectedcategory(BuildContext context) async {
-    Categorie categorie =
+  Future<Category> setSelectedcategory(BuildContext context) async {
+    Category categorie =
         await _categorieService.fetchCategorieByID(searchParameter.category);
     categorie.title =
         AppLocalizations.of(context).translate(selectedCategory.title);

@@ -38,6 +38,7 @@ class Util {
       case FOOD:
       case JOB:
       case COURSES_TRAINING:
+      case GAS_CYLINDER:
         {
           return IconDataSolid(int.parse(icon));
         }

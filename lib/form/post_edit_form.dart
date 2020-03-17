@@ -45,7 +45,7 @@ class _PostEditFormState extends State<PostEditForm> {
   Post _post;
   PostService _postService = new PostService();
   ImageService _imageService = new ImageService();
-  CategorieService _categorieService = new CategorieService();
+  CategoryService _categorieService = new CategoryService();
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -965,7 +965,7 @@ class _PostEditFormState extends State<PostEditForm> {
     oldPostImages = await _imageService.fetchImagesByPostID(widget.post.id);
     imageCount = oldPostImages.length;
 
-    Categorie _categorie =
+    Category _categorie =
         await _categorieService.fetchCategorieByID(widget.post.categorieid);
     String translatedCategory =
         AppLocalizations.of(context).translate(_categorie.title);

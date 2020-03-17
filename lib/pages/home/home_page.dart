@@ -1,15 +1,18 @@
 import 'dart:async';
 
+import 'package:emarket_app/bloc/category_manager.dart';
+import 'package:emarket_app/bloc/post_manager.dart';
 import 'package:emarket_app/custom_component/custom_categorie_button.dart';
 import 'package:emarket_app/custom_component/post_card_component.dart';
 import 'package:emarket_app/global/global_color.dart';
 import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/categorie.dart';
+import 'package:emarket_app/model/category_wrapper.dart';
 import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/message.dart';
+import 'package:emarket_app/model/post_wrapper.dart';
 import 'package:emarket_app/pages/search/search_page.dart';
-import 'package:emarket_app/services/categorie_service.dart';
 import 'package:emarket_app/services/favorit_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/util/global.dart';
@@ -33,10 +36,11 @@ class _HomePageState extends State<HomePage> {
   GlobalKey<RefreshIndicatorState> refreshKey;
   final PostService _postService = new PostService();
   final FavoritService _favoritService = new FavoritService();
-  final CategorieService _categorieService = new CategorieService();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   SharedPreferenceService _sharedPreferenceService =
       new SharedPreferenceService();
+
+  PostManager _postManager = new PostManager();
 
   List<Message> allConversation = new List<Message>();
   bool showPictures = true;
@@ -55,9 +59,9 @@ class _HomePageState extends State<HomePage> {
   List<Post> postList = new List();
   List<Post> postListItems = new List();
   List<Favorit> myFavorits = new List();
-  List<Categorie> categories = new List();
+  List<Category> categories = new List();
 
-  List<Categorie> parentCategories = new List();
+  List<Category> parentCategories = new List();
 
   int perPage = 10;
   int present = 0;
@@ -84,6 +88,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     GlobalStyling().init(context);
+
     _searchLabel = AppLocalizations.of(context).translate('search');
 
     return Scaffold(
@@ -165,33 +170,30 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
-  _readShowPictures() async {
-    showPictures = await Util.readShowPictures(_sharedPreferenceService);
-  }
-
   Widget _buildPageWithDataFromServer() {
     return RefreshIndicator(
       key: refreshKey,
       onRefresh: () async {
         await _loadAllData();
       },
-      child: FutureBuilder(
-        future: _loadPost(),
+      child: StreamBuilder<PostWrapper>(
+        stream: _postManager.postWrapper,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             print("Stop load post cache");
-            if (snapshot.data.length > 0) {
-              loadMorePost(snapshot.data);
+            setPostData(snapshot);
+            if (snapshot.data.postList.length > 0) {
+              loadMorePost(snapshot.data.postList);
               return Container(
                 padding: EdgeInsets.only(top: 10),
                 constraints: BoxConstraints.expand(
                     height: SizeConfig.screenHeight * 0.845),
                 child: PostCardComponentPage(
-                    postList: snapshot.data,
-                    myFavorits: myFavorits,
+                    postList: snapshot.data.postList,
+                    myFavorits: snapshot.data.favoritList,
                     userEmail: _userEmail,
-                    showPictures: showPictures),
-              ); //_buildPostGrid(showPictures);
+                    showPictures: snapshot.data.showPictures),
+              );
             } else {
               return new Center(
                 child: Padding(
@@ -222,6 +224,12 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
+  }
+
+  void setPostData(AsyncSnapshot<PostWrapper> snapshot) {
+    postList = snapshot.data.postList;
+    showPictures = snapshot.data.showPictures;
+    myFavorits = snapshot.data.favoritList;
   }
 
   Widget _buildPageWithDataFromCache() {
@@ -286,50 +294,55 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCategorieGridView() {
-    return FutureBuilder(
-        future: _loadMyCategories(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return GridView.count(
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
-              crossAxisCount: 1,
-              scrollDirection: Axis.horizontal,
-              children: List.generate(parentCategories.length, (index) {
-                return CustomCategorieButton(
-                  width: SizeConfig.blockSizeHorizontal * 32,
-                  height: heightCustomCategorieButton,
-                  fillColor: GlobalColor.colorWhite,
-                  icon: Util.getCategoryIcon(
-                      parentCategories[index].id, parentCategories[index].icon),
-                  splashColor: GlobalColor.colorDeepPurple400,
-                  iconColor: GlobalColor.colorDeepPurple400,
-                  text: parentCategories[index].title,
-                  textStyle: _myTextStyle,
-                  onPressed: () =>
-                      showSearchWithParentCategorie(parentCategories[index]),
-                );
-              }),
-            );
-          } else if (snapshot.hasError) {
-            MyNotification.showInfoFlushbar(
-                context,
-                AppLocalizations.of(context).translate('error'),
-                AppLocalizations.of(context).translate('error_loading'),
-                Icon(
-                  Icons.info_outline,
-                  size: 28,
-                  color: Colors.redAccent,
-                ),
-                Colors.redAccent,
-                4);
-          }
-          return Center(
-            child: CupertinoActivityIndicator(
-              radius: SizeConfig.blockSizeHorizontal * 5,
-            ),
+    CategoryManager _categoryManager = new CategoryManager(context);
+
+    return StreamBuilder<CategoryWrapper>(
+      stream: _categoryManager.categoryWrapper,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          parentCategories = snapshot.data.parentCategories;
+          categories = snapshot.data.childCategories;
+          return GridView.count(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            crossAxisCount: 1,
+            scrollDirection: Axis.horizontal,
+            children: List.generate(parentCategories.length, (index) {
+              return CustomCategorieButton(
+                width: SizeConfig.blockSizeHorizontal * 32,
+                height: heightCustomCategorieButton,
+                fillColor: GlobalColor.colorWhite,
+                icon: Util.getCategoryIcon(
+                    parentCategories[index].id, parentCategories[index].icon),
+                splashColor: GlobalColor.colorDeepPurple400,
+                iconColor: GlobalColor.colorDeepPurple400,
+                text: parentCategories[index].title,
+                textStyle: _myTextStyle,
+                onPressed: () =>
+                    showSearchWithParentCategorie(parentCategories[index]),
+              );
+            }),
           );
-        });
+        } else if (snapshot.hasError) {
+          MyNotification.showInfoFlushbar(
+              context,
+              AppLocalizations.of(context).translate('error'),
+              AppLocalizations.of(context).translate('error_loading'),
+              Icon(
+                Icons.info_outline,
+                size: 28,
+                color: Colors.redAccent,
+              ),
+              Colors.redAccent,
+              4);
+        }
+        return Center(
+          child: CupertinoActivityIndicator(
+            radius: SizeConfig.blockSizeHorizontal * 5,
+          ),
+        );
+      },
+    );
   }
 
   void loadMorePost(List<Post> _postList) {
@@ -344,11 +357,11 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void showSearchWithParentCategorie(Categorie parentCategorie) async {
+  void showSearchWithParentCategorie(Category parentCategorie) async {
     List<int> childCategories = new List();
 
     if (postList != null && postList.isNotEmpty) {
-      for (Categorie categorie in categories) {
+      for (Category categorie in categories) {
         if (categorie.parentid == parentCategorie.id) {
           childCategories.add(categorie.id);
         }
@@ -378,15 +391,6 @@ class _HomePageState extends State<HomePage> {
         4);
   }
 
-  Future<List<Post>> _loadPost() async {
-    print("Start load post");
-    postList = await _postService.fetchActivePosts();
-    await _readShowPictures();
-    await _loadMyFavorits();
-
-    return postList;
-  }
-
   Future<List<Post>> _loadPostFromCache() async {
     print("Start load post cache");
 
@@ -394,34 +398,6 @@ class _HomePageState extends State<HomePage> {
     await _loadMyFavorits();
 
     return postList;
-  }
-
-  Future<List<Categorie>> _loadMyCategories() async {
-    categories = await _categorieService.fetchCategories();
-
-    return buildParentCategories();
-  }
-
-  List<Categorie> buildParentCategories() {
-    if (parentCategories == null || parentCategories.isEmpty) {
-      List<Categorie> translatedcategories =
-          _categorieService.translateCategories(categories, context);
-      for (var _categorie in translatedcategories) {
-        if (_categorie.parentid == null) {
-          parentCategories.add(_categorie);
-        }
-      }
-
-      parentCategories.sort((a, b) => a.title.compareTo(b.title));
-      Categorie categorieTemp = parentCategories.firstWhere((categorie) =>
-          categorie.title == 'Other categories' ||
-          categorie.title == 'Autre categories');
-      parentCategories.removeWhere((categorie) =>
-          categorie.title == 'Other categories' ||
-          categorie.title == 'Autre categories');
-      parentCategories.add(categorieTemp);
-    }
-    return parentCategories;
   }
 
   void setDeviceToken(String event) async {
@@ -435,7 +411,6 @@ class _HomePageState extends State<HomePage> {
   Future<void> _loadAllData() async {
     await _sharedPreferenceService.remove(CATEGORIE_LIST_CACHE_TIME);
     await _sharedPreferenceService.remove(POST_LIST_CACHE_TIME);
-    await _loadMyFavorits();
 
     setState(() {});
   }

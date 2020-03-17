@@ -12,7 +12,7 @@ class SearchResultPage extends StatefulWidget {
   final List<Post> searchResultList;
   final List<Favorit> myFavorits;
   final String userEmail;
-  final Categorie selectedCategory;
+  final Category selectedCategory;
   final bool showPictures;
 
   SearchResultPage(
