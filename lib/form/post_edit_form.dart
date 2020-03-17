@@ -506,13 +506,15 @@ class _PostEditFormState extends State<PostEditForm> {
   }
 
   Future showCategoriePage() async {
-    _categorieTile = await Navigator.of(context).push(
+    CategorieTile categorieTile = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
           return CategoriePage();
         },
       ),
     );
+
+    _categorieTile = categorieTile.title.isNotEmpty ? categorieTile : _categorieTile;
     setState(() {});
   }
 
