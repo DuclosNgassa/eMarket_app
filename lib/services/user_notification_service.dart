@@ -5,7 +5,9 @@ import 'dart:io';
 import 'package:emarket_app/global/global_url.dart';
 import 'package:emarket_app/model/user_notification.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
+import 'package:emarket_app/util/global.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class UserNotificationService {
   SharedPreferenceService _authenticationService =
@@ -99,6 +101,19 @@ class UserNotificationService {
     } else {
       throw Exception(
           'Failed to delete a UserNotification. Error: ${response.toString()}');
+    }
+  }
+
+  Future<void> sendNotificationAsEmail(UserNotification userNotification) async {
+    String receiver = EMARKET_EMAIL;
+    String subject = userNotification.title;
+    String body = userNotification.message;
+
+    var url = 'mailto:$receiver?subject=$subject&body=$body';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 

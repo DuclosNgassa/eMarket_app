@@ -12,6 +12,7 @@ const int JOB = 27;
 const int COURSES_TRAINING = 69;
 const int GAS_CYLINDER = 107;
 
+const String EMARKET_EMAIL = "kmer.emarket@gmail.com";
 const String USER_EMAIL = "USER_EMAIL";
 const String USER_NAME = "USER_NAME";
 const String DEVICE_TOKEN = "DEVICE_TOKEN";

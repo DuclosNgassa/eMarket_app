@@ -167,7 +167,7 @@ class ContactFormState extends State<ContactForm> {
         _userNotification.toMap(_userNotification);
     UserNotification savedUserNotification =
         await _notificationService.save(userNotificationParams);
-
+    await _notificationService.sendNotificationAsEmail(_userNotification);
     return savedUserNotification;
   }
 
