@@ -2,6 +2,9 @@ import 'package:emarket_app/global/global_color.dart';
 import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/pages/contact/contact_page.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
+import 'package:emarket_app/util/global.dart';
+import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:flutter/material.dart';
 
@@ -14,9 +17,8 @@ class HelpPage extends StatefulWidget {
 
 class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-
-  String userEmail;
-  String userName;
+  SharedPreferenceService _sharedPreferenceService =
+  new SharedPreferenceService();
 
   @override
   void initState() {
@@ -92,13 +94,28 @@ class _HelpPageState extends State<HelpPage> with TickerProviderStateMixin {
     );
   }
 
-  showContactPage() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) {
-          return ContactPage();
-        },
-      ),
-    );
+  Future<void> showContactPage() async{
+    String userEmail = await _sharedPreferenceService.read(USER_EMAIL);
+    if (userEmail == null) {
+      MyNotification.showInfoFlushbar(
+          context,
+          AppLocalizations.of(context).translate('info'),
+          AppLocalizations.of(context).translate('connect_to_send_notification'),
+          Icon(
+            Icons.info_outline,
+            size: 28,
+            color: Colors.blue.shade300,
+          ),
+          Colors.blue.shade300,
+          2);
+    }else {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return ContactPage();
+          },
+        ),
+      );
+    }
   }
 }

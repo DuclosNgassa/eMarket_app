@@ -2,11 +2,12 @@ import 'package:emarket_app/global/global_color.dart';
 import 'package:emarket_app/global/global_styling.dart';
 import 'package:emarket_app/localization/app_localizations.dart';
 import 'package:emarket_app/model/user_notification.dart';
+import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:emarket_app/services/user_notification_service.dart';
+import 'package:emarket_app/util/global.dart';
 import 'package:emarket_app/util/notification.dart';
 import 'package:emarket_app/util/size_config.dart';
 import 'package:emarket_app/util/util.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -25,6 +26,8 @@ class ContactFormState extends State<ContactForm> {
 
   UserNotification _userNotification = new UserNotification();
   UserNotificationService _notificationService = new UserNotificationService();
+  SharedPreferenceService _sharedPreferenceService =
+      new SharedPreferenceService();
 
   FormValidator formValidator = new FormValidator();
   SearchParameter searchParameter = new SearchParameter();
@@ -138,11 +141,26 @@ class ContactFormState extends State<ContactForm> {
           2);
     } else {
       form.save();
-      await _saveUserNotifikation();
+      await _saveUserNotifikation().then((_) => showSuccessNotification());
+    }
+  }
+
+  Future<void> _saveUserNotifikation() async {
+    String userEmail = await _sharedPreferenceService.read(USER_EMAIL);
+    if (userEmail != null) {
+      _userNotification.created_at = DateTime.now();
+      _userNotification.useremail = userEmail;
+
+      Map<String, dynamic> userNotificationParams =
+      _userNotification.toMap(_userNotification);
+      await _notificationService.save(userNotificationParams);
+      await _notificationService.sendNotificationAsEmail(_userNotification);
+    }
+    else{
       MyNotification.showInfoFlushbar(
           context,
           AppLocalizations.of(context).translate('info'),
-          AppLocalizations.of(context).translate('thanks_for_your_message'),
+          AppLocalizations.of(context).translate('connect_to_send_notification'),
           Icon(
             Icons.info_outline,
             size: 28,
@@ -150,25 +168,23 @@ class ContactFormState extends State<ContactForm> {
           ),
           Colors.blue.shade300,
           2);
-
-      clearForm();
     }
   }
 
-  Future<UserNotification> _saveUserNotifikation() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+  void showSuccessNotification(){
+    MyNotification.showInfoFlushbar(
+        context,
+        AppLocalizations.of(context).translate('info'),
+        AppLocalizations.of(context).translate('thanks_for_your_message'),
+        Icon(
+          Icons.info_outline,
+          size: 28,
+          color: Colors.blue.shade300,
+        ),
+        Colors.blue.shade300,
+        10);
 
-    print("User-Firebase: " + user.email);
-
-    _userNotification.created_at = DateTime.now();
-    _userNotification.useremail = user.email;
-
-    Map<String, dynamic> userNotificationParams =
-        _userNotification.toMap(_userNotification);
-    UserNotification savedUserNotification =
-        await _notificationService.save(userNotificationParams);
-    await _notificationService.sendNotificationAsEmail(_userNotification);
-    return savedUserNotification;
+    clearForm();
   }
 
   clearForm() {
