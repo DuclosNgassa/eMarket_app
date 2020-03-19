@@ -6,6 +6,7 @@ class User {
   DateTime created_at;
   String phone_number = '';
   String device_token = '';
+  String deviceid = '';
   String email = '';
   int rating = 5; //max 10 Bewertungssystem
   UserStatus status;
@@ -16,6 +17,7 @@ class User {
       this.created_at,
       this.phone_number,
       this.device_token,
+      this.deviceid,
       this.email,
       this.rating,
       this.status});
@@ -27,6 +29,7 @@ class User {
       created_at: DateTime.parse(json["created_at"]),
       phone_number: json["phone_number"],
       device_token: json["device_token"],
+      deviceid: json["deviceid"],
       email: json["email"],
       rating: json["rating"],
       status: convertStringToStatus(json["user_status"]),
@@ -39,6 +42,7 @@ class User {
         'created_at': created_at.toString(),
         'phone_number': phone_number,
         'device_token': device_token,
+        'deviceid': deviceid,
         'email': email,
         'rating': rating,
         'status': convertStatusToString(status),
@@ -57,6 +61,7 @@ class User {
     params["created_at"] = user.created_at.toString();
     params["phone_number"] = user.phone_number;
     params["device_token"] = user.device_token;
+    params["deviceid"] = user.deviceid;
     params["email"] = user.email;
     params["rating"] = user.rating.toString();
     params["user_status"] = convertStatusToString(user.status);

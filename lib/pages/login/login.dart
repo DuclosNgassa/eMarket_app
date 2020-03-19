@@ -43,6 +43,7 @@ class _LoginState extends State<Login> {
 
   FirebaseUser _firebaseUser;
   String _deviceToken = "";
+  String _deviceid = "";
 
   @override
   void initState() {
@@ -147,30 +148,48 @@ class _LoginState extends State<Login> {
   Future<void> _saveUser(FirebaseUser firebaseUser) async {
     User existsUser = await _userService.fetchUserByEmail(firebaseUser.email);
 
-    _deviceToken = await _sharedPreferenceService.read(DEVICE_TOKEN);
-
     if (existsUser != null) {
+      _deviceToken = await _sharedPreferenceService.read(DEVICE_TOKEN);
+      _deviceid = await _getDeviceid();
       if (_deviceToken != null && _deviceToken.isNotEmpty) {
-        if (existsUser.device_token != _deviceToken) {
+        // user uses a new device and has no deviceid yet
+        if (existsUser.device_token != _deviceToken &&
+            (existsUser.deviceid == null || existsUser.deviceid.isEmpty)) {
+          existsUser.device_token = _deviceToken;
+          existsUser.deviceid = _deviceid;
+          return await updateUser(existsUser);
+        } else if (existsUser.device_token != _deviceToken) {
           // user uses a new device
           existsUser.device_token = _deviceToken;
-
-          Map<String, dynamic> userParams = existsUser.toMapUpdate(existsUser);
-          User updatedUser = await _userService.update(userParams);
-
-          return updatedUser;
+          return await updateUser(existsUser);
+        } else if (existsUser.deviceid == null || existsUser.deviceid.isEmpty) {
+          // user has no deviceid yet
+          existsUser.deviceid = _deviceid;
+          return await updateUser(existsUser);
         }
+      } else if (existsUser.deviceid == null || existsUser.deviceid.isEmpty) {
+        // user has no deviceid yet
+        existsUser.deviceid = _deviceid;
+        return await updateUser(existsUser);
       }
       return existsUser;
     } else {
       User user = new User();
       user = _mapFirebaseUserToUser(firebaseUser);
+      user.deviceid = await _getDeviceid();
 
       Map<String, dynamic> userParams = user.toMap(user);
       User savedUser = await _userService.saveUser(userParams);
 
       return savedUser;
     }
+  }
+
+  Future<User> updateUser(User existsUser) async {
+    Map<String, dynamic> userParams = existsUser.toMapUpdate(existsUser);
+    User updatedUser = await _userService.update(userParams);
+
+    return updatedUser;
   }
 
   User _mapFirebaseUserToUser(FirebaseUser firebaseUser) {
@@ -203,5 +222,10 @@ class _LoginState extends State<Login> {
 
       // setState(() {});
     }
+  }
+
+  Future<String> _getDeviceid() async {
+    String deviceid = await _sharedPreferenceService.read(DEVICE_ID);
+    return deviceid;
   }
 }

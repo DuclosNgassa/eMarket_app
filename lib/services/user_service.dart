@@ -86,6 +86,7 @@ class UserService {
       email: json["data"]["email"],
       phone_number: json["data"]["phone_number"],
       device_token: json["data"]["device_token"],
+      deviceid: json["data"]["deviceid"],
       status: User.convertStringToStatus(json["data"]["user_status"]),
       rating: json["data"]["rating"],
     );
@@ -105,6 +106,7 @@ class UserService {
       email: json["data"]["email"],
       phone_number: json["data"]["phone_number"],
       device_token: json["data"]["device_token"],
+      deviceid: json["data"]["deviceid"],
       status: User.convertStringToStatus(json["data"]["user_status"]),
       rating: int.parse(json["data"]["rating"]),
     );
