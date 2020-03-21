@@ -134,7 +134,7 @@ class SearchPage extends SearchDelegate<Post> {
     }
 
     return SearchResultPage(
-      searchResultList: searchResultList,
+      searchResultList: postList,
       myFavorits: myFavorits,
       userEmail: userEmail,
       selectedCategory:
