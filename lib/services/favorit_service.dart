@@ -7,6 +7,7 @@ import 'package:emarket_app/model/favorit.dart';
 import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/services/post_service.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
+import 'package:emarket_app/util/util.dart';
 import 'package:http/http.dart' as http;
 
 import '../util/global.dart';
@@ -96,8 +97,9 @@ class FavoritService {
 
     List<Post> _myFavoritPosts = new List();
     List<Favorit> _myFavorits = await fetchFavoritByUserEmail(userEmail);
+    List<Favorit> _mySortedFavorits = Util.sortFavoritDescending(_myFavorits);
     //_myFavoritPosts.clear();
-    for (Favorit favorit in _myFavorits) {
+    for (Favorit favorit in _mySortedFavorits) {
       Post post = await _postService.fetchPostById(favorit.postid);
       _myFavoritPosts.add(post);
     }

@@ -1,3 +1,5 @@
+import 'package:emarket_app/model/favorit.dart';
+import 'package:emarket_app/model/post.dart';
 import 'package:emarket_app/services/sharedpreferences_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/icon_data.dart';
@@ -46,4 +48,17 @@ class Util {
     }
     return IconData(int.parse(icon), fontFamily: 'MaterialIcons');
   }
+
+  static List<Post> sortPostDescending(List<Post> posts) {
+    posts.sort((post1, post2) => post2.updated_at.compareTo(post1.updated_at));
+
+    return posts;
+  }
+
+  static List<Favorit> sortFavoritDescending(List<Favorit> favorits) {
+    favorits.sort((favorit1, favorit2) => favorit2.created_at.compareTo(favorit1.created_at));
+
+    return favorits;
+  }
+
 }

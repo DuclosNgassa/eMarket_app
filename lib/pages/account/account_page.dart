@@ -601,7 +601,7 @@ class _AccountState extends State<AccountPage>
 
           /// other way there is no user logged.
           return new CupertinoActivityIndicator(
-            radius: SizeConfig.safeBlockHorizontal * 10,
+            radius: SizeConfig.safeBlockHorizontal * 5,
           );
         });
   }
